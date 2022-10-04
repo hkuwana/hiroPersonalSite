@@ -1,0 +1,24 @@
+
+/*  declare a class which applies it */
+* {
+    font-family: "poppins";
+}
+
+.poppins-bold {
+    font-family: "poppinsBold";
+}
+
+.layout {
+    display: flex;
+    justify-content: center;
+}
+
+.surface {
+    background-color: #fafafa;
+}
+
+/* * {
+    background: #000 !important;
+    color: #0f0 !important;
+    outline: solid #f00 1px !important;
+} */
