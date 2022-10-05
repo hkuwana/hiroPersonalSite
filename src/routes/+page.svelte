@@ -6,32 +6,31 @@
 
 <svelte:head>
 	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<meta name="Hiro Kuwana" content="Hir" />
 </svelte:head>
 
 <section>
-	<h1>
-		<div class="avatar">
-			<div class="w-24 rounded-xl">
-				<img src={hiroProfile} alt="Welcome" />
+	<div class="min-h-screen grid gap-4 content-center">
+		<h1>
+			<div class="avatar">
+				<div class="w-60 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+					<img src={hiroProfile} alt="Hiro's face" />
+				</div>
 			</div>
-		</div>
-		<div class="avatar">
-			<div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-				<img src="https://placeimg.com/192/192/people" />
-			</div>
-		</div>
-		<button class="btn btn-outline btn-info">Info</button>
-		<button class="btn btn-outline btn-success">Success</button>
-		<button class="btn btn-outline btn-warning">Warning</button>
-		<button class="btn btn-outline btn-error">Error</button>
-	</h1>
+		</h1>
+		<a class="btn btn-outline btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg" href="/about"
+			>Current Project</a
+		>
 
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
+		<a href="/about" class="btn btn-outline btn-secondary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+			>Japan consultation</a
+		>
+		<a href="/blog" class="btn btn-outline btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Blog</a
+		>
+		<a href="/resume" class="btn btn-outline btn-secondary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+			>Bio</a
+		>
+	</div>
 </section>
 
 <style>
