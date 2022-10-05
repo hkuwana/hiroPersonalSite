@@ -43,11 +43,7 @@
 		<div class="hero-content flex-col lg:flex-row">
 			<div class="avatar">
 				<div class="sm:w-72 w-48 rounded-xl">
-					<img
-						src="src/assets/icon-512x512.png"
-						class="max-w-sm rounded-lg shadow-2xl"
-						alt="Pebblr logo"
-					/>
+					<img src="/icon-512x512.png" class="max-w-sm rounded-lg shadow-2xl" alt="Pebblr logo" />
 				</div>
 			</div>
 
