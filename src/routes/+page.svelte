@@ -3,7 +3,9 @@
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import hiroProfile from '$lib/images/Hiro_profile_shot.png';
 
-	let email: string;
+	function submit() {
+		console.log('submitted!');
+	}
 </script>
 
 <svelte:head>
@@ -75,7 +77,7 @@
 					</p>
 					<p>Please explain your needs and goals below to let us know!</p>
 					<p>
-						Afterwards, I will reach out to schedule a consultation call and discuss next steps!
+						Afterwards, Hiro will reach out to schedule a consultation call and discuss next steps!
 					</p>
 				</div>
 			</div>
@@ -83,7 +85,7 @@
 				<div class="card-body">
 					<form action="">
 						<fieldset class="">
-							<p class="label-text">First Name</p>
+							<span class=" font-semibold label-text">First Name: *</span>
 							<label class="label">
 								<input
 									class="input input-bordered"
@@ -94,7 +96,7 @@
 							</label>
 						</fieldset>
 						<fieldset class="form-control">
-							<p class="label-text">Last Name</p>
+							<span class="font-semibold label-text">Last Name: *</span>
 							<label class="label">
 								<input
 									class="input input-bordered"
@@ -105,61 +107,93 @@
 							</label>
 						</fieldset>
 						<fieldset class="form-control">
-							<p class="label-text">Email</p>
+							<span class="font-semibold label-text">Email: *</span>
 							<label class="label">
 								<input class="input input-bordered" type="text" for="email" placeholder="Email" />
 							</label>
 						</fieldset>
 
-						<fieldset class="form-control">
-							<span>Please select which service(s) you are interested in:</span>
+						<fieldset class=" form-control">
+							<span class="font-semibold"
+								>Please select which service(s) you are interested in: *</span
+							>
 							<label class="label cursor-pointer">
-								<span class="label-text">Red pill</span>
-								<input type="radio" name="interests" class="radio checked:bg-primary" checked />
+								<span class="label-text">Japan Business Consulting</span>
+								<input
+									type="radio"
+									name="interests"
+									class="radio checked:bg-primary"
+									checked
+									required
+								/>
 							</label>
 							<label class="label cursor-pointer">
-								<span class="label-text">blue pill</span>
-								<input type="radio" name="interests" class="radio checked:bg-primary" checked />
+								<span class="label-text">Japan Travel Consulting</span>
+								<input type="radio" name="interests" class="radio checked:bg-primary" />
+							</label>
+							<label class="label cursor-pointer">
+								<span class="label-text">Japanese learning Consulting</span>
+								<input type="radio" name="interests" class="radio checked:bg-primary" />
+							</label>
+							<label class="label cursor-pointer">
+								<span class="label-text">Web Development Consulting</span>
+								<input type="radio" name="interests" class="radio checked:bg-primary" />
 							</label>
 						</fieldset>
-						<div class="form-control">
+						<fieldset class="form-control">
+							<span class="font-semibold">How did you hear about Hiro?* </span>
 							<label class="label cursor-pointer">
-								<span class="label-text">Red pill</span>
-								<input type="radio" name="radio-6" class="radio checked:bg-primary" checked />
+								<span class="label-text">Tik Tok</span>
+								<input type="radio" name="radio-6" class="radio checked:bg-secondary" checked />
 							</label>
 							<label class="label cursor-pointer">
-								<span class="label-text">blue pill</span>
-								<input type="radio" name="radio-6" class="radio checked:bg-primary" checked />
+								<span class="label-text">Quora</span>
+								<input type="radio" name="radio-6" class="radio checked:bg-secondary" checked />
 							</label>
-						</div>
+							<label class="label cursor-pointer">
+								<span class="label-text">Friend</span>
+								<input type="radio" name="radio-6" class="radio checked:bg-secondary" checked />
+							</label>
+							<label class="label cursor-pointer">
+								<span class="label-text">Other</span>
+								<input type="radio" name="radio-6" class="radio checked:bg-secondary" checked />
+							</label>
+						</fieldset>
 						<div class="form-control" />
-						<div class="form-control mt-6">
-							<button type="submit" class="btn btn-primary">Send</button>
-						</div>
 						<fieldset>
 							<span class="label-text">Your message</span>
 							<label class="label">
 								<textarea
 									class="textarea textarea-bordered textarea-secondary h-24"
-									placeholder="What can I help you solve?"
+									placeholder="What can Hiro help you solve?"
 								/>
 							</label>
 						</fieldset>
+						<div class="form-control mt-6">
+							<button on:click|preventDefault={submit} type="submit" class="btn btn-primary"
+								>Send</button
+							>
+						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="hero min-h-screen bg-base-200" id="Bio">
+	<div class="hero min-h-screen bg-green-200" id="Bio">
 		<div class="hero-content flex-col lg:flex-row-reverse">
 			<img src="https://placeimg.com/260/400/arch" class="max-w-sm rounded-lg shadow-2xl" />
-			<div>
-				<h1 class="text-5xl font-bold">Box Office News!</h1>
+			<div class="font-semibold">
+				<h1 class="text-5xl font-bold">Born in Japan, raised in the US.</h1>
 				<p class="py-6">
-					Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi
-					exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
+					Hiro Kuwana graduated Brown University with a degree in Environmental Engineering. He has
+					previously worked in Tokyo at a Japanese Venture Capital firm, Sunbridge, researching on
+					US Software as a Service (SAAS) companies entering into the Japanese market, identifying
+					key points of success and failures.
 				</p>
-				<button class="btn btn-primary">Get Started</button>
+				He also developed an internal wallet for developers in a Japanese-Estonian blockchain company.
+				Through both experiences, he has been able to understand the Japanese market and come to appreciate
+				the nuances of emerging Japanese companies.
+				<p />
 			</div>
 		</div>
 	</div>
