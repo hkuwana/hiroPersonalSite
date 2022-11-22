@@ -1,3 +1,9 @@
-// since there's no dynamic data here, we can prerender
-// it so that it gets served as a static asset in production
-export const prerender = true;
+import * as  nonprofitInfo  from "$lib/nonprofitData"
+import type { PageLoad } from "@sveltejs/kit"
+
+export function load(event): PageLoad  {
+  return {
+    pebblrNonprofits: nonprofitInfo
+  }
+  
+}

@@ -62,7 +62,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="hero min-h-screen">
+	<div class="hero min-h-screen" id="Current_Project">
 		<div class="hero-content flex-col lg:flex-row-reverse">
 			<div class="text-center lg:text-left ">
 				<p class="text-5xl font-bold sm:text-4xl">Response within 48 hours!</p>
