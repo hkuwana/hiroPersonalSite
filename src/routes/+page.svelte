@@ -3,6 +3,8 @@
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import hiroProfile from '$lib/images/Hiro_profile_shot.png';
 
+	const beehiivMagicLink =
+		'https://magic.beehiiv.com/v1/158c8333-ef4a-4a74-b5e1-9cac1aac57e3?email={{email}}';
 	function submit() {
 		console.log('submitted!');
 	}
@@ -28,168 +30,113 @@
 			href="#Current_Project"
 			class="btn btn-outline btn-secondary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Current Project</a
 		>
+		<a href="#past_project_1" class="btn btn-outline btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+			>Past Project</a
+		>
 		<a
-			href="#Consultiation_session"
-			class="btn btn-outline btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+			href="https://cal.com/hiro-flybyrd/15min"
+			target="_blank"
+			class="btn btn-outline btn-secondary  btn-xs sm:btn-sm md:btn-md lg:btn-lg"
 			>Consultation Session</a
 		>
-		<a href="#Bio" class="btn btn-outline btn-secondary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Bio</a
-		>
-
-		<a href="/blog" class="btn btn-outline btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Blog</a
-		>
+		<a href="#Bio" class="btn btn-outline btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Bio</a>
 	</div>
-	<div class="hero min-h-screen bg-green-200" id="Current_Project">
+	<div class="hero min-h-screen bg-green-200" id="current_project">
 		<div class="hero-content flex-col lg:flex-row">
 			<div class="avatar">
 				<div class="sm:w-72 w-48 rounded-xl">
-					<img src="/icon-512x512.png" class="max-w-sm rounded-lg shadow-2xl" alt="Pebblr logo" />
+					<img src="/flybyrd_logo.png" class="max-w-sm rounded-lg shadow-2xl" alt="Pebblr logo" />
 				</div>
 			</div>
 
 			<div>
-				<h1 class="text-5xl font-bold text-accent">Pebblr</h1>
+				<h1 class="text-5xl font-bold text-accent">Flybyrd</h1>
 				<p class="sm:text-xl font-semibold py-6">
-					Pebblr is focused on connecting nonprofits with younger donors. The hope is to expand this
-					into volunteers, connect nonprofits with each other and create an ecosystem where all
-					altruistic people can connect with one another.
+					Flybyrd focuses on analyzing public feedback to help businesses gain insights into
+					customer opinions, identify trends, and improve their products or services. We empower
+					companies to make data-driven decisions by synthesizing and presenting what people are
+					saying about their competitors and the broader market.
 				</p>
 				<a
-					href="https://www.pebblr.org/"
+					href="https://www.flybyrd.io"
 					class="btn btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-					title="Check out Pebblr">Go to Pebblr</a
+					title="Check out Flybyrd">Visit Flybyrd</a
 				>
 			</div>
 		</div>
 	</div>
-	<div class="hero min-h-screen" id="Current_Project">
-		<div class="hero-content flex-col lg:flex-row-reverse">
-			<div class="text-center lg:text-left ">
-				<p class="text-5xl font-bold sm:text-4xl">Response within 48 hours!</p>
-				<div class="font-semibold">
-					<p class="py-6">
-						Interested in doing business in Japan? Need help planning an itinerary in the country?
-						Any other aspects bridging both cultures?
-					</p>
-					<p>Please explain your needs and goals below to let us know!</p>
-					<p>
-						Afterwards, Hiro will reach out to schedule a consultation call and discuss next steps!
-					</p>
+	<div class="hero min-h-screen" id="past_project_1">
+		<div class="hero-content flex-col lg:flex-row">
+		  <div class="avatar mb-6 lg:mb-0 lg:mr-8">
+			<div class="w-48 sm:w-72 rounded-xl">
+			  <img
+				src="/destinomaLogoV1.png"
+				class="rounded-lg shadow-2xl"
+				alt="Destinoma logo"
+			  />
+			</div>
+		  </div>
+	  
+		  <div class="text-center lg:text-left">
+			<h1 class="text-4xl sm:text-5xl font-bold text-accent">Destinoma</h1>
+			<p class="text-lg sm:text-xl font-semibold py-6">
+			  Destinoma was a travel platform that provided personalized trip recommendations and itineraries based on user preferences. After launching Flybyrd, which offered a clearer market need and greater growth potential, I decided to discontinue Destinoma to fully dedicate my efforts to building and scaling Flybyrd.
+			</p>
+			<a
+			  href="https://www.destinoma.com/"
+			  class="btn btn-secondary mt-4 sm:btn-sm md:btn-md lg:btn-lg"
+			  title="Check out Destinoma">Go to Destinoma</a>
+		  </div>
+		</div>
+	  </div>
+	<div class="hero min-h-screen bg-green-200" id="past_project_2">
+		<div class="hero-content flex-col lg:flex-row">
+			<div class="avatar">
+				<div class="w-48 sm:w-72 rounded-xl">
+					<img src="/icon-512x512.png" class="rounded-lg shadow-2xl" alt="Pebblr logo" />
 				</div>
 			</div>
-			<div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-				<div class="card-body">
-					<form action="">
-						<fieldset class="">
-							<span class=" font-semibold label-text">First Name: *</span>
-							<label class="label">
-								<input
-									class="input input-bordered"
-									type="text"
-									for="firstName"
-									placeholder="First Name"
-								/>
-							</label>
-						</fieldset>
-						<fieldset class="form-control">
-							<span class="font-semibold label-text">Last Name: *</span>
-							<label class="label">
-								<input
-									class="input input-bordered"
-									type="text"
-									for="lastName"
-									placeholder="Last Name"
-								/>
-							</label>
-						</fieldset>
-						<fieldset class="form-control">
-							<span class="font-semibold label-text">Email: *</span>
-							<label class="label">
-								<input class="input input-bordered" type="text" for="email" placeholder="Email" />
-							</label>
-						</fieldset>
 
-						<fieldset class=" form-control">
-							<span class="font-semibold"
-								>Please select which service(s) you are interested in: *</span
-							>
-							<label class="label cursor-pointer">
-								<span class="label-text">Japan Business Consulting</span>
-								<input
-									type="radio"
-									name="interests"
-									class="radio checked:bg-primary"
-									checked
-									required
-								/>
-							</label>
-							<label class="label cursor-pointer">
-								<span class="label-text">Japan Travel Consulting</span>
-								<input type="radio" name="interests" class="radio checked:bg-primary" />
-							</label>
-							<label class="label cursor-pointer">
-								<span class="label-text">Japanese learning Consulting</span>
-								<input type="radio" name="interests" class="radio checked:bg-primary" />
-							</label>
-							<label class="label cursor-pointer">
-								<span class="label-text">Web Development Consulting</span>
-								<input type="radio" name="interests" class="radio checked:bg-primary" />
-							</label>
-						</fieldset>
-						<fieldset class="form-control">
-							<span class="font-semibold">How did you hear about Hiro?* </span>
-							<label class="label cursor-pointer">
-								<span class="label-text">Tik Tok</span>
-								<input type="radio" name="radio-6" class="radio checked:bg-secondary" checked />
-							</label>
-							<label class="label cursor-pointer">
-								<span class="label-text">Quora</span>
-								<input type="radio" name="radio-6" class="radio checked:bg-secondary" checked />
-							</label>
-							<label class="label cursor-pointer">
-								<span class="label-text">Friend</span>
-								<input type="radio" name="radio-6" class="radio checked:bg-secondary" checked />
-							</label>
-							<label class="label cursor-pointer">
-								<span class="label-text">Other</span>
-								<input type="radio" name="radio-6" class="radio checked:bg-secondary" checked />
-							</label>
-						</fieldset>
-						<div class="form-control" />
-						<fieldset>
-							<span class="label-text">Your message</span>
-							<label class="label">
-								<textarea
-									class="textarea textarea-bordered textarea-secondary h-24"
-									placeholder="What can Hiro help you solve?"
-								/>
-							</label>
-						</fieldset>
-						<div class="form-control mt-6">
-							<button on:click|preventDefault={submit} type="submit" class="btn btn-primary"
-								>Send</button
-							>
-						</div>
-					</form>
-				</div>
+			<div class="lg:ml-8 text-center lg:text-left">
+				<h1 class="text-4xl lg:text-5xl font-bold text-accent">Pebblr</h1>
+				<p class="sm:text-xl font-medium py-4">
+					Pebblr aimed to connect nonprofits with younger donors and foster collaboration. However,
+					the rise of GPT technologies offered more efficient and scalable solutions, leading to
+					Pebblr's closure.
+				</p>
+				<a href="https://www.pebblr.org/" class="btn btn-primary mt-4" title="Check out Pebblr"
+					>Visit Pebblr</a
+				>
 			</div>
 		</div>
 	</div>
-	<div class="hero min-h-screen bg-green-200" id="Bio">
+
+	<div class="hero min-h-screen" id="Bio">
 		<div class="hero-content flex-col lg:flex-row-reverse">
-			<img src="https://placeimg.com/260/400/arch" class="max-w-sm rounded-lg shadow-2xl" />
-			<div class="font-semibold">
-				<h1 class="text-5xl font-bold">Born in Japan, raised in the US.</h1>
-				<p class="py-6">
-					Hiro Kuwana graduated Brown University with a degree in Environmental Engineering. He has
-					previously worked in Tokyo at a Japanese Venture Capital firm, Sunbridge, researching on
-					US Software as a Service (SAAS) companies entering into the Japanese market, identifying
-					key points of success and failures.
+			<div class="md:px-8 font-semibold text-center lg:text-left">
+				<h1 class="text-4xl sm:text-5xl font-bold">Bridging Cultures Through Technology</h1>
+				<p class="pt-6 sm:text-lg">
+					<strong>Born in Japan, raised in the U.S.</strong>, Hiro Kuwana brings a global
+					perspective to tech entrepreneurship. As Co-founder of Flybyrd, he transforms user
+					feedback into actionable insights for B2C companies.
 				</p>
-				He also developed an internal wallet for developers in a Japanese-Estonian blockchain company.
-				Through both experiences, he has been able to understand the Japanese market and come to appreciate
-				the nuances of emerging Japanese companies.
-				<p />
+
+				<p class="pt-6 sm:text-lg">
+					With experience across <strong>Spain, Estonia, Japan, and the U.S.</strong> and a background
+					in Environmental Engineering from Brown University, Hiro's diverse journey fuels his passion
+					for innovation.
+				</p>
+
+				<p class="pt-6 sm:text-lg">
+					Hiro's mission is to <strong>build tools that empower businesses</strong> to turn user needs
+					into effective solutions, enhancing product creation and development.
+				</p>
+
+				<p class="pt-6 sm:text-lg">
+					Through his newsletter, Hiro is <strong>demystifying Japanese innovation</strong> and bridging
+					Eastern and Western approaches to technology.
+				</p>
+				<a href={beehiivMagicLink} class="btn btn-primary mt-6">Subscribe to Newsletter</a>
 			</div>
 		</div>
 	</div>

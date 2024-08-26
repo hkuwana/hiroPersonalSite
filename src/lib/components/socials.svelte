@@ -45,10 +45,10 @@
 	</a>
 	<a
 		class=" text-gray-800"
-		href="mailto:hkuwana@pebblr.org"
+		href="mailto:hiro@flybyrd.io"
 		target="_blank"
 		rel="noopener"
-		title="Send an email to hkuwana@pebblr.org"
+		title="Send an email to hiro@flybyrd.io"
 	>
 		<EmailIcon />
 	</a>
