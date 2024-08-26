@@ -16,7 +16,7 @@
 </svelte:head>
 
 <section>
-	<div class="min-h-screen grid gap-4 content-center justify-center">
+	<div class="min-h-screen flex flex-col items-center gap-4  ">
 		<h1 class="text-center">
 			<div class="avatar  ">
 				<div class="w-60 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 ">
@@ -67,28 +67,28 @@
 	</div>
 	<div class="hero min-h-screen" id="past_project_1">
 		<div class="hero-content flex-col lg:flex-row">
-		  <div class="avatar mb-6 lg:mb-0 lg:mr-8">
-			<div class="w-48 sm:w-72 rounded-xl">
-			  <img
-				src="/destinomaLogoV1.png"
-				class="rounded-lg shadow-2xl"
-				alt="Destinoma logo"
-			  />
+			<div class="avatar mb-6 lg:mb-0 lg:mr-8">
+				<div class="w-48 sm:w-72 rounded-xl">
+					<img src="/destinomaLogoV1.png" class="rounded-lg shadow-2xl" alt="Destinoma logo" />
+				</div>
 			</div>
-		  </div>
-	  
-		  <div class="text-center lg:text-left">
-			<h1 class="text-4xl sm:text-5xl font-bold text-accent">Destinoma</h1>
-			<p class="text-lg sm:text-xl font-semibold py-6">
-			  Destinoma was a travel platform that provided personalized trip recommendations and itineraries based on user preferences. After launching Flybyrd, which offered a clearer market need and greater growth potential, I decided to discontinue Destinoma to fully dedicate my efforts to building and scaling Flybyrd.
-			</p>
-			<a
-			  href="https://www.destinoma.com/"
-			  class="btn btn-secondary mt-4 sm:btn-sm md:btn-md lg:btn-lg"
-			  title="Check out Destinoma">Go to Destinoma</a>
-		  </div>
+
+			<div class="text-center lg:text-left">
+				<h1 class="text-4xl sm:text-5xl font-bold text-accent">Destinoma</h1>
+				<p class="text-lg sm:text-xl font-semibold py-6">
+					Destinoma was a travel platform that provided personalized trip recommendations and
+					itineraries based on user preferences. After launching Flybyrd, which offered a clearer
+					market need and greater growth potential, I decided to discontinue Destinoma to fully
+					dedicate my efforts to building and scaling Flybyrd.
+				</p>
+				<a
+					href="https://www.destinoma.com/"
+					class="btn btn-secondary mt-4 sm:btn-sm md:btn-md lg:btn-lg"
+					title="Check out Destinoma">Go to Destinoma</a
+				>
+			</div>
 		</div>
-	  </div>
+	</div>
 	<div class="hero min-h-screen bg-green-200" id="past_project_2">
 		<div class="hero-content flex-col lg:flex-row">
 			<div class="avatar">
