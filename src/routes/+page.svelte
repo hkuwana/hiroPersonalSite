@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
 	import hiroProfile from '$lib/images/Hiro_profile_shot.png';
 
 	const beehiivMagicLink =
@@ -16,10 +14,10 @@
 </svelte:head>
 
 <section>
-	<div class="min-h-screen flex flex-col items-center gap-4  ">
+	<div class="min-h-screen flex flex-col items-center gap-4">
 		<h1 class="text-center">
-			<div class="avatar  ">
-				<div class="w-60 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 ">
+			<div class="avatar">
+				<div class="w-60 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
 					<img src={hiroProfile} alt="Hiro's face" />
 				</div>
 			</div>
@@ -36,7 +34,7 @@
 		<a
 			href="https://cal.com/hiro-flybyrd/15min"
 			target="_blank"
-			class="btn btn-outline btn-secondary  btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+			class="btn btn-outline btn-secondary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
 			>Consultation Session</a
 		>
 		<a href="#Bio" class="btn btn-outline btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Bio</a>
@@ -52,10 +50,9 @@
 			<div>
 				<h1 class="text-5xl font-bold text-accent">Flybyrd</h1>
 				<p class="sm:text-xl font-semibold py-6">
-					Flybyrd focuses on analyzing public feedback to help businesses gain insights into
-					customer opinions, identify trends, and improve their products or services. We empower
-					companies to make data-driven decisions by synthesizing and presenting what people are
-					saying about their competitors and the broader market.
+					Flybyrd is an AI-powered assistant that helps VCs analyze startup deals, screen founders,
+					and streamline the investment process. We're building the future of automated VC deal flow
+					analysis to make investment decisions faster and more data-driven.
 				</p>
 				<a
 					href="https://www.flybyrd.io"
@@ -69,22 +66,21 @@
 		<div class="hero-content flex-col lg:flex-row">
 			<div class="avatar mb-6 lg:mb-0 lg:mr-8">
 				<div class="w-48 sm:w-72 rounded-xl">
-					<img src="/destinomaLogoV1.png" class="rounded-lg shadow-2xl" alt="Destinoma logo" />
+					<img src="/kaiwa_logo.png" class="rounded-lg shadow-2xl" alt="Kaiwa logo" />
 				</div>
 			</div>
 
 			<div class="text-center lg:text-left">
-				<h1 class="text-4xl sm:text-5xl font-bold text-accent">Destinoma</h1>
+				<h1 class="text-4xl sm:text-5xl font-bold text-accent">Kaiwa</h1>
 				<p class="text-lg sm:text-xl font-semibold py-6">
-					Destinoma was a travel platform that provided personalized trip recommendations and
-					itineraries based on user preferences. After launching Flybyrd, which offered a clearer
-					market need and greater growth potential, I decided to discontinue Destinoma to fully
-					dedicate my efforts to building and scaling Flybyrd.
+					Kaiwa helps you practice languages through bite-sized AI conversations. See your friends'
+					streaks, get real-time translations, and improve daily from just 30-second sessions.
+					Making language learning fun, social, and achievable for everyone.
 				</p>
 				<a
-					href="https://www.destinoma.com/"
+					href="https://www.kaiwa.ai/"
 					class="btn btn-secondary mt-4 sm:btn-sm md:btn-md lg:btn-lg"
-					title="Check out Destinoma">Go to Destinoma</a
+					title="Check out Kaiwa">Go to Kaiwa</a
 				>
 			</div>
 		</div>
