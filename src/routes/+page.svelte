@@ -1,5 +1,6 @@
 <script lang="ts">
 	import hiroProfile from '$lib/images/Hiro_profile_shot.png';
+	import { base } from '$app/paths';
 
 	const calLink = 'https://cal.com/hirokuwana/15min';
 	function submit() {
@@ -8,8 +9,77 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="Hiro Kuwana" content="Hiro Kuwana's personal site" />
+	<title>Hiro Kuwana - AI Entrepreneur & Founder | Democratizing Education Through Technology</title
+	>
+	<meta
+		name="description"
+		content="Hiro Kuwana is a tech entrepreneur building AI solutions to democratize education and empower human potential. Founder of Flybyrd (VC deal analysis) and Kaiwa (AI language learning). Making premium tools accessible to everyone."
+	/>
+	<meta
+		name="keywords"
+		content="Hiro Kuwana, AI entrepreneur, startup founder, educational technology, AI democratization, venture capital AI, language learning app, tech innovation, artificial intelligence, EdTech"
+	/>
+	<meta name="author" content="Hiro Kuwana" />
+	<meta name="robots" content="index, follow" />
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://hirokuwana.com/" />
+	<meta
+		property="og:title"
+		content="Hiro Kuwana - AI Entrepreneur & Founder | Democratizing Education Through Technology"
+	/>
+	<meta
+		property="og:description"
+		content="Tech entrepreneur building AI solutions to democratize education and empower human potential. Founder of Flybyrd and Kaiwa."
+	/>
+	<meta property="og:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+	<meta property="og:site_name" content="Hiro Kuwana" />
+
+	<!-- Twitter -->
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:url" content="https://hirokuwana.com/" />
+	<meta property="twitter:title" content="Hiro Kuwana - AI Entrepreneur & Founder" />
+	<meta
+		property="twitter:description"
+		content="Building AI solutions to democratize education and empower human potential. Founder of Flybyrd and Kaiwa."
+	/>
+	<meta property="twitter:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+
+	<!-- Additional SEO -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="UTF-8" />
+	<link rel="canonical" href="https://hirokuwana.com/" />
+
+	<!-- Structured Data -->
+	<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "Person",
+			"name": "Hiroyuki Kuwana",
+			"alternateName": "Hiro Kuwana",
+			"description": "AI entrepreneur and tech founder focused on democratizing education through artificial intelligence",
+			"url": "https://hirokuwana.com",
+			"jobTitle": "Founder & CEO",
+			"worksFor": {
+				"@type": "Organization",
+				"name": "Flybyrd"
+			},
+			"alumniOf": {
+				"@type": "EducationalOrganization",
+				"name": "Brown University"
+			},
+			"nationality": ["Japanese", "American"],
+			"knowsAbout": [
+				"Artificial Intelligence",
+				"Educational Technology",
+				"Venture Capital",
+				"Language Learning",
+				"Startup Development"
+			],
+			"sameAs": ["https://www.flybyrd.io", "https://www.trykaiwa.com"]
+		}
+	</script>
 </svelte:head>
 
 <section>
@@ -21,28 +91,25 @@
 				</div>
 			</div>
 		</h1>
-		<h1 class="text-center font-bold text-zinc-900 sm:text-3xl">Hiroyuki (Hiro) Kuwana</h1>
+		<h1 class="text-center font-bold text-zinc-900 sm:text-3xl">Hiro (Hiro) Kuwana</h1>
 		<h1 class="text-center font-bold text-stone-700 sm:text-2xl">桑名　浩行</h1>
+
 		<a
-			href="#Current_Project"
-			class="btn btn-outline btn-secondary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Current Project</a
-		>
-		<a href="#past_project_1" class="btn btn-outline btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-			>Past Projects</a
-		>
-		<a
-			href="https://cal.com/hiro-flybyrd/15min"
+			href={calLink}
 			target="_blank"
 			class="btn btn-outline btn-secondary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
 			>Consultation Session</a
 		>
-		<a href="#Bio" class="btn btn-outline btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Bio</a>
 	</div>
 	<div class="hero min-h-screen bg-green-200" id="current_project">
 		<div class="hero-content flex-col lg:flex-row">
 			<div class="avatar">
 				<div class="w-48 rounded-xl sm:w-72">
-					<img src="/flybyrd_logo.png" class="max-w-sm rounded-lg shadow-2xl" alt="Flybyrd logo" />
+					<img
+						src={`${base}/flybyrd_logo.png`}
+						class="max-w-sm rounded-lg shadow-2xl"
+						alt="Flybyrd logo"
+					/>
 				</div>
 			</div>
 
@@ -65,7 +132,7 @@
 		<div class="hero-content flex-col lg:flex-row">
 			<div class="avatar mb-6 lg:mr-8 lg:mb-0">
 				<div class="w-48 rounded-xl sm:w-72">
-					<img src="/kaiwa_logo.png" class="rounded-lg shadow-2xl" alt="Kaiwa logo" />
+					<img src={`${base}/kaiwa_logo.png`} class="rounded-lg shadow-2xl" alt="Kaiwa logo" />
 				</div>
 			</div>
 
@@ -88,7 +155,7 @@
 		<div class="hero-content flex-col lg:flex-row">
 			<div class="avatar">
 				<div class="w-48 rounded-xl sm:w-72">
-					<img src="/icon-512x512.png" class="rounded-lg shadow-2xl" alt="Pebblr logo" />
+					<img src={`${base}/icon-512x512.png`} class="rounded-lg shadow-2xl" alt="Pebblr logo" />
 				</div>
 			</div>
 
