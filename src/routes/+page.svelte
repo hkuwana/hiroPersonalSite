@@ -28,7 +28,7 @@
 			class="btn btn-outline btn-secondary btn-xs sm:btn-sm md:btn-md lg:btn-lg">Current Project</a
 		>
 		<a href="#past_project_1" class="btn btn-outline btn-xs sm:btn-sm md:btn-md lg:btn-lg"
-			>Past Project</a
+			>Past Projects</a
 		>
 		<a
 			href="https://cal.com/hiro-flybyrd/15min"
@@ -42,7 +42,7 @@
 		<div class="hero-content flex-col lg:flex-row">
 			<div class="avatar">
 				<div class="w-48 rounded-xl sm:w-72">
-					<img src="/flybyrd_logo.png" class="max-w-sm rounded-lg shadow-2xl" alt="Pebblr logo" />
+					<img src="/flybyrd_logo.png" class="max-w-sm rounded-lg shadow-2xl" alt="Flybyrd logo" />
 				</div>
 			</div>
 
@@ -73,7 +73,7 @@
 				<h1 class="text-accent text-4xl font-bold sm:text-5xl">Kaiwa</h1>
 				<p class="py-6 text-lg font-semibold sm:text-xl">
 					Kaiwa helps you practice languages through bite-sized AI conversations. See your friends'
-					streaks, get real-time translations, and improve daily from just 30-second sessions.
+					streaks, get real-time translations, and improve daily through just 30-second sessions.
 					Making language learning fun, social, and achievable for everyone.
 				</p>
 				<a
@@ -109,8 +109,9 @@
 				<h1 class="text-4xl font-bold sm:text-5xl">Bridging Cultures Through Technology</h1>
 				<p class="text-lg leading-relaxed">
 					<strong>Born in Japan and raised in the U.S.</strong>, Hiro Kuwana brings a global
-					perspective to tech entrepreneurship. As a founder of Flybyrd, he creates boutique agents
-					for venture capitalists to find startups that match with their portfolio.
+					perspective to tech entrepreneurship. As founder of Flybyrd, he creates specialized AI
+					agents for venture capitalists to discover startups that align with their investment
+					criteria.
 				</p>
 
 				<p class="text-lg leading-relaxed">
@@ -121,9 +122,9 @@
 				</p>
 
 				<p class="text-lg leading-relaxed">
-					Hiro's mission is to ensure that assistants and tutors that were only available to a
-					fraction of people are available to everyone. That AI can "become the glider for
-					everyone's mind".
+					Hiro's mission is to ensure that AI assistants and tutors that were once available to only
+					a fraction of people become accessible to everyone—to make AI "the glider for everyone's
+					mind."
 				</p>
 
 				<a href={calLink} class="btn btn-primary mt-6">Schedule a call</a>
