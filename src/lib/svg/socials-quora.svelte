@@ -1,5 +1,5 @@
 <svg
-	class="svg-inline--fa  w-4 sm:w-7"
+	class="svg-inline--fa w-4 sm:w-7"
 	width="24px"
 	height="24px"
 	viewBox="-0.5 0 24 24"

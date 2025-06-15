@@ -1,8 +1,8 @@
-@import "tailwindcss"; 
+@import 'tailwindcss';
 @plugin "daisyui" {
-  themes:
-    retro --default,
-   night --dark 
+	themes:
+		retro --default,
+		night --dark;
 
-  logs: true;
+	logs: true;
 }

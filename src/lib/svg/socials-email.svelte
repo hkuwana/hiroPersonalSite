@@ -3,7 +3,7 @@
 	height="100%"
 	stroke-width="1.5"
 	viewBox="0 0 24 24"
-	class="svg-inline--fa  w-4 sm:w-7"
+	class="svg-inline--fa w-4 sm:w-7"
 	fill="none"
 	xmlns="http://www.w3.org/2000/svg"
 >

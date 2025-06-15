@@ -5,7 +5,7 @@
 
 <header>
 	<div class="grid pt-9">
-		<div class="flex justify-center mb-9">
+		<div class="mb-9 flex justify-center">
 			<Socials />
 		</div>
 	</div>

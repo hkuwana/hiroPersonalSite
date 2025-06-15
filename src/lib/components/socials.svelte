@@ -6,7 +6,7 @@
 	import QuoraIcon from '$lib/svg/socials-quora.svelte';
 </script>
 
-<div class="flex justify-center mb-9">
+<div class="mb-9 flex justify-center">
 	<!-- <a
 		href="https://twitter.com/KuwanaHiroyuki"
 		target="_blank"

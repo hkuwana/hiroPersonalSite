@@ -1,20 +1,19 @@
-
 /*  declare a class which applies it */
 * {
-    font-family: "poppins";
+	font-family: 'poppins';
 }
 
 .poppins-bold {
-    font-family: "poppinsBold";
+	font-family: 'poppinsBold';
 }
 
 .layout {
-    display: flex;
-    justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 
 .surface {
-    background-color: #fafafa;
+	background-color: #fafafa;
 }
 
 /* * {
