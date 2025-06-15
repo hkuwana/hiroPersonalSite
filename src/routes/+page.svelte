@@ -97,7 +97,7 @@
 		<a
 			href={calLink}
 			target="_blank"
-			class="btn btn-outline btn-secondary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
+			class="btn btn-outline btn-primary btn-xs sm:btn-sm md:btn-md lg:btn-lg"
 			>Consultation Session</a
 		>
 	</div>
