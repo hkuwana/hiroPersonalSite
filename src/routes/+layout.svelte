@@ -1,6 +1,7 @@
 <script>
 	import Header from '../lib/components/header.svelte';
 	import '../style.css';
+	let { children } = $props();
 </script>
 
 <svelte:head>
@@ -10,11 +11,9 @@
 <div class="min-h-screen bg-orange-50">
 	<Header />
 
-	<main>
-		<slot />
-	</main>
+	{@render children()}
 
-	<footer class="footer footer-center p-4 bg-secondary text-base-content">
+	<footer class="footer footer-center bg-secondary text-base-content p-4">
 		<div>
 			<p>Copyright © 2025 - All right reserved by Hiro Kuwana</p>
 		</div>
