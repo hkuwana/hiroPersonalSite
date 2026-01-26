@@ -6,50 +6,75 @@
 	import QuoraIcon from '$lib/svg/socials-quora.svelte';
 </script>
 
-<div class="mb-9 flex justify-center">
-	<!-- <a
-		href="https://twitter.com/KuwanaHiroyuki"
-		target="_blank"
-		rel="noopener"
-		class="mr-9 text-gray-800"
-		title="Waive back to me on Twitter"
-	>
-		<TwitterIcon />
-	</a> -->
+<div class="socials">
 	<a
 		href="https://www.quora.com/profile/Hiro-Kuwana"
 		target="_blank"
 		rel="noopener"
-		class="mr-9 text-gray-800"
+		class="social-link"
 		title="Check my answers on Quora"
+		aria-label="Quora"
 	>
 		<QuoraIcon />
 	</a>
 	<a
-		class="mr-9 text-gray-800"
+		class="social-link"
 		href="https://www.linkedin.com/in/hiroyuki-kuwana/"
 		rel="noopener"
 		target="_blank"
 		title="Connect on LinkedIn"
+		aria-label="LinkedIn"
 	>
 		<LinkedInIcon />
 	</a>
 	<a
-		class="mr-9 text-gray-800"
+		class="social-link"
 		href="https://github.com/hkuwana"
 		target="_blank"
 		rel="noopener"
-		title="Check out my humble Github profile"
+		title="Check out my Github profile"
+		aria-label="GitHub"
 	>
 		<GitHubIcon />
 	</a>
 	<a
-		class=" text-gray-800"
+		class="social-link"
 		href="mailto:hiro@flybyrd.io"
 		target="_blank"
 		rel="noopener"
-		title="Send an email to hiro@flybyrd.io"
+		title="Send an email"
+		aria-label="Email"
 	>
 		<EmailIcon />
 	</a>
 </div>
+
+<style>
+	.socials {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	.social-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		color: var(--color-text-secondary);
+		border-radius: var(--radius-sm);
+		transition: all var(--duration-normal) var(--ease-out-expo);
+	}
+
+	.social-link:hover {
+		color: var(--color-text);
+		background: var(--color-bg-muted);
+		transform: translateY(-2px);
+	}
+
+	.social-link :global(svg) {
+		width: 20px;
+		height: 20px;
+	}
+</style>
