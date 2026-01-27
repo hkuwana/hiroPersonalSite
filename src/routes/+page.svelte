@@ -423,10 +423,21 @@
 					<p>I grew up in the US of A. I don't have a sense of humour. Please don't sue me.</p>
 				</div>
 			</div>
+
+			<!-- Hills to die on -->
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+				<input type="radio" name="faq-accordion" />
+				<div class="collapse-title font-medium text-primary">
+					What's a hill you will die on?
+				</div>
+				<div class="collapse-content text-base-content/70">
+					<p><em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces—no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read <em>The Brothers Karamazov</em>. It will change how you see the world.</p>
+				</div>
+			</div>
 		</div>
 
-		<p class="text-center mt-8 text-sm text-base-content/40">
-			If this site isn't serious enough for you, <a href="/corporate" class="underline hover:text-base-content/60">click here</a>.
+		<p class="text-center mt-8 text-sm text-base-content/70">
+			If this site isn't serious enough for you, <a href="/corporate" class="underline hover:text-base-content">click here</a>.
 		</p>
 	</div>
 </section>

@@ -20,7 +20,7 @@
 
 	<footer class="footer">
 		<div class="footer-content">
-			<p class="footer-text text-secondary">
+			<p class="footer-text text-secondary text-center w-full">
 				Made with care by Hiro Kuwana
 			</p>
 			<p class="footer-year text-base-content/50">

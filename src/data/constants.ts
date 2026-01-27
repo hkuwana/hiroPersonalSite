@@ -129,6 +129,11 @@ export const FAQS = [
 		answer: "I grew up in the US of A. I don't have a sense of humour. Please don't sue me.",
 	},
 	{
+		question: "What's a hill you will die on?",
+		answer:
+			"Cowboy Bebop and Paprika are masterpieces—no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read The Brothers Karamazov. It will change how you see the world.",
+	},
+	{
 		question: 'What is Hiro Kuwana working on?',
 		answer:
 			'Hiro Kuwana is currently focused on Kaiwa, an AI-powered language learning app that helps people practice languages through bite-sized conversations. Previously, he built Flybyrd (AI for venture capital) and Pebblr (nonprofit donor connections).',
