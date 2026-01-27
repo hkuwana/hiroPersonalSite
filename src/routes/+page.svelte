@@ -264,8 +264,8 @@
 						<!-- Header -->
 						<div class="flex justify-between items-start mb-3">
 							<div class="avatar">
-								<div class="w-12 h-12 rounded-lg bg-base-200 shadow-sm">
-									<img src={project.logo} alt="{project.name} logo" />
+								<div class="w-12 h-12 rounded-lg bg-white shadow-sm overflow-hidden">
+									<img src={project.logo} alt="{project.name} logo" class="w-full h-full object-contain" />
 								</div>
 							</div>
 							<div
@@ -277,9 +277,9 @@
 							</div>
 						</div>
 
-						<h3 class="card-title text-xl text-primary">{project.name}</h3>
-						<p class="text-accent text-sm font-medium">{project.tagline}</p>
-						<p class="text-base-content/70 text-sm leading-relaxed">{project.description}</p>
+						<h3 class="card-title text-xl text-neutral">{project.name}</h3>
+						<p class="text-primary text-sm font-medium">{project.tagline}</p>
+						<p class="text-neutral/70 text-sm leading-relaxed">{project.description}</p>
 
 						{#if project.link}
 							<div class="card-actions mt-4">
@@ -347,7 +347,7 @@
 		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-10 tracking-tight text-primary">
 			Frequently Asked Questions
 		</h2>
-		<p class="text-secondary text-center mb-8 text-sm">
+		<p class="text-base-content/70 text-center mb-8 text-sm">
 			Questions I get asked more than I'd like.
 		</p>
 
