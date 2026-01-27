@@ -134,7 +134,7 @@ export const FAQS = [
 			'Hiro Kuwana is currently focused on Kaiwa, an AI-powered language learning app that helps people practice languages through bite-sized conversations. Previously, he built Flybyrd (AI for venture capital) and Pebblr (nonprofit donor connections).',
 	},
 	{
-		question: 'What is Hiro Kuwana's background?',
+		question: "What is Hiro Kuwana's background?",
 		answer:
 			'Hiro Kuwana is a Japanese-American entrepreneur born in Japan and raised in the United States. He studied Environmental Engineering at Brown University and has lived across Spain, Estonia, and other countries. His global perspective shapes his work in democratizing education through AI.',
 	},
