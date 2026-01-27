@@ -389,6 +389,10 @@
 				</div>
 			</div>
 		</div>
+
+		<p class="text-center mt-8 text-sm text-base-content/40">
+			If this site isn't serious enough for you, <a href="/corporate" class="underline hover:text-base-content/60">click here</a>.
+		</p>
 	</div>
 </section>
 
