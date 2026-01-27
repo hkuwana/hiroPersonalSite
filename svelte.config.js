@@ -12,6 +12,9 @@ const config = {
 		adapter: adapter(),
 		paths: {
 			relative: false
+		},
+		alias: {
+			$data: 'src/data'
 		}
 	},
 	extensions: ['.svelte', '.svx', '.md']
