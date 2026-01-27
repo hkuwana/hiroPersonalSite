@@ -43,7 +43,7 @@
 	}
 
 	.footer {
-		padding: 3rem 2rem;
+		padding: 2.5rem 2rem;
 		text-align: center;
 		border-top: 1px solid var(--color-border);
 		background: var(--color-bg-subtle);
@@ -53,17 +53,25 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.375rem;
 	}
 
 	.footer-text {
-		font-size: 0.875rem;
+		font-size: 0.8125rem;
 		color: var(--color-text-secondary);
 		font-weight: 500;
+		letter-spacing: -0.01em;
 	}
 
 	.footer-year {
-		font-size: 0.75rem;
+		font-size: 0.6875rem;
 		color: var(--color-text-tertiary);
+		letter-spacing: 0.02em;
+	}
+
+	@media (max-width: 640px) {
+		.footer {
+			padding: 2rem 1.5rem;
+		}
 	}
 </style>
