@@ -38,11 +38,10 @@
 		{
 			name: 'Flybyrd',
 			tagline: 'AI for Venture Capital',
-			description: 'Helping VCs discover and analyze startups with AI-powered deal flow analysis. Making investment decisions faster and more data-driven.',
-			link: 'https://www.flybyrd.io',
+			description: 'Helped VCs discover and analyze startups with AI-powered deal flow analysis. Sunset to focus on new opportunities.',
 			logo: `${base}/flybyrd_logo.png`,
-			status: 'current',
-			color: '#10b981'
+			status: 'sunset',
+			color: '#6b7280'
 		},
 		{
 			name: 'Kaiwa',
@@ -50,8 +49,8 @@
 			description: 'Practice languages through bite-sized AI conversations. Real-time translations, social streaks, and 30-second daily sessions.',
 			link: 'https://www.trykaiwa.com/',
 			logo: `${base}/kaiwa_logo.png`,
-			status: 'active',
-			color: '#8b5cf6'
+			status: 'current',
+			color: '#10b981'
 		},
 		{
 			name: 'Pebblr',
@@ -68,7 +67,7 @@
 	<title>Hiro Kuwana - AI Entrepreneur & Founder | Democratizing Education Through Technology</title>
 	<meta
 		name="description"
-		content="Hiro Kuwana is a tech entrepreneur building AI solutions to democratize education and empower human potential. Founder of Flybyrd (VC deal analysis) and Kaiwa (AI language learning). Making premium tools accessible to everyone."
+		content="Hiro Kuwana is a tech entrepreneur building AI solutions to democratize education and empower human potential. Founder of Kaiwa (AI language learning). Making premium tools accessible to everyone."
 	/>
 	<meta
 		name="keywords"
@@ -86,7 +85,7 @@
 	/>
 	<meta
 		property="og:description"
-		content="Tech entrepreneur building AI solutions to democratize education and empower human potential. Founder of Flybyrd and Kaiwa."
+		content="Tech entrepreneur building AI solutions to democratize education and empower human potential. Founder of Kaiwa."
 	/>
 	<meta property="og:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
 	<meta property="og:site_name" content="Hiro Kuwana" />
@@ -97,7 +96,7 @@
 	<meta property="twitter:title" content="Hiro Kuwana - AI Entrepreneur & Founder" />
 	<meta
 		property="twitter:description"
-		content="Building AI solutions to democratize education and empower human potential. Founder of Flybyrd and Kaiwa."
+		content="Building AI solutions to democratize education and empower human potential. Founder of Kaiwa."
 	/>
 	<meta property="twitter:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
 
@@ -118,7 +117,7 @@
 			"jobTitle": "Founder & CEO",
 			"worksFor": {
 				"@type": "Organization",
-				"name": "Flybyrd"
+				"name": "Kaiwa"
 			},
 			"alumniOf": {
 				"@type": "EducationalOrganization",
@@ -132,7 +131,7 @@
 				"Language Learning",
 				"Startup Development"
 			],
-			"sameAs": ["https://www.flybyrd.io", "https://www.trykaiwa.com"]
+			"sameAs": ["https://www.trykaiwa.com"]
 		}
 	</script>
 </svelte:head>
