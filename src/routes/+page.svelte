@@ -297,6 +297,96 @@
 	</div>
 </section>
 
+<!-- FAQ Section -->
+<section
+	class="section-animate py-24 md:py-28 px-8 bg-base-200/50"
+	bind:this={sections[3]}
+	class:visible={visibleSections.has(3)}
+>
+	<div class="max-w-2xl mx-auto">
+		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-10 tracking-tight">
+			Frequently Asked Questions
+		</h2>
+		<p class="text-base-content/60 text-center mb-8 text-sm">
+			Things people ask me at parties. Yes, I'm fun at parties. No, I won't prove it.
+		</p>
+
+		<div class="space-y-3">
+			<!-- AI Hot Take -->
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+				<input type="radio" name="faq-accordion" />
+				<div class="collapse-title font-medium">
+					Will AI take over the world?
+				</div>
+				<div class="collapse-content text-base-content/70">
+					<p>No. But I do worry about how it will either force us to sharpen our critical thinking or make us complacent. In many ways, it's like <em>Up</em> or <em>Brave New World</em> — the question isn't whether AI will control us, but whether we'll choose comfort over growth.</p>
+				</div>
+			</div>
+
+			<!-- Japan -->
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+				<input type="radio" name="faq-accordion" />
+				<div class="collapse-title font-medium">
+					Is Japan perfect? Do you watch anime?
+				</div>
+				<div class="collapse-content text-base-content/70">
+					<p><strong>No</strong>, Japan is not a perfect country without flaws. And <strong>yes</strong>, I watch anime — <em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces. I will die on this hill.</p>
+				</div>
+			</div>
+
+			<!-- Coffee vs Tea -->
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+				<input type="radio" name="faq-accordion" />
+				<div class="collapse-title font-medium">
+					Coffee or tea?
+				</div>
+				<div class="collapse-content text-base-content/70">
+					<p>Tea. Green tea specifically. And I'm willing to change your mind on this — most green tea in the US is awful <em>*cough cough Lipton*</em>. Try the real stuff and we'll talk.</p>
+				</div>
+			</div>
+
+			<!-- Background surprise -->
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+				<input type="radio" name="faq-accordion" />
+				<div class="collapse-title font-medium">
+					Wait, you studied Environmental Engineering?
+				</div>
+				<div class="collapse-content text-base-content/70">
+					<p>Yes. My advisor once said, <em>"Now that you have a degree, I'm honestly surprised you became an engineer."</em> I also did conservation work in Maui helping maintain Waikamoi Preserve — one of the wettest places in the world. Somehow it stayed that way even with my dry humor.</p>
+				</div>
+			</div>
+
+			<!-- Fun facts -->
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+				<input type="radio" name="faq-accordion" />
+				<div class="collapse-title font-medium">
+					Tell me something weird about you
+				</div>
+				<div class="collapse-content text-base-content/70">
+					<ul class="list-disc list-inside space-y-2">
+						<li>I can snap on any surface. Tables, walls, my own face. It's a gift.</li>
+						<li>I beat Total War: Shogun 2 on Legendary as the Tsu faction (the independent republic). If you know, you know.</li>
+						<li>I send postcards to friends around the world. DM me your address, I'm serious.</li>
+						<li>My dream is to make enough friends globally that I always have a couch to crash on.</li>
+						<li>I can only count to three the German way. My hands physically refuse to do it any other way.</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- Legal disclaimer joke -->
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+				<input type="radio" name="faq-accordion" />
+				<div class="collapse-title font-medium">
+					Are you funny?
+				</div>
+				<div class="collapse-content text-base-content/70">
+					<p>I don't have a sense of humor I can type out. Please don't sue me.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
 <style>
 	/* Hero animation states */
 	.hero {
