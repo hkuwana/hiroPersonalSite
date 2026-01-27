@@ -313,7 +313,7 @@
 			Frequently Asked Questions
 		</h2>
 		<p class="text-base-content/60 text-center mb-8 text-sm">
-			Things people ask me at parties. Yes, I'm fun at parties. No, I won't prove it.
+			Questions I get asked more than I'd like.
 		</p>
 
 		<div class="space-y-3">
@@ -385,7 +385,7 @@
 					Are you funny?
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p>I don't have a sense of humor I can type out. Please don't sue me.</p>
+					<p>I grew up in the US of A. I don't have a sense of humour. Please don't sue me.</p>
 				</div>
 			</div>
 		</div>
