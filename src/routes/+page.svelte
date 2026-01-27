@@ -14,6 +14,11 @@
 	let visibleSections = new Set<number>();
 
 	onMount(() => {
+		// Easter egg for curious developers
+		console.log('%c👋 Hey there, curious one!', 'font-size: 16px; font-weight: bold;');
+		console.log('%cWhile you\'re here, reach out if you\'re curious about how I built this: hiro@trykaiwa.com', 'font-size: 12px;');
+		console.log('%cI\'m not a T-1000. Look away... now.', 'font-size: 12px; color: gray;');
+
 		const observer = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((entry) => {
@@ -269,7 +274,7 @@
 
 		<div class="text-left space-y-5">
 			<p class="text-base-content/70 text-lg leading-relaxed">
-				<strong class="text-base-content font-semibold">Born in Japan, raised in the U.S.</strong> — I've lived across Spain, Estonia, and beyond.
+				<strong class="text-base-content font-semibold">Born in Japan, raised in the U.S.</strong> I've lived across Spain, Estonia, and beyond.
 				This global perspective shapes everything I build.
 			</p>
 
@@ -279,7 +284,7 @@
 			</p>
 
 			<p class="text-base-content/70 text-lg leading-relaxed">
-				I believe AI should be humanity's great equalizer — the tutors, advisors, and assistants
+				I believe AI should be humanity's great equalizer: the tutors, advisors, and assistants
 				once reserved for the privileged few should be available to all.
 			</p>
 
@@ -319,7 +324,7 @@
 					Will AI take over the world?
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p>No. But I do worry about how it will either force us to sharpen our critical thinking or make us complacent. In many ways, it's like <em>Up</em> or <em>Brave New World</em> — the question isn't whether AI will control us, but whether we'll choose comfort over growth.</p>
+					<p>No. But I do worry about how it will either force us to sharpen our critical thinking or make us complacent. In many ways, it's like <em>Up</em> or <em>Brave New World</em>. The question isn't whether AI will control us, but whether we'll choose comfort over growth.</p>
 				</div>
 			</div>
 
@@ -330,7 +335,7 @@
 					Is Japan perfect? Do you watch anime?
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p><strong>No</strong>, Japan is not a perfect country without flaws. And <strong>yes</strong>, I watch anime — <em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces. I will die on this hill.</p>
+					<p><strong>No</strong>, Japan is not a perfect country without flaws. And <strong>yes</strong>, I watch anime. <em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces. I will die on this hill.</p>
 				</div>
 			</div>
 
@@ -341,7 +346,7 @@
 					Coffee or tea?
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p>Tea. Green tea specifically. And I'm willing to change your mind on this — most green tea in the US is awful <em>*cough cough Lipton*</em>. Try the real stuff and we'll talk.</p>
+					<p>Tea. Green tea specifically. And I'm willing to change your mind on this; most green tea in the US is awful (<em>cough cough Lipton</em>). Try the real stuff and we'll talk.</p>
 				</div>
 			</div>
 
@@ -352,7 +357,7 @@
 					Wait, you studied Environmental Engineering?
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p>Yes. My advisor once said, <em>"Now that you have a degree, I'm honestly surprised you became an engineer."</em> I also did conservation work in Maui helping maintain Waikamoi Preserve — one of the wettest places in the world. Somehow it stayed that way even with my dry humor.</p>
+					<p>Yes. My advisor once said, <em>"Now that you have a degree, I'm honestly surprised you became an engineer."</em> I also did conservation work in Maui helping maintain Waikamoi Preserve (one of the wettest places in the world). Somehow it stayed that way even with my dry humor.</p>
 				</div>
 			</div>
 
