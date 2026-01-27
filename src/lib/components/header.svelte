@@ -6,11 +6,11 @@
 <header class="header">
 	<div class="header-inner">
 		<nav class="nav">
-			<a href="/" class="nav-link" class:active={$page.url.pathname === '/'}>
+			<a href="/" class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname === '/'}>
 				Home
 			</a>
 			<span class="nav-divider"></span>
-			<a href="/essays" class="nav-link" class:active={$page.url.pathname.startsWith('/essays')}>
+			<a href="/essays" class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/essays')}>
 				Essays
 			</a>
 		</nav>

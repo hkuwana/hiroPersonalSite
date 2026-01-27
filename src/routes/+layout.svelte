@@ -20,10 +20,10 @@
 
 	<footer class="footer">
 		<div class="footer-content">
-			<p class="footer-text">
+			<p class="footer-text text-secondary">
 				Made with care by Hiro Kuwana
 			</p>
-			<p class="footer-year">
+			<p class="footer-year text-base-content/50">
 				{new Date().getFullYear()}
 			</p>
 		</div>

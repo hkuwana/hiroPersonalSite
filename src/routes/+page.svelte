@@ -205,7 +205,7 @@
 
 		<!-- Hero Text -->
 		<div class="flex flex-col items-center gap-3.5">
-			<h1 class="text-4xl sm:text-5xl font-bold tracking-tight animate-fade-in-up">
+			<h1 class="text-4xl sm:text-5xl font-bold tracking-tight animate-fade-in-up text-primary">
 				{PERSONAL.displayName}
 			</h1>
 
@@ -250,7 +250,7 @@
 	class:visible={visibleSections.has(1)}
 >
 	<div class="max-w-5xl mx-auto">
-		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-12 tracking-tight">
+		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-12 tracking-tight text-primary">
 			What I'm Building
 		</h2>
 
@@ -277,8 +277,8 @@
 							</div>
 						</div>
 
-						<h3 class="card-title text-xl">{project.name}</h3>
-						<p class="text-primary text-sm font-medium">{project.tagline}</p>
+						<h3 class="card-title text-xl text-primary">{project.name}</h3>
+						<p class="text-accent text-sm font-medium">{project.tagline}</p>
 						<p class="text-base-content/70 text-sm leading-relaxed">{project.description}</p>
 
 						{#if project.link}
@@ -305,7 +305,7 @@
 	class:visible={visibleSections.has(2)}
 >
 	<div class="max-w-2xl mx-auto text-center">
-		<h2 class="text-2xl md:text-3xl font-semibold mb-10 tracking-tight">The Story</h2>
+		<h2 class="text-2xl md:text-3xl font-semibold mb-10 tracking-tight text-primary">The Story</h2>
 
 		<div class="text-left space-y-5">
 			<p class="text-base-content/70 text-lg leading-relaxed">
@@ -315,7 +315,7 @@
 
 			<p class="text-base-content/70 text-lg leading-relaxed">
 				After studying Environmental Engineering at Brown, I discovered my real passion:
-				<em class="text-primary not-italic font-medium">making powerful tools accessible to everyone</em>.
+				<em class="text-accent not-italic font-medium">making powerful tools accessible to everyone</em>.
 			</p>
 
 			<p class="text-base-content/70 text-lg leading-relaxed">
@@ -325,7 +325,7 @@
 
 			<blockquote class="py-8 text-center">
 				<div class="w-12 h-0.5 bg-gradient-to-r from-primary to-secondary mx-auto mb-6 rounded-full"></div>
-				<p class="text-xl md:text-2xl font-medium italic tracking-tight">
+				<p class="text-xl md:text-2xl font-medium italic tracking-tight text-primary">
 					"AI as the glider for everyone's mind."
 				</p>
 			</blockquote>
@@ -344,10 +344,10 @@
 	class:visible={visibleSections.has(3)}
 >
 	<div class="max-w-2xl mx-auto">
-		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-10 tracking-tight">
+		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-10 tracking-tight text-primary">
 			Frequently Asked Questions
 		</h2>
-		<p class="text-base-content/60 text-center mb-8 text-sm">
+		<p class="text-secondary text-center mb-8 text-sm">
 			Questions I get asked more than I'd like.
 		</p>
 
@@ -355,7 +355,7 @@
 			<!-- AI Hot Take -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
 				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium">
+				<div class="collapse-title font-medium text-primary">
 					Will AI take over the world?
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -366,7 +366,7 @@
 			<!-- Japan -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
 				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium">
+				<div class="collapse-title font-medium text-primary">
 					Is Japan perfect? Do you watch anime?
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -377,7 +377,7 @@
 			<!-- Coffee vs Tea -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
 				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium">
+				<div class="collapse-title font-medium text-primary">
 					Coffee or tea?
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -388,7 +388,7 @@
 			<!-- Background surprise -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
 				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium">
+				<div class="collapse-title font-medium text-primary">
 					Wait, you studied Environmental Engineering?
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -399,7 +399,7 @@
 			<!-- Fun facts -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
 				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium">
+				<div class="collapse-title font-medium text-primary">
 					Tell me something weird about you
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -416,7 +416,7 @@
 			<!-- Legal disclaimer joke -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
 				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium">
+				<div class="collapse-title font-medium text-primary">
 					Are you funny?
 				</div>
 				<div class="collapse-content text-base-content/70">
