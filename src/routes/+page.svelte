@@ -218,11 +218,7 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 			{#each projects as project, i}
 				<div
-					class="card bg-base-100 border border-base-300 hover:border-transparent hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-					class:border-success/20={project.status === 'current'}
-					class:bg-gradient-to-b={project.status === 'current'}
-					class:from-success/5={project.status === 'current'}
-					class:to-base-100={project.status === 'current'}
+					class="card bg-base-100 border hover:border-transparent hover:shadow-xl hover:-translate-y-1 transition-all duration-300 {project.status === 'current' ? 'border-success/20 bg-gradient-to-b from-success/5 to-base-100' : 'border-base-300'}"
 					style="animation-delay: {i * 0.1}s"
 				>
 					<div class="card-body">
