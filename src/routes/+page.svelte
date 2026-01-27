@@ -137,44 +137,52 @@
 </svelte:head>
 
 <!-- Hero Section -->
-<section class="hero" bind:this={sections[0]} class:visible={visibleSections.has(0)}>
-	<div class="hero-content">
+<section
+	class="hero relative min-h-[calc(100vh-80px)] flex items-center justify-center px-8 py-20 md:py-24 bg-base-100"
+	bind:this={sections[0]}
+	class:visible={visibleSections.has(0)}
+>
+	<div class="flex flex-col items-center text-center gap-10 md:gap-11 max-w-xl">
+		<!-- Avatar -->
 		<div
-			class="avatar-wrapper"
+			class="avatar relative cursor-pointer"
 			on:mouseenter={() => (profileHovered = true)}
 			on:mouseleave={() => (profileHovered = false)}
 			role="img"
 			aria-label="Hiro Kuwana profile photo"
 		>
 			<div class="avatar-glow" class:active={profileHovered}></div>
-			<img
-				src={hiroProfile}
-				alt="Hiro Kuwana"
-				class="avatar-image"
+			<div class="w-40 h-40 md:w-44 md:h-44 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-xl transition-all duration-500 ease-out"
 				class:float={profileHovered}
-			/>
+			>
+				<img src={hiroProfile} alt="Hiro Kuwana" />
+			</div>
 		</div>
 
-		<div class="hero-text">
-			<h1 class="name animate-fade-in-up">Hiro Kuwana</h1>
+		<!-- Hero Text -->
+		<div class="flex flex-col items-center gap-3.5">
+			<h1 class="text-4xl sm:text-5xl font-bold tracking-tight animate-fade-in-up">
+				Hiro Kuwana
+			</h1>
+
 			<button
-				class="japanese-name animate-fade-in-up delay-1"
+				class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1"
 				on:click={() => (showMeaning = !showMeaning)}
 				aria-expanded={showMeaning}
 			>
-				<span class="kanji">桑名 浩行</span>
+				<span class="text-base font-medium tracking-wide">桑名 浩行</span>
 				{#if showMeaning}
-					<span class="meaning">くわな ひろゆき</span>
+					<span class="text-sm text-primary italic font-medium">くわな ひろゆき</span>
 				{:else}
-					<span class="hint">click me</span>
+					<span class="text-xs text-base-content/50 uppercase tracking-widest font-medium">click me</span>
 				{/if}
 			</button>
 
-			<p class="tagline animate-fade-in-up delay-2">
+			<p class="text-base-content/70 text-lg max-w-sm mt-1 leading-relaxed animate-fade-in-up delay-2">
 				Building AI as a tool for humanity, not a replacement
 			</p>
 
-			<a href={calLink} target="_blank" class="btn btn-primary animate-fade-in-up delay-3">
+			<a href={calLink} target="_blank" class="btn btn-primary mt-5 gap-2 animate-fade-in-up delay-3">
 				Let's Talk
 				<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 					<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -184,103 +192,117 @@
 	</div>
 
 	<!-- Scroll Indicator -->
-	<div class="scroll-indicator animate-fade-in-up delay-4">
-		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="bounce">
+	<div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-base-content/40 hover:text-base-content/70 transition-colors animate-fade-in-up delay-4">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="animate-bounce">
 			<path d="M12 5V19M12 19L5 12M12 19L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 		</svg>
 	</div>
 </section>
 
 <!-- Projects Section -->
-<section class="projects-section" bind:this={sections[1]} class:visible={visibleSections.has(1)}>
-	<div class="section-container">
-		<h2 class="section-title">What I'm Building</h2>
+<section
+	class="section-animate py-24 md:py-28 px-8 bg-base-200/50"
+	bind:this={sections[1]}
+	class:visible={visibleSections.has(1)}
+>
+	<div class="max-w-5xl mx-auto">
+		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-12 tracking-tight">
+			What I'm Building
+		</h2>
 
-		<div class="projects-grid">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 			{#each projects as project, i}
-				<article
-					class="project-card"
-					class:current={project.status === 'current'}
-					style="--delay: {i * 0.1}s"
+				<div
+					class="card bg-base-100 border border-base-300 hover:border-transparent hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+					class:border-success/20={project.status === 'current'}
+					class:bg-gradient-to-b={project.status === 'current'}
+					class:from-success/5={project.status === 'current'}
+					class:to-base-100={project.status === 'current'}
+					style="animation-delay: {i * 0.1}s"
 				>
-					<div class="project-header">
-						<div class="project-logo">
-							<img src={project.logo} alt="{project.name} logo" />
+					<div class="card-body">
+						<!-- Header -->
+						<div class="flex justify-between items-start mb-3">
+							<div class="avatar">
+								<div class="w-12 h-12 rounded-lg bg-base-200 shadow-sm">
+									<img src={project.logo} alt="{project.name} logo" />
+								</div>
+							</div>
+							<div
+								class="badge badge-sm font-semibold uppercase tracking-wide"
+								class:badge-success={project.status === 'current'}
+								class:badge-ghost={project.status !== 'current'}
+							>
+								{project.status === 'current' ? 'Current Focus' : project.status === 'sunset' ? 'Sunset' : 'Active'}
+							</div>
 						</div>
-						<div class="project-status" class:current={project.status === 'current'} class:sunset={project.status === 'sunset'}>
-							{project.status === 'current' ? 'Current Focus' : project.status === 'sunset' ? 'Sunset' : 'Active'}
-						</div>
+
+						<h3 class="card-title text-xl">{project.name}</h3>
+						<p class="text-primary text-sm font-medium">{project.tagline}</p>
+						<p class="text-base-content/70 text-sm leading-relaxed">{project.description}</p>
+
+						{#if project.link}
+							<div class="card-actions mt-4">
+								<a href={project.link} target="_blank" rel="noopener" class="link link-primary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
+									Visit {project.name}
+									<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+										<path d="M4.5 11.5L11.5 4.5M11.5 4.5H6M11.5 4.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+									</svg>
+								</a>
+							</div>
+						{/if}
 					</div>
-
-					<h3 class="project-name">{project.name}</h3>
-					<p class="project-tagline">{project.tagline}</p>
-					<p class="project-description">{project.description}</p>
-
-					{#if project.link}
-						<a href={project.link} target="_blank" rel="noopener" class="project-link">
-							Visit {project.name}
-							<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-								<path d="M4.5 11.5L11.5 4.5M11.5 4.5H6M11.5 4.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
-						</a>
-					{/if}
-				</article>
+				</div>
 			{/each}
 		</div>
 	</div>
 </section>
 
 <!-- Bio Section -->
-<section class="bio-section" bind:this={sections[2]} class:visible={visibleSections.has(2)}>
-	<div class="bio-container">
-		<h2 class="bio-title">The Story</h2>
+<section
+	class="section-animate py-24 md:py-28 px-8 bg-base-100"
+	bind:this={sections[2]}
+	class:visible={visibleSections.has(2)}
+>
+	<div class="max-w-2xl mx-auto text-center">
+		<h2 class="text-2xl md:text-3xl font-semibold mb-10 tracking-tight">The Story</h2>
 
-		<div class="bio-content">
-			<p>
-				<strong>Born in Japan, raised in the U.S.</strong> — I've lived across Spain, Estonia, and beyond.
+		<div class="text-left space-y-5">
+			<p class="text-base-content/70 text-lg leading-relaxed">
+				<strong class="text-base-content font-semibold">Born in Japan, raised in the U.S.</strong> — I've lived across Spain, Estonia, and beyond.
 				This global perspective shapes everything I build.
 			</p>
 
-			<p>
+			<p class="text-base-content/70 text-lg leading-relaxed">
 				After studying Environmental Engineering at Brown, I discovered my real passion:
-				<em>making powerful tools accessible to everyone</em>.
+				<em class="text-primary not-italic font-medium">making powerful tools accessible to everyone</em>.
 			</p>
 
-			<p>
+			<p class="text-base-content/70 text-lg leading-relaxed">
 				I believe AI should be humanity's great equalizer — the tutors, advisors, and assistants
 				once reserved for the privileged few should be available to all.
 			</p>
 
-			<blockquote>
-				"AI as the glider for everyone's mind."
+			<blockquote class="py-8 text-center">
+				<div class="w-12 h-0.5 bg-gradient-to-r from-primary to-secondary mx-auto mb-6 rounded-full"></div>
+				<p class="text-xl md:text-2xl font-medium italic tracking-tight">
+					"AI as the glider for everyone's mind."
+				</p>
 			</blockquote>
 		</div>
 
-		<a href={calLink} target="_blank" class="bio-cta">
+		<a href={calLink} target="_blank" class="btn btn-outline btn-primary mt-8">
 			Schedule a conversation
 		</a>
 	</div>
 </section>
 
 <style>
-	/* ==========================================
-	   HERO SECTION
-	   Johnny Ive-inspired minimal design
-	   ========================================== */
+	/* Hero animation states */
 	.hero {
-		position: relative;
-		min-height: calc(100vh - 80px);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 5rem 2rem;
-		background:
-			radial-gradient(ellipse 80% 60% at 50% -30%, rgba(0, 113, 227, 0.03), transparent),
-			radial-gradient(ellipse 60% 40% at 80% 0%, rgba(88, 86, 214, 0.02), transparent),
-			var(--color-bg);
 		opacity: 0;
 		transform: translateY(16px);
-		transition: all 0.7s var(--ease-out-expo);
+		transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.hero.visible {
@@ -288,21 +310,19 @@
 		transform: translateY(0);
 	}
 
-	.hero-content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		gap: 2.5rem;
-		max-width: 560px;
+	/* Section animation states */
+	.section-animate {
+		opacity: 0;
+		transform: translateY(20px);
+		transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	/* Avatar - Refined with subtle depth */
-	.avatar-wrapper {
-		position: relative;
-		cursor: pointer;
+	.section-animate.visible {
+		opacity: 1;
+		transform: translateY(0);
 	}
 
+	/* Avatar glow effect */
 	.avatar-glow {
 		position: absolute;
 		inset: -12px;
@@ -310,7 +330,7 @@
 		background: linear-gradient(135deg, rgba(0, 113, 227, 0.3) 0%, rgba(88, 86, 214, 0.3) 100%);
 		opacity: 0;
 		filter: blur(24px);
-		transition: opacity 0.6s var(--ease-out-expo);
+		transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 		z-index: 0;
 	}
 
@@ -318,542 +338,8 @@
 		opacity: 0.5;
 	}
 
-	.avatar-image {
-		position: relative;
-		width: 160px;
-		height: 160px;
-		border-radius: 50%;
-		object-fit: cover;
-		border: 3px solid white;
-		box-shadow:
-			0 4px 12px rgba(0, 0, 0, 0.08),
-			0 12px 40px rgba(0, 0, 0, 0.12);
-		transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s var(--ease-out-expo);
-		z-index: 1;
-	}
-
-	.avatar-image.float {
+	/* Float animation on avatar hover */
+	.float {
 		transform: translateY(-6px) scale(1.02);
-		box-shadow:
-			0 8px 20px rgba(0, 0, 0, 0.1),
-			0 20px 50px rgba(0, 0, 0, 0.15);
-	}
-
-	/* Hero Text - Refined typography */
-	.hero-text {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.875rem;
-	}
-
-	.name {
-		font-size: clamp(2.5rem, 7vw, 3.25rem);
-		font-weight: 700;
-		color: var(--color-text);
-		letter-spacing: -0.035em;
-		margin: 0;
-		line-height: 1.1;
-	}
-
-	.japanese-name {
-		display: flex;
-		align-items: center;
-		gap: 0.625rem;
-		padding: 0.5rem 1rem;
-		background: var(--color-bg-muted);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-full);
-		cursor: pointer;
-		transition: all var(--duration-normal) var(--ease-out-expo);
-		font-family: inherit;
-	}
-
-	.japanese-name:hover {
-		background: var(--color-bg-subtle);
-		border-color: var(--color-border-hover);
-		transform: translateY(-1px);
-	}
-
-	.japanese-name:active {
-		transform: scale(0.98);
-	}
-
-	.kanji {
-		font-size: 1rem;
-		color: var(--color-text);
-		font-weight: 500;
-		letter-spacing: 0.02em;
-	}
-
-	.meaning {
-		font-size: 0.8125rem;
-		color: var(--color-accent);
-		font-style: italic;
-		font-weight: 500;
-	}
-
-	.hint {
-		font-size: 0.625rem;
-		color: var(--color-text-tertiary);
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		font-weight: 500;
-	}
-
-	.tagline {
-		font-size: 1.0625rem;
-		color: var(--color-text-secondary);
-		max-width: 380px;
-		margin: 0.25rem 0 0;
-		line-height: 1.5;
-		letter-spacing: -0.01em;
-	}
-
-	.cta-button {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		margin-top: 1.25rem;
-		padding: 0.8125rem 1.625rem;
-		font-size: 0.9375rem;
-		font-weight: 500;
-		letter-spacing: -0.01em;
-		color: white;
-		background: var(--color-accent);
-		border-radius: var(--radius-full);
-		text-decoration: none;
-		transition: all var(--duration-normal) var(--ease-out-expo);
-		position: relative;
-		overflow: hidden;
-	}
-
-	.cta-button::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
-		opacity: 0;
-		transition: opacity var(--duration-fast);
-	}
-
-	.cta-button:hover {
-		background: var(--color-accent-hover);
-		transform: translateY(-1px);
-		box-shadow: 0 4px 16px rgba(0, 113, 227, 0.25), 0 2px 6px rgba(0, 113, 227, 0.15);
-	}
-
-	.cta-button:hover::before {
-		opacity: 1;
-	}
-
-	.cta-button:active {
-		transform: translateY(0) scale(0.98);
-	}
-
-	.cta-button svg {
-		transition: transform var(--duration-normal) var(--ease-out-expo);
-	}
-
-	.cta-button:hover svg {
-		transform: translateX(3px);
-	}
-
-	/* Scroll Indicator */
-	.scroll-indicator {
-		position: absolute;
-		bottom: 2rem;
-		left: 50%;
-		transform: translateX(-50%);
-		color: var(--color-text-tertiary);
-		opacity: 0.6;
-		transition: opacity var(--duration-normal);
-	}
-
-	.scroll-indicator:hover {
-		opacity: 1;
-	}
-
-	.scroll-indicator .bounce {
-		animation: bounce 2s infinite;
-	}
-
-	@keyframes bounce {
-		0%, 20%, 50%, 80%, 100% {
-			transform: translateY(0);
-		}
-		40% {
-			transform: translateY(-8px);
-		}
-		60% {
-			transform: translateY(-4px);
-		}
-	}
-
-	/* ==========================================
-	   PROJECTS SECTION
-	   Clean, minimal project cards
-	   ========================================== */
-	.projects-section {
-		padding: 6rem 2rem 7rem;
-		background: var(--color-bg-subtle);
-		opacity: 0;
-		transform: translateY(20px);
-		transition: all 0.7s var(--ease-out-expo);
-	}
-
-	.projects-section.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	.section-container {
-		max-width: 1080px;
-		margin: 0 auto;
-	}
-
-	.section-title {
-		font-size: 1.75rem;
-		font-weight: 600;
-		text-align: center;
-		margin-bottom: 3rem;
-		color: var(--color-text);
-		letter-spacing: -0.025em;
-	}
-
-	.projects-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-		gap: 1.25rem;
-	}
-
-	.project-card {
-		background: var(--color-bg);
-		border-radius: var(--radius-xl);
-		padding: 1.75rem;
-		border: 1px solid var(--color-border);
-		transition: all 0.4s var(--ease-out-expo);
-		transition-delay: var(--delay);
-		position: relative;
-	}
-
-	.project-card::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		border-radius: inherit;
-		background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.015) 100%);
-		pointer-events: none;
-		opacity: 0;
-		transition: opacity var(--duration-normal);
-	}
-
-	.project-card:hover {
-		transform: translateY(-4px);
-		box-shadow:
-			0 10px 30px rgba(0, 0, 0, 0.06),
-			0 4px 12px rgba(0, 0, 0, 0.04);
-		border-color: transparent;
-	}
-
-	.project-card:hover::before {
-		opacity: 1;
-	}
-
-	.project-card.current {
-		border-color: rgba(52, 199, 89, 0.2);
-		background: linear-gradient(180deg, rgba(52, 199, 89, 0.02) 0%, var(--color-bg) 100%);
-	}
-
-	.project-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 1.25rem;
-	}
-
-	.project-logo {
-		width: 48px;
-		height: 48px;
-		border-radius: var(--radius-sm);
-		overflow: hidden;
-		background: var(--color-bg-muted);
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-	}
-
-	.project-logo img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-
-	.project-status {
-		font-size: 0.625rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		padding: 0.3125rem 0.625rem;
-		border-radius: var(--radius-full);
-		background: var(--color-bg-muted);
-		color: var(--color-text-tertiary);
-	}
-
-	.project-status.current {
-		background: rgba(52, 199, 89, 0.1);
-		color: #059669;
-	}
-
-	.project-status.sunset {
-		background: rgba(134, 134, 139, 0.1);
-		color: var(--color-text-tertiary);
-	}
-
-	.project-name {
-		font-size: 1.375rem;
-		font-weight: 600;
-		margin: 0 0 0.25rem;
-		color: var(--color-text);
-		letter-spacing: -0.02em;
-	}
-
-	.project-tagline {
-		font-size: 0.875rem;
-		color: var(--color-accent);
-		margin: 0 0 0.875rem;
-		font-weight: 500;
-		letter-spacing: -0.01em;
-	}
-
-	.project-description {
-		font-size: 0.9375rem;
-		color: var(--color-text-secondary);
-		line-height: 1.6;
-		margin: 0 0 1.25rem;
-		letter-spacing: -0.01em;
-	}
-
-	.project-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.375rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		color: var(--color-accent);
-		text-decoration: none;
-		transition: all var(--duration-fast) var(--ease-out-quart);
-	}
-
-	.project-link:hover {
-		gap: 0.5rem;
-	}
-
-	.project-link svg {
-		transition: transform var(--duration-fast) var(--ease-out-quart);
-	}
-
-	.project-link:hover svg {
-		transform: translate(2px, -2px);
-	}
-
-	/* ==========================================
-	   BIO SECTION
-	   Refined storytelling typography
-	   ========================================== */
-	.bio-section {
-		padding: 6rem 2rem 7rem;
-		background: var(--color-bg);
-		opacity: 0;
-		transform: translateY(20px);
-		transition: all 0.7s var(--ease-out-expo);
-	}
-
-	.bio-section.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	.bio-container {
-		max-width: 640px;
-		margin: 0 auto;
-		text-align: center;
-	}
-
-	.bio-title {
-		font-size: 1.75rem;
-		font-weight: 600;
-		margin-bottom: 2.5rem;
-		color: var(--color-text);
-		letter-spacing: -0.025em;
-	}
-
-	.bio-content {
-		text-align: left;
-	}
-
-	.bio-content p {
-		font-size: 1.0625rem;
-		color: var(--color-text-secondary);
-		line-height: 1.75;
-		margin: 0 0 1.375rem;
-		letter-spacing: -0.01em;
-	}
-
-	.bio-content strong {
-		color: var(--color-text);
-		font-weight: 600;
-	}
-
-	.bio-content em {
-		color: var(--color-accent);
-		font-style: normal;
-		font-weight: 500;
-	}
-
-	.bio-content blockquote {
-		font-size: 1.375rem;
-		font-weight: 500;
-		color: var(--color-text);
-		margin: 2.5rem 0;
-		padding: 0;
-		text-align: center;
-		font-style: italic;
-		position: relative;
-		letter-spacing: -0.02em;
-		line-height: 1.4;
-	}
-
-	.bio-content blockquote::before {
-		content: '';
-		display: block;
-		width: 48px;
-		height: 2px;
-		background: linear-gradient(90deg, var(--color-accent), #5856d6);
-		margin: 0 auto 1.5rem;
-		border-radius: 1px;
-	}
-
-	.bio-cta {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		margin-top: 2rem;
-		padding: 0.75rem 1.5rem;
-		font-size: 0.9375rem;
-		font-weight: 500;
-		letter-spacing: -0.01em;
-		color: var(--color-accent);
-		background: transparent;
-		border: 1.5px solid rgba(0, 113, 227, 0.3);
-		border-radius: var(--radius-full);
-		text-decoration: none;
-		transition: all var(--duration-normal) var(--ease-out-expo);
-	}
-
-	.bio-cta:hover {
-		background: var(--color-accent-light);
-		border-color: var(--color-accent);
-		transform: translateY(-1px);
-	}
-
-	.bio-cta:active {
-		transform: translateY(0) scale(0.98);
-	}
-
-	/* ==========================================
-	   RESPONSIVE
-	   ========================================== */
-	@media (min-width: 768px) {
-		.avatar-image {
-			width: 180px;
-			height: 180px;
-		}
-
-		.hero-content {
-			gap: 2.75rem;
-		}
-
-		.hero {
-			padding: 6rem 2rem;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.hero {
-			padding: 3rem 1.5rem;
-			min-height: calc(100vh - 100px);
-		}
-
-		.hero-content {
-			gap: 2rem;
-		}
-
-		.avatar-image {
-			width: 140px;
-			height: 140px;
-		}
-
-		.name {
-			font-size: 2.25rem;
-		}
-
-		.tagline {
-			font-size: 1rem;
-		}
-
-		.projects-section,
-		.bio-section {
-			padding: 4rem 1.5rem;
-		}
-
-		.section-title,
-		.bio-title {
-			font-size: 1.5rem;
-			margin-bottom: 2rem;
-		}
-
-		.projects-grid {
-			grid-template-columns: 1fr;
-			gap: 1rem;
-		}
-
-		.project-card {
-			padding: 1.5rem;
-		}
-
-		.project-name {
-			font-size: 1.25rem;
-		}
-
-		.bio-content p {
-			font-size: 1rem;
-		}
-
-		.bio-content blockquote {
-			font-size: 1.1875rem;
-		}
-	}
-
-	/* Extra small devices */
-	@media (max-width: 380px) {
-		.hero {
-			padding: 2rem 1rem;
-		}
-
-		.avatar-image {
-			width: 120px;
-			height: 120px;
-		}
-
-		.name {
-			font-size: 2rem;
-		}
-
-		.japanese-name {
-			padding: 0.4rem 0.875rem;
-		}
-
-		.kanji {
-			font-size: 0.9375rem;
-		}
 	}
 </style>
