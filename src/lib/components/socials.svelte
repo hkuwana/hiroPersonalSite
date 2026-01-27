@@ -4,11 +4,12 @@
 	import LinkedInIcon from '$lib/svg/socials-linkedin.svelte';
 	import EmailIcon from '$lib/svg/socials-email.svelte';
 	import QuoraIcon from '$lib/svg/socials-quora.svelte';
+	import { CONTACT, SOCIAL_LINKS } from '$data/constants';
 </script>
 
 <div class="socials">
 	<a
-		href="https://www.quora.com/profile/Hiro-Kuwana"
+		href={SOCIAL_LINKS.quora}
 		target="_blank"
 		rel="noopener"
 		class="social-link"
@@ -19,7 +20,7 @@
 	</a>
 	<a
 		class="social-link"
-		href="https://www.linkedin.com/in/hiroyuki-kuwana/"
+		href={SOCIAL_LINKS.linkedin}
 		rel="noopener"
 		target="_blank"
 		title="Connect on LinkedIn"
@@ -29,7 +30,7 @@
 	</a>
 	<a
 		class="social-link"
-		href="https://github.com/hkuwana"
+		href={SOCIAL_LINKS.github}
 		target="_blank"
 		rel="noopener"
 		title="Check out my Github profile"
@@ -39,7 +40,7 @@
 	</a>
 	<a
 		class="social-link"
-		href="mailto:hiro@flybyrd.io"
+		href="mailto:{CONTACT.email}"
 		target="_blank"
 		rel="noopener"
 		title="Send an email"

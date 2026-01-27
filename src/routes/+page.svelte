@@ -2,8 +2,7 @@
 	import hiroProfile from '$lib/images/Hiro_profile_shot.png';
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
-
-	const calLink = 'https://cal.com/hirokuwana/15min';
+	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS } from '$data/constants';
 
 	// For the playful Japanese name easter egg
 	let showMeaning = false;
@@ -16,7 +15,7 @@
 	onMount(() => {
 		// Easter egg for curious developers
 		console.log('%c👋 Hey there, curious one!', 'font-size: 16px; font-weight: bold;');
-		console.log('%cWhile you\'re here, reach out if you\'re curious about how I built this: hiro@trykaiwa.com', 'font-size: 12px;');
+		console.log(`%cWhile you're here, reach out if you're curious about how I built this: ${CONTACT.email}`, 'font-size: 12px;');
 		console.log('%cI\'m not a T-1000. Look away... now.', 'font-size: 12px; color: gray;');
 
 		const observer = new IntersectionObserver(
@@ -39,104 +38,144 @@
 		return () => observer.disconnect();
 	});
 
-	const projects = [
-		{
-			name: 'Flybyrd',
-			tagline: 'AI for Venture Capital',
-			description: 'Helped VCs discover and analyze startups with AI-powered deal flow analysis. Sunset to focus on new opportunities.',
-			logo: `${base}/flybyrd_logo.png`,
-			status: 'sunset',
-			color: '#6b7280'
-		},
-		{
-			name: 'Kaiwa',
-			tagline: 'Language Learning, Reimagined',
-			description: 'Practice languages through bite-sized AI conversations. Real-time translations, social streaks, and 30-second daily sessions.',
-			link: 'https://www.trykaiwa.com/',
-			logo: `${base}/kaiwa_logo.png`,
-			status: 'current',
-			color: '#10b981'
-		},
-		{
-			name: 'Pebblr',
-			tagline: 'Connecting Nonprofits',
-			description: 'Connected nonprofits with younger donors. Sunset after GPT technologies offered more scalable solutions.',
-			logo: `${base}/icon-512x512.png`,
-			status: 'sunset',
-			color: '#6b7280'
-		}
-	];
+	// Map projects to include base path for logos
+	const projects = PROJECTS.map((p) => ({
+		...p,
+		logo: `${base}${p.logo}`,
+	}));
 </script>
 
 <svelte:head>
-	<title>Hiro Kuwana - AI Entrepreneur & Founder | Democratizing Education Through Technology</title>
-	<meta
-		name="description"
-		content="Hiro Kuwana is a tech entrepreneur building AI solutions to democratize education and empower human potential. Founder of Kaiwa (AI language learning). Making premium tools accessible to everyone."
-	/>
-	<meta
-		name="keywords"
-		content="Hiro Kuwana, AI entrepreneur, startup founder, educational technology, AI democratization, venture capital AI, language learning app, tech innovation, artificial intelligence, EdTech"
-	/>
-	<meta name="author" content="Hiro Kuwana" />
-	<meta name="robots" content="index, follow" />
+	<title>{SITE.title}</title>
+	<meta name="description" content={SITE.description} />
+	<meta name="keywords" content={SITE.keywords.join(', ')} />
+	<meta name="author" content={SITE.author} />
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+	<!-- Geo tags for local SEO -->
+	<meta name="geo.region" content="US" />
+	<meta name="geo.placename" content="United States" />
+
+	<!-- Language and locale -->
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:locale:alternate" content="ja_JP" />
 
 	<!-- Open Graph / Facebook -->
-	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://hirokuwana.com/" />
-	<meta
-		property="og:title"
-		content="Hiro Kuwana - AI Entrepreneur & Founder | Democratizing Education Through Technology"
-	/>
-	<meta
-		property="og:description"
-		content="Tech entrepreneur building AI solutions to democratize education and empower human potential. Founder of Kaiwa."
-	/>
-	<meta property="og:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
-	<meta property="og:site_name" content="Hiro Kuwana" />
+	<meta property="og:type" content="profile" />
+	<meta property="og:url" content={SITE.url} />
+	<meta property="og:title" content={SITE.title} />
+	<meta property="og:description" content={SITE.description} />
+	<meta property="og:image" content={SITE.image} />
+	<meta property="og:image:alt" content="{PERSONAL.displayName} - AI Entrepreneur headshot" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:site_name" content={SITE.name} />
+	<meta property="profile:first_name" content="Hiro" />
+	<meta property="profile:last_name" content="Kuwana" />
 
 	<!-- Twitter -->
-	<meta property="twitter:card" content="summary_large_image" />
-	<meta property="twitter:url" content="https://hirokuwana.com/" />
-	<meta property="twitter:title" content="Hiro Kuwana - AI Entrepreneur & Founder" />
-	<meta
-		property="twitter:description"
-		content="Building AI solutions to democratize education and empower human potential. Founder of Kaiwa."
-	/>
-	<meta property="twitter:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:url" content={SITE.url} />
+	<meta name="twitter:title" content={SITE.title} />
+	<meta name="twitter:description" content={SITE.description} />
+	<meta name="twitter:image" content={SITE.image} />
+	<meta name="twitter:image:alt" content="{PERSONAL.displayName} - AI Entrepreneur headshot" />
+	<meta name="twitter:creator" content="@hirokuwana" />
 
 	<!-- Additional SEO -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta charset="UTF-8" />
-	<link rel="canonical" href="https://hirokuwana.com/" />
+	<link rel="canonical" href={SITE.url} />
 
-	<!-- Structured Data -->
+	<!-- Preconnect to improve performance -->
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+
+	<!-- Mobile app meta tags -->
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+	<meta name="format-detection" content="telephone=no" />
+
+	<!-- Structured Data for Person -->
 	<script type="application/ld+json">
 		{
-			"@context": "https://schema.org",
-			"@type": "Person",
-			"name": "Hiroyuki Kuwana",
-			"alternateName": "Hiro Kuwana",
-			"description": "AI entrepreneur and tech founder focused on democratizing education through artificial intelligence",
-			"url": "https://hirokuwana.com",
-			"jobTitle": "Founder & CEO",
-			"worksFor": {
-				"@type": "Organization",
-				"name": "Kaiwa"
-			},
-			"alumniOf": {
-				"@type": "EducationalOrganization",
-				"name": "Brown University"
-			},
-			"nationality": ["Japanese", "American"],
-			"knowsAbout": [
-				"Artificial Intelligence",
-				"Educational Technology",
-				"Venture Capital",
-				"Language Learning",
-				"Startup Development"
-			],
-			"sameAs": ["https://www.trykaiwa.com"]
+			JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'Person',
+				name: PERSONAL.fullName,
+				alternateName: PERSONAL.displayName,
+				description: SITE.description,
+				url: SITE.url,
+				image: SITE.image,
+				email: CONTACT.email,
+				jobTitle: PERSONAL.jobTitle,
+				worksFor: {
+					'@type': 'Organization',
+					name: PERSONAL.company,
+					url: PERSONAL.companyWebsite,
+				},
+				alumniOf: {
+					'@type': 'EducationalOrganization',
+					name: PERSONAL.university,
+				},
+				nationality: PERSONAL.nationalities,
+				knowsAbout: EXPERTISE,
+				sameAs: [PERSONAL.companyWebsite, SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github],
+			})
+		}
+	</script>
+
+	<!-- Structured Data for Website -->
+	<script type="application/ld+json">
+		{
+			JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'WebSite',
+				name: SITE.name,
+				url: SITE.url,
+				description: SITE.description,
+				author: {
+					'@type': 'Person',
+					name: PERSONAL.fullName,
+				},
+				inLanguage: 'en-US',
+			})
+		}
+	</script>
+
+	<!-- Structured Data for Breadcrumbs -->
+	<script type="application/ld+json">
+		{
+			JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'BreadcrumbList',
+				itemListElement: [
+					{
+						'@type': 'ListItem',
+						position: 1,
+						name: 'Home',
+						item: SITE.url,
+					},
+				],
+			})
+		}
+	</script>
+
+	<!-- Structured Data for FAQ - AEO/GEO Optimization -->
+	<script type="application/ld+json">
+		{
+			JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'FAQPage',
+				mainEntity: FAQS.map((faq) => ({
+					'@type': 'Question',
+					name: faq.question,
+					acceptedAnswer: {
+						'@type': 'Answer',
+						text: faq.answer,
+					},
+				})),
+			})
 		}
 	</script>
 </svelte:head>
@@ -167,7 +206,7 @@
 		<!-- Hero Text -->
 		<div class="flex flex-col items-center gap-3.5">
 			<h1 class="text-4xl sm:text-5xl font-bold tracking-tight animate-fade-in-up">
-				Hiro Kuwana
+				{PERSONAL.displayName}
 			</h1>
 
 			<button
@@ -175,19 +214,19 @@
 				on:click={() => (showMeaning = !showMeaning)}
 				aria-expanded={showMeaning}
 			>
-				<span class="text-base font-medium tracking-wide">桑名 浩行</span>
+				<span class="text-base font-medium tracking-wide">{PERSONAL.japaneseKanji}</span>
 				{#if showMeaning}
-					<span class="text-sm text-primary italic font-medium">くわな ひろゆき</span>
+					<span class="text-sm text-primary italic font-medium">{PERSONAL.japaneseKana}</span>
 				{:else}
 					<span class="text-xs text-base-content/50 uppercase tracking-widest font-medium">click me</span>
 				{/if}
 			</button>
 
 			<p class="text-base-content/70 text-lg max-w-sm mt-1 leading-relaxed animate-fade-in-up delay-2">
-				Building AI as a tool for humanity, not a replacement
+				{PERSONAL.tagline}
 			</p>
 
-			<a href={calLink} target="_blank" class="btn btn-primary mt-5 gap-2 animate-fade-in-up delay-3">
+			<a href={CONTACT.cal} target="_blank" class="btn btn-primary mt-5 gap-2 animate-fade-in-up delay-3">
 				Let's Talk
 				<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 					<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -292,7 +331,7 @@
 			</blockquote>
 		</div>
 
-		<a href={calLink} target="_blank" class="btn btn-outline btn-primary mt-8">
+		<a href={CONTACT.cal} target="_blank" class="btn btn-outline btn-primary mt-8">
 			Schedule a conversation
 		</a>
 	</div>
