@@ -164,23 +164,30 @@
 			>
 				<span class="kanji">桑名 浩行</span>
 				{#if showMeaning}
-					<span class="meaning">"vast journey"</span>
+					<span class="meaning">くわな ひろゆき</span>
 				{:else}
 					<span class="hint">click me</span>
 				{/if}
 			</button>
 
 			<p class="tagline animate-fade-in-up delay-2">
-				Building AI that democratizes opportunity
+				Building AI as a tool for humanity, not a replacement
 			</p>
 
-			<a href={calLink} target="_blank" class="cta-button animate-fade-in-up delay-3">
-				<span>Let's Talk</span>
+			<a href={calLink} target="_blank" class="btn btn-primary animate-fade-in-up delay-3">
+				Let's Talk
 				<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 					<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 				</svg>
 			</a>
 		</div>
+	</div>
+
+	<!-- Scroll Indicator -->
+	<div class="scroll-indicator animate-fade-in-up delay-4">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="bounce">
+			<path d="M12 5V19M12 19L5 12M12 19L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>
 	</div>
 </section>
 
@@ -261,6 +268,7 @@
 	   Johnny Ive-inspired minimal design
 	   ========================================== */
 	.hero {
+		position: relative;
 		min-height: calc(100vh - 80px);
 		display: flex;
 		align-items: center;
@@ -449,6 +457,37 @@
 
 	.cta-button:hover svg {
 		transform: translateX(3px);
+	}
+
+	/* Scroll Indicator */
+	.scroll-indicator {
+		position: absolute;
+		bottom: 2rem;
+		left: 50%;
+		transform: translateX(-50%);
+		color: var(--color-text-tertiary);
+		opacity: 0.6;
+		transition: opacity var(--duration-normal);
+	}
+
+	.scroll-indicator:hover {
+		opacity: 1;
+	}
+
+	.scroll-indicator .bounce {
+		animation: bounce 2s infinite;
+	}
+
+	@keyframes bounce {
+		0%, 20%, 50%, 80%, 100% {
+			transform: translateY(0);
+		}
+		40% {
+			transform: translateY(-8px);
+		}
+		60% {
+			transform: translateY(-4px);
+		}
 	}
 
 	/* ==========================================
