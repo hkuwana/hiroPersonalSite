@@ -6,7 +6,6 @@
 
 	// For the playful Japanese name easter egg
 	let showMeaning = false;
-	let profileHovered = false;
 
 	// Intersection Observer for scroll animations
 	let sections: HTMLElement[] = [];
@@ -189,17 +188,12 @@
 	<div class="flex flex-col items-center text-center gap-10 md:gap-11 max-w-xl">
 		<!-- Avatar -->
 		<div
-			class="avatar relative cursor-pointer"
-			on:mouseenter={() => (profileHovered = true)}
-			on:mouseleave={() => (profileHovered = false)}
+			class="avatar relative"
 			role="img"
 			aria-label="Hiro Kuwana profile photo"
 		>
-			<div class="avatar-glow" class:active={profileHovered}></div>
-			<div class="w-40 h-40 md:w-44 md:h-44 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-xl transition-all duration-500 ease-out"
-				class:float={profileHovered}
-			>
-				<img src={hiroProfile} alt="Hiro Kuwana" />
+			<div class="w-40 h-40 md:w-44 md:h-44 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.03] cursor-default">
+				<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full" />
 			</div>
 		</div>
 
@@ -210,15 +204,14 @@
 			</h1>
 
 			<button
-				class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1"
+				class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1 transition-all duration-300"
 				on:click={() => (showMeaning = !showMeaning)}
 				aria-expanded={showMeaning}
+				aria-label="Show Japanese name pronunciation"
 			>
 				<span class="text-base font-medium tracking-wide">{PERSONAL.japaneseKanji}</span>
 				{#if showMeaning}
 					<span class="text-sm text-primary italic font-medium">{PERSONAL.japaneseKana}</span>
-				{:else}
-					<span class="text-xs text-base-content/50 uppercase tracking-widest font-medium">click me</span>
 				{/if}
 			</button>
 
@@ -235,11 +228,11 @@
 		</div>
 	</div>
 
-	<!-- Scroll Indicator -->
-	<div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-base-content/40 hover:text-base-content/70 transition-colors animate-fade-in-up delay-4">
-		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="animate-bounce">
-			<path d="M12 5V19M12 19L5 12M12 19L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-		</svg>
+	<!-- Scroll Indicator - Subtle pulse -->
+	<div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-fade-in-up delay-4">
+		<div class="w-6 h-10 rounded-full border-2 border-base-content/20 flex justify-center pt-2">
+			<div class="w-1 h-2 rounded-full bg-base-content/40 animate-scroll-hint"></div>
+		</div>
 	</div>
 </section>
 
@@ -257,15 +250,21 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 			{#each projects as project, i}
 				<div
-					class="card bg-base-100 border hover:border-transparent hover:shadow-xl hover:-translate-y-1 transition-all duration-300 {project.status === 'current' ? 'border-success/20 bg-gradient-to-b from-success/5 to-base-100' : 'border-base-300'}"
+					class="card border transition-all duration-300 {project.status === 'current'
+						? 'bg-gradient-to-b from-success/10 via-base-100 to-base-100 border-success/30 hover:border-success/50 hover:shadow-xl hover:shadow-success/10 hover:-translate-y-2 md:scale-[1.02]'
+						: 'bg-base-100/60 border-base-300/50 hover:border-base-300 hover:bg-base-100 opacity-75 hover:opacity-100'}"
 					style="animation-delay: {i * 0.1}s"
 				>
 					<div class="card-body">
 						<!-- Header -->
 						<div class="flex justify-between items-start mb-3">
 							<div class="avatar">
-								<div class="w-12 h-12 rounded-lg bg-white shadow-sm overflow-hidden">
-									<img src={project.logo} alt="{project.name} logo" class="w-full h-full object-contain" />
+								<div class="w-12 h-12 rounded-lg shadow-sm overflow-hidden {project.status === 'current' ? 'bg-white' : 'bg-base-200'}">
+									<img
+										src={project.logo}
+										alt="{project.name} logo"
+										class="w-full h-full object-contain {project.status !== 'current' ? 'opacity-60 grayscale-[30%]' : ''}"
+									/>
 								</div>
 							</div>
 							<div
@@ -277,9 +276,9 @@
 							</div>
 						</div>
 
-						<h3 class="card-title text-xl text-neutral">{project.name}</h3>
-						<p class="text-primary text-sm font-medium">{project.tagline}</p>
-						<p class="text-neutral/70 text-sm leading-relaxed">{project.description}</p>
+						<h3 class="card-title text-xl {project.status === 'current' ? 'text-neutral' : 'text-neutral/70'}">{project.name}</h3>
+						<p class="text-sm font-medium {project.status === 'current' ? 'text-primary' : 'text-base-content/50'}">{project.tagline}</p>
+						<p class="text-sm leading-relaxed {project.status === 'current' ? 'text-neutral/70' : 'text-neutral/50'}">{project.description}</p>
 
 						{#if project.link}
 							<div class="card-actions mt-4">
@@ -323,11 +322,12 @@
 				once reserved for the privileged few should be available to all.
 			</p>
 
-			<blockquote class="py-8 text-center">
-				<div class="w-12 h-0.5 bg-gradient-to-r from-primary to-secondary mx-auto mb-6 rounded-full"></div>
-				<p class="text-xl md:text-2xl font-medium italic tracking-tight text-primary">
+			<blockquote class="py-12 md:py-16 text-center">
+				<div class="w-16 h-0.5 bg-gradient-to-r from-primary via-secondary to-accent mx-auto mb-8 rounded-full opacity-60"></div>
+				<p class="text-2xl md:text-4xl font-semibold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary leading-relaxed">
 					"AI as the glider for everyone's mind."
 				</p>
+				<div class="w-16 h-0.5 bg-gradient-to-r from-accent via-secondary to-primary mx-auto mt-8 rounded-full opacity-60"></div>
 			</blockquote>
 		</div>
 
@@ -339,19 +339,19 @@
 
 <!-- FAQ Section -->
 <section
-	class="section-animate py-24 md:py-28 px-8 bg-base-200/50"
+	class="section-animate py-28 md:py-36 px-8 bg-base-200/50"
 	bind:this={sections[3]}
 	class:visible={visibleSections.has(3)}
 >
 	<div class="max-w-2xl mx-auto">
-		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-10 tracking-tight text-primary">
+		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-4 tracking-tight text-primary">
 			Frequently Asked Questions
 		</h2>
-		<p class="text-base-content/70 text-center mb-8 text-sm">
+		<p class="text-base-content/60 text-center mb-12 text-sm">
 			Questions I get asked more than I'd like.
 		</p>
 
-		<div class="space-y-3">
+		<div class="space-y-4">
 			<!-- AI Hot Take -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
 				<input type="radio" name="faq-accordion" />
@@ -423,10 +423,21 @@
 					<p>I grew up in the US of A. I don't have a sense of humour. Please don't sue me.</p>
 				</div>
 			</div>
+
+			<!-- Hills to die on -->
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+				<input type="radio" name="faq-accordion" />
+				<div class="collapse-title font-medium text-primary">
+					What's a hill you will die on?
+				</div>
+				<div class="collapse-content text-base-content/70">
+					<p><em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces—no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read <em>The Brothers Karamazov</em>. It will change how you see the world.</p>
+				</div>
+			</div>
 		</div>
 
-		<p class="text-center mt-8 text-sm text-base-content/40">
-			If this site isn't serious enough for you, <a href="/corporate" class="underline hover:text-base-content/60">click here</a>.
+		<p class="text-center mt-8 text-sm text-base-content/70">
+			If this site isn't serious enough for you, <a href="/corporate" class="underline hover:text-base-content">click here</a>.
 		</p>
 	</div>
 </section>
@@ -456,24 +467,19 @@
 		transform: translateY(0);
 	}
 
-	/* Avatar glow effect */
-	.avatar-glow {
-		position: absolute;
-		inset: -12px;
-		border-radius: 50%;
-		background: linear-gradient(135deg, rgba(0, 113, 227, 0.3) 0%, rgba(88, 86, 214, 0.3) 100%);
-		opacity: 0;
-		filter: blur(24px);
-		transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-		z-index: 0;
+	/* Scroll indicator animation */
+	@keyframes scroll-hint {
+		0%, 100% {
+			opacity: 0.4;
+			transform: translateY(0);
+		}
+		50% {
+			opacity: 0.8;
+			transform: translateY(4px);
+		}
 	}
 
-	.avatar-glow.active {
-		opacity: 0.5;
-	}
-
-	/* Float animation on avatar hover */
-	.float {
-		transform: translateY(-6px) scale(1.02);
+	:global(.animate-scroll-hint) {
+		animation: scroll-hint 2s ease-in-out infinite;
 	}
 </style>
