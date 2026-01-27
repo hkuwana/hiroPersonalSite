@@ -26,8 +26,8 @@
 
 <article class="essays-page" class:visible>
 	<header class="page-header">
-		<h1 class="page-title">Essays</h1>
-		<p class="page-subtitle">Thoughts on technology, startups, and building things that matter</p>
+		<h1 class="page-title text-primary">Essays</h1>
+		<p class="page-subtitle text-secondary">Thoughts on technology, startups, and building things that matter</p>
 	</header>
 
 	<div class="essays-list">
@@ -37,14 +37,14 @@
 				class="essay-card"
 				style="--delay: {i * 0.05}s"
 			>
-				<time class="essay-date">
+				<time class="essay-date text-base-content/50">
 					{new Date(essay.date).toLocaleDateString('en-US', {
 						year: 'numeric',
 						month: 'long',
 						day: 'numeric'
 					})}
 				</time>
-				<h2 class="essay-title">{essay.title}</h2>
+				<h2 class="essay-title text-primary hover:text-accent">{essay.title}</h2>
 				<div class="essay-arrow">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -55,7 +55,7 @@
 	</div>
 
 	<footer class="page-footer">
-		<a href="/" class="back-link">
+		<a href="/" class="back-link text-secondary hover:text-accent">
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>

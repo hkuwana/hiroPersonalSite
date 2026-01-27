@@ -57,15 +57,15 @@
 
 <article class="essay-page" class:visible>
 	<header class="essay-header">
-		<a href="/essays" class="back-link">
+		<a href="/essays" class="back-link text-secondary hover:text-accent">
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
 			<span>Essays</span>
 		</a>
 
-		<h1 class="essay-title">{data.title}</h1>
-		<time datetime={data.date} class="essay-date">{formattedDate}</time>
+		<h1 class="essay-title text-primary">{data.title}</h1>
+		<time datetime={data.date} class="essay-date text-base-content/50">{formattedDate}</time>
 	</header>
 
 	<div class="essay-content">
@@ -74,7 +74,7 @@
 
 	<footer class="essay-footer">
 		<div class="footer-divider"></div>
-		<a href="/essays" class="footer-link">
+		<a href="/essays" class="footer-link text-secondary hover:text-accent">
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
