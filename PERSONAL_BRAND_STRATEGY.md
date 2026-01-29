@@ -369,7 +369,7 @@ As you build content, group related essays into series:
 
 Self-hosted approach using:
 - **Resend** — Email delivery (clean API, great deliverability, pay-per-email)
-- **Supabase** — Subscriber database + auth
+- **Supabase** — Subscriber database (no ORM, just Supabase client)
 
 **Why this is smart:**
 - You own the infrastructure completely
@@ -377,6 +377,61 @@ Self-hosted approach using:
 - Fits "build for decades" philosophy
 - Developer-friendly (you can customize everything)
 - Portable (your data, your database)
+
+### Newsletter Technical Implementation ✓
+
+**Approach:** Supabase client only (no Drizzle ORM) — keep it simple
+
+**Schema:**
+
+```sql
+CREATE TABLE subscribers (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  subscribed BOOLEAN DEFAULT true,
+  subscribed_at TIMESTAMPTZ DEFAULT NOW(),
+  unsubscribe_token UUID DEFAULT gen_random_uuid(),
+  source TEXT,  -- 'footer', 'essay', 'homepage'
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Indexes for common queries
+CREATE INDEX idx_subscribers_email ON subscribers(email);
+CREATE INDEX idx_subscribers_subscribed ON subscribers(subscribed) WHERE subscribed = true;
+CREATE INDEX idx_subscribers_token ON subscribers(unsubscribe_token);
+```
+
+**Flow:**
+
+```
+Subscribe:
+1. User enters email → SvelteKit API route
+2. Insert into Supabase (subscribed: true)
+3. Optional: Send welcome email via Resend
+
+Weekly Send:
+1. Query: SELECT email FROM subscribers WHERE subscribed = true
+2. Send batch via Resend API
+3. Include unsubscribe link with token
+
+Unsubscribe:
+1. User clicks link with token
+2. UPDATE subscribers SET subscribed = false WHERE unsubscribe_token = ?
+```
+
+**Dependencies to add:**
+
+```bash
+npm install @supabase/supabase-js resend
+```
+
+**Environment variables:**
+
+```
+SUPABASE_URL=your_project_url
+SUPABASE_ANON_KEY=your_anon_key
+RESEND_API_KEY=your_resend_key
+```
 
 ### First Content Pillar: AI for Educators ✓
 
