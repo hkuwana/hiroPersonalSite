@@ -425,13 +425,42 @@ Unsubscribe:
 npm install @supabase/supabase-js resend
 ```
 
-**Environment variables:**
+**Environment variables:** (see `.env.example`)
 
 ```
-SUPABASE_URL=your_project_url
+SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your_anon_key
-RESEND_API_KEY=your_resend_key
+RESEND_API_KEY=re_your_api_key
+PUBLIC_SITE_URL=https://hirokuwana.com
 ```
+
+**Files to create:**
+
+```
+src/
+├── lib/
+│   └── server/
+│       ├── supabase.ts      # Supabase client init
+│       └── resend.ts        # Resend client init
+├── routes/
+│   └── api/
+│       ├── subscribe/
+│       │   └── +server.ts   # POST: add subscriber
+│       └── unsubscribe/
+│           └── +server.ts   # GET: unsubscribe via token
+└── app.d.ts                 # Add env var types
+```
+
+**Components to create:**
+
+```
+src/lib/components/
+└── NewsletterSignup.svelte  # Reusable signup form
+```
+
+**Where to add signup form:**
+- Footer (persistent across site)
+- End of each essay (highest intent)
 
 ### First Content Pillar: AI for Educators ✓
 
