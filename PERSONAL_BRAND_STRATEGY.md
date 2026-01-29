@@ -359,21 +359,122 @@ As you build content, group related essays into series:
 
 ---
 
-## Open Questions for Hiro
+## Decisions Made
 
-1. **Hero tagline:** Which option resonates? (A, B, C, or something else?)
+### Hero Tagline: Option B ✓
 
-2. **Newsletter platform:** Buttondown (recommended), Substack, or other preference?
+> "Environmental engineer turned developer. Helping non-technical people become slightly dangerous with AI."
 
-3. **Content priorities:** Which pillar do you want to start with?
-   - Automation Playbooks (your proof points)
-   - AI for Educators (your target audience)
-   - Building Kaiwa (easiest to write — it's your life)
-   - Contrarian Takes (highest potential virality)
+### Newsletter Platform: Resend + Supabase ✓
 
-4. **Category display:** Subtle tags or prominent badges?
+Self-hosted approach using:
+- **Resend** — Email delivery (clean API, great deliverability, pay-per-email)
+- **Supabase** — Subscriber database + auth
 
-5. **First essay topic:** What's the first essay you want to write?
+**Why this is smart:**
+- You own the infrastructure completely
+- No monthly SaaS fees eating runway
+- Fits "build for decades" philosophy
+- Developer-friendly (you can customize everything)
+- Portable (your data, your database)
+
+### First Content Pillar: AI for Educators ✓
+
+### First Essay: "Three AI Trends Educators Must Understand in the Next 10 Years" ✓
+
+---
+
+## First Essay Outline
+
+### Title Options
+
+- "Three AI Trends Every Educator Must Understand (Before It's Too Late)"
+- "Stop Fighting AI. Here's What Educators Should Do Instead."
+- "The Educator's 10-Year AI Survival Guide"
+- "Why Fighting AI in Education Is a Losing Battle (And What to Do Instead)"
+
+### Core Thesis
+
+The educators who thrive in the next decade won't be the ones who resist AI — they'll be the ones who understand the macro trends and adapt their role accordingly. Your job isn't disappearing. It's becoming more important than ever.
+
+### Structure
+
+#### Opening Hook (Veritasium-style)
+
+Start with a counterintuitive claim:
+> "The teachers most afraid of AI are accidentally teaching their students to be replaceable."
+
+Or acknowledgment of the difficulty:
+> "If you're a school teacher reading this, I want to acknowledge something first: your job is already impossibly hard. And now everyone's telling you to 'figure out AI' on top of everything else. I get it."
+
+#### Trend 1: Information Becomes Free, Judgment Becomes Priceless
+
+**The shift:**
+- AI makes information access nearly free
+- Memorization and recall become less valuable
+- Critical thinking and judgment become the premium skills
+
+**For educators:**
+- Stop being the source of information
+- Become the trainer of judgment
+- Teach students to evaluate AI outputs, not just generate them
+
+**Practical example:** Instead of "What year did X happen?" → "Here's what AI says about X. What's missing? What's biased? What would you verify?"
+
+#### Trend 2: The "Slightly Technical" Advantage
+
+**The shift:**
+- Pure "non-technical" becomes a liability
+- Pure "technical" isn't enough either
+- The winners are domain experts who can leverage AI tools
+
+**For educators:**
+- You don't need to become a programmer
+- You need to become "slightly dangerous" with AI
+- Understand prompting, limitations, when to trust/distrust
+
+**Practical example:** An English teacher who can use AI to generate personalized writing prompts, then knows how to evaluate whether the AI's suggestions are pedagogically sound.
+
+#### Trend 3: Human Connection Becomes the Differentiator
+
+**The shift:**
+- AI can deliver content
+- AI cannot (yet) provide mentorship, inspiration, human presence
+- The "human" parts of education become more valuable, not less
+
+**For educators:**
+- Double down on what AI can't do: empathy, motivation, presence
+- Use AI to handle the administrative burden
+- Spend saved time on actual human connection
+
+**Practical example:** Use AI to draft parent communications, grade routine assignments → spend that time on 1:1 student conversations.
+
+#### Acknowledgment Section
+
+> "I know this is easier said than done. If you're a public school teacher with 150 students, no budget, and a district that can't decide if AI is allowed — these trends feel abstract. But understanding where things are going helps you make better small decisions today."
+
+#### Closing: The Educator's Role Is More Important Than Ever
+
+- AI raises the stakes on critical thinking
+- Someone has to teach humans how to work *with* AI
+- That someone is you
+- The question isn't whether AI will change education — it's whether educators will shape that change or have it imposed on them
+
+### Tone Notes
+
+- **Feynman energy:** Make complex trends simple through concrete examples
+- **PG energy:** Have a clear thesis, don't hedge everything
+- **Veritasium energy:** Start counterintuitive, earn the reader's trust
+- **Collinson energy:** Rigorous but accessible, respect the reader's intelligence
+- **Acknowledge difficulty:** Don't be preachy to people whose jobs are already hard
+
+### Estimated Length
+
+1,500–2,500 words
+
+### Time to Write
+
+3-4 hours (fits within weekly budget)
 
 ---
 
@@ -392,4 +493,5 @@ As you build content, group related essays into series:
 ---
 
 *Document created: 2026-01-29*
-*Status: Awaiting Hiro's feedback before implementation*
+*Last updated: 2026-01-29*
+*Status: Decisions finalized. Ready for implementation.*
