@@ -5,5 +5,12 @@
 	"aria_toggle_theme": "テーマ切り替え",
 	"aria_toggle_language": "言語切り替え",
 	"aria_light_mode": "ライトモード",
-	"aria_dark_mode": "ダークモード"
+	"aria_dark_mode": "ダークモード",
+	"hero_lets_talk": "お話しましょう",
+	"hero_show_pronunciation": "日本語の名前の発音を表示",
+	"projects_heading": "取り組んでいるプロジェクト",
+	"project_status_current": "現在の注力事項",
+	"project_status_sunset": "終了",
+	"project_status_active": "稼働中",
+	"project_visit": "{name}を見る"
 }

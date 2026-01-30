@@ -3,6 +3,7 @@
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS } from '$data/constants';
+	import * as m from '$lib/paraglide/messages';
 
 	// For the playful Japanese name easter egg
 	let showMeaning = false;
@@ -207,7 +208,7 @@
 				class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1 transition-all duration-300"
 				on:click={() => (showMeaning = !showMeaning)}
 				aria-expanded={showMeaning}
-				aria-label="Show Japanese name pronunciation"
+				aria-label={m.hero_show_pronunciation()}
 			>
 				<span class="text-base font-medium tracking-wide">{PERSONAL.japaneseKanji}</span>
 				{#if showMeaning}
@@ -220,7 +221,7 @@
 			</p>
 
 			<a href={CONTACT.cal} target="_blank" class="btn btn-primary mt-5 gap-2 animate-fade-in-up delay-3">
-				Let's Talk
+				{m.hero_lets_talk()}
 				<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 					<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 				</svg>
@@ -244,7 +245,7 @@
 >
 	<div class="max-w-5xl mx-auto">
 		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-12 tracking-tight text-primary">
-			What I'm Building
+			{m.projects_heading()}
 		</h2>
 
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -272,7 +273,7 @@
 								class:badge-success={project.status === 'current'}
 								class:badge-ghost={project.status !== 'current'}
 							>
-								{project.status === 'current' ? 'Current Focus' : project.status === 'sunset' ? 'Sunset' : 'Active'}
+								{project.status === 'current' ? m.project_status_current() : project.status === 'sunset' ? m.project_status_sunset() : m.project_status_active()}
 							</div>
 						</div>
 
@@ -283,7 +284,7 @@
 						{#if project.link}
 							<div class="card-actions mt-4">
 								<a href={project.link} target="_blank" rel="noopener" class="link link-primary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
-									Visit {project.name}
+									{m.project_visit({ name: project.name })}
 									<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
 										<path d="M4.5 11.5L11.5 4.5M11.5 4.5H6M11.5 4.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 									</svg>
