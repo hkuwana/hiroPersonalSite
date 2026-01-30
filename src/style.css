@@ -429,6 +429,17 @@ a:focus-visible {
 	color: oklch(var(--bc) / 0.5);
 }
 
+/* DaisyUI button improvements for better contrast */
+.btn-primary {
+	font-weight: 600;
+	--tw-text-opacity: 1;
+}
+
+.btn-primary:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px oklch(var(--p) / 0.4);
+}
+
 /* Focus States - Accessibility */
 :focus-visible {
 	outline: 2px solid oklch(var(--p));
