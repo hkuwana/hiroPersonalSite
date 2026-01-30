@@ -251,22 +251,30 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 			{#each projects as project, i}
 				<div
-					class="card border transition-all duration-300 {project.status === 'current'
+					class="card border transition-all duration-300 group {project.status === 'current'
 						? 'bg-gradient-to-b from-success/10 via-base-100 to-base-100 border-success/30 hover:border-success/50 hover:shadow-xl hover:shadow-success/10 hover:-translate-y-2 md:scale-[1.02]'
-						: 'bg-base-100/60 border-base-300/50 hover:border-base-300 hover:bg-base-100 opacity-75 hover:opacity-100'}"
+						: 'bg-base-100 border-base-300/50 hover:border-base-300 hover:bg-base-200/50'}"
 					style="animation-delay: {i * 0.1}s"
 				>
 					<div class="card-body">
 						<!-- Header -->
 						<div class="flex justify-between items-start mb-3">
 							<div class="avatar">
-								<div class="w-12 h-12 rounded-lg shadow-sm overflow-hidden {project.status === 'current' ? 'bg-white' : 'bg-base-200'}">
-									<img
-										src={project.logo}
-										alt="{project.name} logo"
-										class="w-full h-full object-contain {project.status !== 'current' ? 'opacity-60 grayscale-[30%]' : ''}"
-									/>
-								</div>
+								{#if project.logo}
+									<div class="w-12 h-12 rounded-lg shadow-sm overflow-hidden bg-white dark:bg-base-300">
+										<img
+											src={project.logo}
+											alt="{project.name} logo"
+											class="w-full h-full object-contain {project.status !== 'current' ? 'opacity-80 group-hover:opacity-100' : ''}"
+										/>
+									</div>
+								{:else}
+									<!-- Fallback letter logo -->
+									<div class="w-12 h-12 rounded-lg shadow-sm flex items-center justify-center font-bold text-xl"
+										style="background: {project.color}; color: white;">
+										{project.name.charAt(0)}
+									</div>
+								{/if}
 							</div>
 							<div
 								class="badge badge-sm font-semibold uppercase tracking-wide"
@@ -277,9 +285,9 @@
 							</div>
 						</div>
 
-						<h3 class="card-title text-xl {project.status === 'current' ? 'text-neutral' : 'text-neutral/70'}">{project.name}</h3>
-						<p class="text-sm font-medium {project.status === 'current' ? 'text-primary' : 'text-base-content/50'}">{project.tagline}</p>
-						<p class="text-sm leading-relaxed {project.status === 'current' ? 'text-neutral/70' : 'text-neutral/50'}">{project.description}</p>
+						<h3 class="card-title text-xl text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
+						<p class="text-sm font-medium {project.status === 'current' ? 'text-primary' : 'text-base-content/70 group-hover:text-base-content'}">{project.tagline}</p>
+						<p class="text-sm leading-relaxed text-base-content/60 group-hover:text-base-content/80 transition-colors">{project.description}</p>
 
 						{#if project.link || project.github}
 							<div class="card-actions mt-4 flex flex-wrap gap-3">
