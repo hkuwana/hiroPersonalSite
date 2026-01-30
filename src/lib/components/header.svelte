@@ -1,21 +1,28 @@
 <script>
 	import { page } from '$app/stores';
 	import Socials from '$lib/components/socials.svelte';
+	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+	import LanguageToggle from '$lib/components/LanguageToggle.svelte';
+	import * as m from '$lib/paraglide/messages';
 </script>
 
 <header class="header">
 	<div class="header-inner">
 		<nav class="nav">
 			<a href="/" class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname === '/'}>
-				Home
+				{m.nav_home()}
 			</a>
 			<span class="nav-divider"></span>
 			<a href="/essays" class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/essays')}>
-				Essays
+				{m.nav_essays()}
 			</a>
 		</nav>
 
 		<div class="socials-wrapper">
+			<ThemeToggle />
+			<span class="toggle-divider"></span>
+			<LanguageToggle />
+			<span class="toggle-divider"></span>
 			<Socials />
 		</div>
 	</div>
@@ -27,10 +34,10 @@
 		top: 0;
 		z-index: 100;
 		padding: 0.875rem 1.5rem;
-		background: rgba(255, 255, 255, 0.72);
+		background: oklch(var(--b1) / 0.72);
 		backdrop-filter: blur(24px) saturate(180%);
 		-webkit-backdrop-filter: blur(24px) saturate(180%);
-		border-bottom: 1px solid var(--color-border);
+		border-bottom: 1px solid oklch(var(--bc) / 0.1);
 	}
 
 	.header-inner {
@@ -52,26 +59,26 @@
 		font-size: 0.875rem;
 		font-weight: 500;
 		letter-spacing: -0.01em;
-		color: var(--color-text-secondary);
+		color: oklch(var(--bc) / 0.7);
 		text-decoration: none;
-		border-radius: var(--radius-full);
+		border-radius: 9999px;
 		transition: all var(--duration-fast) var(--ease-out-quart);
 	}
 
 	.nav-link:hover {
-		color: var(--color-text);
-		background: var(--color-bg-muted);
+		color: oklch(var(--bc));
+		background: oklch(var(--b2));
 	}
 
 	.nav-link.active {
-		color: var(--color-text);
-		background: var(--color-bg-muted);
+		color: oklch(var(--bc));
+		background: oklch(var(--b2));
 	}
 
 	.nav-divider {
 		width: 3px;
 		height: 3px;
-		background: rgba(0, 0, 0, 0.15);
+		background: oklch(var(--bc) / 0.2);
 		border-radius: 50%;
 		margin: 0 0.125rem;
 	}
@@ -79,6 +86,13 @@
 	.socials-wrapper {
 		display: flex;
 		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.toggle-divider {
+		width: 1px;
+		height: 20px;
+		background: oklch(var(--bc) / 0.15);
 	}
 
 	@media (max-width: 640px) {

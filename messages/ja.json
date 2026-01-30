@@ -1,4 +1,9 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from ja!"
+	"nav_home": "ホーム",
+	"nav_essays": "エッセイ",
+	"aria_toggle_theme": "テーマ切り替え",
+	"aria_toggle_language": "言語切り替え",
+	"aria_light_mode": "ライトモード",
+	"aria_dark_mode": "ダークモード"
 }

@@ -1,49 +1,15 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-	themes: forest --default;
+	themes: caramellatte --default, dim;
 }
 
 /* ============================================
-   JOHNNY IVE DESIGN SYSTEM
-   "Design is not just what it looks like and
-   feels like. Design is how it works."
+   DESIGN SYSTEM
+   Using DaisyUI themes with custom utilities
    ============================================ */
 
-/* Custom Properties - The Design DNA */
+/* Animation timing functions */
 :root {
-	/* Colors - Apple-inspired palette */
-	--color-bg: #ffffff;
-	--color-bg-subtle: #fbfbfd;
-	--color-bg-muted: #f5f5f7;
-	--color-bg-elevated: rgba(255, 255, 255, 0.72);
-	--color-text: #1d1d1f;
-	--color-text-secondary: #6e6e73;
-	--color-text-tertiary: #86868b;
-	--color-accent: #0071e3;
-	--color-accent-hover: #0077ed;
-	--color-accent-light: rgba(0, 113, 227, 0.08);
-	--color-border: rgba(0, 0, 0, 0.06);
-	--color-border-hover: rgba(0, 0, 0, 0.1);
-	--color-card-bg: rgba(255, 255, 255, 0.72);
-	--color-success: #34c759;
-	--color-success-light: rgba(52, 199, 89, 0.1);
-
-	/* Typography - SF Pro inspired */
-	--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-	--font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-
-	/* Spacing - 4px/8px base grid */
-	--space-2xs: 0.25rem;
-	--space-xs: 0.5rem;
-	--space-sm: 1rem;
-	--space-md: 1.5rem;
-	--space-lg: 2rem;
-	--space-xl: 3rem;
-	--space-2xl: 4rem;
-	--space-3xl: 6rem;
-	--space-4xl: 8rem;
-
-	/* Animation - Refined Apple-like motion */
 	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 	--ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -53,24 +19,6 @@
 	--duration-normal: 250ms;
 	--duration-slow: 400ms;
 	--duration-slower: 600ms;
-
-	/* Shadows - Subtle depth hierarchy */
-	--shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.02);
-	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-	--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.02);
-	--shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.06), 0 4px 10px rgba(0, 0, 0, 0.04);
-	--shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.04);
-	--shadow-2xl: 0 25px 60px rgba(0, 0, 0, 0.1), 0 12px 30px rgba(0, 0, 0, 0.06);
-	--shadow-glow: 0 0 40px rgba(0, 113, 227, 0.15);
-
-	/* Border Radius - Consistent curves */
-	--radius-xs: 6px;
-	--radius-sm: 10px;
-	--radius-md: 14px;
-	--radius-lg: 18px;
-	--radius-xl: 24px;
-	--radius-2xl: 32px;
-	--radius-full: 9999px;
 }
 
 /* Base Styles */
@@ -83,7 +31,6 @@ html {
 }
 
 body {
-	font-family: var(--font-sans);
 	line-height: 1.65;
 	letter-spacing: -0.011em;
 	font-size: 16px;
@@ -91,7 +38,6 @@ body {
 
 /* Typography System - Refined hierarchy */
 h1, h2, h3, h4, h5, h6 {
-	font-family: var(--font-display);
 	font-weight: 600;
 	letter-spacing: -0.025em;
 	line-height: 1.15;
@@ -119,8 +65,8 @@ p {
 
 /* Selection */
 ::selection {
-	background: var(--color-accent-light);
-	color: var(--color-text);
+	background: oklch(var(--p) / 0.2);
+	color: oklch(var(--bc));
 }
 
 /* Smooth transitions for all interactive elements */
@@ -135,9 +81,9 @@ a {
 }
 
 a:focus-visible {
-	outline: 2px solid var(--color-accent);
+	outline: 2px solid oklch(var(--p));
 	outline-offset: 3px;
-	border-radius: var(--radius-xs);
+	border-radius: 0.375rem;
 }
 
 /* ============================================
@@ -236,7 +182,7 @@ a:focus-visible {
    Refined, purposeful components
    ============================================ */
 
-/* Buttons - Apple-inspired with subtle refinement */
+/* Buttons - Enhanced DaisyUI buttons */
 .btn-primary-custom {
 	display: inline-flex;
 	align-items: center;
@@ -246,10 +192,10 @@ a:focus-visible {
 	font-size: 0.9375rem;
 	font-weight: 500;
 	letter-spacing: -0.01em;
-	color: white;
-	background: var(--color-accent);
+	color: oklch(var(--pc));
+	background: oklch(var(--p));
 	border: none;
-	border-radius: var(--radius-full);
+	border-radius: 9999px;
 	cursor: pointer;
 	transition: all var(--duration-normal) var(--ease-out-expo);
 	text-decoration: none;
@@ -267,9 +213,9 @@ a:focus-visible {
 }
 
 .btn-primary-custom:hover {
-	background: var(--color-accent-hover);
+	background: oklch(var(--p) / 0.9);
 	transform: translateY(-1px);
-	box-shadow: 0 4px 16px rgba(0, 113, 227, 0.25), 0 2px 6px rgba(0, 113, 227, 0.15);
+	box-shadow: 0 4px 16px oklch(var(--p) / 0.3);
 }
 
 .btn-primary-custom:hover::before {
@@ -289,18 +235,18 @@ a:focus-visible {
 	font-size: 0.9375rem;
 	font-weight: 500;
 	letter-spacing: -0.01em;
-	color: var(--color-accent);
+	color: oklch(var(--p));
 	background: transparent;
-	border: 1.5px solid rgba(0, 113, 227, 0.3);
-	border-radius: var(--radius-full);
+	border: 1.5px solid oklch(var(--p) / 0.3);
+	border-radius: 9999px;
 	cursor: pointer;
 	transition: all var(--duration-normal) var(--ease-out-expo);
 	text-decoration: none;
 }
 
 .btn-secondary-custom:hover {
-	background: var(--color-accent-light);
-	border-color: var(--color-accent);
+	background: oklch(var(--p) / 0.1);
+	border-color: oklch(var(--p));
 	transform: translateY(-1px);
 }
 
@@ -315,7 +261,7 @@ a:focus-visible {
 	gap: 0.375rem;
 	font-size: 0.9375rem;
 	font-weight: 500;
-	color: var(--color-accent);
+	color: oklch(var(--p));
 	text-decoration: none;
 	transition: all var(--duration-fast) var(--ease-out-quart);
 }
@@ -332,29 +278,29 @@ a:focus-visible {
 	transform: translateX(2px);
 }
 
-/* Cards - Refined glass morphism */
+/* Cards - Using DaisyUI base colors */
 .card {
-	background: var(--color-card-bg);
+	background: oklch(var(--b1));
 	backdrop-filter: blur(24px) saturate(180%);
 	-webkit-backdrop-filter: blur(24px) saturate(180%);
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius-lg);
-	padding: var(--space-lg);
+	border: 1px solid oklch(var(--bc) / 0.1);
+	border-radius: 1rem;
+	padding: 2rem;
 	transition: all var(--duration-normal) var(--ease-out-expo);
 }
 
 .card:hover {
-	border-color: var(--color-border-hover);
-	box-shadow: var(--shadow-md);
+	border-color: oklch(var(--bc) / 0.2);
+	box-shadow: 0 4px 6px oklch(var(--bc) / 0.05);
 }
 
 /* Project Card - Premium feel */
 .project-card {
-	background: var(--color-bg);
-	border-radius: var(--radius-xl);
-	padding: var(--space-xl);
+	background: oklch(var(--b1));
+	border-radius: 1.5rem;
+	padding: 3rem;
 	transition: all var(--duration-slow) var(--ease-out-expo);
-	border: 1px solid var(--color-border);
+	border: 1px solid oklch(var(--bc) / 0.1);
 	position: relative;
 }
 
@@ -363,7 +309,7 @@ a:focus-visible {
 	position: absolute;
 	inset: 0;
 	border-radius: inherit;
-	background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.02) 100%);
+	background: linear-gradient(180deg, transparent 0%, oklch(var(--bc) / 0.02) 100%);
 	pointer-events: none;
 	opacity: 0;
 	transition: opacity var(--duration-normal);
@@ -371,7 +317,7 @@ a:focus-visible {
 
 .project-card:hover {
 	border-color: transparent;
-	box-shadow: var(--shadow-xl);
+	box-shadow: 0 20px 50px oklch(var(--bc) / 0.1);
 	transform: translateY(-4px);
 }
 
@@ -403,12 +349,12 @@ a:focus-visible {
 
 /* Section Container */
 .section {
-	padding: var(--space-3xl) var(--space-lg);
+	padding: 6rem 2rem;
 }
 
 @media (min-width: 768px) {
 	.section {
-		padding: var(--space-4xl) var(--space-xl);
+		padding: 8rem 3rem;
 	}
 }
 
@@ -416,19 +362,19 @@ a:focus-visible {
 .container-narrow {
 	max-width: 680px;
 	margin: 0 auto;
-	padding: 0 var(--space-md);
+	padding: 0 1.5rem;
 }
 
 .container-wide {
 	max-width: 1120px;
 	margin: 0 auto;
-	padding: 0 var(--space-md);
+	padding: 0 1.5rem;
 }
 
 .container-full {
 	max-width: 1400px;
 	margin: 0 auto;
-	padding: 0 var(--space-md);
+	padding: 0 1.5rem;
 }
 
 /* ============================================
@@ -437,22 +383,22 @@ a:focus-visible {
 
 .gradient-subtle {
 	background: linear-gradient(180deg,
-		var(--color-bg) 0%,
-		var(--color-bg-muted) 100%
+		oklch(var(--b1)) 0%,
+		oklch(var(--b2)) 100%
 	);
 }
 
 .gradient-hero {
 	background:
-		radial-gradient(ellipse 80% 60% at 50% -30%, rgba(0, 113, 227, 0.04), transparent),
-		radial-gradient(ellipse 60% 40% at 80% 0%, rgba(88, 86, 214, 0.03), transparent),
-		var(--color-bg);
+		radial-gradient(ellipse 80% 60% at 50% -30%, oklch(var(--p) / 0.05), transparent),
+		radial-gradient(ellipse 60% 40% at 80% 0%, oklch(var(--s) / 0.03), transparent),
+		oklch(var(--b1));
 }
 
 .gradient-section {
 	background: linear-gradient(180deg,
-		var(--color-bg-subtle) 0%,
-		var(--color-bg) 100%
+		oklch(var(--b2)) 0%,
+		oklch(var(--b1)) 100%
 	);
 }
 
@@ -468,39 +414,26 @@ a:focus-visible {
 	font-weight: 600;
 	letter-spacing: 0.02em;
 	text-transform: uppercase;
-	border-radius: var(--radius-full);
-	background: var(--color-bg-muted);
-	color: var(--color-text-secondary);
+	border-radius: 9999px;
+	background: oklch(var(--b2));
+	color: oklch(var(--bc) / 0.7);
 }
 
 .badge-success {
-	background: var(--color-success-light);
-	color: #059669;
+	background: oklch(var(--su) / 0.15);
+	color: oklch(var(--su));
 }
 
 .badge-muted {
-	background: rgba(134, 134, 139, 0.1);
-	color: var(--color-text-tertiary);
-}
-
-/* ============================================
-   RESPONSIVE UTILITIES
-   ============================================ */
-
-@media (max-width: 768px) {
-	:root {
-		--space-xl: 2rem;
-		--space-2xl: 3rem;
-		--space-3xl: 4rem;
-		--space-4xl: 5rem;
-	}
+	background: oklch(var(--bc) / 0.1);
+	color: oklch(var(--bc) / 0.5);
 }
 
 /* Focus States - Accessibility */
 :focus-visible {
-	outline: 2px solid var(--color-accent);
+	outline: 2px solid oklch(var(--p));
 	outline-offset: 3px;
-	border-radius: var(--radius-xs);
+	border-radius: 0.375rem;
 }
 
 /* Remove focus ring for mouse users */
@@ -550,7 +483,7 @@ img.loaded {
 }
 
 .text-gradient {
-	background: linear-gradient(135deg, var(--color-accent) 0%, #5856d6 100%);
+	background: linear-gradient(135deg, oklch(var(--p)) 0%, oklch(var(--s)) 100%);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
