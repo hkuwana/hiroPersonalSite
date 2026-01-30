@@ -4,16 +4,17 @@
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import LanguageToggle from '$lib/components/LanguageToggle.svelte';
 	import * as m from '$lib/paraglide/messages';
+	import { localizeHref } from '$lib/paraglide/runtime';
 </script>
 
 <header class="header">
 	<div class="header-inner">
 		<nav class="nav">
-			<a href="/" class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname === '/'}>
+			<a href={localizeHref('/')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname === '/' || $page.url.pathname === '/ja'}>
 				{m.nav_home()}
 			</a>
 			<span class="nav-divider"></span>
-			<a href="/essays" class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/essays')}>
+			<a href={localizeHref('/essays')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/essays') || $page.url.pathname.startsWith('/ja/essays')}>
 				{m.nav_essays()}
 			</a>
 		</nav>

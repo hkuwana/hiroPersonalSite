@@ -217,7 +217,7 @@
 			</button>
 
 			<p class="text-base-content/70 text-lg max-w-sm mt-1 leading-relaxed animate-fade-in-up delay-2">
-				{PERSONAL.tagline}
+				{m.hero_tagline()}
 			</p>
 
 			<a href={CONTACT.cal} target="_blank" class="btn btn-primary mt-5 gap-2 animate-fade-in-up delay-3">
