@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS } from '$data/constants';
 	import * as m from '$lib/paraglide/messages';
+	import { goto } from '$app/navigation';
 
 	// For the playful Japanese name easter egg
 	let showMeaning = false;
@@ -220,11 +221,9 @@
 				{m.hero_tagline()}
 			</p>
 
-			<a href={CONTACT.cal} target="_blank" class="btn btn-primary mt-5 gap-2 animate-fade-in-up delay-3">
+			<a href={CONTACT.cal} target="_blank" class="btn btn-primary-outline  mt-5 gap-2 animate-fade-in-up delay-3">
 				{m.hero_lets_talk()}
-				<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-					<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
+				<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
 			</a>
 		</div>
 	</div>
@@ -294,17 +293,13 @@
 								{#if project.link}
 									<a href={project.link} target="_blank" rel="noopener" class="link link-primary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
 										{m.project_visit({ name: project.name })}
-										<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-											<path d="M4.5 11.5L11.5 4.5M11.5 4.5H6M11.5 4.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-										</svg>
+										<span class="icon-[mdi--arrow-top-right] w-3.5 h-3.5"></span>
 									</a>
 								{/if}
 								{#if project.github}
 									<a href={project.github} target="_blank" rel="noopener" class="link link-secondary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
 										GitHub
-										<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-											<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-										</svg>
+										<span class="icon-[mdi--github] w-3.5 h-3.5"></span>
 									</a>
 								{/if}
 							</div>
@@ -456,7 +451,7 @@
 		</div>
 
 		<p class="text-center mt-8 text-sm text-base-content/70">
-			If this site isn't serious enough for you, <a href="/corporate" class="underline hover:text-base-content">click here</a>.
+			If this site isn't serious enough for you, <button onclick={() => goto('/corporate')} class="btn btn-error text-error-content  gap-2">click here</button>.
 		</p>
 	</div>
 </section>
