@@ -1,4 +1,17 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from en!"
+	"nav_home": "Home",
+	"nav_essays": "Essays",
+	"aria_toggle_theme": "Toggle theme",
+	"aria_toggle_language": "Toggle language",
+	"aria_light_mode": "Light mode",
+	"aria_dark_mode": "Dark mode",
+	"hero_tagline": "Building AI as a tool for humanity, not a replacement",
+	"hero_lets_talk": "Let's Talk",
+	"hero_show_pronunciation": "Show Japanese name pronunciation",
+	"projects_heading": "What I'm Building",
+	"project_status_current": "Current Focus",
+	"project_status_sunset": "Sunset",
+	"project_status_active": "Active",
+	"project_visit": "Visit {name}"
 }

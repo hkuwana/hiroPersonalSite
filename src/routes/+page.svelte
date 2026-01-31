@@ -3,6 +3,8 @@
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS } from '$data/constants';
+	import * as m from '$lib/paraglide/messages';
+	import { goto } from '$app/navigation';
 
 	// For the playful Japanese name easter egg
 	let showMeaning = false;
@@ -207,7 +209,7 @@
 				class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1 transition-all duration-300"
 				on:click={() => (showMeaning = !showMeaning)}
 				aria-expanded={showMeaning}
-				aria-label="Show Japanese name pronunciation"
+				aria-label={m.hero_show_pronunciation()}
 			>
 				<span class="text-base font-medium tracking-wide">{PERSONAL.japaneseKanji}</span>
 				{#if showMeaning}
@@ -216,14 +218,12 @@
 			</button>
 
 			<p class="text-base-content/70 text-lg max-w-sm mt-1 leading-relaxed animate-fade-in-up delay-2">
-				{PERSONAL.tagline}
+				{m.hero_tagline()}
 			</p>
 
-			<a href={CONTACT.cal} target="_blank" class="btn btn-primary mt-5 gap-2 animate-fade-in-up delay-3">
-				Let's Talk
-				<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-					<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-				</svg>
+			<a href={CONTACT.cal} target="_blank" class="btn btn-primary-outline  mt-5 gap-2 animate-fade-in-up delay-3">
+				{m.hero_lets_talk()}
+				<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
 			</a>
 		</div>
 	</div>
@@ -244,50 +244,64 @@
 >
 	<div class="max-w-5xl mx-auto">
 		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-12 tracking-tight text-primary">
-			What I'm Building
+			{m.projects_heading()}
 		</h2>
 
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 			{#each projects as project, i}
 				<div
-					class="card border transition-all duration-300 {project.status === 'current'
+					class="card border transition-all duration-300 group {project.status === 'current'
 						? 'bg-gradient-to-b from-success/10 via-base-100 to-base-100 border-success/30 hover:border-success/50 hover:shadow-xl hover:shadow-success/10 hover:-translate-y-2 md:scale-[1.02]'
-						: 'bg-base-100/60 border-base-300/50 hover:border-base-300 hover:bg-base-100 opacity-75 hover:opacity-100'}"
+						: 'bg-base-100 border-base-300/50 hover:border-base-300 hover:bg-base-200/50'}"
 					style="animation-delay: {i * 0.1}s"
 				>
 					<div class="card-body">
 						<!-- Header -->
 						<div class="flex justify-between items-start mb-3">
 							<div class="avatar">
-								<div class="w-12 h-12 rounded-lg shadow-sm overflow-hidden {project.status === 'current' ? 'bg-white' : 'bg-base-200'}">
-									<img
-										src={project.logo}
-										alt="{project.name} logo"
-										class="w-full h-full object-contain {project.status !== 'current' ? 'opacity-60 grayscale-[30%]' : ''}"
-									/>
-								</div>
+								{#if project.logo}
+									<div class="w-12 h-12 rounded-lg shadow-sm overflow-hidden bg-white dark:bg-base-300">
+										<img
+											src={project.logo}
+											alt="{project.name} logo"
+											class="w-full h-full object-contain {project.status !== 'current' ? 'opacity-80 group-hover:opacity-100' : ''}"
+										/>
+									</div>
+								{:else}
+									<!-- Fallback letter logo -->
+									<div class="w-12 h-12 rounded-lg shadow-sm flex items-center justify-center font-bold text-xl"
+										style="background: {project.color}; color: white;">
+										{project.name.charAt(0)}
+									</div>
+								{/if}
 							</div>
 							<div
 								class="badge badge-sm font-semibold uppercase tracking-wide"
 								class:badge-success={project.status === 'current'}
 								class:badge-ghost={project.status !== 'current'}
 							>
-								{project.status === 'current' ? 'Current Focus' : project.status === 'sunset' ? 'Sunset' : 'Active'}
+								{project.status === 'current' ? m.project_status_current() : project.status === 'sunset' ? m.project_status_sunset() : m.project_status_active()}
 							</div>
 						</div>
 
-						<h3 class="card-title text-xl {project.status === 'current' ? 'text-neutral' : 'text-neutral/70'}">{project.name}</h3>
-						<p class="text-sm font-medium {project.status === 'current' ? 'text-primary' : 'text-base-content/50'}">{project.tagline}</p>
-						<p class="text-sm leading-relaxed {project.status === 'current' ? 'text-neutral/70' : 'text-neutral/50'}">{project.description}</p>
+						<h3 class="card-title text-xl text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
+						<p class="text-sm font-medium {project.status === 'current' ? 'text-primary' : 'text-base-content/70 group-hover:text-base-content'}">{project.tagline}</p>
+						<p class="text-sm leading-relaxed text-base-content/60 group-hover:text-base-content/80 transition-colors">{project.description}</p>
 
-						{#if project.link}
-							<div class="card-actions mt-4">
-								<a href={project.link} target="_blank" rel="noopener" class="link link-primary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
-									Visit {project.name}
-									<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-										<path d="M4.5 11.5L11.5 4.5M11.5 4.5H6M11.5 4.5V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-									</svg>
-								</a>
+						{#if project.link || project.github}
+							<div class="card-actions mt-4 flex flex-wrap gap-3">
+								{#if project.link}
+									<a href={project.link} target="_blank" rel="noopener" class="link link-primary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
+										{m.project_visit({ name: project.name })}
+										<span class="icon-[mdi--arrow-top-right] w-3.5 h-3.5"></span>
+									</a>
+								{/if}
+								{#if project.github}
+									<a href={project.github} target="_blank" rel="noopener" class="link link-secondary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
+										GitHub
+										<span class="icon-[mdi--github] w-3.5 h-3.5"></span>
+									</a>
+								{/if}
 							</div>
 						{/if}
 					</div>
@@ -437,7 +451,7 @@
 		</div>
 
 		<p class="text-center mt-8 text-sm text-base-content/70">
-			If this site isn't serious enough for you, <a href="/corporate" class="underline hover:text-base-content">click here</a>.
+			If this site isn't serious enough for you, <button onclick={() => goto('/corporate')} class="btn btn-error text-error-content  gap-2">click here</button>.
 		</p>
 	</div>
 </section>

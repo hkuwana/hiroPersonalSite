@@ -57,15 +57,6 @@ export const PERSONAL = {
 // Projects
 export const PROJECTS = [
 	{
-		name: 'Flybyrd',
-		tagline: 'AI for Venture Capital',
-		description:
-			'Helped VCs discover and analyze startups with AI-powered deal flow analysis. Sunset to focus on new opportunities.',
-		logo: '/flybyrd_logo.png',
-		status: 'sunset',
-		color: '#6b7280',
-	},
-	{
 		name: 'Kaiwa',
 		tagline: 'Language Learning, Reimagined',
 		description:
@@ -74,6 +65,36 @@ export const PROJECTS = [
 		logo: '/kaiwa_logo.png',
 		status: 'current',
 		color: '#10b981',
+	},
+	{
+		name: 'Exonians in Japan',
+		tagline: 'Built in 1.5 Hours',
+		description:
+			'A community platform connecting Exeter alumni in Japan. Rapid prototype showcasing speed and execution.',
+		link: 'https://exoniansjapan.com/',
+		github: 'https://github.com/hkuwana/exonians-in-japan',
+		logo: '/icon-512x512.png',
+		status: 'active',
+		color: '#3b82f6',
+	},
+	{
+		name: 'Kaiwa Reddit Scout',
+		tagline: 'AI-Powered User Discovery',
+		description:
+			'Connects Google Drive, Reddit, and Gemini to find potential users interested in language learning.',
+		github: 'https://github.com/hkuwana/Kaiwa-reddit-scout',
+		logo: '/kaiwa_logo.png',
+		status: 'active',
+		color: '#8b5cf6',
+	},
+	{
+		name: 'Flybyrd',
+		tagline: 'AI for Venture Capital',
+		description:
+			'Helped VCs discover and analyze startups with AI-powered deal flow analysis. Sunset to focus on new opportunities.',
+		logo: '/flybyrd_logo.png',
+		status: 'sunset',
+		color: '#6b7280',
 	},
 	{
 		name: 'Pebblr',
