@@ -19,6 +19,7 @@ export const load: PageLoad = async () => {
 	const essayFiles = import.meta.glob('/src/content/essays/*.md', { eager: true });
 
 	const essays: Essay[] = Object.entries(essayFiles)
+		.filter(([path]) => !path.split('/').pop()?.startsWith('_'))
 		.map(([path, module]) => {
 			const slug = path.split('/').pop()?.replace('.md', '') || '';
 			const { metadata } = module as { metadata: EssayMetadata };
