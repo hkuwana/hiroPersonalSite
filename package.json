@@ -44,6 +44,7 @@
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/adapter-vercel": "^5.10.3",
 		"@tailwindcss/postcss": "^4.1.18",
-		"daisyui": "^5.5.14"
+		"daisyui": "^5.5.14",
+		"mermaid": "^11.12.2"
 	}
 }
