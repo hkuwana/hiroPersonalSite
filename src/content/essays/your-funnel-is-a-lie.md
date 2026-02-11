@@ -9,7 +9,7 @@ STATUS: DRAFT — Fill in the [bracketed sections] with your own words, then del
 When done, remove this comment block and all brackets.
 -->
 
-Everyone with basic marketing knowledge knows the funnel. At the top is where the general audience gets brand awareness, then interest, then conversion, and finally loyalty. They have exposure to your site, some sign up, some become freemium users, some pay, and then it's pretty much done. That's the whole model.
+Everyone with basic marketing knowledge knows [the funnel](https://en.wikipedia.org/wiki/Purchase_funnel). At the top is where the general audience gets brand awareness, then interest, then conversion, and finally loyalty. They have exposure to your site, some sign up, some become freemium users, some pay, and then it's pretty much done. That's the whole model.
 
 But there's a problem. The funnel assumes there's only one path: downwards. It's a nice mental model, but it's not true. Users can go from hating a product to trying it out, liking it, buying it, churning, and then coming back once the product has improved to buy it again. It's not a linear path. It's a loop.
 
@@ -17,16 +17,26 @@ What if, instead of a funnel, we viewed these lifecycles as **Markov chains**?
 
 ## Markov Chains as a Better Model
 
-A Markov Chain (for those unscarred by statistics courses) is really simple. It creates a model of how states relate to each other and the probability of moving between them.
+A [Markov chain](https://en.wikipedia.org/wiki/Markov_chain) (for those unscarred by statistics courses) is really simple.[^1] It creates a model of how states relate to each other and the probability of moving between them.
 
-For example, say we have 4 states: Visitor, Free User, Paid User, and General Audience. There's a chance that a person in one state can move to any other state, and we model it by percentages (e.g., 0.85 means 85%). If we were to show it on a graph (or for technical people, a transitional matrix), it would look something like this:
+For example, say we have 4 states: Visitor, Free User, Paid User, and General Audience. There's a chance that a person in one state can move to any other state, and we model it by percentages (e.g., 0.85 means 85%). If we were to show it on a graph (or for technical people, a [transition matrix](https://en.wikipedia.org/wiki/Stochastic_matrix)), it would look something like this:
 
-| State           | Visitor    | Free User  | Paid User  | General Audience    |
-| --------------- | ---------- | ---------- | ---------- | ------------------- |
-| **General Audience**| 0.02       | 0.00       | 0.00       | 0.98                |
-| **Visitor**         | 0.85       | 0.10       | 0.01       | 0.04                |
-| **Free User**       | 0.05       | 0.70       | 0.05       | 0.20                |
-| **Paid User**       | 0.00       | 0.15       | 0.85       | 0.00                |
+<div style="overflow-x: auto;">
+
+**Transition Probability Matrix**
+
+|                     | → Visitor | → Free User | → Paid User | → General Audience |
+| ------------------- | :-------: | :---------: | :---------: | :----------------: |
+| **General Audience**|   0.02    |    0.00     |    0.00     |        0.98        |
+| **Visitor**         |   0.85    |    0.10     |    0.01     |        0.04        |
+| **Free User**       |   0.05    |    0.70     |    0.05     |        0.20        |
+| **Paid User**       |   0.00    |    0.15     |    0.85     |        0.00        |
+
+*Each row represents the current state, each column represents the next state. Numbers show the probability of transitioning from row state to column state.*
+
+</div>
+
+> **Visualization Tip:** For an even clearer view, you could create a [state diagram](https://en.wikipedia.org/wiki/State_diagram) with circles representing each state and arrows showing transitions between them, with probabilities labeled on the arrows. Tools like [Mermaid](https://mermaid.js.org/) or [D3.js](https://d3js.org/) work great for this.
 
 The thing that makes this useful is that every part of the customer lifecycle is a **state** — general audience, site visitor, free user, paid user, churned — and people move between them in *every* direction. Not just down.
 
@@ -70,8 +80,22 @@ I don't have all the numbers yet. But I know the funnel diagram isn't the right 
 
 ## Technical Note: The Equilibrium Problem
 
-For the more technical readers: yes, we can model each state as a continuous-time Markov chain. At the point of infinity, because the churn is so large, we expect the system to empty out into churn (the absorbing state).
+For the more technical readers: yes, we can model each state as a [continuous-time Markov chain](https://en.wikipedia.org/wiki/Continuous-time_Markov_chain). At the point of infinity, because the churn is so large, we expect the system to empty out into churn (the [absorbing state](https://en.wikipedia.org/wiki/Absorbing_Markov_chain)).[^2]
 
-I haven't figured out a perfect model, but say it's over a defined period of time rather than infinite. Whatever the timeframe, we can weight each state with an expected value or cost of acquisition.
+I haven't figured out a perfect model, but say it's over a defined period of time rather than infinite. Whatever the timeframe, we can weight each state with an expected value or [cost of acquisition](https://en.wikipedia.org/wiki/Customer_acquisition_cost).
 
 I'm still mulling on how to model this better, but I'd love to keep the dialogue going.
+
+---
+
+## References & Further Reading
+
+[^1]: A Markov chain is a stochastic model describing a sequence of possible events where the probability of each event depends only on the state attained in the previous event. Named after Russian mathematician [Andrey Markov](https://en.wikipedia.org/wiki/Andrey_Markov), they're used in everything from Google's PageRank algorithm to predicting weather patterns.
+
+[^2]: In an absorbing Markov chain, an absorbing state is one that, once entered, cannot be left. In SaaS contexts, complete churn (leaving the ecosystem entirely) is often modeled as an absorbing state, though in reality, users can sometimes be reactivated through marketing efforts.
+
+**Additional Resources:**
+- [Introduction to Markov Chains](https://setosa.io/ev/markov-chains/) - Interactive visual explanation
+- [Stochastic Processes and Customer Lifetime Value](https://en.wikipedia.org/wiki/Customer_lifetime_value) - Wikipedia entry on CLV modeling
+- [Using Markov Chains for Marketing Attribution](https://www.jstor.org/stable/41714458) - Academic paper on marketing applications
+- [The Pirate Metrics Framework (AARRR)](https://www.productplan.com/glossary/aarrr-framework/) - Related framework for thinking about user lifecycle stages
