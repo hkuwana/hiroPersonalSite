@@ -207,7 +207,7 @@
 
 			<button
 				class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1 transition-all duration-300"
-				on:click={() => (showMeaning = !showMeaning)}
+				onclick={() => (showMeaning = !showMeaning)}
 				aria-expanded={showMeaning}
 				aria-label={m.hero_show_pronunciation()}
 			>

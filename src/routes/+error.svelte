@@ -40,7 +40,7 @@
 			<div>
 				<button
 					class="btn btn-ghost btn-sm text-base-content/50"
-					on:click={handleUselessClick}
+					onclick={handleUselessClick}
 				>
 					{buttonText}
 				</button>
