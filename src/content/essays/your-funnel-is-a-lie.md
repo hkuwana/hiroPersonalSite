@@ -41,8 +41,6 @@ For example, say we have 4 states: Visitor, Free User, Paid User, and General Au
 
 </div>
 
-> **Visualization Tip:** For an even clearer view, you could create a [state diagram](https://en.wikipedia.org/wiki/State_diagram) with circles representing each state and arrows showing transitions between them, with probabilities labeled on the arrows. Tools like [Mermaid](https://mermaid.js.org/) or [D3.js](https://d3js.org/) work great for this.
-
 <Mermaid chart={`
 stateDiagram-v2
     direction LR
@@ -81,7 +79,7 @@ I've had free users who have churned, come back to try the product again, and th
 
 ## The Cost of Transition
 
-The most important part is combining these states with price variables. Most people just look at percentages — "we convert 5% of free to paid." Okay. But what does it cost to change that number?
+The most important part is combining these states with price variables. Most people just look at percentages, like "we convert 5% of free to paid." Okay. But what does it cost to change that number?
 
 What if we could combine every single Markov chain transition as a function, where the input is the amount of resources needed to increase that transition rate, and the output directly affects the equilibrium of the whole system?
 
