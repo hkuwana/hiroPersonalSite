@@ -1,5 +1,6 @@
 <script>
 	import Header from '../lib/components/header.svelte';
+	import LanguageToast from '$lib/components/LanguageToast.svelte';
 	import '../style.css';
 	let { children } = $props();
 </script>
@@ -17,6 +18,8 @@
 	<main>
 		{@render children()}
 	</main>
+
+	<LanguageToast />
 <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
   <aside>
   	<p class="footer-text text-secondary text-center w-full">

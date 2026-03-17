@@ -13,5 +13,6 @@
 	"project_status_current": "Current Focus",
 	"project_status_sunset": "Sunset",
 	"project_status_active": "Active",
-	"project_visit": "Visit {name}"
+	"project_visit": "Visit {name}",
+	"toast_language_changed": "Language changed to English"
 }

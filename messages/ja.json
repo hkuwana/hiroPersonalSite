@@ -13,5 +13,6 @@
 	"project_status_current": "現在の注力事項",
 	"project_status_sunset": "終了",
 	"project_status_active": "稼働中",
-	"project_visit": "{name}を見る"
+	"project_visit": "{name}を見る",
+	"toast_language_changed": "言語を日本語に変更しました"
 }

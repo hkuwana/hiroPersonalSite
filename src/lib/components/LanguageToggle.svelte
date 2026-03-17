@@ -16,6 +16,12 @@
 	// Generate localized hrefs
 	const enHref = $derived(localizeHref(currentPath, { locale: 'en' }));
 	const jaHref = $derived(localizeHref(currentPath, { locale: 'ja' }));
+
+	function onLanguageClick(targetLang: string) {
+		if (targetLang !== currentLang) {
+			sessionStorage.setItem('languageChanged', 'true');
+		}
+	}
 </script>
 
 <div class="language-toggle" role="group" aria-label={m.aria_toggle_language()}>
@@ -26,6 +32,7 @@
 		class:active={currentLang === 'en'}
 		aria-label="English"
 		aria-current={currentLang === 'en' ? 'true' : undefined}
+		onclick={() => onLanguageClick('en')}
 	>
 		<FlagIcon countryCode="us" size="h-5 w-5" />
 	</a>
@@ -37,6 +44,7 @@
 		class:active={currentLang === 'ja'}
 		aria-label="日本語"
 		aria-current={currentLang === 'ja' ? 'true' : undefined}
+		onclick={() => onLanguageClick('ja')}
 	>
 		<FlagIcon countryCode="jp" size="h-5 w-5" />
 	</a>
