@@ -326,14 +326,19 @@ END:VCALENDAR`;
 	}
 
 	function formatTime(hour: number, minute: number): string {
-		const h = hour % 12 || 12;
-		const ampm = hour < 12 ? 'AM' : 'PM';
-		const m = minute.toString().padStart(2, '0');
-		return `${h}:${m} ${ampm}`;
+		return formatTime24(hour, minute);
 	}
 
 	function formatTime24(hour: number, minute: number): string {
 		return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+	}
+
+	function toGmt(hour: number, minute: number): { hour: number; minute: number } {
+		const offset = getTimezoneOffset(selectedTimezone);
+		let gmtHour = hour - offset;
+		if (gmtHour < 0) gmtHour += 24;
+		if (gmtHour >= 24) gmtHour -= 24;
+		return { hour: gmtHour, minute };
 	}
 
 	// Parse events from ICS text for preview
@@ -909,10 +914,15 @@ END:VCALENDAR`;
 				<div class="calendar-grid">
 					<!-- Time column -->
 					<div class="time-column">
-						<div class="day-header-cell"></div>
+						<div class="day-header-cell time-header-dual">
+							<span class="tz-gmt-label">GMT</span>
+							<span class="tz-local-label">{TIMEZONE_OPTIONS.find(t => t.value === selectedTimezone)?.label.split(' ')[0] ?? 'Local'}</span>
+						</div>
 						{#each timeSlots as hour}
-							<div class="time-label">
-								{formatTime(hour, 0)}
+							{@const gmt = toGmt(hour, 0)}
+							<div class="time-label time-label-dual">
+								<span class="time-gmt">{formatTime24(gmt.hour, gmt.minute)}</span>
+								<span class="time-local">{formatTime24(hour, 0)}</span>
 							</div>
 						{/each}
 					</div>
@@ -1202,8 +1212,8 @@ END:VCALENDAR`;
 
 	.calendar-grid {
 		display: grid;
-		grid-template-columns: 80px repeat(7, 1fr);
-		min-width: 700px;
+		grid-template-columns: 120px repeat(7, 1fr);
+		min-width: 740px;
 	}
 
 	.time-column {
@@ -1253,6 +1263,45 @@ END:VCALENDAR`;
 		color: oklch(var(--bc) / 0.45);
 		font-variant-numeric: tabular-nums;
 		border-bottom: 1px solid oklch(var(--bc) / 0.05);
+	}
+
+	.time-label-dual {
+		justify-content: space-between;
+		padding: 2px 6px 0 6px;
+		gap: 4px;
+	}
+
+	.time-gmt {
+		color: oklch(var(--bc) / 0.3);
+		font-size: 0.625rem;
+	}
+
+	.time-local {
+		color: oklch(var(--bc) / 0.6);
+		font-weight: 600;
+		font-size: 0.6875rem;
+	}
+
+	.time-header-dual {
+		display: flex;
+		justify-content: space-between;
+		padding: 0.75rem 6px;
+	}
+
+	.tz-gmt-label,
+	.tz-local-label {
+		font-size: 0.625rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-weight: 700;
+	}
+
+	.tz-gmt-label {
+		color: oklch(var(--bc) / 0.3);
+	}
+
+	.tz-local-label {
+		color: oklch(var(--bc) / 0.6);
 	}
 
 	.day-column {
