@@ -17,6 +17,10 @@
 			<a href={localizeHref('/essays')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/essays') || $page.url.pathname.startsWith('/ja/essays')}>
 				{m.nav_essays()}
 			</a>
+			<span class="nav-divider"></span>
+			<a href={localizeHref('/ics-validator')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/ics-validator')}>
+				Tools
+			</a>
 		</nav>
 
 		<div class="socials-wrapper">
