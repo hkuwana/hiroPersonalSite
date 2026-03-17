@@ -107,6 +107,18 @@ export const PROJECTS = [
 	},
 ] as const;
 
+// Tools & Experiments - One-off projects and utilities
+export const TOOLS = [
+	{
+		name: 'ICS Validator & Fixer',
+		description:
+			'Paste or upload any .ics calendar file — auto-fixes missing timezones, UIDs, line folding, and other issues. Includes a weekly calendar preview with timezone conversion.',
+		href: '/ics-validator',
+		icon: 'calendar',
+		color: '#6366f1',
+	},
+] as const;
+
 // Expertise Areas
 export const EXPERTISE = [
 	'Artificial Intelligence',

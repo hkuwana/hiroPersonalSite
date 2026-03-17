@@ -2,7 +2,7 @@
 	import hiroProfile from '$lib/images/Hiro_profile_shot.png';
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
-	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS } from '$data/constants';
+	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS, TOOLS } from '$data/constants';
 	import * as m from '$lib/paraglide/messages';
 	import { goto } from '$app/navigation';
 
@@ -351,11 +351,81 @@
 	</div>
 </section>
 
-<!-- FAQ Section -->
+<!-- Tools & Experiments Section -->
 <section
-	class="section-animate py-28 md:py-36 px-8 bg-base-200/50"
+	class="section-animate py-24 md:py-28 px-8 bg-base-200/50"
 	bind:this={sections[3]}
 	class:visible={visibleSections.has(3)}
+>
+	<div class="max-w-4xl mx-auto">
+		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-3 tracking-tight text-primary">
+			Tools & Experiments
+		</h2>
+		<p class="text-base-content/60 text-center mb-12 text-sm max-w-md mx-auto">
+			One-off utilities and side projects I've built. Feel free to use them.
+		</p>
+
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+			{#each TOOLS as tool, i}
+				<a
+					href={tool.href}
+					class="group card bg-base-100 border border-base-300/50 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300"
+					style="animation-delay: {i * 0.1}s"
+				>
+					<div class="card-body gap-3">
+						<div class="flex items-center gap-3">
+							<div
+								class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+								style="background: {tool.color}15; color: {tool.color};"
+							>
+								{#if tool.icon === 'calendar'}
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+										<line x1="16" y1="2" x2="16" y2="6" />
+										<line x1="8" y1="2" x2="8" y2="6" />
+										<line x1="3" y1="10" x2="21" y2="10" />
+										<path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" />
+									</svg>
+								{:else}
+									<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+									</svg>
+								{/if}
+							</div>
+							<h3 class="font-semibold text-base text-base-content group-hover:text-primary transition-colors">{tool.name}</h3>
+						</div>
+						<p class="text-sm text-base-content/60 leading-relaxed group-hover:text-base-content/80 transition-colors">{tool.description}</p>
+						<div class="flex items-center gap-1.5 text-primary text-sm font-medium mt-auto pt-2">
+							<span>Try it out</span>
+							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
+								<path d="M5 12h14M12 5l7 7-7 7" />
+							</svg>
+						</div>
+					</div>
+				</a>
+			{/each}
+
+			<!-- Placeholder for future tools -->
+			<div class="card border border-dashed border-base-300/50 bg-base-100/50">
+				<div class="card-body items-center justify-center text-center gap-2 py-8">
+					<div class="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center text-base-content/30">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<line x1="12" y1="5" x2="12" y2="19" />
+							<line x1="5" y1="12" x2="19" y2="12" />
+						</svg>
+					</div>
+					<p class="text-sm text-base-content/40">More coming soon</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- FAQ Section -->
+<section
+	class="section-animate py-28 md:py-36 px-8 bg-base-100"
+	bind:this={sections[4]}
+	class:visible={visibleSections.has(4)}
 >
 	<div class="max-w-2xl mx-auto">
 		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-4 tracking-tight text-primary">
