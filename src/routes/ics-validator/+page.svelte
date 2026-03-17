@@ -7,6 +7,53 @@
 	let fixedIcs = $state('');
 	let hasValidated = $state(false);
 	let isDragging = $state(false);
+	let activeTab = $state<'editor' | 'preview'>('editor');
+	let selectedTimezone = $state('Asia/Tokyo');
+	let showResults = $state(false);
+
+	// Parsed events for calendar preview
+	interface CalendarEvent {
+		summary: string;
+		description: string;
+		dtstart: Date;
+		dtend: Date;
+		rrule?: string;
+		days?: string[];
+		tzid?: string;
+	}
+
+	let parsedEvents: CalendarEvent[] = $state([]);
+
+	const TIMEZONE_OPTIONS = [
+		{ value: 'Asia/Tokyo', label: 'Tokyo (JST)', offset: 9 },
+		{ value: 'Asia/Seoul', label: 'Seoul (KST)', offset: 9 },
+		{ value: 'Asia/Shanghai', label: 'Shanghai (CST)', offset: 8 },
+		{ value: 'Asia/Singapore', label: 'Singapore (SGT)', offset: 8 },
+		{ value: 'America/New_York', label: 'New York (ET)', offset: -5 },
+		{ value: 'America/Chicago', label: 'Chicago (CT)', offset: -6 },
+		{ value: 'America/Denver', label: 'Denver (MT)', offset: -7 },
+		{ value: 'America/Los_Angeles', label: 'Los Angeles (PT)', offset: -8 },
+		{ value: 'Europe/London', label: 'London (GMT/BST)', offset: 0 },
+		{ value: 'Europe/Paris', label: 'Paris (CET)', offset: 1 },
+		{ value: 'Europe/Berlin', label: 'Berlin (CET)', offset: 1 },
+		{ value: 'Australia/Sydney', label: 'Sydney (AEST)', offset: 10 },
+		{ value: 'Pacific/Auckland', label: 'Auckland (NZST)', offset: 12 },
+	];
+
+	const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+	const DAY_FULL_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	const RRULE_DAY_MAP: Record<string, number> = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
+
+	// Color palette for events
+	const EVENT_COLORS = [
+		'bg-primary/15 border-primary/30 text-primary',
+		'bg-secondary/15 border-secondary/30 text-secondary',
+		'bg-accent/15 border-accent/30 text-accent',
+		'bg-info/15 border-info/30 text-info',
+		'bg-success/15 border-success/30 text-success',
+		'bg-warning/15 border-warning/30 text-warning',
+		'bg-error/15 border-error/30 text-error',
+	];
 
 	const SAMPLE_ICS = `BEGIN:VCALENDAR
 VERSION:2.0
@@ -194,10 +241,17 @@ END:VCALENDAR`;
 			visible = true;
 		});
 		icsInput = SAMPLE_ICS;
+		// Try to detect user's timezone
+		try {
+			const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+			const match = TIMEZONE_OPTIONS.find(tz => tz.value === userTz);
+			if (match) selectedTimezone = userTz;
+		} catch {
+			// keep default
+		}
 	});
 
 	function normalize(text: string): string {
-		// Unfold continuation lines first, then normalize endings
 		return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n[ \t]/g, '');
 	}
 
@@ -244,6 +298,157 @@ END:VCALENDAR`;
 		return null;
 	}
 
+	// Parse ICS datetime string like 20260316T080000
+	function parseIcsDate(dtStr: string): Date {
+		const year = parseInt(dtStr.substring(0, 4));
+		const month = parseInt(dtStr.substring(4, 6)) - 1;
+		const day = parseInt(dtStr.substring(6, 8));
+		const hour = parseInt(dtStr.substring(9, 11));
+		const minute = parseInt(dtStr.substring(11, 13));
+		return new Date(year, month, day, hour, minute);
+	}
+
+	// Convert time between timezones (simplified offset-based)
+	function getTimezoneOffset(tz: string): number {
+		const found = TIMEZONE_OPTIONS.find(t => t.value === tz);
+		return found ? found.offset : 0;
+	}
+
+	function convertTime(hour: number, minute: number, fromTz: string, toTz: string): { hour: number; minute: number } {
+		const fromOffset = getTimezoneOffset(fromTz);
+		const toOffset = getTimezoneOffset(toTz);
+		const diff = toOffset - fromOffset;
+		let newHour = hour + diff;
+		let newMinute = minute;
+		if (newHour < 0) newHour += 24;
+		if (newHour >= 24) newHour -= 24;
+		return { hour: newHour, minute: newMinute };
+	}
+
+	function formatTime(hour: number, minute: number): string {
+		const h = hour % 12 || 12;
+		const ampm = hour < 12 ? 'AM' : 'PM';
+		const m = minute.toString().padStart(2, '0');
+		return `${h}:${m} ${ampm}`;
+	}
+
+	function formatTime24(hour: number, minute: number): string {
+		return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+	}
+
+	// Parse events from ICS text for preview
+	function parseEventsFromIcs(text: string) {
+		const content = normalize(text);
+		const lines = content.split('\n');
+		const events: CalendarEvent[] = [];
+		let inEvent = false;
+		let currentEvent: Partial<CalendarEvent> = {};
+		let currentTzid = '';
+
+		for (const line of lines) {
+			if (line === 'BEGIN:VEVENT') {
+				inEvent = true;
+				currentEvent = {};
+				currentTzid = '';
+				continue;
+			}
+			if (line === 'END:VEVENT') {
+				if (currentEvent.summary && currentEvent.dtstart && currentEvent.dtend) {
+					currentEvent.tzid = currentTzid || 'Asia/Tokyo';
+					events.push(currentEvent as CalendarEvent);
+				}
+				inEvent = false;
+				continue;
+			}
+			if (!inEvent) continue;
+
+			if (line.startsWith('SUMMARY:')) {
+				currentEvent.summary = line.substring(8);
+			} else if (line.startsWith('DESCRIPTION:')) {
+				currentEvent.description = line.substring(12);
+			} else if (line.startsWith('DTSTART')) {
+				const tzMatch = line.match(/TZID=([^:;]+)/);
+				if (tzMatch) currentTzid = TZID_ALIASES[tzMatch[1]] || tzMatch[1];
+				const dateMatch = line.match(/(\d{8}T\d{6})/);
+				if (dateMatch) currentEvent.dtstart = parseIcsDate(dateMatch[1]);
+			} else if (line.startsWith('DTEND')) {
+				const dateMatch = line.match(/(\d{8}T\d{6})/);
+				if (dateMatch) currentEvent.dtend = parseIcsDate(dateMatch[1]);
+			} else if (line.startsWith('RRULE:')) {
+				currentEvent.rrule = line.substring(6);
+				const bydayMatch = line.match(/BYDAY=([^;]+)/);
+				if (bydayMatch) {
+					currentEvent.days = bydayMatch[1].split(',').map(d => d.replace(/^-?\d+/, ''));
+				}
+			}
+		}
+
+		parsedEvents = events;
+	}
+
+	// Get events for a specific day of the week (0=Sun, 6=Sat) converted to selected timezone
+	function getEventsForDay(dayIndex: number): { event: CalendarEvent; startHour: number; startMin: number; endHour: number; endMin: number; colorClass: string }[] {
+		const dayCode = VALID_DAYS[dayIndex];
+		const result: { event: CalendarEvent; startHour: number; startMin: number; endHour: number; endMin: number; colorClass: string }[] = [];
+
+		for (let i = 0; i < parsedEvents.length; i++) {
+			const ev = parsedEvents[i];
+			const eventDays = ev.days || [];
+
+			if (!eventDays.includes(dayCode)) continue;
+
+			const startH = ev.dtstart.getHours();
+			const startM = ev.dtstart.getMinutes();
+			const endH = ev.dtend.getHours();
+			const endM = ev.dtend.getMinutes();
+
+			const fromTz = ev.tzid || 'Asia/Tokyo';
+			const converted_start = convertTime(startH, startM, fromTz, selectedTimezone);
+			const converted_end = convertTime(endH, endM, fromTz, selectedTimezone);
+
+			result.push({
+				event: ev,
+				startHour: converted_start.hour,
+				startMin: converted_start.minute,
+				endHour: converted_end.hour,
+				endMin: converted_end.minute,
+				colorClass: EVENT_COLORS[i % EVENT_COLORS.length],
+			});
+		}
+
+		// Sort by start time
+		result.sort((a, b) => a.startHour * 60 + a.startMin - (b.startHour * 60 + b.startMin));
+		return result;
+	}
+
+	// Get stats from parsed events
+	function getEventStats() {
+		if (parsedEvents.length === 0) return null;
+
+		let totalMinutesPerWeek = 0;
+		const dayDistribution: Record<string, number> = {};
+
+		for (const ev of parsedEvents) {
+			const duration = (ev.dtend.getTime() - ev.dtstart.getTime()) / (1000 * 60);
+			const days = ev.days || [];
+			totalMinutesPerWeek += duration * days.length;
+
+			for (const d of days) {
+				dayDistribution[d] = (dayDistribution[d] || 0) + duration;
+			}
+		}
+
+		const busiestDay = Object.entries(dayDistribution).sort((a, b) => b[1] - a[1])[0];
+		const busiestDayName = busiestDay ? DAY_FULL_NAMES[RRULE_DAY_MAP[busiestDay[0]]] : 'N/A';
+
+		return {
+			totalEvents: parsedEvents.length,
+			totalHoursPerWeek: Math.round(totalMinutesPerWeek / 60 * 10) / 10,
+			busiestDay: busiestDayName,
+			busiestDayHours: busiestDay ? Math.round(busiestDay[1] / 60 * 10) / 10 : 0,
+		};
+	}
+
 	function validateAndFix() {
 		issues = [];
 		let content = icsInput.trim();
@@ -259,28 +464,22 @@ END:VCALENDAR`;
 		let lines = content.split('\n');
 
 		// === STRUCTURAL FIXES ===
-
-		// Fix: Missing BEGIN:VCALENDAR
 		if (!lines[0]?.startsWith('BEGIN:VCALENDAR')) {
 			lines.unshift('BEGIN:VCALENDAR');
 			issues.push({ type: 'fixed', message: 'Added missing BEGIN:VCALENDAR.' });
 		}
 
-		// Fix: Missing END:VCALENDAR
 		if (!lines[lines.length - 1]?.startsWith('END:VCALENDAR')) {
 			lines.push('END:VCALENDAR');
 			issues.push({ type: 'fixed', message: 'Added missing END:VCALENDAR.' });
 		}
 
-		// Fix: Missing VERSION
 		const hasVersion = lines.some((l) => l.startsWith('VERSION:'));
 		if (!hasVersion) {
-			// Insert after BEGIN:VCALENDAR
 			lines.splice(1, 0, 'VERSION:2.0');
 			issues.push({ type: 'fixed', message: 'Added missing VERSION:2.0.' });
 		}
 
-		// Fix: Missing PRODID
 		const hasProdid = lines.some((l) => l.startsWith('PRODID:'));
 		if (!hasProdid) {
 			const versionIdx = lines.findIndex((l) => l.startsWith('VERSION:'));
@@ -288,7 +487,6 @@ END:VCALENDAR`;
 			issues.push({ type: 'fixed', message: 'Added missing PRODID.' });
 		}
 
-		// Fix: Missing CALSCALE
 		const hasCalscale = lines.some((l) => l.startsWith('CALSCALE:'));
 		if (!hasCalscale) {
 			const prodidIdx = lines.findIndex((l) => l.startsWith('PRODID:'));
@@ -297,7 +495,6 @@ END:VCALENDAR`;
 		}
 
 		// === TIMEZONE ALIAS NORMALIZATION ===
-		// Replace invalid TZID aliases (EST, PST, JST, etc.) with IANA names
 		const aliasesFixed = new Set<string>();
 		lines = lines.map((line) => {
 			const match = line.match(/TZID=([^:;]+)/);
@@ -322,7 +519,6 @@ END:VCALENDAR`;
 			if (match) referencedTzids.add(match[1]);
 		}
 
-		// Check existing VTIMEZONE definitions
 		const definedTzids = new Set<string>();
 		for (let i = 0; i < lines.length; i++) {
 			if (lines[i] === 'BEGIN:VTIMEZONE') {
@@ -334,7 +530,6 @@ END:VCALENDAR`;
 			}
 		}
 
-		// Add missing VTIMEZONE blocks
 		const missingTzids = [...referencedTzids].filter((tz) => !definedTzids.has(tz));
 		if (missingTzids.length > 0) {
 			const tzBlocks: string[] = [];
@@ -351,7 +546,6 @@ END:VCALENDAR`;
 			}
 
 			if (tzBlocks.length > 0) {
-				// Find insert point: after last header property, before first component
 				let insertIdx = 0;
 				for (let i = 0; i < lines.length; i++) {
 					if (/^(VERSION|PRODID|CALSCALE|METHOD|X-):/.test(lines[i])) {
@@ -374,7 +568,6 @@ END:VCALENDAR`;
 		let componentHasUid = false;
 		let componentHasDtstamp = false;
 		let componentHasDtstart = false;
-		let componentHasDtend = false;
 
 		for (const line of lines) {
 			if (/^BEGIN:(VEVENT|VTODO|VJOURNAL|VFREEBUSY)$/.test(line)) {
@@ -384,13 +577,11 @@ END:VCALENDAR`;
 				componentHasUid = false;
 				componentHasDtstamp = false;
 				componentHasDtstart = false;
-				componentHasDtend = false;
 				eventCount++;
 				continue;
 			}
 
 			if (inComponent && line === `END:${componentType}`) {
-				// Validate and fix this component
 				if (!componentHasUid) {
 					componentLines.push(`UID:${generateUid()}`);
 					issues.push({ type: 'fixed', message: `${componentType} #${eventCount}: Added missing UID.` });
@@ -403,7 +594,6 @@ END:VCALENDAR`;
 					issues.push({ type: 'error', message: `${componentType} #${eventCount}: Missing DTSTART — cannot auto-fix.` });
 				}
 
-				// Validate RRULE if present
 				for (const cl of componentLines) {
 					if (cl.startsWith('RRULE:')) {
 						const rruleError = validateRrule(cl);
@@ -424,7 +614,6 @@ END:VCALENDAR`;
 				if (line.startsWith('UID:')) componentHasUid = true;
 				if (line.startsWith('DTSTAMP:')) componentHasDtstamp = true;
 				if (line.startsWith('DTSTART')) componentHasDtstart = true;
-				if (line.startsWith('DTEND')) componentHasDtend = true;
 				componentLines.push(line);
 			} else {
 				fixedLines.push(line);
@@ -465,10 +654,8 @@ END:VCALENDAR`;
 			issues.push({ type: 'fixed', message: `Folded ${foldCount} long line(s) to comply with 75-octet limit.` });
 		}
 
-		// Convert to CRLF for RFC 5545 compliance
 		fixedIcs = foldedLines.join('\r\n') + '\r\n';
 
-		// Summary
 		const errors = issues.filter((i) => i.type === 'error').length;
 		const warnings = issues.filter((i) => i.type === 'warning').length;
 		const fixes = issues.filter((i) => i.type === 'fixed').length;
@@ -477,7 +664,15 @@ END:VCALENDAR`;
 			issues.push({ type: 'fixed', message: 'ICS file is valid — no issues found!' });
 		}
 
+		// Parse events for preview
+		parseEventsFromIcs(fixedIcs || icsInput);
+
 		hasValidated = true;
+		showResults = true;
+		// Switch to preview tab after validation
+		if (parsedEvents.length > 0) {
+			activeTab = 'preview';
+		}
 	}
 
 	function downloadIcs() {
@@ -503,6 +698,7 @@ END:VCALENDAR`;
 			hasValidated = false;
 			issues = [];
 			fixedIcs = '';
+			parsedEvents = [];
 		};
 		reader.readAsText(file);
 	}
@@ -518,6 +714,7 @@ END:VCALENDAR`;
 			hasValidated = false;
 			issues = [];
 			fixedIcs = '';
+			parsedEvents = [];
 		};
 		reader.readAsText(file);
 	}
@@ -536,6 +733,9 @@ END:VCALENDAR`;
 		hasValidated = false;
 		issues = [];
 		fixedIcs = '';
+		parsedEvents = [];
+		showResults = false;
+		activeTab = 'editor';
 	}
 
 	function loadSample() {
@@ -543,7 +743,14 @@ END:VCALENDAR`;
 		hasValidated = false;
 		issues = [];
 		fixedIcs = '';
+		parsedEvents = [];
+		showResults = false;
 	}
+
+	// Generate time slots from 6 AM to 11 PM
+	const timeSlots = Array.from({ length: 18 }, (_, i) => i + 6);
+
+	let selectedEvent = $state<CalendarEvent | null>(null);
 </script>
 
 <svelte:head>
@@ -564,56 +771,233 @@ END:VCALENDAR`;
 	</header>
 
 	<div class="ics-container">
-		<!-- Input section -->
-		<div
-			class="input-section"
-			class:dragging={isDragging}
-			ondrop={handleDrop}
-			ondragover={handleDragOver}
-			ondragleave={handleDragLeave}
-			role="region"
-			aria-label="ICS file input"
-		>
-			<div class="input-actions">
-				<label class="btn btn-sm btn-outline btn-secondary upload-btn">
-					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-						<polyline points="17 8 12 3 7 8" />
-						<line x1="12" y1="3" x2="12" y2="15" />
-					</svg>
-					Upload .ics
-					<input
-						type="file"
-						accept=".ics,.ical,.ifb,.icalendar"
-						onchange={handleFileUpload}
-						class="hidden"
-					/>
-				</label>
-				<button class="btn btn-sm btn-outline btn-secondary" onclick={loadSample}>
-					Load Sample
-				</button>
-				<button class="btn btn-sm btn-ghost text-secondary" onclick={clearInput}>Clear</button>
-			</div>
+		<!-- Tab navigation -->
+		<div role="tablist" class="tabs tabs-bordered tabs-lg">
+			<button
+				role="tab"
+				class="tab"
+				class:tab-active={activeTab === 'editor'}
+				onclick={() => activeTab = 'editor'}
+			>
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2">
+					<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+					<polyline points="14 2 14 8 20 8" />
+					<line x1="16" y1="13" x2="8" y2="13" />
+					<line x1="16" y1="17" x2="8" y2="17" />
+				</svg>
+				Editor
+			</button>
+			<button
+				role="tab"
+				class="tab"
+				class:tab-active={activeTab === 'preview'}
+				onclick={() => activeTab = 'preview'}
+				disabled={parsedEvents.length === 0}
+			>
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2">
+					<rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+					<line x1="16" y1="2" x2="16" y2="6" />
+					<line x1="8" y1="2" x2="8" y2="6" />
+					<line x1="3" y1="10" x2="21" y2="10" />
+				</svg>
+				Week Preview
+				{#if parsedEvents.length > 0}
+					<span class="badge badge-sm badge-primary ml-2">{parsedEvents.length}</span>
+				{/if}
+			</button>
+		</div>
 
-			<div class="textarea-wrapper" class:dragging={isDragging}>
-				{#if isDragging}
-					<div class="drop-overlay">
-						<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+		<!-- Editor tab -->
+		{#if activeTab === 'editor'}
+			<div
+				class="input-section"
+				class:dragging={isDragging}
+				ondrop={handleDrop}
+				ondragover={handleDragOver}
+				ondragleave={handleDragLeave}
+				role="region"
+				aria-label="ICS file input"
+			>
+				<div class="input-actions">
+					<label class="btn btn-sm btn-outline btn-secondary upload-btn">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
 							<polyline points="17 8 12 3 7 8" />
 							<line x1="12" y1="3" x2="12" y2="15" />
 						</svg>
-						<span>Drop your .ics file here</span>
-					</div>
-				{/if}
-				<textarea
-					class="textarea textarea-bordered ics-textarea"
-					placeholder="Paste your .ics file content here, or drag & drop a file..."
-					bind:value={icsInput}
-					rows="18"
-				></textarea>
+						Upload .ics
+						<input
+							type="file"
+							accept=".ics,.ical,.ifb,.icalendar"
+							onchange={handleFileUpload}
+							class="hidden"
+						/>
+					</label>
+					<button class="btn btn-sm btn-outline btn-secondary" onclick={loadSample}>
+						Load Sample
+					</button>
+					<button class="btn btn-sm btn-ghost text-secondary" onclick={clearInput}>Clear</button>
+				</div>
+
+				<div class="textarea-wrapper" class:dragging={isDragging}>
+					{#if isDragging}
+						<div class="drop-overlay">
+							<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+								<polyline points="17 8 12 3 7 8" />
+								<line x1="12" y1="3" x2="12" y2="15" />
+							</svg>
+							<span>Drop your .ics file here</span>
+						</div>
+					{/if}
+					<textarea
+						class="textarea textarea-bordered ics-textarea"
+						placeholder="Paste your .ics file content here, or drag & drop a file..."
+						bind:value={icsInput}
+						rows="18"
+					></textarea>
+				</div>
 			</div>
-		</div>
+		{/if}
+
+		<!-- Preview tab -->
+		{#if activeTab === 'preview' && parsedEvents.length > 0}
+			<!-- Timezone selector -->
+			<div class="tz-bar">
+				<div class="tz-selector">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<circle cx="12" cy="12" r="10" />
+						<line x1="2" y1="12" x2="22" y2="12" />
+						<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+					</svg>
+					<select
+						class="select select-bordered select-sm"
+						bind:value={selectedTimezone}
+					>
+						{#each TIMEZONE_OPTIONS as tz}
+							<option value={tz.value}>
+								{tz.label} (UTC{tz.offset >= 0 ? '+' : ''}{tz.offset})
+							</option>
+						{/each}
+					</select>
+				</div>
+
+				<!-- Stats badges -->
+				{#if getEventStats()}
+					{@const stats = getEventStats()}
+					{#if stats}
+						<div class="stats-badges">
+							<div class="badge badge-outline gap-1">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /></svg>
+								{stats.totalEvents} events
+							</div>
+							<div class="badge badge-outline gap-1">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+								{stats.totalHoursPerWeek}h/week
+							</div>
+							<div class="badge badge-outline gap-1">
+								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+								Busiest: {stats.busiestDay} ({stats.busiestDayHours}h)
+							</div>
+						</div>
+					{/if}
+				{/if}
+			</div>
+
+			<!-- Weekly calendar grid -->
+			<div class="calendar-container">
+				<div class="calendar-grid">
+					<!-- Time column -->
+					<div class="time-column">
+						<div class="day-header-cell"></div>
+						{#each timeSlots as hour}
+							<div class="time-label">
+								{formatTime(hour, 0)}
+							</div>
+						{/each}
+					</div>
+
+					<!-- Day columns -->
+					{#each [0, 1, 2, 3, 4, 5, 6] as dayIdx}
+						{@const dayEvents = getEventsForDay(dayIdx)}
+						<div class="day-column">
+							<div class="day-header-cell">
+								<span class="day-name">{DAY_NAMES[dayIdx]}</span>
+								{#if dayEvents.length > 0}
+									<span class="day-event-count">{dayEvents.length}</span>
+								{/if}
+							</div>
+							<div class="day-slots">
+								{#each timeSlots as hour}
+									<div class="time-slot"></div>
+								{/each}
+
+								<!-- Overlay events -->
+								{#each dayEvents as ev}
+									{@const startMinutes = (ev.startHour - 6) * 60 + ev.startMin}
+									{@const endMinutes = (ev.endHour - 6) * 60 + ev.endMin}
+									{@const duration = endMinutes - startMinutes}
+									{@const topPercent = (startMinutes / (18 * 60)) * 100}
+									{@const heightPercent = (duration / (18 * 60)) * 100}
+									<!-- svelte-ignore a11y_click_events_have_key_events -->
+									<!-- svelte-ignore a11y_no_static_element_interactions -->
+									<div
+										class="calendar-event {ev.colorClass}"
+										style="top: {topPercent}%; height: {heightPercent}%;"
+										onclick={() => selectedEvent = selectedEvent === ev.event ? null : ev.event}
+									>
+										<span class="event-time">{formatTime(ev.startHour, ev.startMin)}</span>
+										<span class="event-title">{ev.event.summary}</span>
+									</div>
+								{/each}
+							</div>
+						</div>
+					{/each}
+				</div>
+			</div>
+
+			<!-- Event detail popover -->
+			{#if selectedEvent}
+				<div class="event-detail card bg-base-100 shadow-xl">
+					<div class="card-body">
+						<div class="flex justify-between items-start">
+							<h3 class="card-title text-primary">{selectedEvent.summary}</h3>
+							<button class="btn btn-sm btn-ghost btn-circle" onclick={() => selectedEvent = null}>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+							</button>
+						</div>
+						{#if selectedEvent.description}
+							<p class="text-sm text-secondary">{selectedEvent.description}</p>
+						{/if}
+						<div class="event-meta">
+							{#if selectedEvent.days}
+								<div class="meta-item">
+									<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+									<span>{selectedEvent.days.map(d => DAY_NAMES[RRULE_DAY_MAP[d]]).join(', ')}</span>
+								</div>
+							{/if}
+							<div class="meta-item">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+								<span>
+									{formatTime(
+										convertTime(selectedEvent.dtstart.getHours(), selectedEvent.dtstart.getMinutes(), selectedEvent.tzid || 'Asia/Tokyo', selectedTimezone).hour,
+										convertTime(selectedEvent.dtstart.getHours(), selectedEvent.dtstart.getMinutes(), selectedEvent.tzid || 'Asia/Tokyo', selectedTimezone).minute
+									)} - {formatTime(
+										convertTime(selectedEvent.dtend.getHours(), selectedEvent.dtend.getMinutes(), selectedEvent.tzid || 'Asia/Tokyo', selectedTimezone).hour,
+										convertTime(selectedEvent.dtend.getHours(), selectedEvent.dtend.getMinutes(), selectedEvent.tzid || 'Asia/Tokyo', selectedTimezone).minute
+									)}
+									({Math.round((selectedEvent.dtend.getTime() - selectedEvent.dtstart.getTime()) / (1000 * 60))} min)
+								</span>
+							</div>
+							<div class="meta-item">
+								<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+								<span>{TIMEZONE_OPTIONS.find(t => t.value === selectedTimezone)?.label || selectedTimezone}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			{/if}
+		{/if}
 
 		<!-- Action buttons -->
 		<div class="action-buttons">
@@ -624,57 +1008,62 @@ END:VCALENDAR`;
 				</svg>
 				Validate & Fix
 			</button>
+			{#if fixedIcs}
+				<button class="btn btn-accent btn-lg" onclick={downloadIcs}>
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+					</svg>
+					Download Fixed .ics
+				</button>
+			{/if}
 		</div>
 
 		<!-- Results section -->
-		{#if hasValidated}
+		{#if hasValidated && showResults}
 			<div class="results-section">
-				<div class="results-header">
-					<h2 class="results-title text-primary">Results</h2>
-					<div class="results-summary">
-						{#if issues.filter((i) => i.type === 'error').length > 0}
-							<span class="badge badge-error">{issues.filter((i) => i.type === 'error').length} error{issues.filter((i) => i.type === 'error').length > 1 ? 's' : ''}</span>
-						{/if}
-						{#if issues.filter((i) => i.type === 'warning').length > 0}
-							<span class="badge badge-warning">{issues.filter((i) => i.type === 'warning').length} warning{issues.filter((i) => i.type === 'warning').length > 1 ? 's' : ''}</span>
-						{/if}
-						{#if issues.filter((i) => i.type === 'fixed').length > 0}
-							<span class="badge badge-success">{issues.filter((i) => i.type === 'fixed').length} fix{issues.filter((i) => i.type === 'fixed').length > 1 ? 'es' : ''} applied</span>
-						{/if}
+				<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+					<input type="checkbox" checked />
+					<div class="collapse-title">
+						<div class="results-header">
+							<h2 class="results-title text-primary">Validation Results</h2>
+							<div class="results-summary">
+								{#if issues.filter((i) => i.type === 'error').length > 0}
+									<span class="result-badge badge-error">{issues.filter((i) => i.type === 'error').length} error{issues.filter((i) => i.type === 'error').length > 1 ? 's' : ''}</span>
+								{/if}
+								{#if issues.filter((i) => i.type === 'warning').length > 0}
+									<span class="result-badge badge-warning">{issues.filter((i) => i.type === 'warning').length} warning{issues.filter((i) => i.type === 'warning').length > 1 ? 's' : ''}</span>
+								{/if}
+								{#if issues.filter((i) => i.type === 'fixed').length > 0}
+									<span class="result-badge badge-success">{issues.filter((i) => i.type === 'fixed').length} fix{issues.filter((i) => i.type === 'fixed').length > 1 ? 'es' : ''} applied</span>
+								{/if}
+							</div>
+						</div>
+					</div>
+					<div class="collapse-content">
+						<div class="issues-list">
+							{#each issues as issue}
+								<div class="issue-item issue-{issue.type}">
+									<span class="issue-icon">
+										{#if issue.type === 'error'}
+											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+												<circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" />
+											</svg>
+										{:else if issue.type === 'warning'}
+											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+											</svg>
+										{:else}
+											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+											</svg>
+										{/if}
+									</span>
+									<span class="issue-message">{issue.message}</span>
+								</div>
+							{/each}
+						</div>
 					</div>
 				</div>
-
-				<div class="issues-list">
-					{#each issues as issue}
-						<div class="issue-item issue-{issue.type}">
-							<span class="issue-icon">
-								{#if issue.type === 'error'}
-									<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-										<circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" />
-									</svg>
-								{:else if issue.type === 'warning'}
-									<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-										<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
-									</svg>
-								{:else}
-									<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-										<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-									</svg>
-								{/if}
-							</span>
-							<span class="issue-message">{issue.message}</span>
-						</div>
-					{/each}
-				</div>
-
-				{#if fixedIcs}
-					<button class="btn btn-accent btn-lg download-btn" onclick={downloadIcs}>
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-						</svg>
-						Download Fixed .ics
-					</button>
-				{/if}
 			</div>
 		{/if}
 
@@ -728,7 +1117,7 @@ END:VCALENDAR`;
 
 <style>
 	.ics-page {
-		max-width: 800px;
+		max-width: 1100px;
 		margin: 0 auto;
 		padding: 4rem 2rem 6rem;
 		opacity: 0;
@@ -767,6 +1156,191 @@ END:VCALENDAR`;
 		gap: 1.5rem;
 	}
 
+	/* Tabs */
+	.tabs {
+		margin-bottom: 0.5rem;
+	}
+
+	.tab {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	/* Timezone bar */
+	.tz-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		padding: 0.75rem 1rem;
+		background: oklch(var(--b2));
+		border-radius: var(--radius-lg, 12px);
+		border: 1px solid oklch(var(--bc) / 0.08);
+	}
+
+	.tz-selector {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.stats-badges {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+	}
+
+	/* Calendar grid */
+	.calendar-container {
+		overflow-x: auto;
+		border: 1px solid oklch(var(--bc) / 0.1);
+		border-radius: var(--radius-lg, 12px);
+		background: oklch(var(--b1));
+	}
+
+	.calendar-grid {
+		display: grid;
+		grid-template-columns: 80px repeat(7, 1fr);
+		min-width: 700px;
+	}
+
+	.time-column {
+		border-right: 1px solid oklch(var(--bc) / 0.1);
+	}
+
+	.day-header-cell {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.375rem;
+		padding: 0.75rem 0.5rem;
+		font-weight: 600;
+		font-size: 0.8125rem;
+		border-bottom: 2px solid oklch(var(--bc) / 0.1);
+		background: oklch(var(--b2));
+		position: sticky;
+		top: 0;
+		z-index: 5;
+	}
+
+	.day-name {
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.day-event-count {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		font-size: 0.625rem;
+		font-weight: 700;
+		background: oklch(var(--p) / 0.15);
+		color: oklch(var(--p));
+		border-radius: 9999px;
+	}
+
+	.time-label {
+		height: 48px;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-end;
+		padding: 2px 8px 0 0;
+		font-size: 0.6875rem;
+		color: oklch(var(--bc) / 0.45);
+		font-variant-numeric: tabular-nums;
+		border-bottom: 1px solid oklch(var(--bc) / 0.05);
+	}
+
+	.day-column {
+		border-right: 1px solid oklch(var(--bc) / 0.05);
+		position: relative;
+	}
+
+	.day-column:last-child {
+		border-right: none;
+	}
+
+	.day-slots {
+		position: relative;
+	}
+
+	.time-slot {
+		height: 48px;
+		border-bottom: 1px solid oklch(var(--bc) / 0.05);
+	}
+
+	.time-slot:nth-child(even) {
+		background: oklch(var(--bc) / 0.015);
+	}
+
+	/* Calendar events */
+	.calendar-event {
+		position: absolute;
+		left: 2px;
+		right: 2px;
+		border-radius: 6px;
+		border-left: 3px solid;
+		padding: 3px 6px;
+		cursor: pointer;
+		overflow: hidden;
+		z-index: 2;
+		transition: all 0.15s ease;
+		display: flex;
+		flex-direction: column;
+		gap: 1px;
+	}
+
+	.calendar-event:hover {
+		z-index: 3;
+		box-shadow: 0 2px 8px oklch(var(--bc) / 0.15);
+		transform: scale(1.02);
+	}
+
+	.event-time {
+		font-size: 0.5625rem;
+		font-weight: 600;
+		opacity: 0.8;
+		white-space: nowrap;
+	}
+
+	.event-title {
+		font-size: 0.625rem;
+		font-weight: 500;
+		line-height: 1.2;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+
+	/* Event detail card */
+	.event-detail {
+		animation: fadeInUp 0.3s var(--ease-out-expo) forwards;
+	}
+
+	.event-meta {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-top: 0.75rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid oklch(var(--bc) / 0.1);
+	}
+
+	.meta-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.8125rem;
+		color: oklch(var(--bc) / 0.7);
+	}
+
+	/* Input section */
 	.input-section {
 		display: flex;
 		flex-direction: column;
@@ -824,6 +1398,8 @@ END:VCALENDAR`;
 	.action-buttons {
 		display: flex;
 		justify-content: center;
+		gap: 0.75rem;
+		flex-wrap: wrap;
 	}
 
 	.action-buttons .btn {
@@ -832,11 +1408,9 @@ END:VCALENDAR`;
 		gap: 0.5rem;
 	}
 
+	/* Results section */
 	.results-section {
-		border: 1px solid var(--color-border, oklch(0.85 0 0));
 		border-radius: var(--radius-lg, 12px);
-		padding: 1.5rem;
-		background: var(--color-bg-subtle, oklch(0.97 0 0));
 	}
 
 	.results-header {
@@ -845,11 +1419,10 @@ END:VCALENDAR`;
 		justify-content: space-between;
 		flex-wrap: wrap;
 		gap: 0.75rem;
-		margin-bottom: 1rem;
 	}
 
 	.results-title {
-		font-size: 1.25rem;
+		font-size: 1.125rem;
 		font-weight: 600;
 		margin: 0;
 	}
@@ -860,24 +1433,24 @@ END:VCALENDAR`;
 		flex-wrap: wrap;
 	}
 
-	.badge {
+	.result-badge {
 		font-size: 0.75rem;
 		font-weight: 600;
 		padding: 0.25rem 0.625rem;
 		border-radius: 999px;
 	}
 
-	.badge-error {
+	.result-badge.badge-error {
 		background: oklch(0.93 0.06 25);
 		color: oklch(0.45 0.15 25);
 	}
 
-	.badge-warning {
+	.result-badge.badge-warning {
 		background: oklch(0.93 0.06 85);
 		color: oklch(0.45 0.12 85);
 	}
 
-	.badge-success {
+	.result-badge.badge-success {
 		background: oklch(0.93 0.06 150);
 		color: oklch(0.4 0.12 150);
 	}
@@ -886,7 +1459,6 @@ END:VCALENDAR`;
 		display: flex;
 		flex-direction: column;
 		gap: 0.375rem;
-		margin-bottom: 1.5rem;
 	}
 
 	.issue-item {
@@ -917,13 +1489,6 @@ END:VCALENDAR`;
 	.issue-fixed {
 		background: oklch(0.95 0.04 150);
 		color: oklch(0.4 0.12 150);
-	}
-
-	.download-btn {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		margin: 0 auto;
 	}
 
 	/* Info section */
@@ -1005,6 +1570,15 @@ END:VCALENDAR`;
 		.results-header {
 			flex-direction: column;
 			align-items: flex-start;
+		}
+
+		.tz-bar {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.stats-badges {
+			width: 100%;
 		}
 	}
 </style>
