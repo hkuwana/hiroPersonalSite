@@ -1,5 +1,5 @@
 <script lang="ts">
-	import hiroProfile from '$lib/images/Hiro_profile_shot.png';
+	import hiroProfile from '$lib/images/Hiro_profile_shot.webp';
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS, TOOLS } from '$data/constants';
@@ -88,9 +88,6 @@
 	<meta charset="UTF-8" />
 	<link rel="canonical" href={SITE.url} />
 
-	<!-- Preconnect to improve performance -->
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 
 	<!-- Mobile app meta tags -->
 	<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -195,7 +192,7 @@
 			aria-label="Hiro Kuwana profile photo"
 		>
 			<div class="w-40 h-40 md:w-44 md:h-44 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.03] cursor-default">
-				<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full" />
+				<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full" width="176" height="176" fetchpriority="high" />
 			</div>
 		</div>
 
@@ -264,6 +261,8 @@
 										<img
 											src={project.logo}
 											alt="{project.name} logo"
+											width="48"
+											height="48"
 											class="w-full h-full object-contain {project.status !== 'current' ? 'opacity-80 group-hover:opacity-100' : ''}"
 										/>
 									</div>
@@ -438,7 +437,7 @@
 		<div class="space-y-4">
 			<!-- AI Hot Take -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
+				<input type="radio" name="faq-accordion" aria-label="Will AI take over the world?" />
 				<div class="collapse-title font-medium text-primary">
 					Will AI take over the world?
 				</div>
@@ -449,7 +448,7 @@
 
 			<!-- Japan -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
+				<input type="radio" name="faq-accordion" aria-label="Is Japan perfect? Do you watch anime?" />
 				<div class="collapse-title font-medium text-primary">
 					Is Japan perfect? Do you watch anime?
 				</div>
@@ -460,7 +459,7 @@
 
 			<!-- Coffee vs Tea -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
+				<input type="radio" name="faq-accordion" aria-label="Coffee or tea?" />
 				<div class="collapse-title font-medium text-primary">
 					Coffee or tea?
 				</div>
@@ -471,7 +470,7 @@
 
 			<!-- Background surprise -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
+				<input type="radio" name="faq-accordion" aria-label="Wait, you studied Environmental Engineering?" />
 				<div class="collapse-title font-medium text-primary">
 					Wait, you studied Environmental Engineering?
 				</div>
@@ -482,7 +481,7 @@
 
 			<!-- Fun facts -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
+				<input type="radio" name="faq-accordion" aria-label="Tell me something weird about you" />
 				<div class="collapse-title font-medium text-primary">
 					Tell me something weird about you
 				</div>
@@ -499,7 +498,7 @@
 
 			<!-- Legal disclaimer joke -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
+				<input type="radio" name="faq-accordion" aria-label="Are you funny?" />
 				<div class="collapse-title font-medium text-primary">
 					Are you funny?
 				</div>
@@ -510,7 +509,7 @@
 
 			<!-- Hills to die on -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
+				<input type="radio" name="faq-accordion" aria-label="What's a hill you will die on?" />
 				<div class="collapse-title font-medium text-primary">
 					What's a hill you will die on?
 				</div>
