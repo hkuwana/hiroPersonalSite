@@ -62,7 +62,7 @@ export const PROJECTS = [
 		description:
 			'Practice languages through bite-sized AI conversations. Real-time translations, social streaks, and 30-second daily sessions.',
 		link: PERSONAL.companyWebsite,
-		logo: '/kaiwa_logo.png',
+		logo: '/kaiwa_logo.webp',
 		status: 'current',
 		color: '#10b981',
 	},
@@ -73,7 +73,7 @@ export const PROJECTS = [
 			'A community platform connecting Exeter alumni in Japan. Rapid prototype showcasing speed and execution.',
 		link: 'https://exoniansjapan.com/',
 		github: 'https://github.com/hkuwana/exonians-in-japan',
-		logo: '/icon-512x512.png',
+		logo: '/icon-96x96.webp',
 		status: 'active',
 		color: '#3b82f6',
 	},
@@ -83,7 +83,7 @@ export const PROJECTS = [
 		description:
 			'Connects Google Drive, Reddit, and Gemini to find potential users interested in language learning.',
 		github: 'https://github.com/hkuwana/Kaiwa-reddit-scout',
-		logo: '/kaiwa_logo.png',
+		logo: '/kaiwa_logo.webp',
 		status: 'active',
 		color: '#8b5cf6',
 	},
@@ -92,7 +92,7 @@ export const PROJECTS = [
 		tagline: 'AI for Venture Capital',
 		description:
 			'Helped VCs discover and analyze startups with AI-powered deal flow analysis. Sunset to focus on new opportunities.',
-		logo: '/flybyrd_logo.png',
+		logo: '/flybyrd_logo.webp',
 		status: 'sunset',
 		color: '#6b7280',
 	},
@@ -101,7 +101,7 @@ export const PROJECTS = [
 		tagline: 'Connecting Nonprofits',
 		description:
 			'Connected nonprofits with younger donors. Sunset after GPT technologies offered more scalable solutions.',
-		logo: '/icon-512x512.png',
+		logo: '/icon-96x96.webp',
 		status: 'sunset',
 		color: '#6b7280',
 	},
