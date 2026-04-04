@@ -18,17 +18,19 @@
 				{m.nav_essays()}
 			</a>
 			<span class="nav-divider"></span>
-			<a href={localizeHref('/ics-validator')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/ics-validator')}>
-				Tools
+			<a href={localizeHref('/ics-validator')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/ics-validator') || $page.url.pathname.startsWith('/ja/ics-validator')}>
+				{m.nav_tools()}
 			</a>
 		</nav>
 
 		<div class="socials-wrapper">
-			<ThemeToggle />
-			<span class="toggle-divider"></span>
 			<LanguageToggle />
 			<span class="toggle-divider"></span>
-			<Socials />
+			<ThemeToggle />
+			<span class="toggle-divider hide-mobile"></span>
+			<div class="socials-desktop">
+				<Socials />
+			</div>
 		</div>
 	</div>
 </header>
@@ -60,7 +62,7 @@
 	}
 
 	.nav-link {
-		padding: 0.4375rem 0.875rem;
+		padding: 0.5rem 1rem;
 		font-size: 0.875rem;
 		font-weight: 500;
 		letter-spacing: -0.01em;
@@ -68,6 +70,9 @@
 		text-decoration: none;
 		border-radius: 9999px;
 		transition: all var(--duration-fast) var(--ease-out-quart);
+		min-height: 44px;
+		display: flex;
+		align-items: center;
 	}
 
 	.nav-link:hover {
@@ -100,14 +105,20 @@
 		background: oklch(var(--bc) / 0.15);
 	}
 
+	.socials-desktop {
+		display: contents;
+	}
+
 	@media (max-width: 640px) {
 		.header {
 			padding: 0.75rem 1rem;
 		}
 
 		.header-inner {
-			flex-direction: column;
-			gap: 0.75rem;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			gap: 0.5rem;
 		}
 
 		.nav {
@@ -116,6 +127,19 @@
 
 		.socials-wrapper {
 			order: 2;
+		}
+
+		.socials-desktop {
+			display: none;
+		}
+
+		.hide-mobile {
+			display: none;
+		}
+
+		.nav-link {
+			padding: 0.5rem 0.75rem;
+			font-size: 0.8125rem;
 		}
 	}
 </style>

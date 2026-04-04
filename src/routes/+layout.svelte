@@ -1,6 +1,7 @@
 <script>
 	import Header from '../lib/components/header.svelte';
 	import '../style.css';
+	import * as m from '$lib/paraglide/messages';
 	let { children } = $props();
 </script>
 
@@ -20,7 +21,7 @@
 <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
   <aside>
   	<p class="footer-text text-secondary text-center w-full">
-				Made with ❤️ by Hiro Kuwana
+				{m.footer_made_by()}
 			</p>
 			<p class="footer-year text-base-content/50">
 				@{new Date().getFullYear()}

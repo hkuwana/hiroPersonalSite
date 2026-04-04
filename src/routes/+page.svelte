@@ -178,57 +178,54 @@
 	</script>
 </svelte:head>
 
-<!-- Hero Section -->
+<!-- Hero Section - Tighter to get to projects faster -->
 <section
-	class="hero relative min-h-[calc(100vh-80px)] flex items-center justify-center px-8 py-20 md:py-24 bg-base-100"
+	class="hero relative flex items-center justify-center px-8 py-14 md:py-20 bg-base-100"
 	bind:this={sections[0]}
 	class:visible={visibleSections.has(0)}
 >
-	<div class="flex flex-col items-center text-center gap-10 md:gap-11 max-w-xl">
-		<!-- Avatar -->
-		<div
-			class="avatar relative"
-			role="img"
-			aria-label="Hiro Kuwana profile photo"
-		>
-			<div class="w-40 h-40 md:w-44 md:h-44 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.03] cursor-default">
-				<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full" width="176" height="176" fetchpriority="high" />
+	<div class="flex flex-col items-center text-center gap-6 md:gap-8 max-w-xl">
+		<!-- Avatar + Name row -->
+		<div class="flex flex-col sm:flex-row items-center gap-5 sm:gap-6">
+			<div
+				class="avatar relative shrink-0"
+				role="img"
+				aria-label="Hiro Kuwana profile photo"
+			>
+				<div class="w-28 h-28 md:w-36 md:h-36 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.03] cursor-default">
+					<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full" width="144" height="144" fetchpriority="high" />
+				</div>
+			</div>
+
+			<div class="flex flex-col items-center sm:items-start gap-2">
+				<h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up text-primary">
+					{PERSONAL.displayName}
+				</h1>
+
+				<button
+					class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1 transition-all duration-300"
+					onclick={() => (showMeaning = !showMeaning)}
+					aria-expanded={showMeaning}
+					aria-label={m.hero_show_pronunciation()}
+				>
+					<span class="text-base font-medium tracking-wide">{PERSONAL.japaneseKanji}</span>
+					{#if showMeaning}
+						<span class="text-sm text-primary italic font-medium">{PERSONAL.japaneseKana}</span>
+					{/if}
+				</button>
 			</div>
 		</div>
 
-		<!-- Hero Text -->
-		<div class="flex flex-col items-center gap-3.5">
-			<h1 class="text-4xl sm:text-5xl font-bold tracking-tight animate-fade-in-up text-primary">
-				{PERSONAL.displayName}
-			</h1>
-
-			<button
-				class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1 transition-all duration-300"
-				onclick={() => (showMeaning = !showMeaning)}
-				aria-expanded={showMeaning}
-				aria-label={m.hero_show_pronunciation()}
-			>
-				<span class="text-base font-medium tracking-wide">{PERSONAL.japaneseKanji}</span>
-				{#if showMeaning}
-					<span class="text-sm text-primary italic font-medium">{PERSONAL.japaneseKana}</span>
-				{/if}
-			</button>
-
-			<p class="text-base-content/70 text-lg max-w-sm mt-1 leading-relaxed animate-fade-in-up delay-2">
+		<!-- Tagline + CTA -->
+		<div class="flex flex-col items-center gap-4">
+			<p class="text-base-content/70 text-lg max-w-sm leading-relaxed animate-fade-in-up delay-2">
 				{m.hero_tagline()}
 			</p>
 
-			<a href={CONTACT.cal} target="_blank" class="btn btn-primary-outline  mt-5 gap-2 animate-fade-in-up delay-3">
+			<a href={CONTACT.cal} target="_blank" class="btn btn-primary-outline gap-2 animate-fade-in-up delay-3">
 				{m.hero_lets_talk()}
 				<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
 			</a>
-		</div>
-	</div>
-
-	<!-- Scroll Indicator - Subtle pulse -->
-	<div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-fade-in-up delay-4">
-		<div class="w-6 h-10 rounded-full border-2 border-base-content/20 flex justify-center pt-2">
-			<div class="w-1 h-2 rounded-full bg-base-content/40 animate-scroll-hint"></div>
 		</div>
 	</div>
 </section>
@@ -317,40 +314,37 @@
 	class:visible={visibleSections.has(2)}
 >
 	<div class="max-w-2xl mx-auto text-center">
-		<h2 class="text-2xl md:text-3xl font-semibold mb-10 tracking-tight text-primary">The Story</h2>
+		<h2 class="text-2xl md:text-3xl font-semibold mb-10 tracking-tight text-primary">{m.bio_heading()}</h2>
 
 		<div class="text-left space-y-5">
 			<p class="text-base-content/70 text-lg leading-relaxed">
-				<strong class="text-base-content font-semibold">Born in Japan, raised in the U.S.</strong> I've lived across Spain, Estonia, and beyond.
-				This global perspective shapes everything I build.
+				{@html m.bio_p1()}
 			</p>
 
 			<p class="text-base-content/70 text-lg leading-relaxed">
-				After studying Environmental Engineering at Brown, I discovered my real passion:
-				<em class="text-accent not-italic font-medium">making powerful tools accessible to everyone</em>.
+				{@html m.bio_p2()}
 			</p>
 
 			<p class="text-base-content/70 text-lg leading-relaxed">
-				I believe AI should be humanity's great equalizer: the tutors, advisors, and assistants
-				once reserved for the privileged few should be available to all.
+				{m.bio_p3()}
 			</p>
 
 			<blockquote class="py-12 md:py-16 text-center">
 				<div class="w-16 h-0.5 bg-gradient-to-r from-primary via-secondary to-accent mx-auto mb-8 rounded-full opacity-60"></div>
 				<p class="text-2xl md:text-4xl font-semibold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary leading-relaxed">
-					"AI as the glider for everyone's mind."
+					"{m.bio_quote()}"
 				</p>
 				<div class="w-16 h-0.5 bg-gradient-to-r from-accent via-secondary to-primary mx-auto mt-8 rounded-full opacity-60"></div>
 			</blockquote>
 		</div>
 
 		<a href={CONTACT.cal} target="_blank" class="btn btn-outline btn-primary mt-8">
-			Schedule a conversation
+			{m.bio_schedule()}
 		</a>
 	</div>
 </section>
 
-<!-- Tools & Experiments Section -->
+<!-- AI Consulting Section -->
 <section
 	class="section-animate py-24 md:py-28 px-8 bg-base-200/50"
 	bind:this={sections[3]}
@@ -358,10 +352,74 @@
 >
 	<div class="max-w-4xl mx-auto">
 		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-3 tracking-tight text-primary">
-			Tools & Experiments
+			{m.consulting_heading()}
+		</h2>
+		<p class="text-base-content/60 text-center mb-12 text-lg max-w-lg mx-auto">
+			{m.consulting_subheading()}
+		</p>
+
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+			<!-- Strategy -->
+			<div class="card bg-base-100 border border-base-300/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+				<div class="card-body gap-3 text-center">
+					<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+							<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+						</svg>
+					</div>
+					<h3 class="font-semibold text-lg text-base-content">{m.consulting_service_strategy()}</h3>
+					<p class="text-sm text-base-content/60 leading-relaxed">{m.consulting_service_strategy_desc()}</p>
+				</div>
+			</div>
+
+			<!-- Build -->
+			<div class="card bg-base-100 border border-base-300/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+				<div class="card-body gap-3 text-center">
+					<div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center mx-auto">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary">
+							<polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
+						</svg>
+					</div>
+					<h3 class="font-semibold text-lg text-base-content">{m.consulting_service_build()}</h3>
+					<p class="text-sm text-base-content/60 leading-relaxed">{m.consulting_service_build_desc()}</p>
+				</div>
+			</div>
+
+			<!-- Training -->
+			<div class="card bg-base-100 border border-base-300/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
+				<div class="card-body gap-3 text-center">
+					<div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mx-auto">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent">
+							<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+						</svg>
+					</div>
+					<h3 class="font-semibold text-lg text-base-content">{m.consulting_service_training()}</h3>
+					<p class="text-sm text-base-content/60 leading-relaxed">{m.consulting_service_training_desc()}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center">
+			<a href={CONTACT.cal} target="_blank" class="btn btn-primary gap-2">
+				{m.consulting_cta()}
+				<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
+			</a>
+		</div>
+	</div>
+</section>
+
+<!-- Tools & Experiments Section -->
+<section
+	class="section-animate py-24 md:py-28 px-8 bg-base-100"
+	bind:this={sections[4]}
+	class:visible={visibleSections.has(4)}
+>
+	<div class="max-w-4xl mx-auto">
+		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-3 tracking-tight text-primary">
+			{m.tools_heading()}
 		</h2>
 		<p class="text-base-content/60 text-center mb-12 text-sm max-w-md mx-auto">
-			One-off utilities and side projects I've built. Feel free to use them.
+			{m.tools_subheading()}
 		</p>
 
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -395,7 +453,7 @@
 						</div>
 						<p class="text-sm text-base-content/60 leading-relaxed group-hover:text-base-content/80 transition-colors">{tool.description}</p>
 						<div class="flex items-center gap-1.5 text-primary text-sm font-medium mt-auto pt-2">
-							<span>Try it out</span>
+							<span>{m.tools_try()}</span>
 							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
 								<path d="M5 12h14M12 5l7 7-7 7" />
 							</svg>
@@ -413,7 +471,7 @@
 							<line x1="5" y1="12" x2="19" y2="12" />
 						</svg>
 					</div>
-					<p class="text-sm text-base-content/40">More coming soon</p>
+					<p class="text-sm text-base-content/40">{m.tools_coming_soon()}</p>
 				</div>
 			</div>
 		</div>
@@ -422,16 +480,16 @@
 
 <!-- FAQ Section -->
 <section
-	class="section-animate py-28 md:py-36 px-8 bg-base-100"
-	bind:this={sections[4]}
-	class:visible={visibleSections.has(4)}
+	class="section-animate py-28 md:py-36 px-8 bg-base-200/50"
+	bind:this={sections[5]}
+	class:visible={visibleSections.has(5)}
 >
 	<div class="max-w-2xl mx-auto">
 		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-4 tracking-tight text-primary">
-			Frequently Asked Questions
+			{m.faq_heading()}
 		</h2>
 		<p class="text-base-content/60 text-center mb-12 text-sm">
-			Questions I get asked more than I'd like.
+			{m.faq_subheading()}
 		</p>
 
 		<div class="space-y-4">
@@ -520,7 +578,7 @@
 		</div>
 
 		<p class="text-center mt-8 text-sm text-base-content/70">
-			If this site isn't serious enough for you, <button onclick={() => goto('/corporate')} class="btn btn-error text-error-content  gap-2">click here</button>.
+			{m.faq_corporate_joke()} <button onclick={() => goto('/corporate')} class="btn btn-error text-error-content gap-2">{m.faq_corporate_link()}</button>
 		</p>
 	</div>
 </section>
