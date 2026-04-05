@@ -222,7 +222,7 @@
 				{m.hero_tagline()}
 			</p>
 
-			<a href={CONTACT.cal} target="_blank" class="btn btn-primary-outline gap-2 animate-fade-in-up delay-3">
+			<a href={CONTACT.cal} target="_blank" rel="noopener" class="btn btn-outline btn-primary gap-2 animate-fade-in-up delay-3">
 				{m.hero_lets_talk()}
 				<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
 			</a>
@@ -338,7 +338,7 @@
 			</blockquote>
 		</div>
 
-		<a href={CONTACT.cal} target="_blank" class="btn btn-outline btn-primary mt-8">
+		<a href={CONTACT.cal} target="_blank" rel="noopener" class="btn btn-outline btn-primary mt-8">
 			{m.bio_schedule()}
 		</a>
 	</div>
@@ -385,7 +385,7 @@
 		</div>
 
 		<div class="text-center">
-			<a href={CONTACT.cal} target="_blank" class="btn btn-primary gap-2">
+			<a href={CONTACT.cal} target="_blank" rel="noopener" class="btn btn-primary gap-2">
 				{m.consulting_cta()}
 				<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
 			</a>
