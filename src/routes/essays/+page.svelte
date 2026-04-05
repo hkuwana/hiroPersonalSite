@@ -1,13 +1,16 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 
-	export let data: PageData;
+	let { data } = $props<{ data: PageData }>();
 
 	let visible = false;
 
+	const locale = $derived(getLocale());
+
 	onMount(() => {
-		// Trigger animation after mount
 		requestAnimationFrame(() => {
 			visible = true;
 		});
@@ -15,9 +18,9 @@
 </script>
 
 <svelte:head>
-	<title>Essays - Hiro Kuwana</title>
+	<title>{m.nav_essays()} - Hiro Kuwana</title>
 	<meta name="description" content="Essays on technology, startups, education, and building things that last." />
-	<meta property="og:title" content="Essays - Hiro Kuwana" />
+	<meta property="og:title" content="{m.nav_essays()} - Hiro Kuwana" />
 	<meta property="og:description" content="Essays on technology, startups, education, and building things that last." />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://hirokuwana.com/essays" />
@@ -26,19 +29,19 @@
 
 <article class="essays-page" class:visible>
 	<header class="page-header">
-		<h1 class="page-title text-primary">Essays</h1>
+		<h1 class="page-title text-primary">{m.nav_essays()}</h1>
 		<p class="page-subtitle text-secondary">Thoughts on technology, startups, and building things that matter</p>
 	</header>
 
 	<div class="essays-list">
 		{#each data.essays as essay, i}
 			<a
-				href="/essays/{essay.slug}"
+				href={localizeHref(`/essays/${essay.slug}`)}
 				class="essay-card"
 				style="--delay: {i * 0.05}s"
 			>
 				<time class="essay-date text-base-content/50">
-					{new Date(essay.date).toLocaleDateString('en-US', {
+					{new Date(essay.date).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
 						year: 'numeric',
 						month: 'long',
 						day: 'numeric'
@@ -55,11 +58,11 @@
 	</div>
 
 	<footer class="page-footer">
-		<a href="/" class="back-link text-secondary hover:text-accent">
+		<a href={localizeHref('/')} class="back-link text-secondary hover:text-accent">
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<span>Back to home</span>
+			<span>{m.nav_home()}</span>
 		</a>
 	</footer>
 </article>

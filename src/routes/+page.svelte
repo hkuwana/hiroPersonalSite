@@ -330,11 +330,11 @@
 			</p>
 
 			<blockquote class="py-12 md:py-16 text-center">
-				<div class="w-16 h-0.5 bg-gradient-to-r from-primary via-secondary to-accent mx-auto mb-8 rounded-full opacity-60"></div>
-				<p class="text-2xl md:text-4xl font-semibold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary leading-relaxed">
+				<div class="w-12 h-px bg-primary/30 mx-auto mb-8"></div>
+				<p class="text-xl md:text-3xl font-semibold tracking-tight text-primary leading-snug italic">
 					"{m.bio_quote()}"
 				</p>
-				<div class="w-16 h-0.5 bg-gradient-to-r from-accent via-secondary to-primary mx-auto mt-8 rounded-full opacity-60"></div>
+				<div class="w-12 h-px bg-primary/30 mx-auto mt-8"></div>
 			</blockquote>
 		</div>
 
@@ -350,50 +350,35 @@
 	bind:this={sections[3]}
 	class:visible={visibleSections.has(3)}
 >
-	<div class="max-w-4xl mx-auto">
+	<div class="max-w-3xl mx-auto">
 		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-3 tracking-tight text-primary">
 			{m.consulting_heading()}
 		</h2>
-		<p class="text-base-content/60 text-center mb-12 text-lg max-w-lg mx-auto">
+		<p class="text-base-content/60 text-center mb-12 text-lg max-w-lg mx-auto leading-relaxed">
 			{m.consulting_subheading()}
 		</p>
 
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-			<!-- Strategy -->
-			<div class="card bg-base-100 border border-base-300/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
-				<div class="card-body gap-3 text-center">
-					<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary">
-							<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-						</svg>
-					</div>
-					<h3 class="font-semibold text-lg text-base-content">{m.consulting_service_strategy()}</h3>
+		<div class="consulting-services space-y-4 mb-12">
+			<div class="flex items-start gap-4 p-5 rounded-xl border border-base-300/50 bg-base-100 hover:border-primary/20 transition-colors duration-200">
+				<span class="text-primary text-lg mt-0.5 shrink-0">01</span>
+				<div>
+					<h3 class="font-semibold text-base text-base-content mb-1">{m.consulting_service_strategy()}</h3>
 					<p class="text-sm text-base-content/60 leading-relaxed">{m.consulting_service_strategy_desc()}</p>
 				</div>
 			</div>
 
-			<!-- Build -->
-			<div class="card bg-base-100 border border-base-300/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
-				<div class="card-body gap-3 text-center">
-					<div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center mx-auto">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary">
-							<polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
-						</svg>
-					</div>
-					<h3 class="font-semibold text-lg text-base-content">{m.consulting_service_build()}</h3>
+			<div class="flex items-start gap-4 p-5 rounded-xl border border-base-300/50 bg-base-100 hover:border-primary/20 transition-colors duration-200">
+				<span class="text-primary text-lg mt-0.5 shrink-0">02</span>
+				<div>
+					<h3 class="font-semibold text-base text-base-content mb-1">{m.consulting_service_build()}</h3>
 					<p class="text-sm text-base-content/60 leading-relaxed">{m.consulting_service_build_desc()}</p>
 				</div>
 			</div>
 
-			<!-- Training -->
-			<div class="card bg-base-100 border border-base-300/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
-				<div class="card-body gap-3 text-center">
-					<div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mx-auto">
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent">
-							<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-						</svg>
-					</div>
-					<h3 class="font-semibold text-lg text-base-content">{m.consulting_service_training()}</h3>
+			<div class="flex items-start gap-4 p-5 rounded-xl border border-base-300/50 bg-base-100 hover:border-primary/20 transition-colors duration-200">
+				<span class="text-primary text-lg mt-0.5 shrink-0">03</span>
+				<div>
+					<h3 class="font-semibold text-base text-base-content mb-1">{m.consulting_service_training()}</h3>
 					<p class="text-sm text-base-content/60 leading-relaxed">{m.consulting_service_training_desc()}</p>
 				</div>
 			</div>
@@ -492,11 +477,11 @@
 			{m.faq_subheading()}
 		</p>
 
-		<div class="space-y-4">
+		<div class="space-y-3">
 			<!-- AI Hot Take -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
 				<input type="radio" name="faq-accordion" aria-label="Will AI take over the world?" />
-				<div class="collapse-title font-medium text-primary">
+				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Will AI take over the world?
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -505,9 +490,9 @@
 			</div>
 
 			<!-- Japan -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
 				<input type="radio" name="faq-accordion" aria-label="Is Japan perfect? Do you watch anime?" />
-				<div class="collapse-title font-medium text-primary">
+				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Is Japan perfect? Do you watch anime?
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -516,9 +501,9 @@
 			</div>
 
 			<!-- Coffee vs Tea -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
 				<input type="radio" name="faq-accordion" aria-label="Coffee or tea?" />
-				<div class="collapse-title font-medium text-primary">
+				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Coffee or tea?
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -527,9 +512,9 @@
 			</div>
 
 			<!-- Background surprise -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
 				<input type="radio" name="faq-accordion" aria-label="Wait, you studied Environmental Engineering?" />
-				<div class="collapse-title font-medium text-primary">
+				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Wait, you studied Environmental Engineering?
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -538,9 +523,9 @@
 			</div>
 
 			<!-- Fun facts -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
 				<input type="radio" name="faq-accordion" aria-label="Tell me something weird about you" />
-				<div class="collapse-title font-medium text-primary">
+				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Tell me something weird about you
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -555,9 +540,9 @@
 			</div>
 
 			<!-- Legal disclaimer joke -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
 				<input type="radio" name="faq-accordion" aria-label="Are you funny?" />
-				<div class="collapse-title font-medium text-primary">
+				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Are you funny?
 				</div>
 				<div class="collapse-content text-base-content/70">
@@ -566,9 +551,9 @@
 			</div>
 
 			<!-- Hills to die on -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
+			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
 				<input type="radio" name="faq-accordion" aria-label="What's a hill you will die on?" />
-				<div class="collapse-title font-medium text-primary">
+				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					What's a hill you will die on?
 				</div>
 				<div class="collapse-content text-base-content/70">

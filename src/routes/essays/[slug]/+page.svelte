@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '$lib/paraglide/messages';
 
-	export let data: PageData;
+	let { data } = $props<{ data: PageData }>();
 
 	let visible = false;
 
@@ -12,11 +14,12 @@
 		});
 	});
 
-	const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
+	const locale = $derived(getLocale());
+	const formattedDate = $derived(new Date(data.date).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
 		year: 'numeric',
 		month: 'long',
 		day: 'numeric'
-	});
+	}));
 </script>
 
 <svelte:head>
@@ -57,7 +60,7 @@
 
 <article class="essay-page" class:visible>
 	<header class="essay-header">
-		<a href="/essays" class="back-link text-secondary hover:text-accent">
+		<a href={localizeHref('/essays')} class="back-link text-secondary hover:text-accent">
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
@@ -78,7 +81,7 @@
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<span>Back to all essays</span>
+			<span>{m.nav_essays()}</span>
 		</a>
 	</footer>
 </article>

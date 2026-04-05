@@ -111,22 +111,27 @@
 
 	@media (max-width: 640px) {
 		.header {
-			padding: 0.75rem 1rem;
+			padding: 0.625rem 0.875rem;
 		}
 
 		.header-inner {
 			flex-direction: row;
-			flex-wrap: wrap;
 			justify-content: space-between;
-			gap: 0.5rem;
+			gap: 0.375rem;
 		}
 
 		.nav {
 			order: 1;
+			gap: 0.125rem;
+		}
+
+		.nav-divider {
+			display: none;
 		}
 
 		.socials-wrapper {
 			order: 2;
+			gap: 0.5rem;
 		}
 
 		.socials-desktop {
@@ -138,8 +143,9 @@
 		}
 
 		.nav-link {
-			padding: 0.5rem 0.75rem;
+			padding: 0.5rem 0.625rem;
 			font-size: 0.8125rem;
+			min-height: 44px;
 		}
 	}
 </style>
