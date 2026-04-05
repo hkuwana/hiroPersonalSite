@@ -91,14 +91,14 @@
 	.page-title {
 		font-size: 2.5rem;
 		font-weight: 700;
-		color: var(--color-text);
+		color: oklch(var(--bc));
 		margin: 0 0 0.75rem;
 		letter-spacing: -0.03em;
 	}
 
 	.page-subtitle {
 		font-size: 1.0625rem;
-		color: var(--color-text-secondary);
+		color: oklch(var(--bc) / 0.7);
 		margin: 0;
 	}
 
@@ -114,24 +114,24 @@
 		align-items: center;
 		gap: 1.5rem;
 		padding: 1.25rem 1.5rem;
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
+		background: oklch(var(--b1));
+		border: 1px solid oklch(var(--bc) / 0.1);
+		border-radius: 1rem;
 		text-decoration: none;
 		transition: all var(--duration-normal) var(--ease-out-expo);
 		transition-delay: var(--delay);
 	}
 
 	.essay-card:hover {
-		background: var(--color-bg-subtle);
-		border-color: rgba(0, 0, 0, 0.12);
+		background: oklch(var(--b2));
+		border-color: oklch(var(--bc) / 0.12);
 		transform: translateX(4px);
-		box-shadow: var(--shadow-md);
+		box-shadow: 0 4px 6px oklch(var(--bc) / 0.05);
 	}
 
 	.essay-date {
 		font-size: 0.8125rem;
-		color: var(--color-text-tertiary);
+		color: oklch(var(--bc) / 0.5);
 		min-width: 120px;
 		flex-shrink: 0;
 	}
@@ -140,17 +140,17 @@
 		flex: 1;
 		font-size: 1.0625rem;
 		font-weight: 500;
-		color: var(--color-text);
+		color: oklch(var(--bc));
 		margin: 0;
 		transition: color var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.essay-card:hover .essay-title {
-		color: var(--color-accent);
+		color: oklch(var(--a));
 	}
 
 	.essay-arrow {
-		color: var(--color-text-tertiary);
+		color: oklch(var(--bc) / 0.5);
 		opacity: 0;
 		transform: translateX(-8px);
 		transition: all var(--duration-normal) var(--ease-out-expo);
@@ -159,14 +159,14 @@
 	.essay-card:hover .essay-arrow {
 		opacity: 1;
 		transform: translateX(0);
-		color: var(--color-accent);
+		color: oklch(var(--a));
 	}
 
 	/* Footer */
 	.page-footer {
 		margin-top: 4rem;
 		padding-top: 2rem;
-		border-top: 1px solid var(--color-border);
+		border-top: 1px solid oklch(var(--bc) / 0.1);
 	}
 
 	.back-link {
@@ -175,13 +175,13 @@
 		gap: 0.5rem;
 		font-size: 0.9375rem;
 		font-weight: 500;
-		color: var(--color-text-secondary);
+		color: oklch(var(--bc) / 0.7);
 		text-decoration: none;
 		transition: all var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.back-link:hover {
-		color: var(--color-accent);
+		color: oklch(var(--a));
 	}
 
 	.back-link:hover svg {

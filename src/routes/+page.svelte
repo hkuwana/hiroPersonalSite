@@ -19,6 +19,15 @@
 		console.log(`%cWhile you're here, reach out if you're curious about how I built this: ${CONTACT.email}`, 'font-size: 12px;');
 		console.log('%cI\'m not a T-1000. Look away... now.', 'font-size: 12px; color: gray;');
 
+		// If the user prefers reduced motion, make all sections visible immediately
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			for (let i = 0; i < sections.length; i++) {
+				visibleSections.add(i);
+			}
+			visibleSections = visibleSections;
+			return;
+		}
+
 		const observer = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((entry) => {
@@ -254,7 +263,7 @@
 						<div class="flex justify-between items-start mb-3">
 							<div class="avatar">
 								{#if project.logo}
-									<div class="w-12 h-12 rounded-lg shadow-sm overflow-hidden bg-white dark:bg-base-300">
+									<div class="w-12 h-12 rounded-lg shadow-sm overflow-hidden bg-base-100 dark:bg-base-300">
 										<img
 											src={project.logo}
 											alt="{project.name} logo"

@@ -1186,7 +1186,7 @@ END:VCALENDAR`;
 		gap: 0.75rem;
 		padding: 0.75rem 1rem;
 		background: oklch(var(--b2));
-		border-radius: var(--radius-lg, 12px);
+		border-radius: 1rem;
 		border: 1px solid oklch(var(--bc) / 0.08);
 	}
 
@@ -1206,7 +1206,7 @@ END:VCALENDAR`;
 	.calendar-container {
 		overflow-x: auto;
 		border: 1px solid oklch(var(--bc) / 0.1);
-		border-radius: var(--radius-lg, 12px);
+		border-radius: 1rem;
 		background: oklch(var(--b1));
 	}
 
@@ -1411,7 +1411,7 @@ END:VCALENDAR`;
 
 	.textarea-wrapper {
 		position: relative;
-		border-radius: var(--radius-lg, 12px);
+		border-radius: 1rem;
 		transition: box-shadow 0.2s ease;
 	}
 
@@ -1428,7 +1428,7 @@ END:VCALENDAR`;
 		justify-content: center;
 		gap: 0.5rem;
 		background: oklch(0.95 0.03 250 / 0.95);
-		border-radius: var(--radius-lg, 12px);
+		border-radius: 1rem;
 		z-index: 10;
 		font-weight: 500;
 		color: oklch(0.5 0.15 250);
@@ -1459,7 +1459,7 @@ END:VCALENDAR`;
 
 	/* Results section */
 	.results-section {
-		border-radius: var(--radius-lg, 12px);
+		border-radius: 1rem;
 	}
 
 	.results-header {
@@ -1544,7 +1544,7 @@ END:VCALENDAR`;
 	.info-section {
 		margin-top: 1rem;
 		padding-top: 2rem;
-		border-top: 1px solid var(--color-border, oklch(0.85 0 0));
+		border-top: 1px solid oklch(var(--bc) / 0.1);
 	}
 
 	.info-title {
@@ -1564,7 +1564,7 @@ END:VCALENDAR`;
 		flex-direction: column;
 		gap: 0.25rem;
 		padding: 0.875rem 1rem;
-		border: 1px solid var(--color-border, oklch(0.88 0 0));
+		border: 1px solid oklch(var(--bc) / 0.1);
 		border-radius: 8px;
 		font-size: 0.8125rem;
 		line-height: 1.4;
@@ -1578,7 +1578,7 @@ END:VCALENDAR`;
 	.page-footer {
 		margin-top: 4rem;
 		padding-top: 2rem;
-		border-top: 1px solid var(--color-border, oklch(0.85 0 0));
+		border-top: 1px solid oklch(var(--bc) / 0.1);
 	}
 
 	.back-link {

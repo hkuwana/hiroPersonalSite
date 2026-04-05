@@ -13,9 +13,10 @@
 </svelte:head>
 
 <div class="app-container">
+	<a href="#main" class="skip-link">Skip to content</a>
 	<Header />
 
-	<main>
+	<main id="main">
 		{@render children()}
 	</main>
 <footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
@@ -35,12 +36,27 @@
 		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
-		background: var(--color-bg);
+		background: oklch(var(--b1));
 	}
 
 	main {
 		flex: 1;
 	}
 
-	 
+	.skip-link {
+		position: fixed;
+		top: -100%;
+		left: 0;
+		z-index: 9999;
+		background: oklch(var(--b1));
+		color: oklch(var(--bc));
+		padding: 0.75rem 1.5rem;
+		font-weight: 600;
+		text-decoration: underline;
+		transition: top 0.2s ease;
+	}
+
+	.skip-link:focus {
+		top: 0;
+	}
 </style>

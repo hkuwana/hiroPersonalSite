@@ -61,16 +61,16 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 36px;
-		height: 36px;
-		color: var(--color-text-secondary);
-		border-radius: var(--radius-sm);
+		min-width: 44px;
+		min-height: 44px;
+		color: oklch(var(--bc) / 0.7);
+		border-radius: 0.375rem;
 		transition: all var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.social-link:hover {
-		color: var(--color-text);
-		background: var(--color-bg-muted);
+		color: oklch(var(--bc));
+		background: oklch(var(--b2));
 		transform: translateY(-2px);
 	}
 

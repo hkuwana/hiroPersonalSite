@@ -112,14 +112,14 @@
 		gap: 0.5rem;
 		font-size: 0.875rem;
 		font-weight: 500;
-		color: var(--color-text-secondary);
+		color: oklch(var(--bc) / 0.7);
 		text-decoration: none;
 		margin-bottom: 2rem;
 		transition: all var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.back-link:hover {
-		color: var(--color-accent);
+		color: oklch(var(--a));
 	}
 
 	.back-link:hover svg {
@@ -134,7 +134,7 @@
 		font-size: clamp(1.75rem, 5vw, 2.5rem);
 		font-weight: 700;
 		line-height: 1.2;
-		color: var(--color-text);
+		color: oklch(var(--bc));
 		margin: 0 0 1rem;
 		letter-spacing: -0.02em;
 	}
@@ -142,14 +142,14 @@
 	.essay-date {
 		display: block;
 		font-size: 0.9375rem;
-		color: var(--color-text-tertiary);
+		color: oklch(var(--bc) / 0.5);
 	}
 
 	/* Content */
 	.essay-content {
 		font-size: 1.0625rem;
 		line-height: 1.8;
-		color: var(--color-text-secondary);
+		color: oklch(var(--bc) / 0.7);
 	}
 
 	/* Markdown content styles */
@@ -162,7 +162,7 @@
 		font-weight: 600;
 		margin-top: 3rem;
 		margin-bottom: 1rem;
-		color: var(--color-text);
+		color: oklch(var(--bc));
 		letter-spacing: -0.02em;
 	}
 
@@ -171,7 +171,7 @@
 		font-weight: 600;
 		margin-top: 2.5rem;
 		margin-bottom: 0.75rem;
-		color: var(--color-text);
+		color: oklch(var(--bc));
 	}
 
 	.essay-content :global(ul),
@@ -187,10 +187,10 @@
 	.essay-content :global(blockquote) {
 		margin: 2rem 0;
 		padding: 1.5rem 1.5rem 1.5rem 2rem;
-		background: var(--color-bg-muted);
-		border-left: 3px solid var(--color-accent);
-		border-radius: 0 var(--radius-md) var(--radius-md) 0;
-		color: var(--color-text);
+		background: oklch(var(--b2));
+		border-left: 3px solid oklch(var(--a));
+		border-radius: 0 0.75rem 0.75rem 0;
+		color: oklch(var(--bc));
 		font-style: italic;
 	}
 
@@ -201,16 +201,16 @@
 	.essay-content :global(code) {
 		font-family: 'SF Mono', Monaco, 'Courier New', monospace;
 		font-size: 0.875em;
-		background: var(--color-bg-muted);
+		background: oklch(var(--b2));
 		padding: 0.2em 0.4em;
-		border-radius: var(--radius-sm);
-		color: var(--color-text);
+		border-radius: 0.375rem;
+		color: oklch(var(--bc));
 	}
 
 	.essay-content :global(pre) {
-		background: var(--color-bg-muted);
+		background: oklch(var(--b2));
 		padding: 1.25rem;
-		border-radius: var(--radius-md);
+		border-radius: 0.75rem;
 		overflow-x: auto;
 		margin-bottom: 1.5rem;
 	}
@@ -221,7 +221,7 @@
 	}
 
 	.essay-content :global(a) {
-		color: var(--color-accent);
+		color: oklch(var(--a));
 		text-decoration: underline;
 		text-underline-offset: 2px;
 		transition: opacity var(--duration-fast) var(--ease-out-expo);
@@ -233,7 +233,7 @@
 
 	.essay-content :global(strong) {
 		font-weight: 600;
-		color: var(--color-text);
+		color: oklch(var(--bc));
 	}
 
 	.essay-content :global(em) {
@@ -243,14 +243,14 @@
 	.essay-content :global(hr) {
 		border: none;
 		height: 1px;
-		background: var(--color-border);
+		background: oklch(var(--bc) / 0.1);
 		margin: 3rem 0;
 	}
 
 	.essay-content :global(img) {
 		max-width: 100%;
 		height: auto;
-		border-radius: var(--radius-md);
+		border-radius: 0.75rem;
 		margin: 2rem 0;
 	}
 
@@ -262,7 +262,7 @@
 	.footer-divider {
 		width: 60px;
 		height: 3px;
-		background: linear-gradient(90deg, var(--color-accent), #8b5cf6);
+		background: linear-gradient(90deg, oklch(var(--a)), oklch(var(--s)));
 		border-radius: 2px;
 		margin-bottom: 2rem;
 	}
@@ -273,13 +273,13 @@
 		gap: 0.5rem;
 		font-size: 0.9375rem;
 		font-weight: 500;
-		color: var(--color-text-secondary);
+		color: oklch(var(--bc) / 0.7);
 		text-decoration: none;
 		transition: all var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.footer-link:hover {
-		color: var(--color-accent);
+		color: oklch(var(--a));
 	}
 
 	.footer-link:hover svg {
