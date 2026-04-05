@@ -55,7 +55,7 @@
 	}
 
 	.counter button:hover {
-		background-color: var(--color-bg-1);
+		background-color: oklch(var(--b2));
 	}
 
 	svg {
@@ -83,7 +83,7 @@
 		width: 100%;
 		height: 100%;
 		font-weight: 400;
-		color: var(--color-theme-1);
+		color: oklch(var(--p));
 		font-size: 4rem;
 		align-items: center;
 		justify-content: center;

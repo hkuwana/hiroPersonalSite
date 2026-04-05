@@ -1,13 +1,16 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 
-	export let data: PageData;
+	let { data } = $props<{ data: PageData }>();
 
 	let visible = false;
 
+	const locale = $derived(getLocale());
+
 	onMount(() => {
-		// Trigger animation after mount
 		requestAnimationFrame(() => {
 			visible = true;
 		});
@@ -15,9 +18,9 @@
 </script>
 
 <svelte:head>
-	<title>Essays - Hiro Kuwana</title>
+	<title>{m.nav_essays()} - Hiro Kuwana</title>
 	<meta name="description" content="Essays on technology, startups, education, and building things that last." />
-	<meta property="og:title" content="Essays - Hiro Kuwana" />
+	<meta property="og:title" content="{m.nav_essays()} - Hiro Kuwana" />
 	<meta property="og:description" content="Essays on technology, startups, education, and building things that last." />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://hirokuwana.com/essays" />
@@ -26,19 +29,19 @@
 
 <article class="essays-page" class:visible>
 	<header class="page-header">
-		<h1 class="page-title text-primary">Essays</h1>
+		<h1 class="page-title text-primary">{m.nav_essays()}</h1>
 		<p class="page-subtitle text-secondary">Thoughts on technology, startups, and building things that matter</p>
 	</header>
 
 	<div class="essays-list">
 		{#each data.essays as essay, i}
 			<a
-				href="/essays/{essay.slug}"
+				href={localizeHref(`/essays/${essay.slug}`)}
 				class="essay-card"
 				style="--delay: {i * 0.05}s"
 			>
 				<time class="essay-date text-base-content/50">
-					{new Date(essay.date).toLocaleDateString('en-US', {
+					{new Date(essay.date).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
 						year: 'numeric',
 						month: 'long',
 						day: 'numeric'
@@ -55,11 +58,11 @@
 	</div>
 
 	<footer class="page-footer">
-		<a href="/" class="back-link text-secondary hover:text-accent">
+		<a href={localizeHref('/')} class="back-link text-secondary hover:text-accent">
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<span>Back to home</span>
+			<span>{m.nav_home()}</span>
 		</a>
 	</footer>
 </article>
@@ -88,14 +91,14 @@
 	.page-title {
 		font-size: 2.5rem;
 		font-weight: 700;
-		color: var(--color-text);
+		color: oklch(var(--bc));
 		margin: 0 0 0.75rem;
 		letter-spacing: -0.03em;
 	}
 
 	.page-subtitle {
 		font-size: 1.0625rem;
-		color: var(--color-text-secondary);
+		color: oklch(var(--bc) / 0.7);
 		margin: 0;
 	}
 
@@ -111,24 +114,24 @@
 		align-items: center;
 		gap: 1.5rem;
 		padding: 1.25rem 1.5rem;
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
+		background: oklch(var(--b1));
+		border: 1px solid oklch(var(--bc) / 0.1);
+		border-radius: 1rem;
 		text-decoration: none;
 		transition: all var(--duration-normal) var(--ease-out-expo);
 		transition-delay: var(--delay);
 	}
 
 	.essay-card:hover {
-		background: var(--color-bg-subtle);
-		border-color: rgba(0, 0, 0, 0.12);
+		background: oklch(var(--b2));
+		border-color: oklch(var(--bc) / 0.12);
 		transform: translateX(4px);
-		box-shadow: var(--shadow-md);
+		box-shadow: 0 4px 6px oklch(var(--bc) / 0.05);
 	}
 
 	.essay-date {
 		font-size: 0.8125rem;
-		color: var(--color-text-tertiary);
+		color: oklch(var(--bc) / 0.5);
 		min-width: 120px;
 		flex-shrink: 0;
 	}
@@ -137,17 +140,17 @@
 		flex: 1;
 		font-size: 1.0625rem;
 		font-weight: 500;
-		color: var(--color-text);
+		color: oklch(var(--bc));
 		margin: 0;
 		transition: color var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.essay-card:hover .essay-title {
-		color: var(--color-accent);
+		color: oklch(var(--a));
 	}
 
 	.essay-arrow {
-		color: var(--color-text-tertiary);
+		color: oklch(var(--bc) / 0.5);
 		opacity: 0;
 		transform: translateX(-8px);
 		transition: all var(--duration-normal) var(--ease-out-expo);
@@ -156,14 +159,14 @@
 	.essay-card:hover .essay-arrow {
 		opacity: 1;
 		transform: translateX(0);
-		color: var(--color-accent);
+		color: oklch(var(--a));
 	}
 
 	/* Footer */
 	.page-footer {
 		margin-top: 4rem;
 		padding-top: 2rem;
-		border-top: 1px solid var(--color-border);
+		border-top: 1px solid oklch(var(--bc) / 0.1);
 	}
 
 	.back-link {
@@ -172,13 +175,13 @@
 		gap: 0.5rem;
 		font-size: 0.9375rem;
 		font-weight: 500;
-		color: var(--color-text-secondary);
+		color: oklch(var(--bc) / 0.7);
 		text-decoration: none;
 		transition: all var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.back-link:hover {
-		color: var(--color-accent);
+		color: oklch(var(--a));
 	}
 
 	.back-link:hover svg {

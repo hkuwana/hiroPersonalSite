@@ -56,11 +56,13 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0.375rem;
+		padding: 0.5rem;
 		border-radius: 9999px;
 		transition: all 0.2s ease;
 		cursor: pointer;
 		opacity: 0.5;
+		min-width: 40px;
+		min-height: 40px;
 	}
 
 	.lang-option:hover {
