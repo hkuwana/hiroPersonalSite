@@ -1,6 +1,47 @@
 <html lang="%paraglide.lang%">
 	<head>
 		<script>
+			// Performance timing
+			window.__perf = { start: performance.now() };
+			console.log('[perf] HTML parse started');
+		</script>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+		<script>
+			// Performance logging
+			console.log('[perf] Body rendered at', (performance.now() - window.__perf.start).toFixed(1) + 'ms');
+			window.addEventListener('DOMContentLoaded', function() {
+				console.log('[perf] DOMContentLoaded at', (performance.now() - window.__perf.start).toFixed(1) + 'ms');
+			});
+			window.addEventListener('load', function() {
+				console.log('[perf] Full load at', (performance.now() - window.__perf.start).toFixed(1) + 'ms');
+				if (performance.getEntriesByType) {
+					var nav = performance.getEntriesByType('navigation')[0];
+					if (nav) {
+						console.log('[perf] TTFB:', nav.responseStart.toFixed(1) + 'ms');
+						console.log('[perf] DOM Interactive:', nav.domInteractive.toFixed(1) + 'ms');
+						console.log('[perf] DOM Complete:', nav.domComplete.toFixed(1) + 'ms');
+					}
+					var resources = performance.getEntriesByType('resource');
+					var slow = resources.filter(function(r) { return r.duration > 100; })
+						.sort(function(a, b) { return b.duration - a.duration; })
+						.slice(0, 5);
+					if (slow.length) {
+						console.log('[perf] Slowest resources:');
+						slow.forEach(function(r) {
+							console.log('  ' + r.duration.toFixed(0) + 'ms - ' + r.name.split('/').pop());
+						});
+					}
+				}
+			});
+		</script>
+		<!-- PostHog: deferred to after page render -->
+		<script>
 			!(function (t, e) {
 				var o, n, p, r;
 				e.__SV ||
@@ -46,12 +87,5 @@
 				api_host: 'https://app.posthog.com'
 			});
 		</script>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		%sveltekit.head%
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

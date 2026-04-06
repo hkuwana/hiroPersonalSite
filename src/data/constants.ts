@@ -46,7 +46,7 @@ export const PERSONAL = {
 	displayName: 'Hiro Kuwana',
 	japaneseKanji: '桑名 浩行',
 	japaneseKana: 'くわな ひろゆき',
-	tagline: 'Building AI as a tool for humanity, not a replacement',
+	tagline: 'Building AI tools to augment humanity',
 	jobTitle: 'Founder & CEO',
 	company: 'Kaiwa',
 	companyWebsite: 'https://www.trykaiwa.com/',
@@ -112,7 +112,7 @@ export const TOOLS = [
 	{
 		name: 'ICS Validator & Fixer',
 		description:
-			'Paste or upload any .ics calendar file — auto-fixes missing timezones, UIDs, line folding, and other issues. Includes a weekly calendar preview with timezone conversion.',
+			'Paste or upload any .ics calendar file. Auto-fixes missing timezones, UIDs, line folding, and other issues. Includes a weekly calendar preview with timezone conversion.',
 		href: '/ics-validator',
 		icon: 'calendar',
 		color: '#6366f1',
@@ -164,7 +164,7 @@ export const FAQS = [
 	{
 		question: "What's a hill you will die on?",
 		answer:
-			"Cowboy Bebop and Paprika are masterpieces—no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read The Brothers Karamazov. It will change how you see the world.",
+			"Cowboy Bebop and Paprika are masterpieces, no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read The Brothers Karamazov. It will change how you see the world.",
 	},
 	{
 		question: 'What is Hiro Kuwana working on?',

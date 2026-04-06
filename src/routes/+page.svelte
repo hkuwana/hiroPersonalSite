@@ -394,7 +394,7 @@
 		</div>
 
 		<div class="text-center">
-			<a href={CONTACT.cal} target="_blank" rel="noopener" class="btn btn-primary gap-2">
+			<a href={CONTACT.cal} target="_blank" rel="noopener" class="btn btn-outline btn-primary gap-2">
 				{m.consulting_cta()}
 				<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
 			</a>
@@ -566,7 +566,7 @@
 					What's a hill you will die on?
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p><em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces—no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read <em>The Brothers Karamazov</em>. It will change how you see the world.</p>
+					<p><em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces, no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read <em>The Brothers Karamazov</em>. It will change how you see the world.</p>
 				</div>
 			</div>
 		</div>
