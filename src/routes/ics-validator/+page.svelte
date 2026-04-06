@@ -545,7 +545,7 @@ END:VCALENDAR`;
 				} else {
 					issues.push({
 						type: 'error',
-						message: `TZID "${tz}" referenced but unknown — cannot generate VTIMEZONE. Use an IANA timezone name.`
+						message: `TZID "${tz}" referenced but unknown. Cannot generate VTIMEZONE. Use an IANA timezone name.`
 					});
 				}
 			}
@@ -596,7 +596,7 @@ END:VCALENDAR`;
 					issues.push({ type: 'fixed', message: `${componentType} #${eventCount}: Added missing DTSTAMP.` });
 				}
 				if (!componentHasDtstart) {
-					issues.push({ type: 'error', message: `${componentType} #${eventCount}: Missing DTSTART — cannot auto-fix.` });
+					issues.push({ type: 'error', message: `${componentType} #${eventCount}: Missing DTSTART. Cannot auto-fix.` });
 				}
 
 				for (const cl of componentLines) {
@@ -666,7 +666,7 @@ END:VCALENDAR`;
 		const fixes = issues.filter((i) => i.type === 'fixed').length;
 
 		if (errors === 0 && warnings === 0 && fixes === 0) {
-			issues.push({ type: 'fixed', message: 'ICS file is valid — no issues found!' });
+			issues.push({ type: 'fixed', message: 'ICS file is valid. No issues found!' });
 		}
 
 		// Parse events for preview
@@ -770,7 +770,7 @@ END:VCALENDAR`;
 	<header class="page-header">
 		<h1 class="page-title text-primary">ICS Validator & Fixer</h1>
 		<p class="page-subtitle text-secondary">
-			Paste or upload any .ics file — auto-fixes missing timezones, UIDs, line folding, and other
+			Paste or upload any .ics file. Auto-fixes missing timezones, UIDs, line folding, and other
 			issues that break Google Calendar, Outlook, and Apple Calendar imports.
 		</p>
 	</header>
