@@ -22,6 +22,7 @@
 	<!-- English -->
 	<a
 		href={enHref}
+		data-sveltekit-reload
 		class="lang-option"
 		class:active={currentLang === 'en'}
 		aria-label="English"
@@ -33,6 +34,7 @@
 	<!-- Japanese -->
 	<a
 		href={jaHref}
+		data-sveltekit-reload
 		class="lang-option"
 		class:active={currentLang === 'ja'}
 		aria-label="日本語"
