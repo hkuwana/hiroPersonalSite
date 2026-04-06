@@ -24,6 +24,15 @@
 	<meta property="og:description" content="Essays on technology, startups, education, and building things that last." />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://hirokuwana.com/essays" />
+	<meta property="og:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+	<meta property="og:site_name" content="Hiro Kuwana" />
+
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="{m.nav_essays()} - Hiro Kuwana" />
+	<meta name="twitter:description" content="Essays on technology, startups, education, and building things that last." />
+	<meta name="twitter:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+
 	<link rel="canonical" href="https://hirokuwana.com/essays" />
 </svelte:head>
 

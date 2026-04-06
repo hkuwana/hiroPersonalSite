@@ -7,6 +7,24 @@
 
 <svelte:head>
 	<title>Hiroyuki Kuwana | Strategic Innovation Leader & AI Transformation Specialist</title>
+	<meta name="description" content="Hiroyuki Kuwana — results-driven AI entrepreneur and founder of Kaiwa. Strategic innovation, AI transformation, and cross-functional leadership." />
+	<meta name="robots" content="noindex, nofollow" />
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="profile" />
+	<meta property="og:url" content="https://hirokuwana.com/corporate" />
+	<meta property="og:title" content="Hiroyuki Kuwana | Strategic Innovation Leader & AI Transformation Specialist" />
+	<meta property="og:description" content="Hiroyuki Kuwana — results-driven AI entrepreneur and founder of Kaiwa. Strategic innovation, AI transformation, and cross-functional leadership." />
+	<meta property="og:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+	<meta property="og:site_name" content="Hiro Kuwana" />
+
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Hiroyuki Kuwana | Strategic Innovation Leader" />
+	<meta name="twitter:description" content="Hiroyuki Kuwana — results-driven AI entrepreneur and founder of Kaiwa." />
+	<meta name="twitter:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+
+	<link rel="canonical" href="https://hirokuwana.com/corporate" />
 </svelte:head>
 
 <div class="min-h-screen bg-base-100 py-16 px-8">

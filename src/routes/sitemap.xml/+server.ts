@@ -25,10 +25,16 @@ export const GET: RequestHandler = async () => {
         <priority>0.8</priority>
     </url>
     <url>
+        <loc>${'${SITE.url}'}/ics-validator</loc>
+        <lastmod>${'${currentDate}'}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
         <loc>${'${SITE.url}'}/corporate</loc>
         <lastmod>${'${currentDate}'}</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
+        <priority>0.3</priority>
     </url>
 </urlset>`;
 

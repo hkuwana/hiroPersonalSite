@@ -764,6 +764,22 @@ END:VCALENDAR`;
 		name="description"
 		content="Validate and fix .ics calendar files for Google Calendar, Apple Calendar, and Outlook. Auto-fixes missing VTIMEZONE, UID, line folding, and more."
 	/>
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://hirokuwana.com/ics-validator" />
+	<meta property="og:title" content="ICS Validator & Fixer - Hiro Kuwana" />
+	<meta property="og:description" content="Validate and fix .ics calendar files for Google Calendar, Apple Calendar, and Outlook. Auto-fixes missing VTIMEZONE, UID, line folding, and more." />
+	<meta property="og:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+	<meta property="og:site_name" content="Hiro Kuwana" />
+
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="ICS Validator & Fixer - Hiro Kuwana" />
+	<meta name="twitter:description" content="Validate and fix .ics calendar files for Google Calendar, Apple Calendar, and Outlook. Auto-fixes missing timezones, UIDs, and more." />
+	<meta name="twitter:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+
+	<link rel="canonical" href="https://hirokuwana.com/ics-validator" />
 </svelte:head>
 
 <article class="ics-page" class:visible>

@@ -22,7 +22,7 @@ export const SITE = {
 	name: 'Hiro Kuwana',
 	title: 'Hiro Kuwana - AI Entrepreneur & Founder | Democratizing Education Through Technology',
 	description:
-		'Hiro Kuwana is a tech entrepreneur building AI solutions to democratize education and empower human potential. Founder of Kaiwa (AI language learning). Making premium tools accessible to everyone.',
+		'Hiro Kuwana is a tech entrepreneur building AI tools to democratize education. Founder of Kaiwa — an AI speaking platform that gives language tutors real-time pronunciation feedback, CEFR-aligned conversations, and scalable practice for their students.',
 	url: 'https://hirokuwana.com',
 	image: 'https://hirokuwana.com/hiro-social-preview.jpg',
 	author: 'Hiro Kuwana',
@@ -32,11 +32,14 @@ export const SITE = {
 		'startup founder',
 		'educational technology',
 		'AI democratization',
-		'venture capital AI',
+		'language tutor platform',
+		'AI speaking practice',
+		'pronunciation feedback',
 		'language learning app',
-		'tech innovation',
+		'tutor feedback tool',
 		'artificial intelligence',
 		'EdTech',
+		'Kaiwa',
 	],
 } as const;
 
@@ -58,9 +61,9 @@ export const PERSONAL = {
 export const PROJECTS = [
 	{
 		name: 'Kaiwa',
-		tagline: 'Language Learning, Reimagined',
+		tagline: 'AI Handles the Reps. You Handle the Relationship.',
 		description:
-			'Practice languages through bite-sized AI conversations. Real-time translations, social streaks, and 30-second daily sessions.',
+			'An AI speaking platform built for language tutors. Real-time pronunciation feedback, CEFR-aligned conversations, and scalable practice — so tutors can focus on what matters: the human relationship.',
 		link: PERSONAL.companyWebsite,
 		logo: '/kaiwa_logo.webp',
 		status: 'current',
@@ -123,7 +126,9 @@ export const TOOLS = [
 export const EXPERTISE = [
 	'Artificial Intelligence',
 	'Educational Technology',
-	'Venture Capital',
+	'Language Tutor Platforms',
+	'AI Speaking Practice',
+	'Pronunciation Feedback',
 	'Language Learning',
 	'Startup Development',
 	'Product Design',
@@ -169,7 +174,7 @@ export const FAQS = [
 	{
 		question: 'What is Hiro Kuwana working on?',
 		answer:
-			'Hiro Kuwana is currently focused on Kaiwa, an AI-powered language learning app that helps people practice languages through bite-sized conversations. Previously, he built Flybyrd (AI for venture capital) and Pebblr (nonprofit donor connections).',
+			'Hiro Kuwana is currently focused on Kaiwa, an AI speaking platform built for language tutors. Kaiwa provides real-time pronunciation feedback and CEFR-aligned conversations so tutors can scale practice while focusing on the human relationship. Previously, he built Flybyrd (AI for venture capital) and Pebblr (nonprofit donor connections).',
 	},
 	{
 		question: "What is Hiro Kuwana's background?",

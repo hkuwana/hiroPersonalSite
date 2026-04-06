@@ -29,8 +29,17 @@
 	<meta property="og:description" content={data.description} />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="https://hirokuwana.com/essays/{data.slug}" />
+	<meta property="og:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+	<meta property="og:site_name" content="Hiro Kuwana" />
 	<meta property="article:published_time" content={data.date} />
 	<meta property="article:author" content="Hiro Kuwana" />
+
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={data.title} />
+	<meta name="twitter:description" content={data.description} />
+	<meta name="twitter:image" content="https://hirokuwana.com/hiro-social-preview.jpg" />
+
 	<link rel="canonical" href="https://hirokuwana.com/essays/{data.slug}" />
 
 	<!-- Article structured data -->
