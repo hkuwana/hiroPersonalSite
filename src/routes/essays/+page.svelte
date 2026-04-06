@@ -6,7 +6,7 @@
 
 	let { data } = $props<{ data: PageData }>();
 
-	let visible = false;
+	let visible = $state(false);
 
 	const locale = $derived(getLocale());
 
