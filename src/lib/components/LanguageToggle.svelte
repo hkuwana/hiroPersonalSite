@@ -1,110 +1,135 @@
 <script lang="ts">
-	// LanguageToggle - Switches between English, Japanese, Chinese, and Spanish
-	// Shows all language options with active state
-
-	import FlagIcon from './FlagIcon.svelte';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/stores';
 	import * as m from '$lib/paraglide/messages';
 
-	// Get current language
 	const currentLang = $derived(getLocale());
-
-	// Get the current path without locale prefix
 	const currentPath = $derived($page.url.pathname);
 
-	// Generate localized hrefs
-	const enHref = $derived(localizeHref(currentPath, { locale: 'en' }));
-	const jaHref = $derived(localizeHref(currentPath, { locale: 'ja' }));
-	const zhHref = $derived(localizeHref(currentPath, { locale: 'zh' }));
-	const esHref = $derived(localizeHref(currentPath, { locale: 'es' }));
+	const languages = [
+		{ code: 'en', label: 'EN', name: 'English' },
+		{ code: 'ja', label: '日本語', name: '日本語' },
+		{ code: 'zh', label: '中文', name: '中文' },
+		{ code: 'es', label: 'ES', name: 'Español' },
+	] as const;
+
+	const currentLabel = $derived(
+		languages.find((l) => l.code === currentLang)?.label ?? 'EN'
+	);
 </script>
 
-<div class="language-toggle" role="group" aria-label={m.aria_toggle_language()}>
-	<!-- English -->
-	<a
-		href={enHref}
-		class="lang-option"
-		class:active={currentLang === 'en'}
-		aria-label="English"
-		aria-current={currentLang === 'en' ? 'true' : undefined}
-		data-sveltekit-reload
-	>
-		<FlagIcon countryCode="us" size="h-5 w-5" />
-	</a>
-
-	<!-- Japanese -->
-	<a
-		href={jaHref}
-		class="lang-option"
-		class:active={currentLang === 'ja'}
-		aria-label="日本語"
-		aria-current={currentLang === 'ja' ? 'true' : undefined}
-		data-sveltekit-reload
-	>
-		<FlagIcon countryCode="jp" size="h-5 w-5" />
-	</a>
-
-	<!-- Chinese -->
-	<a
-		href={zhHref}
-		class="lang-option"
-		class:active={currentLang === 'zh'}
-		aria-label="中文"
-		aria-current={currentLang === 'zh' ? 'true' : undefined}
-		data-sveltekit-reload
-	>
-		<FlagIcon countryCode="cn" size="h-5 w-5" />
-	</a>
-
-	<!-- Spanish -->
-	<a
-		href={esHref}
-		class="lang-option"
-		class:active={currentLang === 'es'}
-		aria-label="Español"
-		aria-current={currentLang === 'es' ? 'true' : undefined}
-		data-sveltekit-reload
-	>
-		<FlagIcon countryCode="es" size="h-5 w-5" />
-	</a>
+<div class="lang-dropdown" role="group" aria-label={m.aria_toggle_language()}>
+	<details class="dropdown dropdown-end">
+		<summary class="lang-trigger">
+			{currentLabel}
+			<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="m6 9 6 6 6-6"/>
+			</svg>
+		</summary>
+		<ul class="lang-menu dropdown-content">
+			{#each languages as lang}
+				<li>
+					<a
+						href={localizeHref(currentPath, { locale: lang.code })}
+						class="lang-item"
+						class:active={currentLang === lang.code}
+						aria-current={currentLang === lang.code ? 'true' : undefined}
+						data-sveltekit-reload
+					>
+						<span class="lang-code">{lang.label}</span>
+						<span class="lang-name">{lang.name}</span>
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</details>
 </div>
 
 <style>
-	.language-toggle {
-		display: flex;
-		gap: 0.25rem;
-		padding: 0.25rem;
-		background: oklch(var(--b2) / 0.5);
-		border-radius: 9999px;
-		border: 1px solid oklch(var(--bc) / 0.1);
+	.lang-dropdown {
+		position: relative;
 	}
 
-	.lang-option {
+	.lang-trigger {
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		padding: 0.5rem;
-		border-radius: 9999px;
-		transition: all 0.2s ease;
+		gap: 0.25rem;
+		padding: 0.375rem 0.625rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
 		cursor: pointer;
-		opacity: 0.5;
-		min-width: 40px;
-		min-height: 40px;
+		list-style: none;
+		background: oklch(var(--b2) / 0.5);
+		border: 1px solid oklch(var(--bc) / 0.1);
+		border-radius: 9999px;
+		color: oklch(var(--bc) / 0.7);
+		transition: all 0.2s ease;
+		min-height: 36px;
+		user-select: none;
 	}
 
-	.lang-option:hover {
-		opacity: 0.8;
-		background: oklch(var(--b3) / 0.3);
+	.lang-trigger::-webkit-details-marker {
+		display: none;
 	}
 
-	.lang-option.active {
-		opacity: 1;
+	.lang-trigger:hover {
+		color: oklch(var(--bc));
+		background: oklch(var(--b2));
+		border-color: oklch(var(--bc) / 0.2);
+	}
+
+	details[open] .lang-trigger {
+		color: oklch(var(--bc));
 		background: oklch(var(--b1));
 		box-shadow: 0 1px 3px oklch(var(--bc) / 0.1);
 	}
 
-	.lang-option.active:hover {
-		opacity: 1;
+	.lang-menu {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 0.375rem);
+		min-width: 130px;
+		background: oklch(var(--b1));
+		border: 1px solid oklch(var(--bc) / 0.12);
+		border-radius: 0.75rem;
+		box-shadow: 0 8px 24px oklch(var(--bc) / 0.1);
+		padding: 0.25rem;
+		list-style: none;
+		margin: 0;
+		z-index: 200;
+	}
+
+	.lang-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 0.625rem;
+		border-radius: 0.5rem;
+		text-decoration: none;
+		transition: background 0.15s ease;
+		color: oklch(var(--bc) / 0.65);
+	}
+
+	.lang-item:hover {
+		background: oklch(var(--b2));
+		color: oklch(var(--bc));
+	}
+
+	.lang-item.active {
+		color: oklch(var(--p));
+		background: oklch(var(--p) / 0.08);
+	}
+
+	.lang-code {
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		min-width: 1.75rem;
+	}
+
+	.lang-name {
+		font-size: 0.8rem;
+		font-weight: 400;
 	}
 </style>
