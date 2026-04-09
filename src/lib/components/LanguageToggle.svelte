@@ -26,6 +26,7 @@
 		class:active={currentLang === 'en'}
 		aria-label="English"
 		aria-current={currentLang === 'en' ? 'true' : undefined}
+		data-sveltekit-reload
 	>
 		<FlagIcon countryCode="us" size="h-5 w-5" />
 	</a>
@@ -37,6 +38,7 @@
 		class:active={currentLang === 'ja'}
 		aria-label="日本語"
 		aria-current={currentLang === 'ja' ? 'true' : undefined}
+		data-sveltekit-reload
 	>
 		<FlagIcon countryCode="jp" size="h-5 w-5" />
 	</a>
