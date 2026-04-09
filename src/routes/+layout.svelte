@@ -21,15 +21,12 @@
 	<main id="main">
 		{@render children()}
 	</main>
-<footer class="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
-  <aside>
-  	<p class="footer-text text-secondary text-center w-full">
-				{m.footer_made_by()}
-			</p>
-			<p class="footer-year text-base-content/50">
-				@{new Date().getFullYear()}
-			</p>
-  </aside>
+<footer class="border-t border-base-300/50 py-8 px-5 sm:px-8 bg-base-100">
+	<div class="max-w-5xl mx-auto flex items-center justify-center gap-2.5 text-sm text-base-content/40">
+		<span>{m.footer_made_by()}</span>
+		<span aria-hidden="true">·</span>
+		<span>{new Date().getFullYear()}</span>
+	</div>
 </footer>
 </div>
 
