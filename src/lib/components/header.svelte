@@ -10,7 +10,7 @@
 <header class="header">
 	<div class="header-inner">
 		<nav class="nav">
-			<a href={localizeHref('/')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname === '/' || $page.url.pathname === '/ja'}>
+			<a href={localizeHref('/')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname === '/' || String($page.url.pathname) === '/ja'}>
 				{m.nav_home()}
 			</a>
 			<span class="nav-divider"></span>
