@@ -6,16 +6,16 @@ Personal site for Hiro Kuwana — built with SvelteKit, Tailwind CSS v4, and Dai
 
 ## Development Commands
 
-- `npm run dev` — Start dev server
-- `npm run build` — Production build (what Vercel runs)
-- `npm run check` — Run svelte-check for type errors
-- `npm run lint` — Prettier + ESLint
+- `pnpm dev` — Start dev server
+- `pnpm build` — Production build (what Vercel runs)
+- `pnpm check` — Run svelte-check for type errors
+- `pnpm lint` — Prettier + ESLint
 
 ## Pre-Publish Checklist
 
 - **Always check the Vercel build before publishing/merging.** Vercel deployments can fail for reasons not caught by local builds (node version differences, environment variables, edge function limits, etc.). Verify the preview deployment succeeds before merging a PR.
-- Run `npm run build` locally to catch build errors early.
-- Run `npm run check` to catch type errors (note: some pre-existing type errors exist on master).
+- Run `pnpm build` locally to catch build errors early.
+- Run `pnpm check` to catch type errors (note: some pre-existing type errors exist on master).
 
 ## Architecture Notes
 
