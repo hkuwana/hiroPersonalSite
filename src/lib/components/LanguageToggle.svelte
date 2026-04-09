@@ -1,6 +1,6 @@
 <script lang="ts">
-	// LanguageToggle - Switches between English (US) and Japanese
-	// Shows both language options with active state
+	// LanguageToggle - Switches between English, Japanese, Chinese, and Spanish
+	// Shows all language options with active state
 
 	import FlagIcon from './FlagIcon.svelte';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
@@ -16,6 +16,8 @@
 	// Generate localized hrefs
 	const enHref = $derived(localizeHref(currentPath, { locale: 'en' }));
 	const jaHref = $derived(localizeHref(currentPath, { locale: 'ja' }));
+	const zhHref = $derived(localizeHref(currentPath, { locale: 'zh' }));
+	const esHref = $derived(localizeHref(currentPath, { locale: 'es' }));
 </script>
 
 <div class="language-toggle" role="group" aria-label={m.aria_toggle_language()}>
@@ -41,6 +43,30 @@
 		data-sveltekit-reload
 	>
 		<FlagIcon countryCode="jp" size="h-5 w-5" />
+	</a>
+
+	<!-- Chinese -->
+	<a
+		href={zhHref}
+		class="lang-option"
+		class:active={currentLang === 'zh'}
+		aria-label="中文"
+		aria-current={currentLang === 'zh' ? 'true' : undefined}
+		data-sveltekit-reload
+	>
+		<FlagIcon countryCode="cn" size="h-5 w-5" />
+	</a>
+
+	<!-- Spanish -->
+	<a
+		href={esHref}
+		class="lang-option"
+		class:active={currentLang === 'es'}
+		aria-label="Español"
+		aria-current={currentLang === 'es' ? 'true' : undefined}
+		data-sveltekit-reload
+	>
+		<FlagIcon countryCode="es" size="h-5 w-5" />
 	</a>
 </div>
 

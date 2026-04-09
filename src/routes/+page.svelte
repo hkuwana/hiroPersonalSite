@@ -509,84 +509,78 @@
 		<div class="space-y-3">
 			<!-- AI Hot Take -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="checkbox" aria-label="Will AI take over the world?" />
+				<input type="checkbox" aria-label={m.faq_ai_q()} />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
-					Will AI take over the world?
+					{m.faq_ai_q()}
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p>No. But I do worry about how it will either force us to sharpen our critical thinking or make us complacent. In many ways, it's like <em>Up</em> or <em>Brave New World</em>. The question isn't whether AI will control us, but whether we'll choose comfort over growth.</p>
+					<p>{@html m.faq_ai_a()}</p>
 				</div>
 			</div>
 
 			<!-- Japan -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="checkbox" aria-label="Is Japan perfect? Do you watch anime?" />
+				<input type="checkbox" aria-label={m.faq_japan_q()} />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
-					Is Japan perfect? Do you watch anime?
+					{m.faq_japan_q()}
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p><strong>No</strong>, Japan is not a perfect country without flaws. And <strong>yes</strong>, I watch anime. <em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces. I will die on this hill.</p>
+					<p>{@html m.faq_japan_a()}</p>
 				</div>
 			</div>
 
 			<!-- Coffee vs Tea -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="checkbox" aria-label="Coffee or tea?" />
+				<input type="checkbox" aria-label={m.faq_tea_q()} />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
-					Coffee or tea?
+					{m.faq_tea_q()}
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p>Tea. Green tea specifically. And I'm willing to change your mind on this; most green tea in the US is awful (<em>cough cough Lipton</em>). Try the real stuff and we'll talk.</p>
+					<p>{@html m.faq_tea_a()}</p>
 				</div>
 			</div>
 
 			<!-- Background surprise -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="checkbox" aria-label="Wait, you studied Environmental Engineering?" />
+				<input type="checkbox" aria-label={m.faq_engineering_q()} />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
-					Wait, you studied Environmental Engineering?
+					{m.faq_engineering_q()}
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p>Yes. My advisor once said, <em>"Now that you have a degree, I'm honestly surprised you became an engineer."</em> I also did conservation work in Maui helping maintain Waikamoi Preserve (one of the wettest places in the world). Somehow it stayed that way even with my dry humor.</p>
+					<p>{@html m.faq_engineering_a()}</p>
 				</div>
 			</div>
 
 			<!-- Fun facts -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="checkbox" aria-label="Tell me something weird about you" />
+				<input type="checkbox" aria-label={m.faq_weird_q()} />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
-					Tell me something weird about you
+					{m.faq_weird_q()}
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<ul class="list-disc list-inside space-y-2">
-						<li>I can snap on any surface. Tables, walls, my own face. It's a gift.</li>
-						<li>I beat Total War: Shogun 2 on Legendary as the Tsu faction (the independent republic). If you know, you know.</li>
-						<li>I send postcards to friends around the world. DM me your address, I'm serious.</li>
-						<li>My dream is to make enough friends globally that I always have a couch to crash on.</li>
-						<li>I can only count to three the German way. My hands physically refuse to do it any other way.</li>
-					</ul>
+					{@html m.faq_weird_a()}
 				</div>
 			</div>
 
 			<!-- Legal disclaimer joke -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="checkbox" aria-label="Are you funny?" />
+				<input type="checkbox" aria-label={m.faq_funny_q()} />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
-					Are you funny?
+					{m.faq_funny_q()}
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p>I grew up in the US of A. I don't have a sense of humour. Please don't sue me.</p>
+					<p>{@html m.faq_funny_a()}</p>
 				</div>
 			</div>
 
 			<!-- Hills to die on -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="checkbox" aria-label="What's a hill you will die on?" />
+				<input type="checkbox" aria-label={m.faq_hill_q()} />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
-					What's a hill you will die on?
+					{m.faq_hill_q()}
 				</div>
 				<div class="collapse-content text-base-content/70">
-					<p><em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces, no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read <em>The Brothers Karamazov</em>. It will change how you see the world.</p>
+					<p>{@html m.faq_hill_a()}</p>
 				</div>
 			</div>
 		</div>
