@@ -189,11 +189,12 @@
 
 <!-- Hero Section - Tighter to get to projects faster -->
 <section
-	class="hero relative flex items-center justify-center px-5 sm:px-8 py-14 md:py-20 bg-base-100"
+	class="hero relative flex items-center justify-center px-5 sm:px-8 py-16 md:py-28 bg-base-100 overflow-hidden"
 	bind:this={sections[0]}
 	class:visible={visibleSections.has(0)}
 >
-	<div class="flex flex-col items-center text-center gap-6 md:gap-8 max-w-xl">
+	<div class="hero-backdrop" aria-hidden="true"></div>
+	<div class="relative z-10 flex flex-col items-center text-center gap-6 md:gap-8 max-w-xl">
 		<!-- Avatar + Name row -->
 		<div class="flex flex-col sm:flex-row items-center gap-5 sm:gap-6">
 			<div
@@ -201,13 +202,13 @@
 				role="img"
 				aria-label="Hiro Kuwana profile photo"
 			>
-				<div class="w-28 h-28 md:w-36 md:h-36 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-[transform,box-shadow] duration-500 ease-out hover:scale-[1.03] cursor-default">
-					<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full" width="144" height="144" fetchpriority="high" />
+				<div class="avatar-halo w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden hover:scale-[1.04] transition-transform duration-500 ease-out cursor-default">
+					<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full w-full h-full object-cover" width="144" height="144" fetchpriority="high" />
 				</div>
 			</div>
 
 			<div class="flex flex-col items-center sm:items-start gap-2">
-				<h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up text-primary">
+				<h1 class="hero-name animate-fade-in-up text-primary text-balance">
 					{PERSONAL.displayName}
 				</h1>
 
@@ -227,7 +228,7 @@
 
 		<!-- Tagline + CTA -->
 		<div class="flex flex-col items-center gap-4">
-			<p class="text-base-content/70 text-lg max-w-sm leading-relaxed animate-fade-in-up delay-2">
+			<p class="text-base-content/65 text-lg max-w-sm leading-relaxed animate-fade-in-up delay-2">
 				{m.hero_tagline()}
 			</p>
 
@@ -241,7 +242,7 @@
 
 <!-- Projects Section -->
 <section
-	class="section-animate py-24 md:py-28 px-5 sm:px-8 bg-base-200/50"
+	class="section-animate py-24 md:py-28 px-5 sm:px-8 bg-base-200/40"
 	bind:this={sections[1]}
 	class:visible={visibleSections.has(1)}
 >
@@ -256,12 +257,12 @@
 				href={project.link}
 				target="_blank"
 				rel="noopener"
-				class="group card border-2 border-success/30 bg-gradient-to-br from-success/10 via-base-100 to-base-100 hover:border-success/50 hover:shadow-2xl hover:shadow-success/10 transition-all duration-300 mb-8"
+				class="group card border border-success/20 bg-gradient-to-br from-success/5 via-base-100 to-base-100 hover:border-success/35 hover:shadow-xl hover:shadow-success/6 transition-all duration-500 mb-10"
 			>
 				<div class="card-body flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 md:p-8">
 					<div class="avatar shrink-0">
 						<div class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl shadow-md overflow-hidden bg-base-100 dark:bg-base-300">
-							<img src={project.logo} alt="{project.name} logo" width="80" height="80" loading="lazy" class="w-full h-full object-contain" />
+							<img src={project.logo} alt="{project.name} logo" width="80" height="80" class="w-full h-full object-contain" />
 						</div>
 					</div>
 					<div class="flex-1 min-w-0">
@@ -286,8 +287,8 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 			{#each projects.filter(p => p.status !== 'current') as project, i}
 				<div
-					class="card border transition-all duration-300 group bg-base-100 border-base-300/50 hover:border-base-300 hover:bg-base-200/50"
-					style="animation-delay: {i * 0.1}s"
+					class="card border transition-all duration-500 ease-out group bg-base-100 border-base-300/40 hover:border-base-300/80 hover:shadow-lg hover:-translate-y-0.5"
+					style="animation-delay: {i * 0.07}s"
 				>
 					<div class="card-body">
 						<!-- Header -->
@@ -300,7 +301,6 @@
 											alt="{project.name} logo"
 											width="48"
 											height="48"
-											loading="lazy"
 											class="w-full h-full object-contain opacity-80 group-hover:opacity-100"
 										/>
 									</div>
@@ -595,8 +595,8 @@
 	/* Hero animation states */
 	.hero {
 		opacity: 0;
-		transform: translateY(16px);
-		transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+		transform: translateY(8px);
+		transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.hero.visible {
@@ -607,8 +607,8 @@
 	/* Section animation states */
 	.section-animate {
 		opacity: 0;
-		transform: translateY(20px);
-		transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+		transform: translateY(10px);
+		transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.section-animate.visible {

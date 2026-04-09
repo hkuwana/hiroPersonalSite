@@ -45,8 +45,8 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
 	font-size: clamp(2.5rem, 6vw, 3.5rem);
-	font-weight: 700;
-	letter-spacing: -0.035em;
+	font-weight: 800;
+	letter-spacing: -0.04em;
 }
 
 h2 {
@@ -95,7 +95,7 @@ a:focus-visible {
 @keyframes fadeInUp {
 	from {
 		opacity: 0;
-		transform: translateY(24px);
+		transform: translateY(12px);
 	}
 	to {
 		opacity: 1;
@@ -156,6 +156,52 @@ a:focus-visible {
 
 .animate-breathe {
 	animation: breathe 4s ease-in-out infinite;
+}
+
+/* Avatar halo — warm, living ring */
+@keyframes avatar-halo {
+	0%, 100% {
+		box-shadow:
+			0 0 0 3px oklch(var(--p) / 0.18),
+			0 0 28px oklch(var(--p) / 0.08);
+	}
+	50% {
+		box-shadow:
+			0 0 0 4px oklch(var(--p) / 0.3),
+			0 0 40px oklch(var(--p) / 0.14);
+	}
+}
+
+.avatar-halo {
+	animation: avatar-halo 5s ease-in-out infinite;
+	border-radius: 9999px;
+}
+
+/* Hero backdrop — warm radial glow + refined dot grid */
+.hero-backdrop {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 0;
+	background:
+		radial-gradient(ellipse 90% 65% at 50% 108%, oklch(var(--p) / 0.09) 0%, transparent 65%),
+		radial-gradient(ellipse 45% 35% at 8% 8%, oklch(var(--s) / 0.05) 0%, transparent 55%);
+}
+
+.hero-backdrop::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-image: radial-gradient(circle, oklch(var(--bc) / 0.04) 1px, transparent 1px);
+	background-size: 28px 28px;
+}
+
+/* Hero name — fluid, commanding */
+.hero-name {
+	font-size: clamp(2.25rem, 4vw + 0.75rem, 3.75rem);
+	font-weight: 800;
+	letter-spacing: -0.045em;
+	line-height: 1.0;
 }
 
 /* Stagger delays - More refined timing */
@@ -281,8 +327,6 @@ a:focus-visible {
 /* Cards - Using DaisyUI base colors */
 .card {
 	background: oklch(var(--b1));
-	backdrop-filter: blur(24px) saturate(180%);
-	-webkit-backdrop-filter: blur(24px) saturate(180%);
 	border: 1px solid oklch(var(--bc) / 0.1);
 	border-radius: 1rem;
 	padding: 2rem;

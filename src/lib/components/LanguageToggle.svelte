@@ -2,26 +2,28 @@
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/stores';
 	import * as m from '$lib/paraglide/messages';
+	import FlagIcon from '$lib/components/FlagIcon.svelte';
 
 	const currentLang = $derived(getLocale());
 	const currentPath = $derived($page.url.pathname);
 
 	const languages = [
-		{ code: 'en', label: 'EN', name: 'English' },
-		{ code: 'ja', label: '日本語', name: '日本語' },
-		{ code: 'zh', label: '中文', name: '中文' },
-		{ code: 'es', label: 'ES', name: 'Español' },
+		{ code: 'en', label: 'EN', name: 'English', flagCode: 'us' },
+		{ code: 'ja', label: '日本語', name: '日本語', flagCode: 'jp' },
+		{ code: 'zh', label: '中文', name: '中文', flagCode: 'cn' },
+		{ code: 'es', label: 'ES', name: 'Español', flagCode: 'es' },
 	] as const;
 
-	const currentLabel = $derived(
-		languages.find((l) => l.code === currentLang)?.label ?? 'EN'
-	);
+	const currentLang_ = $derived(languages.find((l) => l.code === currentLang) ?? languages[0]);
 </script>
 
 <div class="lang-dropdown" role="group" aria-label={m.aria_toggle_language()}>
 	<details class="dropdown dropdown-end">
 		<summary class="lang-trigger">
-			{currentLabel}
+			<span class="flag-wrap">
+				<FlagIcon countryCode={currentLang_.flagCode} size="h-4 w-4" />
+			</span>
+			{currentLang_.label}
 			<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 				<path d="m6 9 6 6 6-6"/>
 			</svg>
@@ -36,6 +38,9 @@
 						aria-current={currentLang === lang.code ? 'true' : undefined}
 						data-sveltekit-reload
 					>
+						<span class="flag-wrap">
+							<FlagIcon countryCode={lang.flagCode} size="h-4 w-4" />
+						</span>
 						<span class="lang-code">{lang.label}</span>
 						<span class="lang-name">{lang.name}</span>
 					</a>
@@ -119,6 +124,15 @@
 	.lang-item.active {
 		color: oklch(var(--p));
 		background: oklch(var(--p) / 0.08);
+	}
+
+	.flag-wrap {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		box-shadow: 0 0 0 1.5px oklch(var(--bc) / 0.15);
+		flex-shrink: 0;
 	}
 
 	.lang-code {
