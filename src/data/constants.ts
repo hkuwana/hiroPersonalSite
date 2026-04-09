@@ -55,7 +55,18 @@ export const PERSONAL = {
 } as const;
 
 // Projects
-export const PROJECTS = [
+interface Project {
+	name: string;
+	tagline: string;
+	description: string;
+	link?: string;
+	github?: string;
+	logo: string;
+	status: 'current' | 'active' | 'sunset';
+	color: string;
+}
+
+export const PROJECTS: Project[] = [
 	{
 		name: 'Kaiwa',
 		tagline: 'Language Learning, Reimagined',
@@ -105,7 +116,7 @@ export const PROJECTS = [
 		status: 'sunset',
 		color: '#6b7280',
 	},
-] as const;
+];
 
 // Tools & Experiments - One-off projects and utilities
 export const TOOLS = [

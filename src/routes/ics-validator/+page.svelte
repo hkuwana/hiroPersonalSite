@@ -972,7 +972,7 @@ END:VCALENDAR`;
 					<div class="card-body">
 						<div class="flex justify-between items-start">
 							<h3 class="card-title text-primary">{selectedEvent.summary}</h3>
-							<button class="btn btn-sm btn-ghost btn-circle" onclick={() => selectedEvent = null}>
+							<button class="btn btn-sm btn-ghost btn-circle" onclick={() => selectedEvent = null} aria-label="Close event details">
 								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
 							</button>
 						</div>
@@ -1364,6 +1364,7 @@ END:VCALENDAR`;
 		text-overflow: ellipsis;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
+		line-clamp: 2;
 		-webkit-box-orient: vertical;
 	}
 

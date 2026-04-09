@@ -72,7 +72,7 @@
 	</header>
 
 	<div class="essay-content">
-		<svelte:component this={data.content} />
+		<data.content />
 	</div>
 
 	<footer class="essay-footer">
