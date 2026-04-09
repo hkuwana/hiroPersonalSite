@@ -264,11 +264,116 @@ END:VCARD`;
 </script>
 
 <svelte:head>
-	<title>VCF Splitter & Contact Exporter - Hiro Kuwana</title>
+	<title>Free VCF Splitter | Split vCard Contacts File Online</title>
 	<meta
 		name="description"
-		content="Split a single VCF file containing multiple contacts into individual vCard files. Perfect for importing contacts to iPhone, Android, or any device. Free, private, runs entirely in your browser."
+		content="Free online VCF splitter. Split a .vcf file with multiple contacts into individual vCard files. Download as ZIP for easy iPhone and Android import. Runs in your browser, no upload required."
 	/>
+	<meta name="keywords" content="vcf splitter, vcard splitter, split vcf file, split contacts file, vcf to individual contacts, vcard file splitter, contact exporter, vcf zip download, import contacts iphone, import contacts android" />
+	<meta name="author" content="Hiro Kuwana" />
+	<meta name="robots" content="index, follow" />
+	<link rel="canonical" href="https://hirokuwana.com/vcf-splitter" />
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://hirokuwana.com/vcf-splitter" />
+	<meta property="og:title" content="Free VCF Splitter | Split vCard Contacts File Online" />
+	<meta property="og:description" content="Split a .vcf file with multiple contacts into individual vCard files. Download as ZIP. Free, private, runs entirely in your browser." />
+	<meta property="og:site_name" content="Hiro Kuwana" />
+
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Free VCF Splitter | Split Contacts Online" />
+	<meta name="twitter:description" content="Split a .vcf file with multiple contacts into individual vCard files. Download as ZIP. Free, runs in your browser." />
+	<meta name="twitter:creator" content="@hirokuwana" />
+
+	<!-- Structured Data: WebApplication -->
+	<script type="application/ld+json">
+		{JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'WebApplication',
+			name: 'VCF Splitter & Contact Exporter',
+			url: 'https://hirokuwana.com/vcf-splitter',
+			description: 'Free online tool to split a single VCF file containing multiple contacts into individual vCard files. Search, select, and download contacts as a ZIP. Works with iPhone, Android, and all devices.',
+			applicationCategory: 'UtilityApplication',
+			operatingSystem: 'Any',
+			browserRequirements: 'Requires a modern web browser',
+			offers: {
+				'@type': 'Offer',
+				price: '0',
+				priceCurrency: 'USD'
+			},
+			author: {
+				'@type': 'Person',
+				name: 'Hiro Kuwana',
+				url: 'https://hirokuwana.com'
+			},
+			featureList: [
+				'Split multi-contact VCF files into individual vCards',
+				'Search and filter contacts by name, email, phone, or organization',
+				'Select specific contacts to export',
+				'Download as ZIP of individual .vcf files',
+				'Compatible with iPhone, Android, Google Contacts, and Outlook',
+				'Drag and drop file upload',
+				'100% client-side processing'
+			]
+		})}
+	</script>
+
+	<!-- Structured Data: FAQ for AEO/GEO -->
+	<script type="application/ld+json">
+		{JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'FAQPage',
+			mainEntity: [
+				{
+					'@type': 'Question',
+					name: 'How do I split a VCF file with multiple contacts?',
+					acceptedAnswer: {
+						'@type': 'Answer',
+						text: 'Upload or paste your .vcf file into the VCF Splitter at hirokuwana.com/vcf-splitter. It will parse all contacts and let you search, select, and download them as individual vCard files in a ZIP archive. Works with any VCF file from iPhone, Android, Google Contacts, or Outlook.'
+					}
+				},
+				{
+					'@type': 'Question',
+					name: 'How do I import individual contacts to my iPhone or Android?',
+					acceptedAnswer: {
+						'@type': 'Answer',
+						text: 'Use the VCF Splitter to split your multi-contact VCF file into individual .vcf files, then download the ZIP. Unzip it on your device and tap each .vcf file to import it. On iPhone, this opens in Contacts. On Android, go to Contacts > Import.'
+					}
+				},
+				{
+					'@type': 'Question',
+					name: 'Is this VCF splitter free and safe to use?',
+					acceptedAnswer: {
+						'@type': 'Answer',
+						text: 'Yes. The VCF Splitter is completely free with no signup. All processing happens locally in your browser. Your contacts are never uploaded to any server, making it safe for personal and sensitive contact data.'
+					}
+				},
+				{
+					'@type': 'Question',
+					name: 'What is a VCF file?',
+					acceptedAnswer: {
+						'@type': 'Answer',
+						text: 'A VCF (vCard File) is a standard file format for storing contact information. It can contain one or many contacts, each with name, phone number, email, address, and other details. VCF files are used by iPhone, Android, Google Contacts, Outlook, and most contact management systems.'
+					}
+				}
+			]
+		})}
+	</script>
+
+	<!-- Breadcrumb -->
+	<script type="application/ld+json">
+		{JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'BreadcrumbList',
+			itemListElement: [
+				{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://hirokuwana.com' },
+				{ '@type': 'ListItem', position: 2, name: 'Tools', item: 'https://hirokuwana.com/#tools' },
+				{ '@type': 'ListItem', position: 3, name: 'VCF Splitter', item: 'https://hirokuwana.com/vcf-splitter' }
+			]
+		})}
+	</script>
 </svelte:head>
 
 <article class="vcf-page" class:visible>
