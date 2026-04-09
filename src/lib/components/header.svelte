@@ -18,7 +18,7 @@
 				{m.nav_essays()}
 			</a>
 			<span class="nav-divider"></span>
-			<a href={localizeHref('/ics-validator')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/ics-validator') || $page.url.pathname.startsWith('/ja/ics-validator')}>
+			<a href={localizeHref('/#tools')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/ics-validator') || $page.url.pathname.startsWith('/ja/ics-validator') || $page.url.pathname.startsWith('/vcf-splitter') || $page.url.pathname.startsWith('/ja/vcf-splitter')}>
 				{m.nav_tools()}
 			</a>
 		</nav>

@@ -37,6 +37,10 @@ export const SITE = {
 		'tech innovation',
 		'artificial intelligence',
 		'EdTech',
+		'free ICS validator',
+		'VCF splitter',
+		'calendar file fixer',
+		'vCard splitter',
 	],
 } as const;
 

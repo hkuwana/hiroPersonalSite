@@ -189,7 +189,7 @@
 
 <!-- Hero Section - Tighter to get to projects faster -->
 <section
-	class="hero relative flex items-center justify-center px-8 py-14 md:py-20 bg-base-100"
+	class="hero relative flex items-center justify-center px-5 sm:px-8 py-14 md:py-20 bg-base-100"
 	bind:this={sections[0]}
 	class:visible={visibleSections.has(0)}
 >
@@ -201,7 +201,7 @@
 				role="img"
 				aria-label="Hiro Kuwana profile photo"
 			>
-				<div class="w-28 h-28 md:w-36 md:h-36 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.03] cursor-default">
+				<div class="w-28 h-28 md:w-36 md:h-36 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-[transform,box-shadow] duration-500 ease-out hover:scale-[1.03] cursor-default">
 					<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full" width="144" height="144" fetchpriority="high" />
 				</div>
 			</div>
@@ -241,7 +241,7 @@
 
 <!-- Projects Section -->
 <section
-	class="section-animate py-24 md:py-28 px-8 bg-base-200/50"
+	class="section-animate py-24 md:py-28 px-5 sm:px-8 bg-base-200/50"
 	bind:this={sections[1]}
 	class:visible={visibleSections.has(1)}
 >
@@ -250,12 +250,43 @@
 			{m.projects_heading()}
 		</h2>
 
+		<!-- Featured Project: Kaiwa -->
+		{#each projects.filter(p => p.status === 'current') as project}
+			<a
+				href={project.link}
+				target="_blank"
+				rel="noopener"
+				class="group card border-2 border-success/30 bg-gradient-to-br from-success/10 via-base-100 to-base-100 hover:border-success/50 hover:shadow-2xl hover:shadow-success/10 transition-all duration-300 mb-8"
+			>
+				<div class="card-body flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 md:p-8">
+					<div class="avatar shrink-0">
+						<div class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl shadow-md overflow-hidden bg-base-100 dark:bg-base-300">
+							<img src={project.logo} alt="{project.name} logo" width="80" height="80" loading="lazy" class="w-full h-full object-contain" />
+						</div>
+					</div>
+					<div class="flex-1 min-w-0">
+						<div class="flex items-center gap-3 mb-1 flex-wrap">
+							<h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
+							<div class="badge badge-success badge-sm font-semibold uppercase tracking-wide">{m.project_status_current()}</div>
+						</div>
+						<p class="text-primary font-medium text-sm sm:text-base mb-1 sm:mb-2">{project.tagline}</p>
+						<p class="text-base-content/60 text-sm sm:text-base leading-relaxed group-hover:text-base-content/80 transition-colors">{project.description}</p>
+					</div>
+					<div class="shrink-0 self-start sm:self-center">
+						<span class="btn btn-primary btn-sm gap-1.5 group-hover:gap-2 transition-all">
+							{m.project_visit({ name: project.name })}
+							<span class="icon-[mdi--arrow-top-right] w-4 h-4"></span>
+						</span>
+					</div>
+				</div>
+			</a>
+		{/each}
+
+		<!-- Other Projects -->
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-			{#each projects as project, i}
+			{#each projects.filter(p => p.status !== 'current') as project, i}
 				<div
-					class="card border transition-all duration-300 group {project.status === 'current'
-						? 'bg-gradient-to-b from-success/10 via-base-100 to-base-100 border-success/30 hover:border-success/50 hover:shadow-xl hover:shadow-success/10 hover:-translate-y-2 md:scale-[1.02]'
-						: 'bg-base-100 border-base-300/50 hover:border-base-300 hover:bg-base-200/50'}"
+					class="card border transition-all duration-300 group bg-base-100 border-base-300/50 hover:border-base-300 hover:bg-base-200/50"
 					style="animation-delay: {i * 0.1}s"
 				>
 					<div class="card-body">
@@ -269,7 +300,8 @@
 											alt="{project.name} logo"
 											width="48"
 											height="48"
-											class="w-full h-full object-contain {project.status !== 'current' ? 'opacity-80 group-hover:opacity-100' : ''}"
+											loading="lazy"
+											class="w-full h-full object-contain opacity-80 group-hover:opacity-100"
 										/>
 									</div>
 								{:else}
@@ -282,15 +314,14 @@
 							</div>
 							<div
 								class="badge badge-sm font-semibold uppercase tracking-wide"
-								class:badge-success={project.status === 'current'}
-								class:badge-ghost={project.status !== 'current'}
+								class:badge-ghost={true}
 							>
-								{project.status === 'current' ? m.project_status_current() : project.status === 'sunset' ? m.project_status_sunset() : m.project_status_active()}
+								{project.status === 'sunset' ? m.project_status_sunset() : m.project_status_active()}
 							</div>
 						</div>
 
 						<h3 class="card-title text-xl text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
-						<p class="text-sm font-medium {project.status === 'current' ? 'text-primary' : 'text-base-content/70 group-hover:text-base-content'}">{project.tagline}</p>
+						<p class="text-sm font-medium text-base-content/70 group-hover:text-base-content">{project.tagline}</p>
 						<p class="text-sm leading-relaxed text-base-content/60 group-hover:text-base-content/80 transition-colors">{project.description}</p>
 
 						{#if project.link || project.github}
@@ -318,7 +349,7 @@
 
 <!-- Bio Section -->
 <section
-	class="section-animate py-24 md:py-28 px-8 bg-base-100"
+	class="section-animate py-24 md:py-28 px-5 sm:px-8 bg-base-100"
 	bind:this={sections[2]}
 	class:visible={visibleSections.has(2)}
 >
@@ -355,7 +386,7 @@
 
 <!-- AI Consulting Section -->
 <section
-	class="section-animate py-24 md:py-28 px-8 bg-base-200/50"
+	class="section-animate py-24 md:py-28 px-5 sm:px-8 bg-base-200/50"
 	bind:this={sections[3]}
 	class:visible={visibleSections.has(3)}
 >
@@ -404,7 +435,8 @@
 
 <!-- Tools & Experiments Section -->
 <section
-	class="section-animate py-24 md:py-28 px-8 bg-base-100"
+	id="tools"
+	class="section-animate py-24 md:py-28 px-5 sm:px-8 bg-base-100 scroll-mt-16"
 	bind:this={sections[4]}
 	class:visible={visibleSections.has(4)}
 >
@@ -416,7 +448,7 @@
 			{m.tools_subheading()}
 		</p>
 
-		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+		<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
 			{#each TOOLS as tool, i}
 				<a
 					href={tool.href}
@@ -456,25 +488,13 @@
 				</a>
 			{/each}
 
-			<!-- Placeholder for future tools -->
-			<div class="card border border-dashed border-base-300/50 bg-base-100/50">
-				<div class="card-body items-center justify-center text-center gap-2 py-8">
-					<div class="w-10 h-10 rounded-xl bg-base-200 flex items-center justify-center text-base-content/30">
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<line x1="12" y1="5" x2="12" y2="19" />
-							<line x1="5" y1="12" x2="19" y2="12" />
-						</svg>
-					</div>
-					<p class="text-sm text-base-content/40">{m.tools_coming_soon()}</p>
-				</div>
-			</div>
 		</div>
 	</div>
 </section>
 
 <!-- FAQ Section -->
 <section
-	class="section-animate py-28 md:py-36 px-8 bg-base-200/50"
+	class="section-animate py-28 md:py-36 px-5 sm:px-8 bg-base-200/50"
 	bind:this={sections[5]}
 	class:visible={visibleSections.has(5)}
 >
@@ -489,7 +509,7 @@
 		<div class="space-y-3">
 			<!-- AI Hot Take -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Will AI take over the world?" />
+				<input type="checkbox" aria-label="Will AI take over the world?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Will AI take over the world?
 				</div>
@@ -500,7 +520,7 @@
 
 			<!-- Japan -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Is Japan perfect? Do you watch anime?" />
+				<input type="checkbox" aria-label="Is Japan perfect? Do you watch anime?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Is Japan perfect? Do you watch anime?
 				</div>
@@ -511,7 +531,7 @@
 
 			<!-- Coffee vs Tea -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Coffee or tea?" />
+				<input type="checkbox" aria-label="Coffee or tea?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Coffee or tea?
 				</div>
@@ -522,7 +542,7 @@
 
 			<!-- Background surprise -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Wait, you studied Environmental Engineering?" />
+				<input type="checkbox" aria-label="Wait, you studied Environmental Engineering?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Wait, you studied Environmental Engineering?
 				</div>
@@ -533,7 +553,7 @@
 
 			<!-- Fun facts -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Tell me something weird about you" />
+				<input type="checkbox" aria-label="Tell me something weird about you" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Tell me something weird about you
 				</div>
@@ -550,7 +570,7 @@
 
 			<!-- Legal disclaimer joke -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Are you funny?" />
+				<input type="checkbox" aria-label="Are you funny?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Are you funny?
 				</div>
@@ -561,7 +581,7 @@
 
 			<!-- Hills to die on -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="What's a hill you will die on?" />
+				<input type="checkbox" aria-label="What's a hill you will die on?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					What's a hill you will die on?
 				</div>
