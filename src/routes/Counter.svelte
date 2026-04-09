@@ -66,7 +66,7 @@
 	path {
 		vector-effect: non-scaling-stroke;
 		stroke-width: 2px;
-		stroke: #444;
+		stroke: oklch(var(--bc) / 0.7);
 	}
 
 	.counter-viewport {

@@ -201,7 +201,7 @@
 				role="img"
 				aria-label="Hiro Kuwana profile photo"
 			>
-				<div class="w-28 h-28 md:w-36 md:h-36 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.03] cursor-default">
+				<div class="w-28 h-28 md:w-36 md:h-36 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-[transform,box-shadow] duration-500 ease-out hover:scale-[1.03] cursor-default">
 					<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full" width="144" height="144" fetchpriority="high" />
 				</div>
 			</div>
@@ -261,7 +261,7 @@
 				<div class="card-body flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 md:p-8">
 					<div class="avatar shrink-0">
 						<div class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl shadow-md overflow-hidden bg-base-100 dark:bg-base-300">
-							<img src={project.logo} alt="{project.name} logo" width="80" height="80" class="w-full h-full object-contain" />
+							<img src={project.logo} alt="{project.name} logo" width="80" height="80" loading="lazy" class="w-full h-full object-contain" />
 						</div>
 					</div>
 					<div class="flex-1 min-w-0">
@@ -300,6 +300,7 @@
 											alt="{project.name} logo"
 											width="48"
 											height="48"
+											loading="lazy"
 											class="w-full h-full object-contain opacity-80 group-hover:opacity-100"
 										/>
 									</div>
@@ -508,7 +509,7 @@
 		<div class="space-y-3">
 			<!-- AI Hot Take -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Will AI take over the world?" />
+				<input type="checkbox" aria-label="Will AI take over the world?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Will AI take over the world?
 				</div>
@@ -519,7 +520,7 @@
 
 			<!-- Japan -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Is Japan perfect? Do you watch anime?" />
+				<input type="checkbox" aria-label="Is Japan perfect? Do you watch anime?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Is Japan perfect? Do you watch anime?
 				</div>
@@ -530,7 +531,7 @@
 
 			<!-- Coffee vs Tea -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Coffee or tea?" />
+				<input type="checkbox" aria-label="Coffee or tea?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Coffee or tea?
 				</div>
@@ -541,7 +542,7 @@
 
 			<!-- Background surprise -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Wait, you studied Environmental Engineering?" />
+				<input type="checkbox" aria-label="Wait, you studied Environmental Engineering?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Wait, you studied Environmental Engineering?
 				</div>
@@ -552,7 +553,7 @@
 
 			<!-- Fun facts -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Tell me something weird about you" />
+				<input type="checkbox" aria-label="Tell me something weird about you" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Tell me something weird about you
 				</div>
@@ -569,7 +570,7 @@
 
 			<!-- Legal disclaimer joke -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="Are you funny?" />
+				<input type="checkbox" aria-label="Are you funny?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					Are you funny?
 				</div>
@@ -580,7 +581,7 @@
 
 			<!-- Hills to die on -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
-				<input type="radio" name="faq-accordion" aria-label="What's a hill you will die on?" />
+				<input type="checkbox" aria-label="What's a hill you will die on?" />
 				<div class="collapse-title font-medium text-primary min-h-[52px]">
 					What's a hill you will die on?
 				</div>

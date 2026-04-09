@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import JSZip from 'jszip';
 
 	let visible = $state(false);
 	let vcfInput = $state('');
@@ -209,6 +208,7 @@ END:VCARD`;
 		const selected = contacts.filter((c) => c.selected);
 		if (selected.length === 0) return;
 
+		const { default: JSZip } = await import('jszip');
 		const zip = new JSZip();
 		const usedNames = new Map<string, number>();
 
@@ -363,6 +363,7 @@ END:VCARD`;
 					<textarea
 						class="textarea textarea-bordered vcf-textarea"
 						placeholder="Paste your .vcf file content here, or drag & drop a file..."
+						aria-label="VCF file content"
 						bind:value={vcfInput}
 						rows="18"
 					></textarea>
@@ -415,6 +416,7 @@ END:VCARD`;
 						type="text"
 						class="input input-bordered input-sm search-input"
 						placeholder="Search contacts..."
+						aria-label="Search contacts"
 						bind:value={searchQuery}
 					/>
 				</div>

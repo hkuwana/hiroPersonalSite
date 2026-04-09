@@ -858,6 +858,7 @@ END:VCALENDAR`;
 					<textarea
 						class="textarea textarea-bordered ics-textarea"
 						placeholder="Paste your .ics file content here, or drag & drop a file..."
+						aria-label="ICS file content"
 						bind:value={icsInput}
 						rows="18"
 					></textarea>
@@ -877,6 +878,7 @@ END:VCALENDAR`;
 					</svg>
 					<select
 						class="select select-bordered select-sm"
+						aria-label="Select timezone"
 						bind:value={selectedTimezone}
 					>
 						{#each TIMEZONE_OPTIONS as tz}
@@ -888,9 +890,8 @@ END:VCALENDAR`;
 				</div>
 
 				<!-- Stats badges -->
-				{#if getEventStats()}
-					{@const stats = getEventStats()}
-					{#if stats}
+				{@const stats = getEventStats()}
+				{#if stats}
 						<div class="stats-badges">
 							<div class="badge badge-outline gap-1">
 								<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /></svg>
@@ -905,7 +906,6 @@ END:VCALENDAR`;
 								Busiest: {stats.busiestDay} ({stats.busiestDayHours}h)
 							</div>
 						</div>
-					{/if}
 				{/if}
 			</div>
 
