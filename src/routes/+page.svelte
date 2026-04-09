@@ -250,12 +250,43 @@
 			{m.projects_heading()}
 		</h2>
 
+		<!-- Featured Project: Kaiwa -->
+		{#each projects.filter(p => p.status === 'current') as project}
+			<a
+				href={project.link}
+				target="_blank"
+				rel="noopener"
+				class="group card border-2 border-success/30 bg-gradient-to-br from-success/10 via-base-100 to-base-100 hover:border-success/50 hover:shadow-2xl hover:shadow-success/10 transition-all duration-300 mb-8"
+			>
+				<div class="card-body flex-row flex-wrap items-center gap-6 p-6 md:p-8">
+					<div class="avatar shrink-0">
+						<div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl shadow-md overflow-hidden bg-base-100 dark:bg-base-300">
+							<img src={project.logo} alt="{project.name} logo" width="80" height="80" class="w-full h-full object-contain" />
+						</div>
+					</div>
+					<div class="flex-1 min-w-0">
+						<div class="flex items-center gap-3 mb-1">
+							<h3 class="text-2xl md:text-3xl font-bold text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
+							<div class="badge badge-success badge-sm font-semibold uppercase tracking-wide">{m.project_status_current()}</div>
+						</div>
+						<p class="text-primary font-medium mb-2">{project.tagline}</p>
+						<p class="text-base-content/60 leading-relaxed group-hover:text-base-content/80 transition-colors">{project.description}</p>
+					</div>
+					<div class="shrink-0">
+						<span class="btn btn-primary btn-sm gap-1.5 group-hover:gap-2 transition-all">
+							{m.project_visit({ name: project.name })}
+							<span class="icon-[mdi--arrow-top-right] w-4 h-4"></span>
+						</span>
+					</div>
+				</div>
+			</a>
+		{/each}
+
+		<!-- Other Projects -->
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-			{#each projects as project, i}
+			{#each projects.filter(p => p.status !== 'current') as project, i}
 				<div
-					class="card border transition-all duration-300 group {project.status === 'current'
-						? 'bg-gradient-to-b from-success/10 via-base-100 to-base-100 border-success/30 hover:border-success/50 hover:shadow-xl hover:shadow-success/10 hover:-translate-y-2 md:scale-[1.02]'
-						: 'bg-base-100 border-base-300/50 hover:border-base-300 hover:bg-base-200/50'}"
+					class="card border transition-all duration-300 group bg-base-100 border-base-300/50 hover:border-base-300 hover:bg-base-200/50"
 					style="animation-delay: {i * 0.1}s"
 				>
 					<div class="card-body">
@@ -269,7 +300,7 @@
 											alt="{project.name} logo"
 											width="48"
 											height="48"
-											class="w-full h-full object-contain {project.status !== 'current' ? 'opacity-80 group-hover:opacity-100' : ''}"
+											class="w-full h-full object-contain opacity-80 group-hover:opacity-100"
 										/>
 									</div>
 								{:else}
@@ -282,15 +313,14 @@
 							</div>
 							<div
 								class="badge badge-sm font-semibold uppercase tracking-wide"
-								class:badge-success={project.status === 'current'}
-								class:badge-ghost={project.status !== 'current'}
+								class:badge-ghost={true}
 							>
-								{project.status === 'current' ? m.project_status_current() : project.status === 'sunset' ? m.project_status_sunset() : m.project_status_active()}
+								{project.status === 'sunset' ? m.project_status_sunset() : m.project_status_active()}
 							</div>
 						</div>
 
 						<h3 class="card-title text-xl text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
-						<p class="text-sm font-medium {project.status === 'current' ? 'text-primary' : 'text-base-content/70 group-hover:text-base-content'}">{project.tagline}</p>
+						<p class="text-sm font-medium text-base-content/70 group-hover:text-base-content">{project.tagline}</p>
 						<p class="text-sm leading-relaxed text-base-content/60 group-hover:text-base-content/80 transition-colors">{project.description}</p>
 
 						{#if project.link || project.github}
@@ -404,6 +434,7 @@
 
 <!-- Tools & Experiments Section -->
 <section
+	id="tools"
 	class="section-animate py-24 md:py-28 px-8 bg-base-100"
 	bind:this={sections[4]}
 	class:visible={visibleSections.has(4)}
