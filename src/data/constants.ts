@@ -117,6 +117,14 @@ export const TOOLS = [
 		icon: 'calendar',
 		color: '#6366f1',
 	},
+	{
+		name: 'VCF File Splitter',
+		description:
+			'Upload a .vcf file with multiple contacts and split it into individual vCard files. Download as a ZIP for easy iPhone/Android import.',
+		href: '/vcf-splitter',
+		icon: 'contacts',
+		color: '#10b981',
+	},
 ] as const;
 
 // Expertise Areas
