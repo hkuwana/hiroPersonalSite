@@ -207,7 +207,7 @@
 			</div>
 
 			<div class="flex flex-col items-center sm:items-start gap-2">
-				<h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up text-primary">
+				<h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight animate-fade-in-up text-primary">
 					{PERSONAL.displayName}
 				</h1>
 
@@ -261,7 +261,7 @@
 				<div class="card-body flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-5 sm:p-6 md:p-8">
 					<div class="avatar shrink-0">
 						<div class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl shadow-md overflow-hidden bg-base-100 dark:bg-base-300">
-							<img src={project.logo} alt="{project.name} logo" width="80" height="80" loading="lazy" class="w-full h-full object-contain" />
+							<img src={project.logo} alt="{project.name} logo" width="80" height="80" class="w-full h-full object-contain" />
 						</div>
 					</div>
 					<div class="flex-1 min-w-0">
@@ -300,7 +300,6 @@
 											alt="{project.name} logo"
 											width="48"
 											height="48"
-											loading="lazy"
 											class="w-full h-full object-contain opacity-80 group-hover:opacity-100"
 										/>
 									</div>
