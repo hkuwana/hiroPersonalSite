@@ -23,4 +23,9 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+# Autoresearch generated output (baselines committed manually via --update-baseline)
+reports/lighthouse/
+reports/*.log
+reports/autoresearch-summary.txt
+
  

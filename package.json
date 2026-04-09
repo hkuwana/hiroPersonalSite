@@ -9,10 +9,20 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint ."
+		"lint": "prettier --check . && eslint .",
+		"check:i18n": "node scripts/i18n-drift.mjs",
+		"check:bundle": "node scripts/bundle-check.mjs",
+		"check:bundle:update": "node scripts/bundle-check.mjs --update-baseline",
+		"check:lighthouse": "node scripts/lighthouse-check.mjs",
+		"check:lighthouse:update": "node scripts/lighthouse-check.mjs --update-baseline",
+		"check:schema": "node scripts/schema-check.mjs",
+		"check:all": "pnpm check:i18n && pnpm check:schema && pnpm check:lighthouse && pnpm check:bundle",
+		"autoresearch": "bash scripts/autoresearch-loop.sh",
+		"autoresearch:loop": "bash scripts/autoresearch-loop.sh --loop 1800"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.4.1",
+		"lighthouse": "^12.4.0",
 		"@eslint/js": "^9.39.2",
 		"@iconify-json/circle-flags": "^1.2.10",
 		"@iconify-json/mdi": "^1.2.3",
