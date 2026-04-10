@@ -13,14 +13,33 @@
 	let sections: HTMLElement[] = [];
 	let visibleSections = new Set<number>();
 
+	// Avatar 3D tilt
+	let avatarEl: HTMLElement | null = null;
+	let reducedMotion = false;
+
+	function tiltAvatar(e: MouseEvent) {
+		if (!avatarEl || reducedMotion) return;
+		const rect = avatarEl.getBoundingClientRect();
+		const dx = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
+		const dy = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
+		avatarEl.style.transform = `perspective(600px) rotateY(${dx * 12}deg) rotateX(${-dy * 12}deg) scale3d(1.04,1.04,1.04)`;
+	}
+
+	function resetAvatar() {
+		if (!avatarEl) return;
+		avatarEl.style.transform = '';
+	}
+
 	onMount(() => {
+		reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 		// Easter egg for curious developers
 		console.log('%c👋 Hey there, curious one!', 'font-size: 16px; font-weight: bold;');
 		console.log(`%cWhile you're here, reach out if you're curious about how I built this: ${CONTACT.email}`, 'font-size: 12px;');
 		console.log('%cI\'m not a T-1000. Look away... now.', 'font-size: 12px; color: gray;');
 
 		// If the user prefers reduced motion, make all sections visible immediately
-		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		if (reducedMotion) {
 			for (let i = 0; i < sections.length; i++) {
 				visibleSections.add(i);
 			}
@@ -202,7 +221,13 @@
 				role="img"
 				aria-label="Hiro Kuwana profile photo"
 			>
-				<div class="avatar-halo w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden hover:scale-[1.04] transition-transform duration-500 ease-out cursor-default">
+				<div
+					class="avatar-halo w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden cursor-default"
+					bind:this={avatarEl}
+					onmousemove={tiltAvatar}
+					onmouseleave={resetAvatar}
+					style="transition: transform 0.15s ease-out;"
+				>
 					<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full w-full h-full object-cover" width="144" height="144" fetchpriority="high" />
 				</div>
 			</div>
@@ -220,7 +245,7 @@
 				>
 					<span class="text-base font-medium tracking-wide">{PERSONAL.japaneseKanji}</span>
 					{#if showMeaning}
-						<span class="text-sm text-primary italic font-medium">{PERSONAL.japaneseKana}</span>
+						<span class="text-sm text-primary italic font-medium kana-reveal">{PERSONAL.japaneseKana}</span>
 					{/if}
 				</button>
 			</div>
@@ -232,7 +257,7 @@
 				{m.hero_tagline()}
 			</p>
 
-			<a href={CONTACT.cal} target="_blank" rel="noopener" class="btn btn-outline btn-primary gap-2 animate-fade-in-up delay-3">
+			<a href={CONTACT.cal} target="_blank" rel="noopener" class="btn btn-outline btn-primary gap-2 animate-fade-in-up delay-3 btn-cta-pulse">
 				{m.hero_lets_talk()}
 				<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
 			</a>
@@ -240,7 +265,7 @@
 	</div>
 
 	<!-- Scroll indicator -->
-	<div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10" aria-hidden="true">
+	<div class="scroll-indicator-wrap absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10" aria-hidden="true">
 		<div class="scroll-mouse">
 			<span class="scroll-wheel"></span>
 		</div>
@@ -649,5 +674,25 @@
 		0% { transform: translateY(0); opacity: 1; }
 		60% { transform: translateY(9px); opacity: 0.2; }
 		100% { transform: translateY(0); opacity: 1; }
+	}
+
+	/* Kana pronunciation spring reveal */
+	@keyframes kana-in {
+		from { opacity: 0; transform: translateX(-8px) scale(0.85); }
+		to   { opacity: 1; transform: translateX(0)   scale(1); }
+	}
+	.kana-reveal {
+		animation: kana-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+	}
+
+	/* Short screens (landscape mobile): shrink padding + hide scroll indicator */
+	@media (max-height: 620px) {
+		.hero {
+			padding-top: 1rem;
+			padding-bottom: 1rem;
+		}
+		.scroll-indicator-wrap {
+			display: none;
+		}
 	}
 </style>

@@ -158,6 +158,19 @@ a:focus-visible {
 	animation: breathe 4s ease-in-out infinite;
 }
 
+/* CTA attention pulse — 4 gentle rings starting 3s after load, then stops */
+@keyframes cta-glow {
+	0%, 100% { box-shadow: 0 0 0 0 oklch(var(--p) / 0); }
+	50%       { box-shadow: 0 0 0 7px oklch(var(--p) / 0.2); }
+}
+.btn-cta-pulse {
+	animation: cta-glow 2.5s ease-in-out 3s 4;
+}
+.btn-cta-pulse:hover,
+.btn-cta-pulse:focus-visible {
+	animation: none;
+}
+
 /* Avatar halo — warm, living ring */
 @keyframes avatar-halo {
 	0%, 100% {
