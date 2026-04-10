@@ -187,9 +187,9 @@
 	</script>
 </svelte:head>
 
-<!-- Hero Section - Tighter to get to projects faster -->
+<!-- Hero Section - Fullscreen -->
 <section
-	class="hero relative flex items-center justify-center px-5 sm:px-8 py-16 md:py-28 bg-base-100 overflow-hidden"
+	class="hero relative flex items-center justify-center px-5 sm:px-8 py-16 md:py-28 bg-base-100 overflow-hidden min-h-[100dvh]"
 	bind:this={sections[0]}
 	class:visible={visibleSections.has(0)}
 >
@@ -238,6 +238,16 @@
 			</a>
 		</div>
 	</div>
+
+	<!-- Scroll indicator -->
+	<div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10" aria-hidden="true">
+		<div class="scroll-mouse">
+			<span class="scroll-wheel"></span>
+		</div>
+		<svg width="14" height="8" viewBox="0 0 14 8" fill="none" class="text-base-content/25">
+			<path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+		</svg>
+	</div>
 </section>
 
 <!-- Projects Section -->
@@ -270,8 +280,8 @@
 							<h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
 							<div class="badge badge-success badge-sm font-semibold uppercase tracking-wide">{m.project_status_current()}</div>
 						</div>
-						<p class="text-primary font-medium text-sm sm:text-base mb-1 sm:mb-2">{project.tagline}</p>
-						<p class="text-base-content/60 text-sm sm:text-base leading-relaxed group-hover:text-base-content/80 transition-colors">{project.description}</p>
+						<p class="text-primary font-medium text-sm sm:text-base mb-1 sm:mb-2">{project.name === 'Kaiwa' ? m.kaiwa_tagline() : project.tagline}</p>
+						<p class="text-base-content/60 text-sm sm:text-base leading-relaxed group-hover:text-base-content/80 transition-colors">{project.name === 'Kaiwa' ? m.kaiwa_description() : project.description}</p>
 					</div>
 					<div class="shrink-0 self-start sm:self-center">
 						<span class="btn btn-primary btn-sm gap-1.5 group-hover:gap-2 transition-all">
@@ -616,19 +626,28 @@
 		transform: translateY(0);
 	}
 
-	/* Scroll indicator animation */
-	@keyframes scroll-hint {
-		0%, 100% {
-			opacity: 0.4;
-			transform: translateY(0);
-		}
-		50% {
-			opacity: 0.8;
-			transform: translateY(4px);
-		}
+	/* Scroll mouse indicator */
+	.scroll-mouse {
+		width: 22px;
+		height: 34px;
+		border: 2px solid oklch(var(--bc) / 0.2);
+		border-radius: 11px;
+		display: flex;
+		justify-content: center;
+		padding-top: 5px;
 	}
 
-	:global(.animate-scroll-hint) {
-		animation: scroll-hint 2s ease-in-out infinite;
+	.scroll-wheel {
+		width: 3px;
+		height: 7px;
+		background: oklch(var(--bc) / 0.3);
+		border-radius: 2px;
+		animation: scroll-wheel 2s ease-in-out infinite;
+	}
+
+	@keyframes scroll-wheel {
+		0% { transform: translateY(0); opacity: 1; }
+		60% { transform: translateY(9px); opacity: 0.2; }
+		100% { transform: translateY(0); opacity: 1; }
 	}
 </style>

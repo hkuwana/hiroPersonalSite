@@ -66,7 +66,7 @@
 		font-size: 0.875rem;
 		font-weight: 500;
 		letter-spacing: -0.01em;
-		color: oklch(var(--bc) / 0.7);
+		color: oklch(var(--bc) / 0.85);
 		text-decoration: none;
 		border-radius: 9999px;
 		transition: all var(--duration-fast) var(--ease-out-quart);
