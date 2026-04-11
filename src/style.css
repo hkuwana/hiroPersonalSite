@@ -166,6 +166,12 @@ a:focus-visible {
 .btn-cta-pulse {
 	animation: cta-glow 2.5s ease-in-out 3s 4;
 }
+/* When combined with fade-in-up, run both animations so the button still fades in */
+.animate-fade-in-up.btn-cta-pulse {
+	animation:
+		fadeInUp 0.7s var(--ease-out-expo) forwards,
+		cta-glow 2.5s ease-in-out 3s 4;
+}
 .btn-cta-pulse:hover,
 .btn-cta-pulse:focus-visible {
 	animation: none;
