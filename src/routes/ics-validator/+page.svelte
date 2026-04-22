@@ -869,6 +869,24 @@ END:VCALENDAR`;
 			]
 		})}
 	</script>
+
+	<!-- Structured Data: HowTo for AEO/GEO ranking on "how to fix ics file" queries -->
+	<script type="application/ld+json">
+		{JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'HowTo',
+			name: 'How to fix a broken .ics calendar file',
+			description: 'Step-by-step guide to validate and auto-fix an .ics calendar file that Google Calendar, Apple Calendar, or Outlook refuses to import.',
+			totalTime: 'PT1M',
+			tool: [{ '@type': 'HowToTool', name: 'ICS Validator & Fixer (web app, runs in browser)' }],
+			step: [
+				{ '@type': 'HowToStep', position: 1, name: 'Paste or upload your .ics file', text: 'Drop the file into the editor or paste the raw contents. Everything runs in your browser — the file is never uploaded.' },
+				{ '@type': 'HowToStep', position: 2, name: 'Review the automatic fixes', text: 'The validator highlights missing VTIMEZONE, UID, DTSTAMP, invalid timezone aliases (EST/PST/JST), line-folding violations, and missing headers like VERSION or PRODID.' },
+				{ '@type': 'HowToStep', position: 3, name: 'Preview the week', text: 'Switch to Week Preview to confirm events land on the right days and times once timezones are corrected.' },
+				{ '@type': 'HowToStep', position: 4, name: 'Download the fixed file', text: 'Click Download to save the RFC 5545 compliant .ics file, then import it into Google Calendar, Apple Calendar, or Outlook.' }
+			]
+		})}
+	</script>
 </svelte:head>
 
 <article class="ics-page" class:visible>
@@ -1214,6 +1232,89 @@ END:VCALENDAR`;
 		</div>
 	</div>
 
+	<!-- How it works — crawlable HowTo content for AEO -->
+	<section class="howto-section" aria-labelledby="howto-heading">
+		<h2 id="howto-heading" class="seo-section-title text-primary">How to fix a broken .ics file</h2>
+		<p class="seo-section-lead text-secondary">
+			Most ICS import failures in Google Calendar, Apple Calendar, and Outlook come from four fixable issues: missing timezone definitions, missing UIDs, invalid line folding, or non-IANA timezone names. Here's the full fix in under a minute.
+		</p>
+		<ol class="howto-steps">
+			<li>
+				<span class="step-num">1</span>
+				<div>
+					<strong>Paste or upload the file.</strong>
+					<span class="text-secondary">Drop your .ics file into the editor above or paste the raw calendar contents. Nothing leaves your browser — processing happens entirely on your device.</span>
+				</div>
+			</li>
+			<li>
+				<span class="step-num">2</span>
+				<div>
+					<strong>Review the automatic fixes.</strong>
+					<span class="text-secondary">The validator adds missing <code>VTIMEZONE</code>, <code>UID</code>, <code>DTSTAMP</code>, converts timezone aliases (<code>EST</code>, <code>PST</code>, <code>JST</code>) to proper IANA names, enforces RFC 5545 line folding at 75 octets, and adds missing <code>VERSION</code>, <code>PRODID</code>, and <code>CALSCALE</code> headers.</span>
+				</div>
+			</li>
+			<li>
+				<span class="step-num">3</span>
+				<div>
+					<strong>Preview the week.</strong>
+					<span class="text-secondary">Switch to the Week Preview tab to verify events land on the correct days and times after timezone correction — a common cause of "events showing on the wrong day" after import.</span>
+				</div>
+			</li>
+			<li>
+				<span class="step-num">4</span>
+				<div>
+					<strong>Download and import.</strong>
+					<span class="text-secondary">Click Download to save the fixed .ics. Re-import into Google Calendar (File → Import), Apple Calendar (File → Import), or Outlook (Calendar → Open Calendar → From File).</span>
+				</div>
+			</li>
+		</ol>
+	</section>
+
+	<!-- Common issues list — matches real search queries -->
+	<section class="common-issues-section" aria-labelledby="common-issues-heading">
+		<h2 id="common-issues-heading" class="seo-section-title text-primary">Common ICS import errors this fixes</h2>
+		<ul class="issues-list">
+			<li><strong>"Couldn't fetch events" / "Unable to process your request"</strong> (Google Calendar) — usually missing or malformed <code>VTIMEZONE</code> component.</li>
+			<li><strong>"Import failed" with no details</strong> — typically lines longer than 75 octets without RFC 5545 line folding.</li>
+			<li><strong>Events land on the wrong day</strong> — timezone alias like <code>EST</code> or <code>JST</code> used instead of <code>America/New_York</code> or <code>Asia/Tokyo</code>.</li>
+			<li><strong>"An event with this UID already exists"</strong> — duplicate or missing <code>UID</code> properties. The fixer auto-generates unique IDs.</li>
+			<li><strong>Apple Calendar silently drops events</strong> — missing <code>DTSTAMP</code> properties. Auto-injected during fix.</li>
+			<li><strong>AI-generated .ics files (ChatGPT, Claude, Gemini)</strong> — frequently miss UIDs, use wrong timezone formats, or skip line folding. All fixed in one pass.</li>
+			<li><strong>Outlook says "The file is not a valid iCalendar file"</strong> — usually missing <code>VERSION:2.0</code> or <code>PRODID</code> headers.</li>
+		</ul>
+	</section>
+
+	<!-- Visible FAQ (mirrors FAQPage JSON-LD for on-page keyword matching) -->
+	<section class="faq-section" aria-labelledby="faq-heading">
+		<h2 id="faq-heading" class="seo-section-title text-primary">Frequently asked questions</h2>
+		<div class="faq-items">
+			<details class="faq-item">
+				<summary>How do I fix a broken ICS file?</summary>
+				<p class="text-secondary">Paste or upload your .ics file into the editor above. The validator automatically detects and fixes missing <code>VTIMEZONE</code>, <code>UID</code>, <code>DTSTAMP</code>, line-folding issues, and invalid timezone aliases that cause Google Calendar, Apple Calendar, and Outlook to reject the file. Download the corrected file and re-import.</p>
+			</details>
+			<details class="faq-item">
+				<summary>Why does Google Calendar say "Import Failed" for my ICS file?</summary>
+				<p class="text-secondary">Google Calendar enforces strict RFC 5545 validation. The most common causes are lines longer than 75 characters without line folding, missing <code>VTIMEZONE</code> definitions, missing <code>UID</code> or <code>DTSTAMP</code> properties, and incorrect date formatting. This validator auto-fixes all of them.</p>
+			</details>
+			<details class="faq-item">
+				<summary>Is this ICS validator free and private?</summary>
+				<p class="text-secondary">Yes. It's completely free, no signup required. All processing happens in your browser via JavaScript — your calendar data is never uploaded to any server, logged, or analyzed.</p>
+			</details>
+			<details class="faq-item">
+				<summary>Can I fix ICS files generated by AI like ChatGPT or Claude?</summary>
+				<p class="text-secondary">Yes. AI-generated .ics files frequently have issues — missing UIDs, non-IANA timezone names, improper line folding, missing <code>DTSTAMP</code>. This validator was built specifically to catch and auto-fix those patterns in a single pass.</p>
+			</details>
+			<details class="faq-item">
+				<summary>What's the difference between this and other ICS validators?</summary>
+				<p class="text-secondary">Most online ICS validators only <em>report</em> errors — you still have to fix them yourself. This tool <em>auto-fixes</em> the common problems (timezones, UIDs, line folding, headers) in one click, then lets you preview the resulting week before downloading.</p>
+			</details>
+			<details class="faq-item">
+				<summary>Does it handle recurring events and RRULE?</summary>
+				<p class="text-secondary">Yes. The validator checks <code>RRULE</code> properties for valid <code>FREQ</code>, <code>BYDAY</code>, <code>COUNT</code>, and <code>INTERVAL</code> values, and flags malformed recurrence rules so you can correct them before import.</p>
+			</details>
+		</div>
+	</section>
+
 	<footer class="page-footer">
 		<a href="/" class="back-link text-secondary hover:text-accent">
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -1226,6 +1327,18 @@ END:VCALENDAR`;
 				/>
 			</svg>
 			<span>Back to home</span>
+		</a>
+		<a href="/vcf-splitter" class="sibling-tool text-secondary hover:text-accent">
+			<span>Need to split a contacts .vcf file?</span>
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+				<path
+					d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12"
+					stroke="currentColor"
+					stroke-width="1.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				/>
+			</svg>
 		</a>
 	</footer>
 </article>
@@ -1735,5 +1848,185 @@ END:VCALENDAR`;
 		.stats-badges {
 			width: 100%;
 		}
+	}
+
+	/* SEO content sections (How it works / Common issues / FAQ) */
+	.howto-section,
+	.common-issues-section,
+	.faq-section {
+		margin-top: 4rem;
+		padding-top: 3rem;
+		border-top: 1px solid oklch(var(--bc) / 0.08);
+	}
+
+	.seo-section-title {
+		font-size: 1.375rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		margin: 0 0 0.75rem;
+	}
+
+	.seo-section-lead {
+		font-size: 0.9375rem;
+		line-height: 1.7;
+		margin: 0 0 1.75rem;
+		max-width: 48rem;
+	}
+
+	.howto-steps {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.howto-steps li {
+		display: flex;
+		gap: 1rem;
+		align-items: flex-start;
+	}
+
+	.step-num {
+		flex-shrink: 0;
+		width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 50%;
+		background: oklch(var(--b2));
+		border: 1px solid oklch(var(--bc) / 0.1);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: oklch(var(--a));
+		font-variant-numeric: tabular-nums;
+	}
+
+	.howto-steps li > div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		font-size: 0.9375rem;
+		line-height: 1.7;
+	}
+
+	.howto-steps code,
+	.issues-list code,
+	.faq-item code {
+		font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+		font-size: 0.85em;
+		padding: 0.1em 0.35em;
+		background: oklch(var(--b2));
+		border-radius: 0.25rem;
+	}
+
+	.issues-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+	}
+
+	.issues-list li {
+		padding-left: 1rem;
+		position: relative;
+		font-size: 0.9375rem;
+		line-height: 1.65;
+	}
+
+	.issues-list li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.7em;
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background: oklch(var(--a) / 0.6);
+	}
+
+	.faq-items {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.faq-item {
+		border: 1px solid oklch(var(--bc) / 0.08);
+		border-radius: 0.625rem;
+		padding: 0 1rem;
+		transition: border-color 0.2s ease;
+	}
+
+	.faq-item:hover,
+	.faq-item[open] {
+		border-color: oklch(var(--bc) / 0.15);
+	}
+
+	.faq-item summary {
+		padding: 0.9rem 0;
+		font-weight: 500;
+		font-size: 0.9375rem;
+		cursor: pointer;
+		list-style: none;
+		color: oklch(var(--bc));
+	}
+
+	.faq-item summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq-item summary::after {
+		content: '＋';
+		float: right;
+		font-weight: 400;
+		opacity: 0.5;
+		transition: transform 0.2s ease;
+	}
+
+	.faq-item[open] summary::after {
+		transform: rotate(45deg);
+	}
+
+	.faq-item p {
+		padding: 0 0 1rem;
+		margin: 0;
+		font-size: 0.9375rem;
+		line-height: 1.7;
+	}
+
+	/* Sibling tool link in page footer */
+	.page-footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.sibling-tool {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+		color: oklch(var(--bc) / 0.6);
+		text-decoration: none;
+		transition: color 0.2s ease;
+	}
+
+	.sibling-tool:hover {
+		color: oklch(var(--a));
+	}
+
+	.sibling-tool:hover svg {
+		transform: translateX(4px);
+	}
+
+	.sibling-tool svg {
+		transition: transform 0.2s ease;
 	}
 </style>

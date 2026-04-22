@@ -374,6 +374,24 @@ END:VCARD`;
 			]
 		})}
 	</script>
+
+	<!-- Structured Data: HowTo for AEO/GEO on "how to split vcf file" queries -->
+	<script type="application/ld+json">
+		{JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'HowTo',
+			name: 'How to split a multi-contact .vcf file into individual vCards',
+			description: 'Step-by-step guide to split a single .vcf file containing many contacts into one vCard per person, downloadable as a ZIP for iPhone, Android, and Outlook import.',
+			totalTime: 'PT1M',
+			tool: [{ '@type': 'HowToTool', name: 'VCF Splitter (web app, runs in browser)' }],
+			step: [
+				{ '@type': 'HowToStep', position: 1, name: 'Upload your .vcf file', text: 'Drag and drop the combined .vcf file into the uploader, or paste the raw vCard contents. Processing happens locally in your browser — contacts are never uploaded.' },
+				{ '@type': 'HowToStep', position: 2, name: 'Search and select contacts', text: 'Use the search box to filter contacts by name, email, phone, or organization. Select all or pick specific ones to export.' },
+				{ '@type': 'HowToStep', position: 3, name: 'Download as ZIP', text: 'The tool creates one .vcf file per selected contact and packages them into a ZIP archive.' },
+				{ '@type': 'HowToStep', position: 4, name: 'Import on iPhone, Android, or Outlook', text: 'Unzip on your device. On iPhone, tap each .vcf to open Contacts. On Android, use Contacts → Import. On Outlook, use File → Open → Import.' }
+			]
+		})}
+	</script>
 </svelte:head>
 
 <article class="vcf-page" class:visible>
@@ -721,6 +739,92 @@ END:VCARD`;
 		</div>
 	</div>
 
+	<!-- How it works — crawlable HowTo content for AEO -->
+	<section class="howto-section" aria-labelledby="howto-heading">
+		<h2 id="howto-heading" class="seo-section-title text-primary">How to split a .vcf contacts file</h2>
+		<p class="seo-section-lead text-secondary">
+			iPhone exports all contacts as a single combined .vcf file, which iPhone itself can't re-import one-at-a-time. Same with Google Contacts exports and Outlook .vcf dumps. Here's the fix in under a minute.
+		</p>
+		<ol class="howto-steps">
+			<li>
+				<span class="step-num">1</span>
+				<div>
+					<strong>Upload the combined .vcf file.</strong>
+					<span class="text-secondary">Drop it into the uploader above or paste the raw vCard contents. Everything runs in your browser — contacts never leave your device.</span>
+				</div>
+			</li>
+			<li>
+				<span class="step-num">2</span>
+				<div>
+					<strong>Search and pick contacts to export.</strong>
+					<span class="text-secondary">Filter by name, email, phone, or organization. Select all for a full split, or cherry-pick specific contacts — useful when migrating just family, just work contacts, or just a specific group.</span>
+				</div>
+			</li>
+			<li>
+				<span class="step-num">3</span>
+				<div>
+					<strong>Download the ZIP.</strong>
+					<span class="text-secondary">One <code>.vcf</code> file per contact, packaged into a single ZIP archive. Filenames are derived from each contact's display name.</span>
+				</div>
+			</li>
+			<li>
+				<span class="step-num">4</span>
+				<div>
+					<strong>Import on your device.</strong>
+					<span class="text-secondary">
+						<strong class="text-primary">iPhone:</strong> AirDrop the ZIP or email it to yourself, unzip, tap each <code>.vcf</code> to open in Contacts.
+						<strong class="text-primary">Android:</strong> Copy to the phone, open Contacts → Import from file.
+						<strong class="text-primary">Outlook:</strong> File → Open & Export → Import vCard file.
+					</span>
+				</div>
+			</li>
+		</ol>
+	</section>
+
+	<!-- Common problems this solves -->
+	<section class="common-issues-section" aria-labelledby="common-issues-heading">
+		<h2 id="common-issues-heading" class="seo-section-title text-primary">Common contact-import problems this fixes</h2>
+		<ul class="issues-list">
+			<li><strong>iPhone says "1 contact imported" when there should be 500</strong> — iPhone's Contacts.app often imports a combined .vcf as a single merged contact. Splitting first, then importing, creates separate entries.</li>
+			<li><strong>Android imports contacts but drops half the fields</strong> — some Android contact apps parse only the first vCard block in a combined file. Split first for reliable field mapping.</li>
+			<li><strong>You only want to share a subset of contacts</strong> — handing over your entire contact book to a friend, client, or crm is overshare. Filter and export just the ones you want.</li>
+			<li><strong>Migrating from Outlook / Gmail / iCloud</strong> — each platform exports combined .vcf, each target platform prefers individual files for clean import.</li>
+			<li><strong>AI-generated vCards from ChatGPT or Claude</strong> — when you've asked an LLM to generate contacts from a meeting transcript, split the output to import cleanly.</li>
+			<li><strong>CRM bulk export cleanup</strong> — when a CRM gives you one giant .vcf and you need individual files for a personal workflow or backup.</li>
+		</ul>
+	</section>
+
+	<!-- Visible FAQ (mirrors FAQPage JSON-LD for on-page keyword matching) -->
+	<section class="faq-section" aria-labelledby="faq-heading">
+		<h2 id="faq-heading" class="seo-section-title text-primary">Frequently asked questions</h2>
+		<div class="faq-items">
+			<details class="faq-item">
+				<summary>How do I split a VCF file with multiple contacts?</summary>
+				<p class="text-secondary">Upload your combined .vcf file above. The splitter parses every contact, lets you search and select which ones to export, and packages each as an individual <code>.vcf</code> inside a downloadable ZIP. Works with exports from iPhone, Android, Google Contacts, Outlook, and most CRMs.</p>
+			</details>
+			<details class="faq-item">
+				<summary>How do I import individual contacts to iPhone or Android?</summary>
+				<p class="text-secondary">Split the combined .vcf first (above), download the ZIP, unzip it on your device, then tap each <code>.vcf</code> file. On iPhone this opens in Contacts; on Android go to Contacts → Import. Individual files import more reliably than combined ones — especially for fields like phone type, organization, and notes.</p>
+			</details>
+			<details class="faq-item">
+				<summary>Is this VCF splitter free and safe?</summary>
+				<p class="text-secondary">Yes. No signup, no server upload. All parsing happens in your browser via JavaScript. Your contacts never leave your device — making it safe for personal, sensitive, or business contact data.</p>
+			</details>
+			<details class="faq-item">
+				<summary>What is a VCF file?</summary>
+				<p class="text-secondary">A VCF (vCard) is the standard file format for contact information — name, phone, email, address, organization. A single .vcf file can hold one contact or hundreds. iPhone, Android, Google Contacts, Outlook, and almost every CRM use this format for import and export.</p>
+			</details>
+			<details class="faq-item">
+				<summary>Why does iPhone combine exported contacts into one file?</summary>
+				<p class="text-secondary">iPhone's built-in Share → Share Contact flow bundles selected contacts into a single combined .vcf by design. That's convenient for email attachments, but inconvenient when the receiving system wants separate entries. Splitting fixes that mismatch.</p>
+			</details>
+			<details class="faq-item">
+				<summary>Can I filter contacts before splitting?</summary>
+				<p class="text-secondary">Yes. Search by name, email, phone number, or organization in the results list. Select all, select a filtered subset, or pick individually. Only selected contacts are included in the ZIP download.</p>
+			</details>
+		</div>
+	</section>
+
 	<footer class="page-footer">
 		<a href="/" class="back-link text-secondary hover:text-accent">
 			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -733,6 +837,18 @@ END:VCARD`;
 				/>
 			</svg>
 			<span>Back to home</span>
+		</a>
+		<a href="/ics-validator" class="sibling-tool text-secondary hover:text-accent">
+			<span>Need to fix a broken .ics calendar file?</span>
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+				<path
+					d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12"
+					stroke="currentColor"
+					stroke-width="1.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				/>
+			</svg>
 		</a>
 	</footer>
 </article>
@@ -1187,5 +1303,185 @@ END:VCARD`;
 			flex-direction: column;
 			gap: 0.25rem;
 		}
+	}
+
+	/* SEO content sections (How it works / Common issues / FAQ) */
+	.howto-section,
+	.common-issues-section,
+	.faq-section {
+		margin-top: 4rem;
+		padding-top: 3rem;
+		border-top: 1px solid oklch(var(--bc) / 0.08);
+	}
+
+	.seo-section-title {
+		font-size: 1.375rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		margin: 0 0 0.75rem;
+	}
+
+	.seo-section-lead {
+		font-size: 0.9375rem;
+		line-height: 1.7;
+		margin: 0 0 1.75rem;
+		max-width: 48rem;
+	}
+
+	.howto-steps {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.howto-steps li {
+		display: flex;
+		gap: 1rem;
+		align-items: flex-start;
+	}
+
+	.step-num {
+		flex-shrink: 0;
+		width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 50%;
+		background: oklch(var(--b2));
+		border: 1px solid oklch(var(--bc) / 0.1);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: oklch(var(--a));
+		font-variant-numeric: tabular-nums;
+	}
+
+	.howto-steps li > div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		font-size: 0.9375rem;
+		line-height: 1.7;
+	}
+
+	.howto-steps code,
+	.issues-list code,
+	.faq-item code {
+		font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+		font-size: 0.85em;
+		padding: 0.1em 0.35em;
+		background: oklch(var(--b2));
+		border-radius: 0.25rem;
+	}
+
+	.issues-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+	}
+
+	.issues-list li {
+		padding-left: 1rem;
+		position: relative;
+		font-size: 0.9375rem;
+		line-height: 1.65;
+	}
+
+	.issues-list li::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0.7em;
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background: oklch(var(--a) / 0.6);
+	}
+
+	.faq-items {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.faq-item {
+		border: 1px solid oklch(var(--bc) / 0.08);
+		border-radius: 0.625rem;
+		padding: 0 1rem;
+		transition: border-color 0.2s ease;
+	}
+
+	.faq-item:hover,
+	.faq-item[open] {
+		border-color: oklch(var(--bc) / 0.15);
+	}
+
+	.faq-item summary {
+		padding: 0.9rem 0;
+		font-weight: 500;
+		font-size: 0.9375rem;
+		cursor: pointer;
+		list-style: none;
+		color: oklch(var(--bc));
+	}
+
+	.faq-item summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.faq-item summary::after {
+		content: '＋';
+		float: right;
+		font-weight: 400;
+		opacity: 0.5;
+		transition: transform 0.2s ease;
+	}
+
+	.faq-item[open] summary::after {
+		transform: rotate(45deg);
+	}
+
+	.faq-item p {
+		padding: 0 0 1rem;
+		margin: 0;
+		font-size: 0.9375rem;
+		line-height: 1.7;
+	}
+
+	/* Sibling tool link in page footer */
+	.page-footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.sibling-tool {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+		color: oklch(var(--bc) / 0.6);
+		text-decoration: none;
+		transition: color 0.2s ease;
+	}
+
+	.sibling-tool:hover {
+		color: oklch(var(--a));
+	}
+
+	.sibling-tool:hover svg {
+		transform: translateX(4px);
+	}
+
+	.sibling-tool svg {
+		transition: transform 0.2s ease;
 	}
 </style>

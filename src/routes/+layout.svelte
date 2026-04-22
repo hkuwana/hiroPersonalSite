@@ -1,7 +1,7 @@
 <script>
 	import Header from '../lib/components/header.svelte';
+	import SiteFooter from '../lib/components/SiteFooter.svelte';
 	import '../style.css';
-	import * as m from '$lib/paraglide/messages';
 	let { children } = $props();
 </script>
 
@@ -12,6 +12,9 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+	<!-- Essays RSS feed (auto-discovery for feed readers) -->
+	<link rel="alternate" type="application/rss+xml" title="Hiro Kuwana — Essays" href="/feed.xml" />
 </svelte:head>
 
 <div class="app-container">
@@ -21,13 +24,7 @@
 	<main id="main">
 		{@render children()}
 	</main>
-<footer class="border-t border-base-300/50 py-8 px-5 sm:px-8 bg-base-100">
-	<div class="max-w-5xl mx-auto flex items-center justify-center gap-2.5 text-sm text-base-content/55">
-		<span>{m.footer_made_by()}</span>
-		<span aria-hidden="true">·</span>
-		<span>{new Date().getFullYear()}</span>
-	</div>
-</footer>
+	<SiteFooter />
 </div>
 
 <style>

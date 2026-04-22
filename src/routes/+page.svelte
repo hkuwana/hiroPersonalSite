@@ -4,7 +4,8 @@
 	import { onMount } from 'svelte';
 	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS, TOOLS } from '$data/constants';
 	import * as m from '$lib/paraglide/messages';
-	import { goto } from '$app/navigation';
+	import { getLocale } from '$lib/paraglide/runtime';
+	import ProofBand from '$lib/components/ProofBand.svelte';
 
 	// For the playful Japanese name easter egg
 	let showMeaning = false;
@@ -75,9 +76,9 @@
 </script>
 
 <svelte:head>
-	<title>{SITE.title}</title>
-	<meta name="description" content={SITE.description} />
-	<meta name="keywords" content={SITE.keywords.join(', ')} />
+	<title>{m.site_meta_title()}</title>
+	<meta name="description" content={m.site_meta_description()} />
+	<meta name="keywords" content={m.site_meta_keywords()} />
 	<meta name="author" content={SITE.author} />
 	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
@@ -92,8 +93,8 @@
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={SITE.url} />
-	<meta property="og:title" content={SITE.title} />
-	<meta property="og:description" content={SITE.description} />
+	<meta property="og:title" content={m.site_meta_title()} />
+	<meta property="og:description" content={m.site_meta_description()} />
 	<meta property="og:image" content={SITE.image} />
 	<meta property="og:image:alt" content="{PERSONAL.displayName} - AI Entrepreneur headshot" />
 	<meta property="og:image:width" content="1200" />
@@ -105,8 +106,8 @@
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:url" content={SITE.url} />
-	<meta name="twitter:title" content={SITE.title} />
-	<meta name="twitter:description" content={SITE.description} />
+	<meta name="twitter:title" content={m.site_meta_title()} />
+	<meta name="twitter:description" content={m.site_meta_description()} />
 	<meta name="twitter:image" content={SITE.image} />
 	<meta name="twitter:image:alt" content="{PERSONAL.displayName} - AI Entrepreneur headshot" />
 	<meta name="twitter:creator" content="@hirokuwana" />
@@ -130,7 +131,7 @@
 				'@type': 'Person',
 				name: PERSONAL.fullName,
 				alternateName: PERSONAL.displayName,
-				description: SITE.description,
+				description: m.site_meta_description(),
 				url: SITE.url,
 				image: SITE.image,
 				email: CONTACT.email,
@@ -159,12 +160,12 @@
 				'@type': 'WebSite',
 				name: SITE.name,
 				url: SITE.url,
-				description: SITE.description,
+				description: m.site_meta_description(),
 				author: {
 					'@type': 'Person',
 					name: PERSONAL.fullName,
 				},
-				inLanguage: 'en-US',
+				inLanguage: getLocale() === 'ja' ? 'ja-JP' : getLocale() === 'es' ? 'es' : getLocale() === 'zh' ? 'zh-CN' : 'en-US',
 			})
 		}
 	</script>
@@ -275,6 +276,9 @@
 	</div>
 </section>
 
+<!-- Proof Band - real numbers that do credibility work -->
+<ProofBand />
+
 <!-- Projects Section -->
 <section
 	class="section-animate py-24 md:py-28 px-5 sm:px-8 bg-base-200/40"
@@ -321,8 +325,9 @@
 		<!-- Other Projects -->
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 			{#each projects.filter(p => p.status !== 'current') as project, i}
-				<div
-					class="card border transition-all duration-500 ease-out group bg-base-100 border-base-300/40 hover:border-base-300/80 hover:shadow-lg hover:-translate-y-0.5"
+				<article
+					class="project-card card border transition-all duration-500 ease-out group bg-base-100 border-base-300/40 hover:border-base-300/80 hover:shadow-lg hover:-translate-y-0.5 relative"
+					class:is-sunset={project.status === 'sunset'}
 					style="animation-delay: {i * 0.07}s"
 				>
 					<div class="card-body">
@@ -355,28 +360,45 @@
 							</div>
 						</div>
 
-						<h3 class="card-title text-xl text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
+						<h3 class="card-title text-xl text-base-content group-hover:text-primary transition-colors">
+							{#if project.link}
+								<a
+									href={project.link}
+									target="_blank"
+									rel="noopener"
+									class="project-cover-link"
+									aria-label={m.project_visit({ name: project.name })}
+								>{project.name}</a>
+							{:else}
+								{project.name}
+							{/if}
+						</h3>
 						<p class="text-sm font-medium text-base-content/70 group-hover:text-base-content">{project.tagline}</p>
 						<p class="text-sm leading-relaxed text-base-content/60 group-hover:text-base-content/80 transition-colors">{project.description}</p>
 
 						{#if project.link || project.github}
-							<div class="card-actions mt-4 flex flex-wrap gap-3">
+							<div class="card-actions mt-4 flex items-center gap-3">
 								{#if project.link}
-									<a href={project.link} target="_blank" rel="noopener" class="link link-primary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
+									<span class="visit-hint text-sm font-medium text-primary inline-flex items-center gap-1.5 group-hover:gap-2 transition-all">
 										{m.project_visit({ name: project.name })}
 										<span class="icon-[mdi--arrow-top-right] w-3.5 h-3.5"></span>
-									</a>
+									</span>
 								{/if}
 								{#if project.github}
-									<a href={project.github} target="_blank" rel="noopener" class="link link-secondary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
-										GitHub
-										<span class="icon-[mdi--github] w-3.5 h-3.5"></span>
+									<a
+										href={project.github}
+										target="_blank"
+										rel="noopener"
+										class="github-corner text-base-content/50 hover:text-base-content transition-colors"
+										aria-label="{project.name} on GitHub"
+									>
+										<span class="icon-[mdi--github] w-5 h-5 block"></span>
 									</a>
 								{/if}
 							</div>
 						{/if}
 					</div>
-				</div>
+				</article>
 			{/each}
 		</div>
 	</div>
@@ -541,7 +563,7 @@
 			{m.faq_subheading()}
 		</p>
 
-		<div class="space-y-3">
+		<div class="faq-list">
 			<!-- AI Hot Take -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
 				<input type="checkbox" aria-label={m.faq_ai_q()} />
@@ -620,9 +642,22 @@
 			</div>
 		</div>
 
-		<p class="text-center mt-8 text-sm text-base-content/70">
-			{m.faq_corporate_joke()} <button onclick={() => goto('/corporate')} class="btn btn-error text-error-content gap-2">{m.faq_corporate_link()}</button>
-		</p>
+	</div>
+</section>
+
+<!-- Closing CTA — lands the plane before the footer -->
+<section
+	class="closing-cta"
+	bind:this={sections[6]}
+	class:visible={visibleSections.has(6)}
+>
+	<div class="closing-cta-inner">
+		<p class="closing-cta-lead text-primary">{m.closing_cta_lead()}</p>
+		<p class="closing-cta-body text-base-content/65">{m.closing_cta_body()}</p>
+		<a href={CONTACT.cal} target="_blank" rel="noopener" class="btn btn-outline btn-primary gap-2 closing-cta-button">
+			{m.closing_cta_book()}
+			<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
+		</a>
 	</div>
 </section>
 
@@ -693,6 +728,140 @@
 		}
 		.scroll-indicator-wrap {
 			display: none;
+		}
+	}
+
+	/* Project cards — whole card clickable via stretched link on the title.
+	   GitHub icon sits above via relative z-index so it's independently clickable. */
+	.project-card {
+		isolation: isolate;
+	}
+
+	.project-card .project-cover-link {
+		color: inherit;
+		text-decoration: none;
+		outline: none;
+	}
+
+	.project-card .project-cover-link::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		z-index: 1;
+	}
+
+	.project-card:has(.project-cover-link) {
+		cursor: pointer;
+	}
+
+	.project-card .project-cover-link:focus-visible::after {
+		outline: 2px solid oklch(var(--a));
+		outline-offset: 2px;
+	}
+
+	.project-card .github-corner {
+		position: relative;
+		z-index: 2;
+		margin-left: auto;
+		padding: 0.375rem;
+		border-radius: 0.5rem;
+		line-height: 0;
+	}
+
+	.project-card .github-corner:hover {
+		background: oklch(var(--b2));
+	}
+
+	.project-card .visit-hint {
+		position: relative;
+		z-index: 0;
+	}
+
+	.project-card.is-sunset {
+		opacity: 0.75;
+	}
+
+	.project-card.is-sunset:hover {
+		opacity: 0.95;
+	}
+
+	/* FAQ list — tighter rhythm, subtle left accent on hover */
+	.faq-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	:global(.faq-list .collapse) {
+		border-color: oklch(var(--bc) / 0.06);
+		transition: border-color var(--duration-normal, 200ms) var(--ease-out-expo, ease);
+	}
+
+	:global(.faq-list .collapse:hover) {
+		border-color: oklch(var(--bc) / 0.12);
+	}
+
+	/* Closing CTA — soft transition between FAQ and footer */
+	.closing-cta {
+		padding: 5rem 1.25rem 5rem;
+		background: linear-gradient(
+			to bottom,
+			oklch(var(--b2) / 0.4),
+			oklch(var(--b1))
+		);
+		opacity: 0;
+		transform: translateY(10px);
+		transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.closing-cta.visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.closing-cta-inner {
+		max-width: 32rem;
+		margin: 0 auto;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.closing-cta-lead {
+		font-size: 1.375rem;
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		margin: 0;
+	}
+
+	.closing-cta-body {
+		font-size: 0.9375rem;
+		line-height: 1.65;
+		margin: 0 0 0.5rem;
+		max-width: 28rem;
+	}
+
+	.closing-cta-button {
+		transition: all var(--duration-normal, 200ms) var(--ease-out-expo, ease);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.closing-cta {
+			transition: none;
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.closing-cta {
+			padding: 3.5rem 1.25rem 3.5rem;
+		}
+		.closing-cta-lead {
+			font-size: 1.25rem;
 		}
 	}
 </style>

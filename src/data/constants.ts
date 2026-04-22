@@ -88,9 +88,9 @@ export const PROJECTS: Project[] = [
 			'A community platform connecting Exeter alumni in Japan. Rapid prototype showcasing speed and execution.',
 		link: 'https://exoniansjapan.com/',
 		github: 'https://github.com/hkuwana/exonians-in-japan',
-		logo: '/icon-96x96.webp',
+		logo: '/exonians-e.svg',
 		status: 'active',
-		color: '#3b82f6',
+		color: '#9E1B32',
 	},
 	{
 		name: 'Kaiwa Reddit Scout',
@@ -141,6 +141,30 @@ export const TOOLS = [
 		color: '#10b981',
 	},
 ] as const;
+
+// Proof / traction numbers — real metrics for credibility above the fold
+interface ProofStat {
+	value: string;
+	label: string;
+	subtext?: string;
+}
+
+export const PROOF: {
+	primary: readonly ProofStat[];
+	secondary: readonly ProofStat[];
+} = {
+	primary: [
+		{ value: '1M+', label: 'Organic impressions', subtext: '3 months' },
+		{ value: '3K+', label: 'Clicks', subtext: 'All organic' },
+		{ value: '1,000+', label: 'Monthly signups', subtext: 'Kaiwa' },
+		{ value: '40%', label: 'Email open rate', subtext: '300+ sent' }
+	],
+	secondary: [
+		{ value: '1', label: 'Solo founder' },
+		{ value: '0', label: 'Ad spend' },
+		{ value: '0', label: 'Team members' }
+	]
+} as const;
 
 // Expertise Areas
 export const EXPERTISE = [
