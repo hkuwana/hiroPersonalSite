@@ -88,9 +88,9 @@ export const PROJECTS: Project[] = [
 			'A community platform connecting Exeter alumni in Japan. Rapid prototype showcasing speed and execution.',
 		link: 'https://exoniansjapan.com/',
 		github: 'https://github.com/hkuwana/exonians-in-japan',
-		logo: '/icon-96x96.webp',
+		logo: '/exonians-e.svg',
 		status: 'active',
-		color: '#3b82f6',
+		color: '#9E1B32',
 	},
 	{
 		name: 'Kaiwa Reddit Scout',

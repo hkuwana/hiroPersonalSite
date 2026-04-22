@@ -320,8 +320,9 @@
 		<!-- Other Projects -->
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 			{#each projects.filter(p => p.status !== 'current') as project, i}
-				<div
-					class="card border transition-all duration-500 ease-out group bg-base-100 border-base-300/40 hover:border-base-300/80 hover:shadow-lg hover:-translate-y-0.5"
+				<article
+					class="project-card card border transition-all duration-500 ease-out group bg-base-100 border-base-300/40 hover:border-base-300/80 hover:shadow-lg hover:-translate-y-0.5 relative"
+					class:is-sunset={project.status === 'sunset'}
 					style="animation-delay: {i * 0.07}s"
 				>
 					<div class="card-body">
@@ -354,28 +355,45 @@
 							</div>
 						</div>
 
-						<h3 class="card-title text-xl text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
+						<h3 class="card-title text-xl text-base-content group-hover:text-primary transition-colors">
+							{#if project.link}
+								<a
+									href={project.link}
+									target="_blank"
+									rel="noopener"
+									class="project-cover-link"
+									aria-label={m.project_visit({ name: project.name })}
+								>{project.name}</a>
+							{:else}
+								{project.name}
+							{/if}
+						</h3>
 						<p class="text-sm font-medium text-base-content/70 group-hover:text-base-content">{project.tagline}</p>
 						<p class="text-sm leading-relaxed text-base-content/60 group-hover:text-base-content/80 transition-colors">{project.description}</p>
 
 						{#if project.link || project.github}
-							<div class="card-actions mt-4 flex flex-wrap gap-3">
+							<div class="card-actions mt-4 flex items-center gap-3">
 								{#if project.link}
-									<a href={project.link} target="_blank" rel="noopener" class="link link-primary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
+									<span class="visit-hint text-sm font-medium text-primary inline-flex items-center gap-1.5 group-hover:gap-2 transition-all">
 										{m.project_visit({ name: project.name })}
 										<span class="icon-[mdi--arrow-top-right] w-3.5 h-3.5"></span>
-									</a>
+									</span>
 								{/if}
 								{#if project.github}
-									<a href={project.github} target="_blank" rel="noopener" class="link link-secondary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
-										GitHub
-										<span class="icon-[mdi--github] w-3.5 h-3.5"></span>
+									<a
+										href={project.github}
+										target="_blank"
+										rel="noopener"
+										class="github-corner text-base-content/50 hover:text-base-content transition-colors"
+										aria-label="{project.name} on GitHub"
+									>
+										<span class="icon-[mdi--github] w-5 h-5 block"></span>
 									</a>
 								{/if}
 							</div>
 						{/if}
 					</div>
-				</div>
+				</article>
 			{/each}
 		</div>
 	</div>
@@ -706,6 +724,61 @@
 		.scroll-indicator-wrap {
 			display: none;
 		}
+	}
+
+	/* Project cards — whole card clickable via stretched link on the title.
+	   GitHub icon sits above via relative z-index so it's independently clickable. */
+	.project-card {
+		isolation: isolate;
+	}
+
+	.project-card .project-cover-link {
+		color: inherit;
+		text-decoration: none;
+		outline: none;
+	}
+
+	.project-card .project-cover-link::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: inherit;
+		z-index: 1;
+	}
+
+	.project-card:has(.project-cover-link) {
+		cursor: pointer;
+	}
+
+	.project-card .project-cover-link:focus-visible::after {
+		outline: 2px solid oklch(var(--a));
+		outline-offset: 2px;
+	}
+
+	.project-card .github-corner {
+		position: relative;
+		z-index: 2;
+		margin-left: auto;
+		padding: 0.375rem;
+		border-radius: 0.5rem;
+		line-height: 0;
+	}
+
+	.project-card .github-corner:hover {
+		background: oklch(var(--b2));
+	}
+
+	.project-card .visit-hint {
+		position: relative;
+		z-index: 0;
+	}
+
+	.project-card.is-sunset {
+		opacity: 0.75;
+	}
+
+	.project-card.is-sunset:hover {
+		opacity: 0.95;
 	}
 
 	/* FAQ list — tighter rhythm, subtle left accent on hover */
