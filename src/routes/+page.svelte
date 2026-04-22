@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS, TOOLS } from '$data/constants';
 	import * as m from '$lib/paraglide/messages';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import ProofBand from '$lib/components/ProofBand.svelte';
 
 	// For the playful Japanese name easter egg
@@ -75,9 +76,9 @@
 </script>
 
 <svelte:head>
-	<title>{SITE.title}</title>
-	<meta name="description" content={SITE.description} />
-	<meta name="keywords" content={SITE.keywords.join(', ')} />
+	<title>{m.site_meta_title()}</title>
+	<meta name="description" content={m.site_meta_description()} />
+	<meta name="keywords" content={m.site_meta_keywords()} />
 	<meta name="author" content={SITE.author} />
 	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
@@ -92,8 +93,8 @@
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={SITE.url} />
-	<meta property="og:title" content={SITE.title} />
-	<meta property="og:description" content={SITE.description} />
+	<meta property="og:title" content={m.site_meta_title()} />
+	<meta property="og:description" content={m.site_meta_description()} />
 	<meta property="og:image" content={SITE.image} />
 	<meta property="og:image:alt" content="{PERSONAL.displayName} - AI Entrepreneur headshot" />
 	<meta property="og:image:width" content="1200" />
@@ -105,8 +106,8 @@
 	<!-- Twitter -->
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:url" content={SITE.url} />
-	<meta name="twitter:title" content={SITE.title} />
-	<meta name="twitter:description" content={SITE.description} />
+	<meta name="twitter:title" content={m.site_meta_title()} />
+	<meta name="twitter:description" content={m.site_meta_description()} />
 	<meta name="twitter:image" content={SITE.image} />
 	<meta name="twitter:image:alt" content="{PERSONAL.displayName} - AI Entrepreneur headshot" />
 	<meta name="twitter:creator" content="@hirokuwana" />
@@ -130,7 +131,7 @@
 				'@type': 'Person',
 				name: PERSONAL.fullName,
 				alternateName: PERSONAL.displayName,
-				description: SITE.description,
+				description: m.site_meta_description(),
 				url: SITE.url,
 				image: SITE.image,
 				email: CONTACT.email,
@@ -159,12 +160,12 @@
 				'@type': 'WebSite',
 				name: SITE.name,
 				url: SITE.url,
-				description: SITE.description,
+				description: m.site_meta_description(),
 				author: {
 					'@type': 'Person',
 					name: PERSONAL.fullName,
 				},
-				inLanguage: 'en-US',
+				inLanguage: getLocale() === 'ja' ? 'ja-JP' : getLocale() === 'es' ? 'es' : getLocale() === 'zh' ? 'zh-CN' : 'en-US',
 			})
 		}
 	</script>

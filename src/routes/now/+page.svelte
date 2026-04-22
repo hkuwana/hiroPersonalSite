@@ -4,53 +4,42 @@
 </script>
 
 <svelte:head>
-	<title>Now — {m.nav_home()} · Hiro Kuwana</title>
-	<meta name="description" content="What Hiro Kuwana is currently working on, writing about, reading, and where he is." />
+	<title>{m.now_meta_title()}</title>
+	<meta name="description" content={m.now_meta_description()} />
 	<link rel="canonical" href="https://hirokuwana.com/now" />
 	<meta name="robots" content="index, follow" />
 </svelte:head>
 
 <article class="now-page">
 	<header class="now-header">
-		<p class="eyebrow text-base-content/50">Now</p>
-		<h1 class="title text-primary">What I'm doing right now</h1>
-		<p class="updated text-base-content/50">Last updated · April 2026</p>
+		<p class="eyebrow text-base-content/50">{m.now_eyebrow()}</p>
+		<h1 class="title text-primary">{m.now_title()}</h1>
+		<p class="updated text-base-content/50">{m.now_updated()}</p>
 	</header>
 
 	<section class="now-section">
-		<h2 class="text-primary">Building</h2>
-		<p>
-			<strong>Kaiwa</strong> — AI-powered language learning through bite-sized conversations. 1,000+ monthly signups, currently focused on the free → paid conversion loop (see my essay
-			<a href={localizeHref('/essays/your-funnel-is-a-lie')}>Your Funnel Is a Lie</a>).
-		</p>
+		<h2 class="text-primary">{m.now_building_h2()}</h2>
+		{@html m.now_building_html()}
 	</section>
 
 	<section class="now-section">
-		<h2 class="text-primary">Writing about</h2>
-		<p>
-			Automation playbooks for non-technical founders and executives. How solo founders can run the work of a team with AI. The gap between "AI that looks impressive in a demo" and "AI that actually works."
-		</p>
+		<h2 class="text-primary">{m.now_writing_h2()}</h2>
+		{@html m.now_writing_html()}
 	</section>
 
 	<section class="now-section">
-		<h2 class="text-primary">Advising</h2>
-		<p>
-			A small number of non-technical founders and executives on their AI workflow audits. Booking for April 2026 onward.
-		</p>
+		<h2 class="text-primary">{m.now_advising_h2()}</h2>
+		{@html m.now_advising_html()}
 	</section>
 
 	<section class="now-section">
-		<h2 class="text-primary">Reading</h2>
-		<p>
-			Currently: <em>The Brothers Karamazov</em> (re-read), plus a steady diet of Paul Graham essays and the PostHog + Anthropic blogs.
-		</p>
+		<h2 class="text-primary">{m.now_reading_h2()}</h2>
+		{@html m.now_reading_html()}
 	</section>
 
 	<footer class="now-footer">
-		<p class="text-base-content/60">
-			Inspired by <a href="https://nownownow.com/about" target="_blank" rel="noopener">Derek Sivers' /now movement</a>. Updated roughly monthly.
-		</p>
-		<a href={localizeHref('/')} class="back-link">← Back to home</a>
+		{@html m.now_footer_html()}
+		<a href={localizeHref('/')} class="back-link">← {m.common_back_home()}</a>
 	</footer>
 </article>
 
@@ -96,14 +85,14 @@
 		letter-spacing: -0.01em;
 	}
 
-	.now-section p {
+	.now-section :global(p) {
 		font-size: 1rem;
 		line-height: 1.7;
 		color: oklch(var(--bc) / 0.7);
 		margin: 0;
 	}
 
-	.now-section a {
+	.now-section :global(a) {
 		color: oklch(var(--a));
 		text-decoration: underline;
 		text-underline-offset: 2px;
@@ -118,12 +107,13 @@
 		gap: 1rem;
 	}
 
-	.now-footer p {
+	.now-footer :global(p) {
 		font-size: 0.875rem;
 		margin: 0;
+		color: oklch(var(--bc) / 0.6);
 	}
 
-	.now-footer a {
+	.now-footer :global(a) {
 		color: oklch(var(--a));
 		text-decoration: underline;
 		text-underline-offset: 2px;
