@@ -54,5 +54,17 @@
 	"faq_hill_a": "<em>「カウボーイビバップ」</em>と<em>「パプリカ」</em>は傑作です、議論の余地なし。また、10代後半から30代前半の方は、ぜひ<em>「カラマーゾフの兄弟」</em>を読んでください。世界の見方が変わります。",
 	"kaiwa_tagline": "言語学習を、もっと自分らしく",
 	"kaiwa_description": "AIとの短い会話で言語を練習。リアルタイム翻訳、ソーシャルストリーク、1日30秒から始められる。",
-	"footer_made_by": "桑名浩行が❤️を込めて制作"
+	"footer_made_by": "桑名浩行が❤️を込めて制作",
+	"footer_tagline": "Reluctant technologist. Writing occasional essays on AI, automation, and building alone.",
+	"footer_explore": "Explore",
+	"footer_subscribe": "Subscribe",
+	"footer_subscribe_hint": "New essays, occasionally. No filler.",
+	"footer_rss": "RSS feed",
+	"footer_now": "Now",
+	"footer_privacy": "Privacy",
+	"footer_contact": "Contact",
+	"footer_joke": "if this site isn't serious enough, visit the corporate version",
+	"closing_cta_lead": "Thanks for reading this far.",
+	"closing_cta_body": "If you're building with AI and want another brain on it, let's talk. Or subscribe below and I'll send the next essay when it's ready.",
+	"closing_cta_book": "Book 15 minutes"
 }

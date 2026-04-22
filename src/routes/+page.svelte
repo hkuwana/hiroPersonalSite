@@ -4,7 +4,6 @@
 	import { onMount } from 'svelte';
 	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS, TOOLS } from '$data/constants';
 	import * as m from '$lib/paraglide/messages';
-	import { goto } from '$app/navigation';
 
 	// For the playful Japanese name easter egg
 	let showMeaning = false;
@@ -541,7 +540,7 @@
 			{m.faq_subheading()}
 		</p>
 
-		<div class="space-y-3">
+		<div class="faq-list">
 			<!-- AI Hot Take -->
 			<div class="collapse collapse-arrow bg-base-100 border border-base-300/60 rounded-xl">
 				<input type="checkbox" aria-label={m.faq_ai_q()} />
@@ -620,9 +619,22 @@
 			</div>
 		</div>
 
-		<p class="text-center mt-8 text-sm text-base-content/70">
-			{m.faq_corporate_joke()} <button onclick={() => goto('/corporate')} class="btn btn-error text-error-content gap-2">{m.faq_corporate_link()}</button>
-		</p>
+	</div>
+</section>
+
+<!-- Closing CTA — lands the plane before the footer -->
+<section
+	class="closing-cta"
+	bind:this={sections[6]}
+	class:visible={visibleSections.has(6)}
+>
+	<div class="closing-cta-inner">
+		<p class="closing-cta-lead text-primary">{m.closing_cta_lead()}</p>
+		<p class="closing-cta-body text-base-content/65">{m.closing_cta_body()}</p>
+		<a href={CONTACT.cal} target="_blank" rel="noopener" class="btn btn-outline btn-primary gap-2 closing-cta-button">
+			{m.closing_cta_book()}
+			<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
+		</a>
 	</div>
 </section>
 
@@ -693,6 +705,85 @@
 		}
 		.scroll-indicator-wrap {
 			display: none;
+		}
+	}
+
+	/* FAQ list — tighter rhythm, subtle left accent on hover */
+	.faq-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	:global(.faq-list .collapse) {
+		border-color: oklch(var(--bc) / 0.06);
+		transition: border-color var(--duration-normal, 200ms) var(--ease-out-expo, ease);
+	}
+
+	:global(.faq-list .collapse:hover) {
+		border-color: oklch(var(--bc) / 0.12);
+	}
+
+	/* Closing CTA — soft transition between FAQ and footer */
+	.closing-cta {
+		padding: 5rem 1.25rem 5rem;
+		background: linear-gradient(
+			to bottom,
+			oklch(var(--b2) / 0.4),
+			oklch(var(--b1))
+		);
+		opacity: 0;
+		transform: translateY(10px);
+		transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.closing-cta.visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.closing-cta-inner {
+		max-width: 32rem;
+		margin: 0 auto;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.closing-cta-lead {
+		font-size: 1.375rem;
+		font-weight: 600;
+		letter-spacing: -0.015em;
+		margin: 0;
+	}
+
+	.closing-cta-body {
+		font-size: 0.9375rem;
+		line-height: 1.65;
+		margin: 0 0 0.5rem;
+		max-width: 28rem;
+	}
+
+	.closing-cta-button {
+		transition: all var(--duration-normal, 200ms) var(--ease-out-expo, ease);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.closing-cta {
+			transition: none;
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.closing-cta {
+			padding: 3.5rem 1.25rem 3.5rem;
+		}
+		.closing-cta-lead {
+			font-size: 1.25rem;
 		}
 	}
 </style>

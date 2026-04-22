@@ -54,5 +54,17 @@
 	"faq_hill_a": "<em>《星际牛仔》</em>和<em>《红辣椒》</em>是杰作，毋庸置疑。另外，如果你在青少年晚期到三十岁出头，你绝对必须读<em>《卡拉马佐夫兄弟》</em>。它将改变你看待世界的方式。",
 	"kaiwa_tagline": "语言学习，全新体验",
 	"kaiwa_description": "通过碎片化AI对话练习语言。实时翻译、社交打卡、每天仅需30秒，轻松坚持。",
-	"footer_made_by": "由桑名浩行用❤️制作"
+	"footer_made_by": "由桑名浩行用❤️制作",
+	"footer_tagline": "Reluctant technologist. Writing occasional essays on AI, automation, and building alone.",
+	"footer_explore": "Explore",
+	"footer_subscribe": "Subscribe",
+	"footer_subscribe_hint": "New essays, occasionally. No filler.",
+	"footer_rss": "RSS feed",
+	"footer_now": "Now",
+	"footer_privacy": "Privacy",
+	"footer_contact": "Contact",
+	"footer_joke": "if this site isn't serious enough, visit the corporate version",
+	"closing_cta_lead": "Thanks for reading this far.",
+	"closing_cta_body": "If you're building with AI and want another brain on it, let's talk. Or subscribe below and I'll send the next essay when it's ready.",
+	"closing_cta_book": "Book 15 minutes"
 }
