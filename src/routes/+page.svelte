@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS, TOOLS } from '$data/constants';
 	import * as m from '$lib/paraglide/messages';
+	import ProofBand from '$lib/components/ProofBand.svelte';
 
 	// For the playful Japanese name easter egg
 	let showMeaning = false;
@@ -273,6 +274,9 @@
 		</svg>
 	</div>
 </section>
+
+<!-- Proof Band - real numbers that do credibility work -->
+<ProofBand />
 
 <!-- Projects Section -->
 <section
