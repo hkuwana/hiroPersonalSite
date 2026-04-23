@@ -152,18 +152,21 @@ interface ProofStat {
 export const PROOF: {
 	primary: readonly ProofStat[];
 	secondary: readonly ProofStat[];
+	updatedAt: string;
 } = {
 	primary: [
 		{ value: '1M+', label: 'Organic impressions', subtext: '3 months' },
 		{ value: '3K+', label: 'Clicks', subtext: 'All organic' },
-		{ value: '1,000+', label: 'Monthly signups', subtext: 'Kaiwa' },
-		{ value: '40%', label: 'Email open rate', subtext: '300+ sent' }
+		{ value: '600+', label: 'Monthly signups', subtext: 'Kaiwa' },
+		{ value: '37%', label: 'Cold email open rate', subtext: '300+ sent' }
 	],
 	secondary: [
 		{ value: '1', label: 'Solo founder' },
 		{ value: '0', label: 'Ad spend' },
 		{ value: '0', label: 'Team members' }
-	]
+	],
+	// Bump this whenever the numbers above are refreshed.
+	updatedAt: '2026-04-23'
 } as const;
 
 // Expertise Areas

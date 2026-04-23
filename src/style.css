@@ -75,9 +75,23 @@ a, button {
 }
 
 /* Link styles */
-a {
+a:not(.btn) {
 	color: inherit;
 	text-decoration: none;
+}
+
+a.btn {
+	text-decoration: none;
+}
+
+/* Keep outline buttons readable on hover — daisyUI uses low-specificity :where()
+   selectors, which the `a { color: inherit }` rule used to override, making the
+   label collapse into the filled background on hover. */
+.btn.btn-outline.btn-primary:hover,
+.btn.btn-outline.btn-primary:focus-visible {
+	color: oklch(var(--pc));
+	background-color: oklch(var(--p));
+	border-color: oklch(var(--p));
 }
 
 a:focus-visible {
