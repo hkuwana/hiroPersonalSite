@@ -23,6 +23,9 @@
 	let avatarEl: HTMLElement | null = null;
 	let reducedMotion = false;
 
+	// Scroll indicator fades out permanently on first scroll — a small "you got it" moment.
+	let scrollIndicatorVisible = $state(true);
+
 	function tiltAvatar(e: MouseEvent) {
 		if (!avatarEl || reducedMotion) return;
 		const rect = avatarEl.getBoundingClientRect();
@@ -70,7 +73,19 @@
 			if (section) observer.observe(section);
 		});
 
-		return () => observer.disconnect();
+		// Once the visitor scrolls, they've got the idea — retire the indicator for good.
+		const retireScrollIndicator = () => {
+			if (window.scrollY > 40) {
+				scrollIndicatorVisible = false;
+				window.removeEventListener('scroll', retireScrollIndicator);
+			}
+		};
+		window.addEventListener('scroll', retireScrollIndicator, { passive: true });
+
+		return () => {
+			observer.disconnect();
+			window.removeEventListener('scroll', retireScrollIndicator);
+		};
 	});
 
 	// Map projects to include base path for logos
@@ -273,8 +288,12 @@
 		</div>
 	</div>
 
-	<!-- Scroll indicator -->
-	<div class="scroll-indicator-wrap absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10" aria-hidden="true">
+	<!-- Scroll indicator — fades out permanently after the first scroll -->
+	<div
+		class="scroll-indicator-wrap absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
+		class:retired={!scrollIndicatorVisible}
+		aria-hidden="true"
+	>
 		<div class="scroll-mouse">
 			<span class="scroll-wheel"></span>
 		</div>
@@ -721,6 +740,20 @@
 	}
 
 	/* Scroll mouse indicator */
+	.scroll-indicator-wrap {
+		opacity: 1;
+		transform: translate(-50%, 0);
+		transition:
+			opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+			transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+		pointer-events: none;
+	}
+
+	.scroll-indicator-wrap.retired {
+		opacity: 0;
+		transform: translate(-50%, 6px);
+	}
+
 	.scroll-mouse {
 		width: 22px;
 		height: 34px;
