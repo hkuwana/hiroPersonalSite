@@ -4,19 +4,97 @@
 
 	let section: HTMLElement | undefined = $state();
 	let visible = $state(false);
+	let displayValues = $state<string[]>(PROOF.primary.map(() => ''));
+
+	type ParsedValue = {
+		final: number;
+		suffix: '' | 'K' | 'M';
+		trail: '' | '+' | '%';
+		hasComma: boolean;
+	};
+
+	function parseValue(raw: string): ParsedValue | null {
+		const match = raw.match(/^([\d,.]+)\s*([KkMm])?\s*([+%])?$/);
+		if (!match) return null;
+		const numeric = parseFloat(match[1].replace(/,/g, ''));
+		if (Number.isNaN(numeric)) return null;
+		const suffixRaw = (match[2] ?? '').toUpperCase() as '' | 'K' | 'M';
+		const trail = (match[3] ?? '') as '' | '+' | '%';
+		let multiplier = 1;
+		if (suffixRaw === 'K') multiplier = 1000;
+		if (suffixRaw === 'M') multiplier = 1_000_000;
+		return {
+			final: numeric * multiplier,
+			suffix: suffixRaw,
+			trail,
+			hasComma: match[1].includes(','),
+		};
+	}
+
+	function formatValue(current: number, parsed: ParsedValue): string {
+		let body: string;
+		if (parsed.suffix === 'M') {
+			const v = current / 1_000_000;
+			body = v >= 1 ? `${Math.round(v)}M` : `${v.toFixed(1)}M`;
+		} else if (parsed.suffix === 'K') {
+			const v = current / 1000;
+			body = `${Math.round(v)}K`;
+		} else if (parsed.hasComma) {
+			body = Math.round(current).toLocaleString();
+		} else {
+			body = `${Math.round(current)}`;
+		}
+		return `${body}${parsed.trail}`;
+	}
+
+	function animateCount(index: number, raw: string, duration = 1400, delay = 0) {
+		const target = parseValue(raw);
+		if (!target) {
+			displayValues[index] = raw;
+			return;
+		}
+
+		const start = performance.now() + delay;
+		const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+
+		const tick = (now: number) => {
+			const elapsed = now - start;
+			if (elapsed < 0) {
+				requestAnimationFrame(tick);
+				return;
+			}
+			const t = Math.min(1, elapsed / duration);
+			const current = target.final * ease(t);
+			displayValues[index] = formatValue(current, target);
+			if (t < 1) requestAnimationFrame(tick);
+			else displayValues[index] = raw;
+		};
+
+		requestAnimationFrame(tick);
+	}
 
 	onMount(() => {
 		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		if (reducedMotion) {
 			visible = true;
+			displayValues = PROOF.primary.map((s) => s.value);
 			return;
 		}
+
+		// Initialize to "0" with the right suffix shape so layout doesn't jump.
+		displayValues = PROOF.primary.map((s) => {
+			const parsed = parseValue(s.value);
+			return parsed ? formatValue(0, parsed) : s.value;
+		});
 
 		const observer = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
 					if (entry.isIntersecting) {
 						visible = true;
+						PROOF.primary.forEach((s, i) => {
+							animateCount(i, s.value, 1400, i * 120);
+						});
 						observer.disconnect();
 						break;
 					}
@@ -37,12 +115,19 @@
 	aria-label="Traction over the last three months"
 >
 	<div class="proof-inner">
-		<p class="proof-eyebrow text-base-content/45">Traction · last 3 months · 100% organic</p>
+		<p class="proof-eyebrow text-base-content/55">
+			<span class="live-dot" aria-hidden="true">
+				<span class="live-dot-core"></span>
+			</span>
+			<span>Traction · last 3 months · </span><span class="proof-eyebrow-accent">100% organic</span>
+		</p>
 
 		<dl class="proof-grid">
 			{#each PROOF.primary as stat, i}
 				<div class="proof-stat" style="--delay: {i * 0.08}s">
-					<dt class="proof-value text-primary">{stat.value}</dt>
+					<dt class="proof-value text-primary" aria-label={stat.value}>
+						<span aria-hidden="true">{displayValues[i] || stat.value}</span>
+					</dt>
 					<dd class="proof-label text-base-content/70">
 						{stat.label}
 						{#if stat.subtext}
@@ -54,7 +139,7 @@
 		</dl>
 
 		<p class="sr-only">
-			One million organic impressions, three thousand clicks, one thousand monthly Kaiwa signups, forty percent email open rate over three months — solo, zero ad spend.
+			One million organic impressions, three thousand clicks, six hundred monthly Kaiwa signups, thirty seven percent cold email open rate over three months — solo, zero ad spend.
 		</p>
 	</div>
 </section>
@@ -79,6 +164,52 @@
 		text-transform: uppercase;
 		letter-spacing: 0.12em;
 		margin: 0 0 2rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.proof-eyebrow-accent {
+		color: oklch(var(--su, 0.72 0.17 145));
+		font-weight: 700;
+		letter-spacing: 0.14em;
+	}
+
+	/* Pulsing live indicator — communicates "this is being tracked" without lying. */
+	.live-dot {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 0.625rem;
+		height: 0.625rem;
+	}
+
+	.live-dot::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 9999px;
+		background: oklch(var(--su, 0.72 0.17 145) / 0.55);
+		animation: live-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+	}
+
+	.live-dot-core {
+		position: relative;
+		display: block;
+		width: 0.4375rem;
+		height: 0.4375rem;
+		border-radius: 9999px;
+		background: oklch(var(--su, 0.72 0.17 145));
+		box-shadow: 0 0 6px oklch(var(--su, 0.72 0.17 145) / 0.6);
+	}
+
+	@keyframes live-ping {
+		0% { transform: scale(0.6); opacity: 0.9; }
+		80% { transform: scale(1.9); opacity: 0; }
+		100% { transform: scale(1.9); opacity: 0; }
 	}
 
 	.proof-grid {
@@ -115,7 +246,7 @@
 	}
 
 	.proof-value {
-		font-size: clamp(1.75rem, 2.5vw + 1rem, 2.5rem);
+		font-size: clamp(1.875rem, 2.6vw + 1rem, 2.75rem);
 		font-weight: 700;
 		letter-spacing: -0.03em;
 		line-height: 1;
@@ -172,6 +303,9 @@
 			opacity: 1;
 			transform: none;
 			transition: none;
+		}
+		.live-dot::before {
+			animation: none;
 		}
 	}
 </style>

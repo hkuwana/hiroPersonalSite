@@ -156,8 +156,8 @@ export const PROOF: {
 	primary: [
 		{ value: '1M+', label: 'Organic impressions', subtext: '3 months' },
 		{ value: '3K+', label: 'Clicks', subtext: 'All organic' },
-		{ value: '1,000+', label: 'Monthly signups', subtext: 'Kaiwa' },
-		{ value: '40%', label: 'Email open rate', subtext: '300+ sent' }
+		{ value: '600+', label: 'Monthly signups', subtext: 'Kaiwa' },
+		{ value: '37%', label: 'Cold email open rate', subtext: '300+ sent' }
 	],
 	secondary: [
 		{ value: '1', label: 'Solo founder' },

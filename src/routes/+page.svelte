@@ -545,6 +545,32 @@
 				</a>
 			{/each}
 
+			<!-- Self-Guided Workflows — coming soon placeholder -->
+			<div
+				class="card workflows-coming bg-base-100 border border-dashed border-primary/25 relative overflow-hidden"
+				aria-label={m.tools_workflows_title()}
+			>
+				<div class="card-body gap-3">
+					<div class="flex items-center gap-3">
+						<div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-primary/10 text-primary">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+								<path d="M4 7h10" />
+								<path d="M4 12h16" />
+								<path d="M4 17h7" />
+								<circle cx="18" cy="7" r="2" />
+								<circle cx="14" cy="17" r="2" />
+							</svg>
+						</div>
+						<h3 class="font-semibold text-base text-base-content">{m.tools_workflows_title()}</h3>
+						<span class="ml-auto inline-flex items-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-wider text-primary/80">
+							<span class="workflows-pulse" aria-hidden="true"></span>
+							{m.tools_workflows_status()}
+						</span>
+					</div>
+					<p class="text-sm text-base-content/60 leading-relaxed">{m.tools_workflows_desc()}</p>
+				</div>
+			</div>
+
 		</div>
 	</div>
 </section>
@@ -862,6 +888,45 @@
 		}
 		.closing-cta-lead {
 			font-size: 1.25rem;
+		}
+	}
+
+	/* Coming-soon workflow tile — quietly distinct from the live tools above. */
+	.workflows-coming {
+		background-image:
+			repeating-linear-gradient(
+				135deg,
+				oklch(var(--p) / 0.025) 0,
+				oklch(var(--p) / 0.025) 6px,
+				transparent 6px,
+				transparent 14px
+			);
+		transition: border-color var(--duration-normal, 200ms) var(--ease-out-expo, ease);
+	}
+
+	.workflows-coming:hover {
+		border-color: oklch(var(--p) / 0.5);
+	}
+
+	.workflows-pulse {
+		display: inline-block;
+		width: 0.4375rem;
+		height: 0.4375rem;
+		border-radius: 9999px;
+		background: oklch(var(--p));
+		box-shadow: 0 0 0 0 oklch(var(--p) / 0.6);
+		animation: workflows-pulse 2.4s ease-out infinite;
+	}
+
+	@keyframes workflows-pulse {
+		0%   { box-shadow: 0 0 0 0 oklch(var(--p) / 0.45); }
+		70%  { box-shadow: 0 0 0 8px oklch(var(--p) / 0); }
+		100% { box-shadow: 0 0 0 0 oklch(var(--p) / 0); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.workflows-pulse {
+			animation: none;
 		}
 	}
 </style>
