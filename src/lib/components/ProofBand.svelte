@@ -5,6 +5,20 @@
 	let section: HTMLElement | undefined = $state();
 	let visible = $state(false);
 	let displayValues = $state<string[]>(PROOF.primary.map(() => ''));
+	let freshness = $state(formatFreshness(PROOF.updatedAt, new Date()));
+
+	// Honest, warm "updated" label — bucketed so it never lies down to the minute.
+	function formatFreshness(updatedAt: string, now: Date): string {
+		const updated = new Date(updatedAt + 'T00:00:00Z');
+		const days = Math.floor((now.getTime() - updated.getTime()) / 86_400_000);
+		if (days <= 0) return 'Updated today';
+		if (days === 1) return 'Updated yesterday';
+		if (days < 7) return `Updated ${days} days ago`;
+		if (days < 14) return 'Updated last week';
+		if (days < 35) return `Updated ${Math.round(days / 7)} weeks ago`;
+		const months = Math.round(days / 30);
+		return months === 1 ? 'Updated last month' : `Updated ${months} months ago`;
+	}
 
 	type ParsedValue = {
 		final: number;
@@ -74,6 +88,9 @@
 	}
 
 	onMount(() => {
+		// Recompute on the client so static SSR output doesn't freeze to build-time.
+		freshness = formatFreshness(PROOF.updatedAt, new Date());
+
 		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		if (reducedMotion) {
 			visible = true;
@@ -116,10 +133,12 @@
 >
 	<div class="proof-inner">
 		<p class="proof-eyebrow text-base-content/55">
-			<span class="live-dot" aria-hidden="true">
-				<span class="live-dot-core"></span>
-			</span>
-			<span>Traction · last 3 months · </span><span class="proof-eyebrow-accent">100% organic</span>
+			<span class="freshness-dot" aria-hidden="true"></span>
+			<span class="proof-freshness">{freshness}</span>
+			<span class="proof-eyebrow-sep" aria-hidden="true">·</span>
+			<span>Last 3 months</span>
+			<span class="proof-eyebrow-sep" aria-hidden="true">·</span>
+			<span class="proof-eyebrow-accent">100% organic</span>
 		</p>
 
 		<dl class="proof-grid">
@@ -172,44 +191,27 @@
 	}
 
 	.proof-eyebrow-accent {
-		color: oklch(var(--su, 0.72 0.17 145));
-		font-weight: 700;
+		color: oklch(var(--p));
+		font-weight: 600;
 		letter-spacing: 0.14em;
 	}
 
-	/* Pulsing live indicator — communicates "this is being tracked" without lying. */
-	.live-dot {
-		position: relative;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 0.625rem;
-		height: 0.625rem;
+	.proof-eyebrow-sep {
+		opacity: 0.5;
 	}
 
-	.live-dot::before {
-		content: '';
-		position: absolute;
-		inset: 0;
+	.proof-freshness {
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* Quiet, honest punctuation — not a "live" indicator, just a visual anchor. */
+	.freshness-dot {
+		display: inline-block;
+		width: 0.375rem;
+		height: 0.375rem;
 		border-radius: 9999px;
-		background: oklch(var(--su, 0.72 0.17 145) / 0.55);
-		animation: live-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-	}
-
-	.live-dot-core {
-		position: relative;
-		display: block;
-		width: 0.4375rem;
-		height: 0.4375rem;
-		border-radius: 9999px;
-		background: oklch(var(--su, 0.72 0.17 145));
-		box-shadow: 0 0 6px oklch(var(--su, 0.72 0.17 145) / 0.6);
-	}
-
-	@keyframes live-ping {
-		0% { transform: scale(0.6); opacity: 0.9; }
-		80% { transform: scale(1.9); opacity: 0; }
-		100% { transform: scale(1.9); opacity: 0; }
+		background: oklch(var(--p) / 0.55);
+		margin-right: 0.125rem;
 	}
 
 	.proof-grid {
@@ -296,6 +298,11 @@
 		.proof-stat:nth-child(4) {
 			padding-top: 0;
 		}
+		/* Drop the middle clause on narrow screens so the eyebrow stays one line. */
+		.proof-eyebrow > span:nth-child(3),
+		.proof-eyebrow > span:nth-child(4) {
+			display: none;
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -303,9 +310,6 @@
 			opacity: 1;
 			transform: none;
 			transition: none;
-		}
-		.live-dot::before {
-			animation: none;
 		}
 	}
 </style>

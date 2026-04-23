@@ -7,8 +7,13 @@
 	import { getLocale } from '$lib/paraglide/runtime';
 	import ProofBand from '$lib/components/ProofBand.svelte';
 
-	// For the playful Japanese name easter egg
-	let showMeaning = false;
+	// Playful Japanese name reveal — three layers of discovery:
+	// 0 = kanji only · 1 = + kana pronunciation · 2 = + literal meaning
+	let nameRevealStep = $state(0);
+	const NAME_REVEAL_STEPS = 3;
+	function cycleNameReveal() {
+		nameRevealStep = (nameRevealStep + 1) % NAME_REVEAL_STEPS;
+	}
 
 	// Intersection Observer for scroll animations
 	let sections: HTMLElement[] = [];
@@ -239,14 +244,17 @@
 				</h1>
 
 				<button
-					class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1 transition-all duration-300"
-					onclick={() => (showMeaning = !showMeaning)}
-					aria-expanded={showMeaning}
+					class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1 transition-all duration-300 name-reveal-btn"
+					onclick={cycleNameReveal}
+					aria-expanded={nameRevealStep > 0}
 					aria-label={m.hero_show_pronunciation()}
 				>
 					<span class="text-base font-medium tracking-wide">{PERSONAL.japaneseKanji}</span>
-					{#if showMeaning}
+					{#if nameRevealStep >= 1}
 						<span class="text-sm text-primary italic font-medium kana-reveal">{PERSONAL.japaneseKana}</span>
+					{/if}
+					{#if nameRevealStep >= 2}
+						<span class="text-xs text-base-content/55 italic kana-reveal name-meaning" aria-label="literal meaning">— vast journey</span>
 					{/if}
 				</button>
 			</div>
@@ -744,6 +752,37 @@
 	}
 	.kana-reveal {
 		animation: kana-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+	}
+
+	.name-meaning {
+		letter-spacing: 0.01em;
+		white-space: nowrap;
+	}
+
+	/* Tiny discovery hint — a faint dot on the unclicked button that disappears on hover.
+	   Vanishes once the button has been clicked (state > 0). */
+	.name-reveal-btn {
+		position: relative;
+	}
+	.name-reveal-btn[aria-expanded='false']::after {
+		content: '';
+		position: absolute;
+		top: 0.25rem;
+		right: 0.4rem;
+		width: 0.3125rem;
+		height: 0.3125rem;
+		border-radius: 9999px;
+		background: oklch(var(--p) / 0.45);
+		transition: opacity 0.3s var(--ease-out-quart, ease);
+	}
+	.name-reveal-btn[aria-expanded='false']:hover::after {
+		opacity: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.kana-reveal {
+			animation: none;
+		}
 	}
 
 	/* Short screens (landscape mobile): shrink padding + hide scroll indicator */

@@ -152,6 +152,7 @@ interface ProofStat {
 export const PROOF: {
 	primary: readonly ProofStat[];
 	secondary: readonly ProofStat[];
+	updatedAt: string;
 } = {
 	primary: [
 		{ value: '1M+', label: 'Organic impressions', subtext: '3 months' },
@@ -163,7 +164,9 @@ export const PROOF: {
 		{ value: '1', label: 'Solo founder' },
 		{ value: '0', label: 'Ad spend' },
 		{ value: '0', label: 'Team members' }
-	]
+	],
+	// Bump this whenever the numbers above are refreshed.
+	updatedAt: '2026-04-23'
 } as const;
 
 // Expertise Areas
