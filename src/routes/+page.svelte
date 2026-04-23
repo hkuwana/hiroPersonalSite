@@ -2,6 +2,7 @@
 	import hiroProfile from '$lib/images/Hiro_profile_shot.webp';
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
+	import { SvelteSet } from 'svelte/reactivity';
 	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS, TOOLS } from '$data/constants';
 	import * as m from '$lib/paraglide/messages';
 	import { getLocale } from '$lib/paraglide/runtime';
@@ -15,9 +16,11 @@
 		nameRevealStep = (nameRevealStep + 1) % NAME_REVEAL_STEPS;
 	}
 
-	// Intersection Observer for scroll animations
+	// Intersection Observer for scroll animations.
+	// visibleSections uses SvelteSet so .add() triggers template reactivity in runes mode —
+	// a plain Set would leave every section stuck at opacity: 0 and render a blank page.
 	let sections: HTMLElement[] = [];
-	let visibleSections = new Set<number>();
+	let visibleSections = new SvelteSet<number>();
 
 	// Avatar 3D tilt
 	let avatarEl: HTMLElement | null = null;
@@ -52,7 +55,6 @@
 			for (let i = 0; i < sections.length; i++) {
 				visibleSections.add(i);
 			}
-			visibleSections = visibleSections;
 			return;
 		}
 
@@ -62,7 +64,6 @@
 					const index = sections.indexOf(entry.target as HTMLElement);
 					if (entry.isIntersecting) {
 						visibleSections.add(index);
-						visibleSections = visibleSections;
 					}
 				});
 			},
