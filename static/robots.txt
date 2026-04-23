@@ -3,6 +3,7 @@ User-agent: *
 Allow: /
 
 # LLM-friendly index: https://hirokuwana.com/llms.txt
+# LLM-friendly full corpus: https://hirokuwana.com/llms-full.txt
 # Essay feed: https://hirokuwana.com/feed.xml
 
 Sitemap: https://hirokuwana.com/sitemap.xml
