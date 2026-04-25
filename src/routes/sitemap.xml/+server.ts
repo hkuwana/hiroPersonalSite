@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types';
 import { SITE } from '$data/constants';
 import { getAllEssays } from '$lib/essays/utils/essayIndex';
+import { getAllPlaybooks } from '$lib/playbooks/utils/playbookIndex';
 
 export const prerender = true;
 
@@ -45,10 +46,12 @@ function urlEntry(row: SitemapRow): string {
 export const GET: RequestHandler = async () => {
 	const today = new Date().toISOString().split('T')[0];
 	const essays = getAllEssays();
+	const playbooks = getAllPlaybooks();
 
 	const rows: SitemapRow[] = [
 		{ path: '/', lastmod: today, changefreq: 'monthly', priority: 1.0, localized: true },
 		{ path: '/essays', lastmod: today, changefreq: 'weekly', priority: 0.8, localized: true },
+		{ path: '/playbooks', lastmod: today, changefreq: 'weekly', priority: 0.8, localized: true },
 		{ path: '/now', lastmod: today, changefreq: 'monthly', priority: 0.6, localized: true },
 		{ path: '/privacy', lastmod: today, changefreq: 'yearly', priority: 0.3, localized: true },
 		{ path: '/ics-validator', lastmod: today, changefreq: 'yearly', priority: 0.5, localized: false },
@@ -59,6 +62,16 @@ export const GET: RequestHandler = async () => {
 		rows.push({
 			path: `/essays/${essay.slug}`,
 			lastmod: (essay.metadata.updated ?? essay.metadata.date).split('T')[0],
+			changefreq: 'monthly',
+			priority: 0.7,
+			localized: false
+		});
+	}
+
+	for (const playbook of playbooks) {
+		rows.push({
+			path: `/playbooks/${playbook.slug}`,
+			lastmod: (playbook.metadata.updated ?? playbook.metadata.date).split('T')[0],
 			changefreq: 'monthly',
 			priority: 0.7,
 			localized: false

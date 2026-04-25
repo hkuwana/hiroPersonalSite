@@ -18,6 +18,10 @@
 				{m.nav_essays()}
 			</a>
 			<span class="nav-divider"></span>
+			<a href={localizeHref('/playbooks')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/playbooks') || $page.url.pathname.startsWith('/ja/playbooks')}>
+				{m.nav_playbooks()}
+			</a>
+			<span class="nav-divider"></span>
 			<a href={localizeHref('/#tools')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/ics-validator') || $page.url.pathname.startsWith('/ja/ics-validator') || $page.url.pathname.startsWith('/vcf-splitter') || $page.url.pathname.startsWith('/ja/vcf-splitter')}>
 				{m.nav_tools()}
 			</a>

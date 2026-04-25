@@ -1,0 +1,305 @@
+<script lang="ts">
+	import type { PageData } from './$types';
+	import { onMount } from 'svelte';
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
+	import * as m from '$lib/paraglide/messages';
+
+	let { data } = $props<{ data: PageData }>();
+
+	let visible = $state(false);
+
+	onMount(() => {
+		requestAnimationFrame(() => {
+			visible = true;
+		});
+	});
+
+	const locale = $derived(getLocale());
+	const formattedDate = $derived(new Date(data.date).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric'
+	}));
+</script>
+
+<svelte:head>
+	<title>{data.title} - Hiro Kuwana</title>
+	<meta name="description" content={data.description} />
+	<meta property="og:title" content={data.title} />
+	<meta property="og:description" content={data.description} />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="https://hirokuwana.com/playbooks/{data.slug}" />
+	<meta property="article:published_time" content={data.date} />
+	<meta property="article:author" content="Hiro Kuwana" />
+	<link rel="canonical" href="https://hirokuwana.com/playbooks/{data.slug}" />
+
+	{@html `<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "Article",
+			"headline": "${data.title}",
+			"description": "${data.description}",
+			"datePublished": "${data.date}",
+			"author": {
+				"@type": "Person",
+				"name": "Hiro Kuwana",
+				"url": "https://hirokuwana.com"
+			},
+			"publisher": {
+				"@type": "Person",
+				"name": "Hiro Kuwana"
+			},
+			"mainEntityOfPage": {
+				"@type": "WebPage",
+				"@id": "https://hirokuwana.com/playbooks/${data.slug}"
+			}
+		}
+	</script>`}
+</svelte:head>
+
+<article class="playbook-page" class:visible>
+	<header class="playbook-header">
+		<a href={localizeHref('/playbooks')} class="back-link text-secondary hover:text-accent">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			<span>{m.nav_playbooks()}</span>
+		</a>
+
+		<h1 class="playbook-title text-primary">{data.title}</h1>
+		<time datetime={data.date} class="playbook-date text-base-content/50">{formattedDate}</time>
+	</header>
+
+	<div class="playbook-content">
+		<data.content />
+	</div>
+
+	<footer class="playbook-footer">
+		<div class="footer-divider"></div>
+		<a href={localizeHref('/playbooks')} class="footer-link text-secondary hover:text-accent">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+			</svg>
+			<span>{m.nav_playbooks()}</span>
+		</a>
+	</footer>
+</article>
+
+<style>
+	.playbook-page {
+		max-width: 680px;
+		margin: 0 auto;
+		padding: 3rem 2rem 6rem;
+		opacity: 0;
+		transform: translateY(20px);
+		transition: all 0.6s var(--ease-out-expo);
+	}
+
+	.playbook-page.visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.playbook-header {
+		margin-bottom: 3rem;
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: oklch(var(--bc) / 0.7);
+		text-decoration: none;
+		margin-bottom: 2rem;
+		transition: all var(--duration-normal) var(--ease-out-expo);
+	}
+
+	.back-link:hover {
+		color: oklch(var(--a));
+	}
+
+	.back-link:hover svg {
+		transform: translateX(-4px);
+	}
+
+	.back-link svg {
+		transition: transform var(--duration-normal) var(--ease-out-expo);
+	}
+
+	.playbook-title {
+		font-size: clamp(1.75rem, 5vw, 2.5rem);
+		font-weight: 700;
+		line-height: 1.2;
+		color: oklch(var(--bc));
+		margin: 0 0 1rem;
+		letter-spacing: -0.02em;
+	}
+
+	.playbook-date {
+		display: block;
+		font-size: 0.9375rem;
+		color: oklch(var(--bc) / 0.5);
+	}
+
+	.playbook-content {
+		font-size: 1.0625rem;
+		line-height: 1.8;
+		color: oklch(var(--bc) / 0.7);
+	}
+
+	.playbook-content :global(p) {
+		margin-bottom: 1.5rem;
+	}
+
+	.playbook-content :global(h2) {
+		font-size: 1.5rem;
+		font-weight: 600;
+		margin-top: 3rem;
+		margin-bottom: 1rem;
+		color: oklch(var(--bc));
+		letter-spacing: -0.02em;
+	}
+
+	.playbook-content :global(h3) {
+		font-size: 1.25rem;
+		font-weight: 600;
+		margin-top: 2.5rem;
+		margin-bottom: 0.75rem;
+		color: oklch(var(--bc));
+	}
+
+	.playbook-content :global(ul),
+	.playbook-content :global(ol) {
+		margin-bottom: 1.5rem;
+		padding-left: 1.5rem;
+	}
+
+	.playbook-content :global(li) {
+		margin-bottom: 0.5rem;
+	}
+
+	.playbook-content :global(blockquote) {
+		margin: 2rem 0;
+		padding: 1.5rem 1.5rem 1.5rem 2rem;
+		background: oklch(var(--b2));
+		border-left: 3px solid oklch(var(--a));
+		border-radius: 0 0.75rem 0.75rem 0;
+		color: oklch(var(--bc));
+		font-style: italic;
+	}
+
+	.playbook-content :global(blockquote p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.playbook-content :global(code) {
+		font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+		font-size: 0.875em;
+		background: oklch(var(--b2));
+		padding: 0.2em 0.4em;
+		border-radius: 0.375rem;
+		color: oklch(var(--bc));
+	}
+
+	.playbook-content :global(pre) {
+		background: oklch(var(--b2));
+		padding: 1.25rem;
+		border-radius: 0.75rem;
+		overflow-x: auto;
+		margin-bottom: 1.5rem;
+	}
+
+	.playbook-content :global(pre code) {
+		background: none;
+		padding: 0;
+	}
+
+	.playbook-content :global(a) {
+		color: oklch(var(--a));
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		transition: opacity var(--duration-fast) var(--ease-out-expo);
+	}
+
+	.playbook-content :global(a:hover) {
+		opacity: 0.8;
+	}
+
+	.playbook-content :global(strong) {
+		font-weight: 600;
+		color: oklch(var(--bc));
+	}
+
+	.playbook-content :global(em) {
+		font-style: italic;
+	}
+
+	.playbook-content :global(hr) {
+		border: none;
+		height: 1px;
+		background: oklch(var(--bc) / 0.1);
+		margin: 3rem 0;
+	}
+
+	.playbook-content :global(img) {
+		max-width: 100%;
+		height: auto;
+		border-radius: 0.75rem;
+		margin: 2rem 0;
+	}
+
+	.playbook-footer {
+		margin-top: 4rem;
+	}
+
+	.footer-divider {
+		width: 60px;
+		height: 3px;
+		background: linear-gradient(90deg, oklch(var(--a)), oklch(var(--s)));
+		border-radius: 2px;
+		margin-bottom: 2rem;
+	}
+
+	.footer-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.9375rem;
+		font-weight: 500;
+		color: oklch(var(--bc) / 0.7);
+		text-decoration: none;
+		transition: all var(--duration-normal) var(--ease-out-expo);
+	}
+
+	.footer-link:hover {
+		color: oklch(var(--a));
+	}
+
+	.footer-link:hover svg {
+		transform: translateX(-4px);
+	}
+
+	.footer-link svg {
+		transition: transform var(--duration-normal) var(--ease-out-expo);
+	}
+
+	@media (max-width: 640px) {
+		.playbook-page {
+			padding: 2rem 1.5rem 4rem;
+		}
+
+		.playbook-content {
+			font-size: 1rem;
+		}
+
+		.playbook-content :global(h2) {
+			font-size: 1.375rem;
+		}
+
+		.playbook-content :global(h3) {
+			font-size: 1.125rem;
+		}
+	}
+</style>

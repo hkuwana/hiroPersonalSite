@@ -24,6 +24,7 @@
 				<p class="footer-heading text-base-content/50">{m.footer_explore()}</p>
 				<ul class="footer-list">
 					<li><a href={localizeHref('/essays')} class="footer-link">{m.nav_essays()}</a></li>
+					<li><a href={localizeHref('/playbooks')} class="footer-link">{m.nav_playbooks()}</a></li>
 					<li><a href={localizeHref('/#tools')} class="footer-link">{m.nav_tools()}</a></li>
 					<li><a href={localizeHref('/now')} class="footer-link">{m.footer_now()}</a></li>
 					<li><a href={localizeHref('/privacy')} class="footer-link">{m.footer_privacy()}</a></li>

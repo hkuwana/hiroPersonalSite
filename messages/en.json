@@ -2,6 +2,7 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"nav_home": "Home",
 	"nav_essays": "Essays",
+	"nav_playbooks": "Playbooks",
 	"nav_tools": "Tools",
 	"aria_toggle_theme": "Toggle theme",
 	"aria_toggle_language": "Toggle language",

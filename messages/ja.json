@@ -2,6 +2,7 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"nav_home": "ホーム",
 	"nav_essays": "エッセイ",
+	"nav_playbooks": "実践集",
 	"nav_tools": "ツール",
 	"aria_toggle_theme": "テーマ切り替え",
 	"aria_toggle_language": "言語切り替え",
