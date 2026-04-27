@@ -59,6 +59,11 @@
 					</svg>
 				</div>
 			</a>
+		{:else}
+			<div class="border-base-content/10 bg-base-100/50 rounded-2xl border border-dashed px-6 py-12 text-center">
+				<p class="text-secondary m-0 text-[1rem]">No playbooks published yet — first one is on the way.</p>
+				<p class="text-base-content/50 mt-2 mb-0 text-[0.875rem]">In the meantime, the <a href={localizeHref('/essays')} class="text-accent underline-offset-4 hover:underline">essays</a> cover the thinking behind them.</p>
+			</div>
 		{/each}
 	</div>
 

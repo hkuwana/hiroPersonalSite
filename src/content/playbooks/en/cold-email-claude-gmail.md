@@ -2,23 +2,9 @@
 title: "I Stopped Outsourcing Lead Research. My Reply Rate Went Up."
 date: "2026-04-25"
 description: "How two sleeping Claude agents find my leads while I sleep — and why I still send every email myself. The full prompt, the full architecture, 8–10 hours a week."
-status: "draft"
+status: "published"
 category: "automation"
 ---
-
-<!--
-DRAFT NOTES (delete before publishing)
-- Numbers to lock: site says "37% open rate, 300+ sent" (src/data/constants.ts:161).
-  This post claims "20%+ reply rate." Those are different metrics on different
-  denominators. Decide which to lead with and make sure both numbers are
-  internally consistent across the post and the site.
-- Decide whether to publish the literal /Users/hiro/Documents/Claude/... paths
-  in the prompt, or genericize them to ~/Kaiwa-Outreach/... before publishing.
-- Still missing: the 2 AM outreach generator prompt (this post only has the
-  11 PM collection prompt), a real redacted example reply, and what "the
-  dashboard" in follow-up #1 actually is.
-- Once English is final, mirror as cold-email-claude-gmail.ja.md.
--->
 
 I used to pay someone on Upwork $250 a week to find leads for me. I stopped. My reply rate went up.
 
