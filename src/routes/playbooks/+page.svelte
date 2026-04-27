@@ -18,40 +18,40 @@
 </script>
 
 <svelte:head>
-	<title>{m.nav_essays()} - Hiro Kuwana</title>
-	<meta name="description" content="Essays on technology, startups, education, and building things that last." />
-	<meta property="og:title" content="{m.nav_essays()} - Hiro Kuwana" />
-	<meta property="og:description" content="Essays on technology, startups, education, and building things that last." />
+	<title>{m.nav_playbooks()} - Hiro Kuwana</title>
+	<meta name="description" content="Tactical playbooks: the actual prompts, loops, and tools I run to remove SaaS from my one-person company." />
+	<meta property="og:title" content="{m.nav_playbooks()} - Hiro Kuwana" />
+	<meta property="og:description" content="Tactical playbooks: the actual prompts, loops, and tools I run to remove SaaS from my one-person company." />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://hirokuwana.com/essays" />
-	<link rel="canonical" href="https://hirokuwana.com/essays" />
+	<meta property="og:url" content="https://hirokuwana.com/playbooks" />
+	<link rel="canonical" href="https://hirokuwana.com/playbooks" />
 </svelte:head>
 
 <article
 	class="mx-auto max-w-[720px] px-6 pt-12 pb-16 transition-all duration-[600ms] [transition-timing-function:var(--ease-out-expo)] sm:px-8 sm:pt-16 sm:pb-24 {visible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}"
 >
 	<header class="mb-12 text-center">
-		<h1 class="text-primary m-0 mb-3 text-[2rem] font-bold tracking-[-0.03em] sm:text-[2.5rem]">{m.nav_essays()}</h1>
-		<p class="text-secondary m-0 text-[1.0625rem]">Thoughts on technology, startups, and building things that matter</p>
+		<h1 class="text-primary m-0 mb-3 text-[2rem] font-bold tracking-[-0.03em] sm:text-[2.5rem]">{m.nav_playbooks()}</h1>
+		<p class="text-secondary m-0 text-[1.0625rem]">The actual prompts, loops, and tools I run. Steal them.</p>
 	</header>
 
 	<div class="flex flex-col gap-3">
-		{#each data.essays as essay, i}
+		{#each data.playbooks as playbook, i}
 			<a
-				href={localizeHref(`/essays/${essay.slug}`)}
+				href={localizeHref(`/playbooks/${playbook.slug}`)}
 				class="group bg-base-100 border-base-content/10 hover:bg-base-200 hover:border-base-content/[0.12] flex flex-col items-start gap-2 rounded-2xl border px-5 py-4 no-underline transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)] hover:translate-x-1 hover:shadow-md sm:flex-row sm:items-center sm:gap-6 sm:px-6 sm:py-5"
 				style="transition-delay: {i * 0.05}s"
 			>
 				<time class="text-base-content/50 shrink-0 text-[0.8125rem] sm:min-w-[120px]">
-					{new Date(essay.date).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
+					{new Date(playbook.date).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
 						year: 'numeric',
 						month: 'long',
 						day: 'numeric'
 					})}
 				</time>
 				<h2 class="text-primary group-hover:text-accent m-0 flex-1 text-[1.0625rem] font-medium transition-colors duration-[250ms] [transition-timing-function:var(--ease-out-expo)]">
-					{essay.title}
-					{#if essay.isDraft}<span class="text-warning border-warning/40 ml-2 rounded-full border px-2 py-0.5 align-middle text-[0.625rem] font-semibold uppercase tracking-wider">Draft</span>{/if}
+					{playbook.title}
+					{#if playbook.isDraft}<span class="text-warning border-warning/40 ml-2 rounded-full border px-2 py-0.5 align-middle text-[0.625rem] font-semibold uppercase tracking-wider">Draft</span>{/if}
 				</h2>
 				<div class="text-base-content/50 group-hover:text-accent hidden -translate-x-2 opacity-0 transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover:translate-x-0 group-hover:opacity-100 sm:block">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">

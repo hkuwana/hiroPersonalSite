@@ -87,9 +87,13 @@ function escapeXml(value: string): string {
 		.replace(/'/g, '&apos;');
 }
 
-export function generateRss(essays: Essay[], siteUrl: string = SITE.url): string {
+export function generateRss(
+	essays: Essay[],
+	siteUrl: string = SITE.url,
+	extraItems = ''
+): string {
 	const now = new Date().toUTCString();
-	const items = essays
+	const essayItems = essays
 		.map((essay) => {
 			const url = `${siteUrl}/essays/${essay.slug}`;
 			const pubDate = new Date(essay.metadata.date).toUTCString();
@@ -103,12 +107,14 @@ export function generateRss(essays: Essay[], siteUrl: string = SITE.url): string
 		})
 		.join('\n');
 
+	const items = [essayItems, extraItems].filter(Boolean).join('\n');
+
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<title>${escapeXml(SITE.name)} — Essays</title>
+		<title>${escapeXml(SITE.name)} — Essays &amp; Playbooks</title>
 		<link>${siteUrl}/essays</link>
-		<description>${escapeXml('Essays on AI, automation, and building alone.')}</description>
+		<description>${escapeXml('Essays and playbooks on AI, automation, and building alone.')}</description>
 		<language>en-us</language>
 		<lastBuildDate>${now}</lastBuildDate>
 		<atom:link href="${siteUrl}/feed.xml" rel="self" type="application/rss+xml" />

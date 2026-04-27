@@ -4,11 +4,12 @@ import { getAllEssays } from '$lib/essays/utils/essayIndex';
 export const prerender = true;
 
 export const load: PageLoad = async () => {
-	const essays = getAllEssays().map((essay) => ({
+	const essays = getAllEssays({ includeDrafts: import.meta.env.DEV }).map((essay) => ({
 		slug: essay.slug,
 		title: essay.metadata.title,
 		date: essay.metadata.date,
-		description: essay.metadata.description
+		description: essay.metadata.description,
+		isDraft: essay.metadata.status === 'draft'
 	}));
 
 	return { essays };
