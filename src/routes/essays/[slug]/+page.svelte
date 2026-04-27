@@ -58,27 +58,35 @@
 	</script>`}
 </svelte:head>
 
-<article class="essay-page" class:visible>
-	<header class="essay-header">
-		<a href={localizeHref('/essays')} class="back-link text-secondary hover:text-accent">
-			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+<article
+	class="essay-page mx-auto max-w-[680px] px-6 pt-8 pb-16 transition-all duration-[600ms] [transition-timing-function:var(--ease-out-expo)] sm:px-8 sm:pt-12 sm:pb-24 {visible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}"
+>
+	<header class="mb-12">
+		<a
+			href={localizeHref('/essays')}
+			class="group/back text-secondary hover:text-accent mb-8 inline-flex items-center gap-2 text-sm font-medium no-underline transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)]"
+		>
+			<svg class="transition-transform duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover/back:-translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
 			<span>Essays</span>
 		</a>
 
-		<h1 class="essay-title text-primary">{data.title}</h1>
-		<time datetime={data.date} class="essay-date text-base-content/50">{formattedDate}</time>
+		<h1 class="text-primary m-0 mb-4 text-[clamp(1.75rem,5vw,2.5rem)] font-bold leading-[1.2] tracking-[-0.02em]">{data.title}</h1>
+		<time datetime={data.date} class="text-base-content/50 block text-[0.9375rem]">{formattedDate}</time>
 	</header>
 
-	<div class="essay-content">
+	<div class="essay-content text-base-content/70 text-base leading-[1.8] sm:text-[1.0625rem]">
 		<data.content />
 	</div>
 
-	<footer class="essay-footer">
-		<div class="footer-divider"></div>
-		<a href="/essays" class="footer-link text-secondary hover:text-accent">
-			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+	<footer class="mt-16">
+		<div class="from-accent to-secondary mb-8 h-[3px] w-[60px] rounded-sm bg-gradient-to-r"></div>
+		<a
+			href="/essays"
+			class="group/back text-secondary hover:text-accent inline-flex items-center gap-2 text-[0.9375rem] font-medium no-underline transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)]"
+		>
+			<svg class="transition-transform duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover/back:-translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
 			<span>{m.nav_essays()}</span>
@@ -87,78 +95,13 @@
 </article>
 
 <style>
-	.essay-page {
-		max-width: 680px;
-		margin: 0 auto;
-		padding: 3rem 2rem 6rem;
-		opacity: 0;
-		transform: translateY(20px);
-		transition: all 0.6s var(--ease-out-expo);
-	}
-
-	.essay-page.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	/* Header */
-	.essay-header {
-		margin-bottom: 3rem;
-	}
-
-	.back-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		color: oklch(var(--bc) / 0.7);
-		text-decoration: none;
-		margin-bottom: 2rem;
-		transition: all var(--duration-normal) var(--ease-out-expo);
-	}
-
-	.back-link:hover {
-		color: oklch(var(--a));
-	}
-
-	.back-link:hover svg {
-		transform: translateX(-4px);
-	}
-
-	.back-link svg {
-		transition: transform var(--duration-normal) var(--ease-out-expo);
-	}
-
-	.essay-title {
-		font-size: clamp(1.75rem, 5vw, 2.5rem);
-		font-weight: 700;
-		line-height: 1.2;
-		color: oklch(var(--bc));
-		margin: 0 0 1rem;
-		letter-spacing: -0.02em;
-	}
-
-	.essay-date {
-		display: block;
-		font-size: 0.9375rem;
-		color: oklch(var(--bc) / 0.5);
-	}
-
-	/* Content */
-	.essay-content {
-		font-size: 1.0625rem;
-		line-height: 1.8;
-		color: oklch(var(--bc) / 0.7);
-	}
-
-	/* Markdown content styles */
+	/* Markdown content styling — applied to mdsvex output that has no class control. */
 	.essay-content :global(p) {
 		margin-bottom: 1.5rem;
 	}
 
 	.essay-content :global(h2) {
-		font-size: 1.5rem;
+		font-size: 1.375rem;
 		font-weight: 600;
 		margin-top: 3rem;
 		margin-bottom: 1rem;
@@ -167,7 +110,7 @@
 	}
 
 	.essay-content :global(h3) {
-		font-size: 1.25rem;
+		font-size: 1.125rem;
 		font-weight: 600;
 		margin-top: 2.5rem;
 		margin-bottom: 0.75rem;
@@ -254,58 +197,12 @@
 		margin: 2rem 0;
 	}
 
-	/* Footer */
-	.essay-footer {
-		margin-top: 4rem;
-	}
-
-	.footer-divider {
-		width: 60px;
-		height: 3px;
-		background: linear-gradient(90deg, oklch(var(--a)), oklch(var(--s)));
-		border-radius: 2px;
-		margin-bottom: 2rem;
-	}
-
-	.footer-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 0.9375rem;
-		font-weight: 500;
-		color: oklch(var(--bc) / 0.7);
-		text-decoration: none;
-		transition: all var(--duration-normal) var(--ease-out-expo);
-	}
-
-	.footer-link:hover {
-		color: oklch(var(--a));
-	}
-
-	.footer-link:hover svg {
-		transform: translateX(-4px);
-	}
-
-	.footer-link svg {
-		transition: transform var(--duration-normal) var(--ease-out-expo);
-	}
-
-	/* Responsive */
-	@media (max-width: 640px) {
-		.essay-page {
-			padding: 2rem 1.5rem 4rem;
-		}
-
-		.essay-content {
-			font-size: 1rem;
-		}
-
+	@media (min-width: 641px) {
 		.essay-content :global(h2) {
-			font-size: 1.375rem;
+			font-size: 1.5rem;
 		}
-
 		.essay-content :global(h3) {
-			font-size: 1.125rem;
+			font-size: 1.25rem;
 		}
 	}
 </style>
