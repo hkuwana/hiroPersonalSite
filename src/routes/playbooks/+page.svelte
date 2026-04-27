@@ -49,7 +49,10 @@
 						day: 'numeric'
 					})}
 				</time>
-				<h2 class="text-primary group-hover:text-accent m-0 flex-1 text-[1.0625rem] font-medium transition-colors duration-[250ms] [transition-timing-function:var(--ease-out-expo)]">{playbook.title}</h2>
+				<h2 class="text-primary group-hover:text-accent m-0 flex-1 text-[1.0625rem] font-medium transition-colors duration-[250ms] [transition-timing-function:var(--ease-out-expo)]">
+					{playbook.title}
+					{#if playbook.isDraft}<span class="text-warning border-warning/40 ml-2 rounded-full border px-2 py-0.5 align-middle text-[0.625rem] font-semibold uppercase tracking-wider">Draft</span>{/if}
+				</h2>
 				<div class="text-base-content/50 group-hover:text-accent hidden -translate-x-2 opacity-0 transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover:translate-x-0 group-hover:opacity-100 sm:block">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

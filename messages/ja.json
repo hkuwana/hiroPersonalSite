@@ -4,6 +4,7 @@
 	"nav_essays": "エッセイ",
 	"nav_playbooks": "実践集",
 	"nav_tools": "ツール",
+	"playbook_translation_pending": "この実践集はまだ翻訳されていません。英語版を表示しています。",
 	"aria_toggle_theme": "テーマ切り替え",
 	"aria_toggle_language": "言語切り替え",
 	"aria_light_mode": "ライトモード",

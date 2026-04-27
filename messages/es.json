@@ -4,6 +4,7 @@
 	"nav_essays": "Ensayos",
 	"nav_playbooks": "Manuales",
 	"nav_tools": "Herramientas",
+	"playbook_translation_pending": "Este manual aún no ha sido traducido — mostrando la versión en inglés.",
 	"aria_toggle_theme": "Cambiar tema",
 	"aria_toggle_language": "Cambiar idioma",
 	"aria_light_mode": "Modo claro",

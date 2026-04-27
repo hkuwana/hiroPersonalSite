@@ -4,6 +4,7 @@
 	"nav_essays": "Essays",
 	"nav_playbooks": "Playbooks",
 	"nav_tools": "Tools",
+	"playbook_translation_pending": "This playbook hasn't been translated yet — showing the English version.",
 	"aria_toggle_theme": "Toggle theme",
 	"aria_toggle_language": "Toggle language",
 	"aria_light_mode": "Light mode",

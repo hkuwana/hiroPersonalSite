@@ -1,5 +1,9 @@
 import { SITE } from '$data/constants';
 
+export type PlaybookLocale = 'en' | 'ja';
+export const PLAYBOOK_LOCALES: PlaybookLocale[] = ['en', 'ja'];
+export const DEFAULT_PLAYBOOK_LOCALE: PlaybookLocale = 'en';
+
 export interface PlaybookMetadata {
 	title: string;
 	date: string;
@@ -10,10 +14,14 @@ export interface PlaybookMetadata {
 	tags?: string[];
 	heroImage?: string;
 	featured?: boolean;
+	summary?: string;
+	steps?: { name: string; text: string }[];
+	totalTime?: string;
 }
 
 export interface Playbook {
 	slug: string;
+	locale: PlaybookLocale;
 	metadata: PlaybookMetadata;
 }
 
@@ -21,31 +29,61 @@ interface PlaybookModule {
 	metadata: PlaybookMetadata;
 }
 
-const modules = import.meta.glob<PlaybookModule>('/src/content/playbooks/*.md', { eager: true });
+const enModules = import.meta.glob<PlaybookModule>('/src/content/playbooks/en/*.md', {
+	eager: true
+});
+const jaModules = import.meta.glob<PlaybookModule>('/src/content/playbooks/ja/*.md', {
+	eager: true
+});
+
+const modulesByLocale: Record<PlaybookLocale, Record<string, PlaybookModule>> = {
+	en: enModules,
+	ja: jaModules
+};
 
 function slugFromPath(path: string): string {
 	return path.split('/').pop()?.replace('.md', '') ?? '';
 }
 
-export interface GetPlaybooksOptions {
-	includeDrafts?: boolean;
+function isValidSlug(slug: string): boolean {
+	return Boolean(slug) && !slug.startsWith('_');
 }
 
+export interface GetPlaybooksOptions {
+	includeDrafts?: boolean;
+	locale?: PlaybookLocale;
+}
+
+/**
+ * Returns playbooks for the given locale, falling back to the default locale
+ * for any slug missing a translation. The returned playbook's `locale` field
+ * tells you which file actually backed it.
+ */
 export function getAllPlaybooks(options: GetPlaybooksOptions = {}): Playbook[] {
-	const { includeDrafts = false } = options;
+	const { includeDrafts = false, locale = DEFAULT_PLAYBOOK_LOCALE } = options;
+
+	// Collect every slug that exists in any locale (so a Japanese visitor can
+	// still see English-only playbooks in the index, falling back gracefully).
+	const allSlugs = new Set<string>();
+	for (const path of Object.keys(enModules)) {
+		const slug = slugFromPath(path);
+		if (isValidSlug(slug)) allSlugs.add(slug);
+	}
+	for (const path of Object.keys(jaModules)) {
+		const slug = slugFromPath(path);
+		if (isValidSlug(slug)) allSlugs.add(slug);
+	}
+
 	const playbooks: Playbook[] = [];
 
-	for (const [path, mod] of Object.entries(modules)) {
-		const slug = slugFromPath(path);
-		if (!slug || slug.startsWith('_')) continue;
+	for (const slug of allSlugs) {
+		const resolved = resolvePlaybook(slug, locale);
+		if (!resolved) continue;
 
-		const metadata = mod.metadata;
-		if (!metadata) continue;
-
-		const status = metadata.status ?? 'published';
+		const status = resolved.metadata.status ?? 'published';
 		if (!includeDrafts && status === 'draft') continue;
 
-		playbooks.push({ slug, metadata });
+		playbooks.push(resolved);
 	}
 
 	playbooks.sort(
@@ -53,6 +91,42 @@ export function getAllPlaybooks(options: GetPlaybooksOptions = {}): Playbook[] {
 	);
 
 	return playbooks;
+}
+
+/**
+ * Resolves a slug to its metadata for the requested locale, falling back
+ * to the default locale if no translation exists. Returns null if the slug
+ * doesn't exist in any locale.
+ */
+export function resolvePlaybook(slug: string, locale: PlaybookLocale): Playbook | null {
+	const tryLocales: PlaybookLocale[] = [locale, DEFAULT_PLAYBOOK_LOCALE];
+	const seen = new Set<PlaybookLocale>();
+
+	for (const loc of tryLocales) {
+		if (seen.has(loc)) continue;
+		seen.add(loc);
+
+		const path = `/src/content/playbooks/${loc}/${slug}.md`;
+		const mod = modulesByLocale[loc][path];
+		if (!mod?.metadata) continue;
+
+		return { slug, locale: loc, metadata: mod.metadata };
+	}
+
+	return null;
+}
+
+/**
+ * Returns the set of locales a slug has translations for. Used to emit
+ * accurate hreflang alternates per page.
+ */
+export function getAvailableLocales(slug: string): PlaybookLocale[] {
+	const available: PlaybookLocale[] = [];
+	for (const loc of PLAYBOOK_LOCALES) {
+		const path = `/src/content/playbooks/${loc}/${slug}.md`;
+		if (modulesByLocale[loc][path]?.metadata) available.push(loc);
+	}
+	return available;
 }
 
 function escapeXml(value: string): string {
@@ -64,6 +138,10 @@ function escapeXml(value: string): string {
 		.replace(/'/g, '&apos;');
 }
 
+/**
+ * RSS items for the default-locale playbooks. Per-locale feeds aren't a
+ * goal yet — readers can switch via the site's language toggle.
+ */
 export function generatePlaybookRssItems(
 	playbooks: Playbook[],
 	siteUrl: string = SITE.url

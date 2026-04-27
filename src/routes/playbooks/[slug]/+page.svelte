@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import * as m from '$lib/paraglide/messages';
+	import { SITE } from '$data/constants';
 
 	let { data } = $props<{ data: PageData }>();
 
@@ -20,6 +21,22 @@
 		month: 'long',
 		day: 'numeric'
 	}));
+
+	const canonicalPath = $derived(
+		data.resolvedLocale === 'en'
+			? `/playbooks/${data.slug}`
+			: `/${data.resolvedLocale}/playbooks/${data.slug}`
+	);
+	const canonicalUrl = $derived(`${SITE.url}${canonicalPath}`);
+
+	function hreflangTagFor(locale: 'en' | 'ja'): string {
+		return locale === 'ja' ? 'ja-JP' : 'en-US';
+	}
+	function urlFor(locale: 'en' | 'ja'): string {
+		return locale === 'en'
+			? `${SITE.url}/playbooks/${data.slug}`
+			: `${SITE.url}/${locale}/playbooks/${data.slug}`;
+	}
 </script>
 
 <svelte:head>
@@ -28,10 +45,15 @@
 	<meta property="og:title" content={data.title} />
 	<meta property="og:description" content={data.description} />
 	<meta property="og:type" content="article" />
-	<meta property="og:url" content="https://hirokuwana.com/playbooks/{data.slug}" />
+	<meta property="og:url" content={canonicalUrl} />
 	<meta property="article:published_time" content={data.date} />
 	<meta property="article:author" content="Hiro Kuwana" />
-	<link rel="canonical" href="https://hirokuwana.com/playbooks/{data.slug}" />
+	<link rel="canonical" href={canonicalUrl} />
+
+	{#each data.availableLocales as availableLocale}
+		<link rel="alternate" hreflang={hreflangTagFor(availableLocale)} href={urlFor(availableLocale)} />
+	{/each}
+	<link rel="alternate" hreflang="x-default" href="{SITE.url}/playbooks/{data.slug}" />
 
 	{@html `<script type="application/ld+json">
 		{
@@ -40,6 +62,7 @@
 			"headline": "${data.title}",
 			"description": "${data.description}",
 			"datePublished": "${data.date}",
+			"inLanguage": "${hreflangTagFor(data.resolvedLocale)}",
 			"author": {
 				"@type": "Person",
 				"name": "Hiro Kuwana",
@@ -51,7 +74,7 @@
 			},
 			"mainEntityOfPage": {
 				"@type": "WebPage",
-				"@id": "https://hirokuwana.com/playbooks/${data.slug}"
+				"@id": "${canonicalUrl}"
 			}
 		}
 	</script>`}
@@ -70,6 +93,12 @@
 			</svg>
 			<span>{m.nav_playbooks()}</span>
 		</a>
+
+		{#if data.fellBack}
+			<aside class="bg-base-200 border-base-content/10 mb-6 rounded-xl border px-4 py-3 text-sm text-base-content/70" role="note">
+				{m.playbook_translation_pending()}
+			</aside>
+		{/if}
 
 		<h1 class="text-primary m-0 mb-4 text-[clamp(1.75rem,5vw,2.5rem)] font-bold leading-[1.2] tracking-[-0.02em]">{data.title}</h1>
 		<time datetime={data.date} class="text-base-content/50 block text-[0.9375rem]">{formattedDate}</time>
