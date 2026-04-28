@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Socials from '$lib/components/socials.svelte';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import LanguageToggle from '$lib/components/LanguageToggle.svelte';
@@ -10,19 +10,19 @@
 <header class="header">
 	<div class="header-inner">
 		<nav class="nav">
-			<a href={localizeHref('/')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname === '/' || String($page.url.pathname) === '/ja'}>
+			<a href={localizeHref('/')} class="nav-link text-secondary hover:text-primary" class:active={page.url.pathname === '/' || String(page.url.pathname) === '/ja'}>
 				{m.nav_home()}
 			</a>
 			<span class="nav-divider"></span>
-			<a href={localizeHref('/essays')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/essays') || $page.url.pathname.startsWith('/ja/essays')}>
+			<a href={localizeHref('/essays')} class="nav-link text-secondary hover:text-primary" class:active={page.url.pathname.startsWith('/essays') || page.url.pathname.startsWith('/ja/essays')}>
 				{m.nav_essays()}
 			</a>
 			<span class="nav-divider"></span>
-			<a href={localizeHref('/playbooks')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/playbooks') || $page.url.pathname.startsWith('/ja/playbooks')}>
+			<a href={localizeHref('/playbooks')} class="nav-link text-secondary hover:text-primary" class:active={page.url.pathname.startsWith('/playbooks') || page.url.pathname.startsWith('/ja/playbooks')}>
 				{m.nav_playbooks()}
 			</a>
 			<span class="nav-divider"></span>
-			<a href={localizeHref('/#tools')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/ics-validator') || $page.url.pathname.startsWith('/ja/ics-validator') || $page.url.pathname.startsWith('/vcf-splitter') || $page.url.pathname.startsWith('/ja/vcf-splitter')}>
+			<a href={localizeHref('/#tools')} class="nav-link text-secondary hover:text-primary" class:active={page.url.pathname.startsWith('/ics-validator') || page.url.pathname.startsWith('/ja/ics-validator') || page.url.pathname.startsWith('/vcf-splitter') || page.url.pathname.startsWith('/ja/vcf-splitter')}>
 				{m.nav_tools()}
 			</a>
 		</nav>

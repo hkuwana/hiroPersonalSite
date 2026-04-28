@@ -20,6 +20,8 @@
 		"@iconify/tailwind": "^1.2.0",
 		"@inlang/cli": "^3.1.4",
 		"@inlang/paraglide-js": "2.1.0",
+		"@inlang/plugin-m-function-matcher": "^2.2.5",
+		"@inlang/plugin-message-format": "^4.4.0",
 		"@sveltejs/adapter-static": "^3.0.8",
 		"@sveltejs/kit": "^2.50.1",
 		"@sveltejs/vite-plugin-svelte": "^5.1.1",
