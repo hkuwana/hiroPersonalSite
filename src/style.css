@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './lib/styles/prose.css';
 @plugin "daisyui" {
 	themes: caramellatte --default, dim;
 }

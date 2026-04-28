@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import * as m from '$lib/paraglide/messages';
 	import FlagIcon from '$lib/components/FlagIcon.svelte';
 
 	const currentLang = $derived(getLocale());
-	const currentPath = $derived($page.url.pathname);
+	const currentPath = $derived(page.url.pathname);
 
 	const languages = [
 		{ code: 'en', label: 'EN', name: 'English', flagCode: 'us' },
