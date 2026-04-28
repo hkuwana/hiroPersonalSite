@@ -207,7 +207,7 @@ Append to run_log.md:
 
 A few notes on what makes this prompt work:
 
-- **Hard time budgets are non-negotiable.** "2~3 minutes per lead" + "ONE WebSearch" + "Never spend more than 3 minutes" prevents the model from rabbit-holing on a single interesting lead. The whole run finishes before the 2 AM outreach agent picks up.
+- **Hard time budgets prevent rabbit holes.** "2~3 minutes per lead" + "ONE WebSearch" + "Never spend more than 3 minutes" prevents the model from rabbit-holing on a single interesting lead. The whole run finishes before the 2 AM outreach agent picks up.
 - **Resumability is built in.** The agent reads `run_log.md` to find the last Preply page scraped and starts from the next one. If last night errored, tonight just continues.
 - **The agent never writes pitch copy.** `Pitch Angle: LEAVE BLANK` is the firewall. Collection writes facts. Drafting writes voice. Different jobs, different agents.
 - **Dedup before navigation.** Loading existing Preply IDs first means the agent never wastes 30 seconds opening a profile we already have.
@@ -236,7 +236,7 @@ The pattern in every successful thread: I said something specific that no templa
 
 ## The Anti-Pattern: Removing the Human
 
-Here is the part most people get wrong, and the reason most "AI cold email" stacks have terrible reply rates: **the second you automate end-to-end, the magic dies.**
+Most "AI cold email" stacks have terrible reply rates for one reason: **the second you automate end-to-end, the magic dies.**
 
 Cold outreach isn't only email anyway. The same loop runs across Instagram DMs, LinkedIn, TikTok, and whatever channel your customer actually lives on. Email is just one surface. The medium isn't the moat.
 
@@ -260,8 +260,6 @@ This is also why I think most "I automated my entire sales pipeline" posts are n
 - **$0/month in sales SaaS.** Down from ~$1,000/month in tools and contractor fees a year ago.
 
 ## Where This Breaks
-
-I want to be honest about the limits, because most playbooks won't tell you:
 
 - **The agent fails. Often enough to plan for it.** My collection task has run 9 of the last 10 nights: one Skipped, one Errored. The reason this is fine and not a crisis is that the prompt resumes from `run_log.md`. Build for failure or you'll wake up to a panic, not a list.
 - **It doesn't work if your offer is bad.** No prompt fixes a vague pitch. The morning approval step is where you'll feel this: if every draft sounds generic, the problem is upstream of the model.
