@@ -1,7 +1,7 @@
 ---
 title: "I Stopped Outsourcing Lead Research. My Reply Rate Went Up."
 date: "2026-04-25"
-description: "How two sleeping Claude agents find my leads while I sleep, and why I still send every email myself. The full prompt, the full architecture, 8-10 hours a week."
+description: "How two sleeping Claude agents find my leads while I sleep, and why I still send every email myself. The full prompt, the full architecture, 8~10 hours a week."
 status: "published"
 category: "automation"
 ---
@@ -27,20 +27,20 @@ That's it. No Apollo, no Instantly, no Smartlead, no lemlist. I'm not against th
 
 Most "AI cold email" stacks bundle everything into one giant agent that scrapes, writes, and sends. That's where they go wrong. I split the work into two scheduled tasks that communicate through a CSV file:
 
-- **11 PM: Collection agent.** Scouts new Japanese tutor profiles on Preply (and iTalki if Preply runs short), enriches each one with one WebSearch and a personal-site visit, writes a row to `Kaiwa_Leads.csv`. Strict 2-3 minute budget per lead. Target: 60-80 new leads per night.
+- **11 PM: Collection agent.** Scouts new Japanese tutor profiles on Preply (and iTalki if Preply runs short), enriches each one with one WebSearch and a personal-site visit, writes a row to `Kaiwa_Leads.csv`. Strict 2~3 minute budget per lead. Target: 60~80 new leads per night.
 - **2 AM: Outreach agent.** Picks up the CSV, drafts a personalized first-touch message for each lead with `Pitch Angle` filled in. Writes drafts to a queue. **It does not send.**
 
 Why two agents instead of one? Three reasons:
 
 1. **Separation of concerns.** Collection is a research task. Drafting is a writing task. They fail differently and need different prompts. Bundling them turns one agent into a slow, brittle generalist.
 2. **Resumability.** The collection run logs the last Preply page it scraped. If a run errors out (and it does, see below), the next night picks up where it left off. The outreach run is independent.
-3. **Cost predictability.** A 2-3 minute hard budget per lead, capped at 80 leads, means I know exactly what a night costs in tokens.
+3. **Cost predictability.** A 2~3 minute hard budget per lead, capped at 80 leads, means I know exactly what a night costs in tokens.
 
 This split is the actual playbook. If you take one thing from this post, take the split.
 
 ## The Morning Ritual
 
-When I wake up, the work is already done. My job is review-and-send, 60-90 minutes:
+When I wake up, the work is already done. My job is review-and-send, 60~90 minutes:
 
 1. Check the **collection run log**: how many new leads, how many errors, did it skip a night.
 2. Open the **outreach drafts**: read each one, check that the personalization is actually about *that person* and not a hallucination from a thin profile.
@@ -207,7 +207,7 @@ Append to run_log.md:
 
 A few notes on what makes this prompt work:
 
-- **Hard time budgets are non-negotiable.** "2-3 minutes per lead" + "ONE WebSearch" + "Never spend more than 3 minutes" prevents the model from rabbit-holing on a single interesting lead. The whole run finishes before the 2 AM outreach agent picks up.
+- **Hard time budgets are non-negotiable.** "2~3 minutes per lead" + "ONE WebSearch" + "Never spend more than 3 minutes" prevents the model from rabbit-holing on a single interesting lead. The whole run finishes before the 2 AM outreach agent picks up.
 - **Resumability is built in.** The agent reads `run_log.md` to find the last Preply page scraped and starts from the next one. If last night errored, tonight just continues.
 - **The agent never writes pitch copy.** `Pitch Angle: LEAVE BLANK` is the firewall. Collection writes facts. Drafting writes voice. Different jobs, different agents.
 - **Dedup before navigation.** Loading existing Preply IDs first means the agent never wastes 30 seconds opening a profile we already have.
@@ -254,9 +254,9 @@ This is also why I think most "I automated my entire sales pipeline" posts are n
 ## The Numbers
 
 - **200 messages per week** across channels.
-- **50-60 net-new qualified leads** added to the list each week.
+- **50~60 net-new qualified leads** added to the list each week.
 - **20%+ reply rate** on cold (I should be careful with this number; see note in draft about reconciling it with the 37% open rate already on the site).
-- **8-10 hours of my time per week**, almost all of it in the morning.
+- **8~10 hours of my time per week**, almost all of it in the morning.
 - **$0/month in sales SaaS.** Down from ~$1,000/month in tools and contractor fees a year ago.
 
 ## Where This Breaks
@@ -265,7 +265,7 @@ I want to be honest about the limits, because most playbooks won't tell you:
 
 - **The agent fails. Often enough to plan for it.** My collection task has run 9 of the last 10 nights: one Skipped, one Errored. The reason this is fine and not a crisis is that the prompt resumes from `run_log.md`. Build for failure or you'll wake up to a panic, not a list.
 - **It doesn't work if your offer is bad.** No prompt fixes a vague pitch. The morning approval step is where you'll feel this: if every draft sounds generic, the problem is upstream of the model.
-- **It doesn't work if you can't tolerate being the bottleneck for 60-90 minutes a day.** This is the trade. You spend the time, or you lose the replies.
+- **It doesn't work if you can't tolerate being the bottleneck for 60~90 minutes a day.** This is the trade. You spend the time, or you lose the replies.
 - **It doesn't work past a certain volume without a real team.** I don't know where that ceiling is yet, but I'm sure it's lower than the VC-funded "AI SDR" pitch decks claim.
 - **It assumes you have something worth saying.** If you don't, fix that first.
 
