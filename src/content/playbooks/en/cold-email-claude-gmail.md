@@ -1,7 +1,7 @@
 ---
 title: "I Stopped Outsourcing Lead Research. My Reply Rate Went Up."
 date: "2026-04-25"
-description: "How two sleeping Claude agents find my leads while I sleep, and why I still send every email myself. The full prompt, the full architecture, 8–10 hours a week."
+description: "How two sleeping Claude agents find my leads while I sleep, and why I still send every email myself. The full prompt, the full architecture, 8-10 hours a week."
 status: "published"
 category: "automation"
 ---
@@ -17,35 +17,35 @@ This is the first in a series of practical posts on how I'm running my one-perso
 You need four things:
 
 1. **Gmail.** Whatever you already have.
-2. **[Claude](https://claude.ai) with scheduled tasks** — the Claude.ai feature that lets a prompt run on a recurring schedule (mine runs nightly at 11 PM).
-3. **The Claude-in-Chrome browser tools** so the agent can actually navigate Preply, search the web, and pull contact info. The prompt below uses `mcp__Claude_in_Chrome__*` tools — `tabs_context_mcp`, `get_page_text`, `find`. No system-level approval needed.
+2. **[Claude](https://claude.ai) with scheduled tasks**, the Claude.ai feature that lets a prompt run on a recurring schedule (mine runs nightly at 11 PM).
+3. **The Claude-in-Chrome browser tools** so the agent can actually navigate Preply, search the web, and pull contact info. The prompt below uses `mcp__Claude_in_Chrome__*` tools: `tabs_context_mcp`, `get_page_text`, `find`. No system-level approval needed.
 4. **A list of where your customers actually are.** For [Kaiwa](https://www.trykaiwa.com/), that's Japanese-language tutors on [Preply](https://preply.com/en/online/japanese-tutors) and [italki](https://www.italki.com/en/teachers/japanese). Public profiles. The agent reads them like a person would.
 
 That's it. No Apollo, no Instantly, no Smartlead, no lemlist. I'm not against those tools; I just don't need them, and the $250 a week I used to spend on a VA finding leads for me is now $0.
 
 ## Architecture: Two Sleeping Agents
 
-Most "AI cold email" stacks bundle everything into one giant agent that scrapes, writes, and sends. That's where they go wrong. I split the work into two scheduled tasks that don't talk to each other directly — they communicate through a CSV file:
+Most "AI cold email" stacks bundle everything into one giant agent that scrapes, writes, and sends. That's where they go wrong. I split the work into two scheduled tasks that communicate through a CSV file:
 
-- **11 PM: Collection agent.** Scouts new Japanese tutor profiles on Preply (and iTalki if Preply runs short), enriches each one with one WebSearch and a personal-site visit, writes a row to `Kaiwa_Leads.csv`. Strict 2–3 minute budget per lead. Target: 60–80 new leads per night.
+- **11 PM: Collection agent.** Scouts new Japanese tutor profiles on Preply (and iTalki if Preply runs short), enriches each one with one WebSearch and a personal-site visit, writes a row to `Kaiwa_Leads.csv`. Strict 2-3 minute budget per lead. Target: 60-80 new leads per night.
 - **2 AM: Outreach agent.** Picks up the CSV, drafts a personalized first-touch message for each lead with `Pitch Angle` filled in. Writes drafts to a queue. **It does not send.**
 
 Why two agents instead of one? Three reasons:
 
 1. **Separation of concerns.** Collection is a research task. Drafting is a writing task. They fail differently and need different prompts. Bundling them turns one agent into a slow, brittle generalist.
-2. **Resumability.** The collection run logs the last Preply page it scraped. If a run errors out (and it does — see below), the next night picks up where it left off. The outreach run is independent.
-3. **Cost predictability.** A 2–3 minute hard budget per lead, capped at 80 leads, means I know exactly what a night costs in tokens.
+2. **Resumability.** The collection run logs the last Preply page it scraped. If a run errors out (and it does, see below), the next night picks up where it left off. The outreach run is independent.
+3. **Cost predictability.** A 2-3 minute hard budget per lead, capped at 80 leads, means I know exactly what a night costs in tokens.
 
 This split is the actual playbook. If you take one thing from this post, take the split.
 
 ## The Morning Ritual
 
-When I wake up, the work is already done. My job is review-and-send, 60–90 minutes:
+When I wake up, the work is already done. My job is review-and-send, 60-90 minutes:
 
-1. Check the **collection run log** — how many new leads, how many errors, did it skip a night.
-2. Open the **outreach drafts** — read each one, check that the personalization is actually about *that person* and not a hallucination from a thin profile.
+1. Check the **collection run log**: how many new leads, how many errors, did it skip a night.
+2. Open the **outreach drafts**: read each one, check that the personalization is actually about *that person* and not a hallucination from a thin profile.
 3. **Approve, edit, or reject.** Send the ones I approve. Send nothing I haven't read.
-4. Check **yesterday's sent folder** — who replied? Move them out of the cold queue and into the human-touch queue (Loom, time suggestion, follow-up resource).
+4. Check **yesterday's sent folder**: who replied? Move them out of the cold queue and into the human-touch queue (Loom, time suggestion, follow-up resource).
 
 Step 3 is the whole point. Every email goes out under my eyes. Not because I don't trust the model, but because the moment I let it autopilot, the replies dry up. More on that below.
 
@@ -213,15 +213,15 @@ A few notes on what makes this prompt work:
 - **Dedup before navigation.** Loading existing Preply IDs first means the agent never wastes 30 seconds opening a profile we already have.
 - **Priority + downgrade rule.** A-priority tutors with no external presence get downgraded to B, so the outreach agent allocates effort honestly.
 
-The 2 AM outreach generator is a separate prompt — [I'll cover it in detail in part 2 of this series / paste yours here, your call].
+The 2 AM outreach generator is a separate prompt. [I'll cover it in detail in part 2 of this series / paste yours here, your call].
 
 ## The Sequence
 
 Three touches per lead. That's it. After the third, they're out.
 
 1. **Initial email.** Personalized opener that references something specific from their profile. The ask is small.
-2. **Follow-up #1: the dashboard.** I tell them I built them a dashboard — [SPECIFY: what's actually in it. A short Loom? A custom page? A doc with their stats?]. This is the touch that converts. It's also the one I refuse to let a machine do end-to-end, because the whole point is that it's *for them*.
-3. **Follow-up #2: the bump.** Short. "I won't bother you further — just reply if you're curious." That's the whole email. It's the one most people skip and the one that pulls a surprising number of replies.
+2. **Follow-up #1: the dashboard.** I tell them I built them a dashboard: [SPECIFY: what's actually in it. A short Loom? A custom page? A doc with their stats?]. This is the touch that converts. It's also the one I refuse to let a machine do end-to-end, because the whole point is that it's *for them*.
+3. **Follow-up #2: the bump.** Short. "I won't bother you further. Just reply if you're curious." That's the whole email. It's the one most people skip and the one that pulls a surprising number of replies.
 
 ## What a Successful Reply Actually Looks Like
 
@@ -247,25 +247,25 @@ The moat is the part that *doesn't* scale:
 - Suggesting a specific time, in their timezone, when they say yes.
 - Sharing something useful *after* the reply that has nothing to do with selling.
 
-Claude is great at the parts that scale: drafting, personalizing within bounds, keeping the list clean, flagging the ambiguous ones for me. It's terrible at — and shouldn't try to do — the parts where someone needs to feel like a real human cared. If you let the model send without your eyes on it, you're optimizing the wrong half of the loop. You'll get more volume and fewer replies.
+Claude is great at the parts that scale: drafting, personalizing within bounds, keeping the list clean, flagging the ambiguous ones for me. It's bad at the parts where someone needs to feel like a real human cared, and it shouldn't try. If you let the model send without your eyes on it, you're optimizing the wrong half of the loop. You'll get more volume and fewer replies.
 
 This is also why I think most "I automated my entire sales pipeline" posts are nonsense. They're optimizing for hours saved at the cost of the only thing that actually closes.
 
 ## The Numbers
 
 - **200 messages per week** across channels.
-- **50–60 net-new qualified leads** added to the list each week.
-- **20%+ reply rate** on cold (I should be careful with this number — see note in draft about reconciling it with the 37% open rate already on the site).
-- **8–10 hours of my time per week**, almost all of it in the morning.
+- **50-60 net-new qualified leads** added to the list each week.
+- **20%+ reply rate** on cold (I should be careful with this number; see note in draft about reconciling it with the 37% open rate already on the site).
+- **8-10 hours of my time per week**, almost all of it in the morning.
 - **$0/month in sales SaaS.** Down from ~$1,000/month in tools and contractor fees a year ago.
 
 ## Where This Breaks
 
 I want to be honest about the limits, because most playbooks won't tell you:
 
-- **The agent fails. Often enough to plan for it.** My collection task has run 9 of the last 10 nights — one Skipped, one Errored. The reason this is fine and not a crisis is that the prompt resumes from `run_log.md`. Build for failure or you'll wake up to a panic, not a list.
-- **It doesn't work if your offer is bad.** No prompt fixes a vague pitch. The morning approval step is where you'll feel this — if every draft sounds generic, the problem is upstream of the model.
-- **It doesn't work if you can't tolerate being the bottleneck for 60–90 minutes a day.** This is the trade. You spend the time, or you lose the replies.
+- **The agent fails. Often enough to plan for it.** My collection task has run 9 of the last 10 nights: one Skipped, one Errored. The reason this is fine and not a crisis is that the prompt resumes from `run_log.md`. Build for failure or you'll wake up to a panic, not a list.
+- **It doesn't work if your offer is bad.** No prompt fixes a vague pitch. The morning approval step is where you'll feel this: if every draft sounds generic, the problem is upstream of the model.
+- **It doesn't work if you can't tolerate being the bottleneck for 60-90 minutes a day.** This is the trade. You spend the time, or you lose the replies.
 - **It doesn't work past a certain volume without a real team.** I don't know where that ceiling is yet, but I'm sure it's lower than the VC-funded "AI SDR" pitch decks claim.
 - **It assumes you have something worth saying.** If you don't, fix that first.
 
@@ -277,7 +277,7 @@ The question isn't "how do I automate cold email?" It's "which parts of cold out
 
 ## Coming Next in This Series
 
-- **The 2 AM outreach prompt.** How the second agent reads the CSV and writes a pitch angle for each lead — without sounding like a bot.
+- **The 2 AM outreach prompt.** How the second agent reads the CSV and writes a pitch angle for each lead, without sounding like a bot.
 - **Contact cards that don't break.** Using AI to clean up a messy `.vcf` and re-import it cleanly with the [VCF Splitter](/vcf-splitter).
 - **From screenshot to calendar invite.** Snap a picture of an event, get an AI-generated `.ics`, run it through the [ICS Validator](/ics-validator), drop it on Google Calendar.
 - More to come as I keep removing tools from my stack.

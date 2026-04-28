@@ -66,7 +66,7 @@ For example, say we have 4 states: Visitor, Free User, Paid User, and General Au
 <Mermaid chart={mermaidChart} />
 
 
-The thing that makes this useful is that every part of the customer lifecycle is a **state** — general audience, site visitor, free user, paid user, churned — and people move between them in *every* direction. Not just down.
+The thing that makes this useful is that every part of the customer lifecycle is a **state** (general audience, site visitor, free user, paid user, churned) and people move between them in *every* direction. Not just down.
 
 A paid user goes back to free. A free user upgrades. A paid user refunds and goes back to being a free user, or even fully churns back to the general audience.
 
@@ -78,7 +78,7 @@ I've had free users who have churned, come back to try the product again, and th
 
 ## The Cost of Transition
 
-The most important part is combining these states with price variables. Most people just look at percentages — "we convert 5% of free to paid." Okay. But what does it cost to change that number?
+The most important part is combining these states with price variables. Most people just look at percentages: "we convert 5% of free to paid." Okay. But what does it cost to change that number?
 
 What if we could combine every single Markov chain transition as a function, where the input is the amount of resources needed to increase that transition rate, and the output directly affects the equilibrium of the whole system?
 
@@ -102,7 +102,7 @@ The math is all there to calculate the cost of acquisition or lifetime value fro
 
 ## Building an Engine, Not a Funnel
 
-I keep coming back to this: **I'm not building a funnel.** A funnel is a passive shape that needs volume poured into the top. I'm building an engine — loops where each transition feeds the others.
+**I'm not building a funnel.** A funnel is a passive shape that needs volume poured into the top. I'm building an engine: loops where each transition feeds the others.
 
 I don't have all the numbers yet. But I know the funnel diagram isn't the right map for what's actually happening.
 
