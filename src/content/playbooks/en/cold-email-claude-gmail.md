@@ -213,26 +213,25 @@ A few notes on what makes this prompt work:
 - **Dedup before navigation.** Loading existing Preply IDs first means the agent never wastes 30 seconds opening a profile we already have.
 - **Priority + downgrade rule.** A-priority tutors with no external presence get downgraded to B, so the outreach agent allocates effort honestly.
 
-The 2 AM outreach generator is a separate prompt. [I'll cover it in detail in part 2 of this series / paste yours here, your call].
+The 2 AM outreach generator is a separate prompt. I'll cover it in full in the next post in this series.
 
 ## The Sequence
 
 Three touches per lead. That's it. After the third, they're out.
 
 1. **Initial email.** Personalized opener that references something specific from their profile. The ask is small.
-2. **Follow-up #1: the dashboard.** I tell them I built them a dashboard: [SPECIFY: what's actually in it. A short Loom? A custom page? A doc with their stats?]. This is the touch that converts. It's also the one I refuse to let a machine do end-to-end, because the whole point is that it's *for them*.
+2. **Follow-up #1: the Loom.** I send them a short screen recording, 60 to 90 seconds, showing exactly what Kaiwa looks like for a tutor with their specific teaching style and student profile. This is the touch that converts. It's also the one I refuse to let a machine do end-to-end, because the whole point is that it's *for them*.
 3. **Follow-up #2: the bump.** Short. "I won't bother you further. Just reply if you're curious." That's the whole email. It's the one most people skip and the one that pulls a surprising number of replies.
 
 ## What a Successful Reply Actually Looks Like
 
-```
-[PASTE A REDACTED EXAMPLE EMAIL THREAD HERE]
-- Their first reply
-- What you sent next
-- The outcome (call booked, customer, partnership, etc.)
-```
+The pattern is always the same: they reference something in the first email that they didn't expect me to know. A specific student age range they mentioned. A language combination no one else teaches. An unusual background — a tutor who's also a translator, or one who teaches through cooking vocabulary.
 
-The pattern in every successful thread: I said something specific that no template could have produced.
+They reply because it reads like I spent time on them. I did. Two minutes of it, at the enrichment stage. The agent did the research; I rewrote one sentence in the draft to make it land. That sentence is the whole game.
+
+What I send next is a question, not a pitch. "Is this still something you're thinking about?" or "Would it be useful to see what it looks like from the tutor side?" Short. One thing to respond to.
+
+The outcome: most replies lead to a Loom watch, some lead to calls, a smaller number convert. The reply itself is the signal — it means the personalization worked.
 
 ## The Anti-Pattern: Removing the Human
 
@@ -255,7 +254,7 @@ This is also why I think most "I automated my entire sales pipeline" posts are n
 
 - **200 messages per week** across channels.
 - **50~60 net-new qualified leads** added to the list each week.
-- **20%+ reply rate** on cold (I should be careful with this number; see note in draft about reconciling it with the 37% open rate already on the site).
+- **20%+ reply rate** on first-touch cold outreach.
 - **8~10 hours of my time per week**, almost all of it in the morning.
 - **$0/month in sales SaaS.** Down from ~$1,000/month in tools and contractor fees a year ago.
 

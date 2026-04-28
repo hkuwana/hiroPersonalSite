@@ -9,9 +9,11 @@
 	let visible = $state(false);
 
 	onMount(() => {
-		requestAnimationFrame(() => {
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 			visible = true;
-		});
+		} else {
+			requestAnimationFrame(() => { visible = true; });
+		}
 	});
 
 	const locale = $derived(getLocale());
@@ -19,6 +21,17 @@
 		year: 'numeric',
 		month: 'long',
 		day: 'numeric'
+	}));
+
+	const jsonLd = $derived(JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'Article',
+		headline: data.title,
+		description: data.description,
+		datePublished: data.date,
+		author: { '@type': 'Person', name: 'Hiro Kuwana', url: 'https://hirokuwana.com' },
+		publisher: { '@type': 'Person', name: 'Hiro Kuwana' },
+		mainEntityOfPage: { '@type': 'WebPage', '@id': `https://hirokuwana.com/essays/${data.slug}` }
 	}));
 </script>
 
@@ -32,177 +45,41 @@
 	<meta property="article:published_time" content={data.date} />
 	<meta property="article:author" content="Hiro Kuwana" />
 	<link rel="canonical" href="https://hirokuwana.com/essays/{data.slug}" />
-
-	<!-- Article structured data -->
-	{@html `<script type="application/ld+json">
-		{
-			"@context": "https://schema.org",
-			"@type": "Article",
-			"headline": "${data.title}",
-			"description": "${data.description}",
-			"datePublished": "${data.date}",
-			"author": {
-				"@type": "Person",
-				"name": "Hiro Kuwana",
-				"url": "https://hirokuwana.com"
-			},
-			"publisher": {
-				"@type": "Person",
-				"name": "Hiro Kuwana"
-			},
-			"mainEntityOfPage": {
-				"@type": "WebPage",
-				"@id": "https://hirokuwana.com/essays/${data.slug}"
-			}
-		}
-	</script>`}
+	{@html `<script type="application/ld+json">${jsonLd}</script>`}
 </svelte:head>
 
 <article
-	class="essay-page mx-auto max-w-[680px] px-6 pt-8 pb-16 transition-all duration-[600ms] [transition-timing-function:var(--ease-out-expo)] sm:px-8 sm:pt-12 sm:pb-24 {visible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}"
+	class="mx-auto max-w-[680px] px-6 pt-8 pb-16 transition-all duration-[600ms] [transition-timing-function:var(--ease-out-expo)] sm:px-8 sm:pt-12 sm:pb-24 {visible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}"
 >
 	<header class="mb-12">
 		<a
 			href={localizeHref('/essays')}
 			class="group/back text-secondary hover:text-accent mb-8 inline-flex items-center gap-2 text-sm font-medium no-underline transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)]"
 		>
-			<svg class="transition-transform duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover/back:-translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none">
+			<svg aria-hidden="true" class="transition-transform duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover/back:-translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<span>Essays</span>
+			<span>{m.nav_essays()}</span>
 		</a>
 
 		<h1 class="text-primary m-0 mb-4 text-[clamp(1.75rem,5vw,2.5rem)] font-bold leading-[1.2] tracking-[-0.02em]">{data.title}</h1>
 		<time datetime={data.date} class="text-base-content/50 block text-[0.9375rem]">{formattedDate}</time>
 	</header>
 
-	<div class="essay-content text-base-content/70 text-base leading-[1.8] sm:text-[1.0625rem]">
+	<div class="prose-content text-base-content/70 text-base leading-[1.8] sm:text-[1.0625rem]">
 		<data.content />
 	</div>
 
 	<footer class="mt-16">
-		<div class="from-accent to-secondary mb-8 h-[3px] w-[60px] rounded-sm bg-gradient-to-r"></div>
+		<hr class="border-base-content/10 mb-8 border-t" />
 		<a
-			href="/essays"
+			href={localizeHref('/essays')}
 			class="group/back text-secondary hover:text-accent inline-flex items-center gap-2 text-[0.9375rem] font-medium no-underline transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)]"
 		>
-			<svg class="transition-transform duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover/back:-translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none">
+			<svg aria-hidden="true" class="transition-transform duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover/back:-translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
 			<span>{m.nav_essays()}</span>
 		</a>
 	</footer>
 </article>
-
-<style>
-	/* Markdown content styling — applied to mdsvex output that has no class control. */
-	.essay-content :global(p) {
-		margin-bottom: 1.5rem;
-	}
-
-	.essay-content :global(h2) {
-		font-size: 1.375rem;
-		font-weight: 600;
-		margin-top: 3rem;
-		margin-bottom: 1rem;
-		color: oklch(var(--bc));
-		letter-spacing: -0.02em;
-	}
-
-	.essay-content :global(h3) {
-		font-size: 1.125rem;
-		font-weight: 600;
-		margin-top: 2.5rem;
-		margin-bottom: 0.75rem;
-		color: oklch(var(--bc));
-	}
-
-	.essay-content :global(ul),
-	.essay-content :global(ol) {
-		margin-bottom: 1.5rem;
-		padding-left: 1.5rem;
-	}
-
-	.essay-content :global(li) {
-		margin-bottom: 0.5rem;
-	}
-
-	.essay-content :global(blockquote) {
-		margin: 2rem 0;
-		padding: 1.5rem 1.5rem 1.5rem 2rem;
-		background: oklch(var(--b2));
-		border-left: 3px solid oklch(var(--a));
-		border-radius: 0 0.75rem 0.75rem 0;
-		color: oklch(var(--bc));
-		font-style: italic;
-	}
-
-	.essay-content :global(blockquote p:last-child) {
-		margin-bottom: 0;
-	}
-
-	.essay-content :global(code) {
-		font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-		font-size: 0.875em;
-		background: oklch(var(--b2));
-		padding: 0.2em 0.4em;
-		border-radius: 0.375rem;
-		color: oklch(var(--bc));
-	}
-
-	.essay-content :global(pre) {
-		background: oklch(var(--b2));
-		padding: 1.25rem;
-		border-radius: 0.75rem;
-		overflow-x: auto;
-		margin-bottom: 1.5rem;
-	}
-
-	.essay-content :global(pre code) {
-		background: none;
-		padding: 0;
-	}
-
-	.essay-content :global(a) {
-		color: oklch(var(--a));
-		text-decoration: underline;
-		text-underline-offset: 2px;
-		transition: opacity var(--duration-fast) var(--ease-out-expo);
-	}
-
-	.essay-content :global(a:hover) {
-		opacity: 0.8;
-	}
-
-	.essay-content :global(strong) {
-		font-weight: 600;
-		color: oklch(var(--bc));
-	}
-
-	.essay-content :global(em) {
-		font-style: italic;
-	}
-
-	.essay-content :global(hr) {
-		border: none;
-		height: 1px;
-		background: oklch(var(--bc) / 0.1);
-		margin: 3rem 0;
-	}
-
-	.essay-content :global(img) {
-		max-width: 100%;
-		height: auto;
-		border-radius: 0.75rem;
-		margin: 2rem 0;
-	}
-
-	@media (min-width: 641px) {
-		.essay-content :global(h2) {
-			font-size: 1.5rem;
-		}
-		.essay-content :global(h3) {
-			font-size: 1.25rem;
-		}
-	}
-</style>

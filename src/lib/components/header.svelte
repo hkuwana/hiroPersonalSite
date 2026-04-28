@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
 	import Socials from '$lib/components/socials.svelte';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
