@@ -1,14 +1,14 @@
 ---
 title: "I Stopped Outsourcing Lead Research. My Reply Rate Went Up."
 date: "2026-04-25"
-description: "How two sleeping Claude agents find my leads while I sleep — and why I still send every email myself. The full prompt, the full architecture, 8–10 hours a week."
+description: "How two sleeping Claude agents find my leads while I sleep, and why I still send every email myself. The full prompt, the full architecture, 8–10 hours a week."
 status: "published"
 category: "automation"
 ---
 
 I used to pay someone on Upwork $250 a week to find leads for me. I stopped. My reply rate went up.
 
-That sentence sounds like a LinkedIn brag, but it's not the lesson. The lesson is the opposite of what people expect: I didn't get better results by automating *more*. I got better results by being the human in the loop *later* in the process. Two Claude agents do the boring work between 11 PM and 2 AM while I sleep. I do the thing they can't — read, edit, hit send, follow up like a person — when I wake up. The tools I use are almost beside the point. What matters is which parts I let a machine touch and which parts I refuse to.
+That sentence sounds like a LinkedIn brag, but it's not the lesson. The lesson is the opposite of what people expect: I didn't get better results by automating *more*. I got better results by being the human in the loop *later* in the process. Two Claude agents do the boring work between 11 PM and 2 AM while I sleep. I do the things they can't: read, edit, hit send, follow up like a person. The tools I use are almost beside the point. What matters is which parts I let a machine touch and which parts I refuse to.
 
 This is the first in a series of practical posts on how I'm running my one-person company without paying for tools that pretend to replace judgment. Future posts will cover [contact card cleanup with my VCF tool](/vcf-splitter), [turning a screenshot of an event into a Google Calendar invite with the ICS validator](/ics-validator), and other small loops I use every week.
 
@@ -27,8 +27,8 @@ That's it. No Apollo, no Instantly, no Smartlead, no lemlist. I'm not against th
 
 Most "AI cold email" stacks bundle everything into one giant agent that scrapes, writes, and sends. That's where they go wrong. I split the work into two scheduled tasks that don't talk to each other directly — they communicate through a CSV file:
 
-- **11 PM — Collection agent.** Scouts new Japanese tutor profiles on Preply (and iTalki if Preply runs short), enriches each one with one WebSearch and a personal-site visit, writes a row to `Kaiwa_Leads.csv`. Strict 2–3 minute budget per lead. Target: 60–80 new leads per night.
-- **2 AM — Outreach agent.** Picks up the CSV, drafts a personalized first-touch message for each lead with `Pitch Angle` filled in. Writes drafts to a queue. **It does not send.**
+- **11 PM: Collection agent.** Scouts new Japanese tutor profiles on Preply (and iTalki if Preply runs short), enriches each one with one WebSearch and a personal-site visit, writes a row to `Kaiwa_Leads.csv`. Strict 2–3 minute budget per lead. Target: 60–80 new leads per night.
+- **2 AM: Outreach agent.** Picks up the CSV, drafts a personalized first-touch message for each lead with `Pitch Angle` filled in. Writes drafts to a queue. **It does not send.**
 
 Why two agents instead of one? Three reasons:
 
@@ -271,7 +271,7 @@ I want to be honest about the limits, because most playbooks won't tell you:
 
 ## The Takeaway
 
-I keep coming back to this: the question isn't "how do I automate cold email?" It's "which parts of cold outreach are actually mine to do, and which parts is a machine better at?" Most stacks get that line wrong. They automate the personalization and ask the human to do the volume. I do the opposite. Volume is cheap. Specificity is the whole game.
+The question isn't "how do I automate cold email?" It's "which parts of cold outreach are actually mine to do, and which parts is a machine better at?" Most stacks get that line wrong. They automate the personalization and ask the human to do the volume. I do the opposite. Volume is cheap. Specificity is the whole game.
 
 ---
 
