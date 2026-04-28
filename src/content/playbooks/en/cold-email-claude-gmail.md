@@ -231,7 +231,7 @@ They reply because it reads like I spent time on them. I did. Two minutes of it,
 
 What I send next is a question, not a pitch. "Is this still something you're thinking about?" or "Would it be useful to see what it looks like from the tutor side?" Short. One thing to respond to.
 
-The outcome: most replies come after the magic link — they clicked it, saw their name and language already there, and that was enough to make it real. Some lead to calls. A smaller number convert on the spot. The reply itself is the signal — it means the personalization worked.
+The outcome: most replies come after the magic link. They clicked it, saw their name and language already there, and that was enough to make it real. Some lead to calls. A smaller number convert on the spot. The reply itself is the signal: it means the personalization worked.
 
 ## The Anti-Pattern: Removing the Human
 
@@ -241,7 +241,7 @@ Cold outreach isn't only email anyway. The same loop runs across Instagram DMs, 
 
 The moat is the part that *doesn't* scale:
 
-- A magic link with their data already inside — not a template, their actual profile.
+- A magic link with their data already inside, not a template, their actual profile.
 - Reviewing every link before it goes out, because you can tell when it's wrong.
 - Replying within an hour when someone bites.
 - Suggesting a specific time, in their timezone, when they say yes.
