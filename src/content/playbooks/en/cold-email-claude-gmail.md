@@ -220,7 +220,7 @@ The 2 AM outreach generator is a separate prompt. I'll cover it in full in the n
 Three touches per lead. That's it. After the third, they're out.
 
 1. **Initial email.** Personalized opener that references something specific from their profile. The ask is small.
-2. **Follow-up #1: the Loom.** I send them a short screen recording, 60 to 90 seconds, showing exactly what Kaiwa looks like for a tutor with their specific teaching style and student profile. This is the touch that converts. It's also the one I refuse to let a machine do end-to-end, because the whole point is that it's *for them*.
+2. **Follow-up #1: the magic link.** Before I send this one, I pull the tutor's data from the CSV, their name, language, specialty, lesson count, and ask Claude to generate a personalized Kaiwa URL with their information pre-inserted. When they click it, the app is already configured for them: their language, their student profile, their setup. No account creation friction, no blank slate. It's the touch that converts, and it's the one I refuse to let a machine do end-to-end. I review every link before it goes out, because the whole point is that it's *already theirs* when they arrive.
 3. **Follow-up #2: the bump.** Short. "I won't bother you further. Just reply if you're curious." That's the whole email. It's the one most people skip and the one that pulls a surprising number of replies.
 
 ## What a Successful Reply Actually Looks Like
@@ -231,7 +231,7 @@ They reply because it reads like I spent time on them. I did. Two minutes of it,
 
 What I send next is a question, not a pitch. "Is this still something you're thinking about?" or "Would it be useful to see what it looks like from the tutor side?" Short. One thing to respond to.
 
-The outcome: most replies lead to a Loom watch, some lead to calls, a smaller number convert. The reply itself is the signal — it means the personalization worked.
+The outcome: most replies come after the magic link — they clicked it, saw their name and language already there, and that was enough to make it real. Some lead to calls. A smaller number convert on the spot. The reply itself is the signal — it means the personalization worked.
 
 ## The Anti-Pattern: Removing the Human
 
@@ -241,7 +241,8 @@ Cold outreach isn't only email anyway. The same loop runs across Instagram DMs, 
 
 The moat is the part that *doesn't* scale:
 
-- A personalized Loom video that took you 90 seconds to record.
+- A magic link with their data already inside — not a template, their actual profile.
+- Reviewing every link before it goes out, because you can tell when it's wrong.
 - Replying within an hour when someone bites.
 - Suggesting a specific time, in their timezone, when they say yes.
 - Sharing something useful *after* the reply that has nothing to do with selling.
