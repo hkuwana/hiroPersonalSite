@@ -1,12 +1,15 @@
 ---
-title: "I Stopped Using a CRM the Day I Figured Out This Loop"
+title: "Enrich Your Contacts While You Sleep (Free Claude Workflow)"
 date: "2026-05-01"
-description: "How I turn event photos into fully enriched contacts with company intel before I leave the venue — using Claude, my own VCF Splitter, and zero subscription fees."
+description: "A free three-step workflow to turn event photos into enriched contacts with company intel — using Claude vision, a VCF splitter, and no CRM. Includes the exact prompts."
 status: "draft"
 category: "automation"
+tags: ["contact enrichment", "Claude", "VCF", "automation", "no-CRM"]
 ---
 
-I've met [NUMBER] people at events in the last [TIMEFRAME] without paying for a CRM. Every contact in my iPhone has the date I met them, what we talked about, what their company does, and their funding stage — sitting right in the Notes field, searchable, available offline. I built this loop in one afternoon, and the only ongoing cost is the tokens.
+**The short answer:** photograph business cards at an event, run one Claude prompt to get a structured VCF file, validate and split it with a free browser tool, then run a second prompt (or a scheduled overnight task) to append company descriptions to every contact's Notes field. No Clay, no Apollo subscription, no CRM. Total cost: tokens.
+
+I've met [NUMBER] people at events in the last [TIMEFRAME] without paying for a CRM. Every contact in my iPhone has the date I met them, what we talked about, what their company does, and their funding stage — sitting right in the Notes field, searchable, available offline.
 
 This is the third post in my series on running a one-person company without SaaS subscriptions. The [first post covered overnight lead collection](/playbooks/cold-email-claude-gmail). This one covers the other side: turning the people you actually meet into something more useful than a pile of scanned business cards.
 
@@ -104,6 +107,29 @@ VCF:
 [PASTE YOUR VCF HERE]
 ```
 
+### Optional: Schedule the enrichment to run while you sleep
+
+If you want to literally enrich contacts overnight, set this up as a [Claude scheduled task](https://claude.ai) — the same pattern as the [overnight lead collection agent](/playbooks/cold-email-claude-gmail). Drop your post-event VCF into a staging folder before you go to sleep; the agent enriches it and writes the output to a done folder. You import it with coffee in the morning.
+
+Schedule: **1 AM, triggered manually after event days** (no point running it nightly).
+
+Prepend this to Prompt 2:
+
+```
+You are a scheduled contact enrichment agent. Run file:
+~/Documents/Contacts/staging/[FILENAME].vcf
+
+When done, write the enriched output to:
+~/Documents/Contacts/done/[FILENAME]-enriched.vcf
+
+Append a one-line summary to:
+~/Documents/Contacts/done/enrichment_log.md
+
+Format: ## [DATE] — [N] contacts enriched, [N] skipped (no web presence)
+```
+
+The rest of Prompt 2 stays the same. This takes the enrichment step fully out of your workflow — you just drop a file before bed.
+
 ### Bonus: Google Sheet → VCF (when the organizer sends you the attendee list)
 
 Sometimes you get a spreadsheet instead of business cards. Same idea, different input:
@@ -174,6 +200,31 @@ END:VCARD
 ## The takeaway
 
 Your iPhone Contacts app already has every field a CRM has. The only thing missing was a fast way to fill them. The VCF format has been around since 1995 — Claude just finally makes it easy to use.
+
+---
+
+## FAQ
+
+**How do I automatically enrich contacts with company data for free?**
+Use a two-prompt Claude workflow: the first prompt converts photos or a CSV into a structured VCF file; the second looks up each company and appends a one-sentence description, funding stage, and website to the contact's Notes field. No paid enrichment tool required.
+
+**Can Claude read business cards and turn them into contacts?**
+Yes. Claude's vision model can parse a photo of a business card and output a valid VCF contact block. Accuracy is high on clean, well-lit cards. The prompt in this playbook includes rules that prevent blank fields and hallucinated data.
+
+**What is a VCF file and how do I use it with iPhone Contacts?**
+A VCF (vCard) file is the standard format for contact data — it's what your phone exports when you share a contact. To import a VCF on iPhone: open the file in Files or email, tap it, and iOS will offer to add it to Contacts. For multi-contact VCF files, use a [VCF Splitter](/vcf-splitter) first to pick which contacts you want.
+
+**What is the difference between contact enrichment and contact capture?**
+Capture is turning raw data (a photo, a spreadsheet row) into a structured contact. Enrichment is adding third-party context — company description, headcount, funding — to a contact you already have. This workflow does both: capture first, enrichment second.
+
+**Is there a free alternative to Clay for contact enrichment?**
+For personal use and small batches (under ~50 contacts per event), a Claude prompt with web search or Apollo MCP access does the same job as Clay. The tradeoff: it requires a prompt per batch, not a persistent pipeline. For high-volume B2B enrichment at scale, Clay is the right tool.
+
+**How do I add the date I met someone to an iPhone contact?**
+Use the `X-ABDATE` field in the VCF with `label="Met"`. iOS Contacts recognizes this as a custom date field. The capture prompt in this playbook sets it automatically from the event date you provide.
+
+**Can I enrich contacts from a Google Sheets attendee list?**
+Yes — export the sheet as CSV and use the Google Sheet → VCF prompt in this playbook. Claude converts each row into a VCF block tagged with the event name and date, ready to split and enrich.
 
 ---
 
