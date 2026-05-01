@@ -1,15 +1,15 @@
 ---
-title: "Enrich Your Contacts While You Sleep (Free Claude Workflow)"
+title: "Enrich Your Contacts While You Sleep (Claude + Gemini, No CRM)"
 date: "2026-05-01"
-description: "A free three-step workflow to turn event photos into enriched contacts with company intel — using Claude vision, a VCF splitter, and no CRM. Includes the exact prompts."
+description: "A free three-step workflow to turn event photos into enriched contacts with company intel — using Claude, Gemini, a VCF splitter, and no CRM. 5 minutes per batch of 20 contacts."
 status: "draft"
 category: "automation"
-tags: ["contact enrichment", "Claude", "VCF", "automation", "no-CRM"]
+tags: ["contact enrichment", "Claude", "Gemini", "VCF", "automation", "no-CRM"]
 ---
 
-I've met [NUMBER] people at events in the last [TIMEFRAME] without paying for a CRM. Every contact in my iPhone has the date I met them, what we talked about, what their company does, and their funding stage — in the Notes field, searchable, available offline.
+I've met 85+ people at events in the last week without paying for a CRM. Every contact in my iPhone has the date I met them, what we talked about, what their company does, and their funding stage — in the Notes field, searchable, available offline.
 
-Photograph the business cards, run two prompts, import. The whole thing takes [TIME] for a batch of [NUMBER] contacts.
+Photograph the business cards, run two prompts, import. Five minutes for a batch of 20 contacts from one event.
 
 This is the third post in my series on running a one-person company without SaaS subscriptions. The [first post covered overnight lead collection](/playbooks/cold-email-claude-gmail). This one covers the other side: the people you actually meet.
 
@@ -17,11 +17,11 @@ This is the third post in my series on running a one-person company without SaaS
 
 Three things:
 
-1. **Claude** (claude.ai or the API) — vision capability required for the photo step.
+1. **Claude or Gemini** — either works for both steps. I use both: Gemini for the photo-to-VCF step (strong vision, fast), Claude for enrichment (better at company research and writing clean notes). You don't need both — pick one.
 2. **[VCF Splitter](/vcf-splitter)** — free, runs in your browser, no account. Splits a multi-contact `.vcf` into individual cards you can cherry-pick. Built it for this loop.
 3. **Apollo MCP** (optional) — faster, more reliable company lookups in the enrichment step. A plain web search prompt works without it.
 
-No Clay, no Contacts+, no CRM subscription.
+Total monthly cost: whatever you're already paying for Claude and Gemini. No CRM, no Clay, no Contacts+.
 
 ## How it works
 
@@ -170,11 +170,11 @@ END:VCARD
 
 ## The numbers
 
-- **[NUMBER] contacts enriched** from [NUMBER] events since [DATE]
-- **[TIME] per batch**
-- **$0/month** — no CRM, no enrichment SaaS, no contact-management app
-- Vision parsing accuracy: [YOUR OBSERVATION]
-- Enrichment accuracy: [YOUR OBSERVATION]
+- **85+ contacts enriched** this past week alone
+- **5 minutes per batch of 20 contacts** from a single event
+- **$0/month in CRM software** — only Claude and Gemini, which I'm paying for anyway
+- Vision parsing accuracy: [YOUR OBSERVATION — e.g., "~95% on clean cards"]
+- Enrichment accuracy: [YOUR OBSERVATION — e.g., "company description right ~90% of the time"]
 
 ## Where this breaks
 
@@ -184,7 +184,7 @@ END:VCARD
 
 **NOTE field length.** Very long notes get truncated on some older iOS devices syncing over iCloud. Keep each NOTE under ~1000 characters.
 
-**Not a CRM at volume.** This works for [NUMBER] events per [TIMEFRAME] as a solo operator. Ten events a month with 50+ contacts each needs structured data, not a Notes field.
+**Not a CRM at volume.** This works for the pace I run at — 85+ contacts in a week, spread across a few events. If you're at 10 events a month with 50+ contacts each, you need structured data, not a Notes field.
 
 **Claude vision confuses similar characters.** `l` vs `1`, `0` vs `O` in emails. Always scan email fields before importing.
 
@@ -199,8 +199,8 @@ Your iPhone Contacts app already has every field a CRM has. The VCF format has b
 **How do I automatically enrich contacts with company data for free?**
 Run two Claude prompts: the first converts photos or a CSV into a structured VCF file; the second looks up each company and appends a one-sentence description, funding stage, and website to the Notes field. No paid enrichment tool required.
 
-**Can Claude read business cards and turn them into contacts?**
-Yes. Claude's vision model parses a photo of a business card and outputs a valid VCF contact block. Accuracy is high on clean, well-lit cards. The prompt above includes rules that suppress blank fields and prevent hallucinated data.
+**Can Claude or Gemini read business cards and turn them into contacts?**
+Yes — both work. Gemini's vision is fast and handles bad angles well; Claude produces slightly cleaner structured output. The prompt above works with either. Accuracy is high on clean, well-lit cards; the rules in the prompt suppress blank fields and prevent hallucinated data.
 
 **What is a VCF file and how do I import it to iPhone Contacts?**
 A VCF (vCard) file is the standard format for contact data. To import on iPhone: open the file in Files or email, tap it, and iOS will offer to add it to Contacts. For multi-contact files, use the [VCF Splitter](/vcf-splitter) first to pick which contacts you want.
