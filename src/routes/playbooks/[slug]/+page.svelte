@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import * as m from '$lib/paraglide/messages';
-	import { SITE } from '$data/constants';
+	import { SITE, CONTACT } from '$data/constants';
 
 	let { data } = $props<{ data: PageData }>();
 
@@ -15,6 +15,24 @@
 		} else {
 			requestAnimationFrame(() => { visible = true; });
 		}
+
+		document.querySelectorAll('.prose-content pre').forEach((pre) => {
+			const btn = document.createElement('button');
+			btn.textContent = 'Copy';
+			btn.className = 'copy-btn';
+			btn.addEventListener('click', () => {
+				const text = pre.querySelector('code')?.innerText ?? (pre as HTMLElement).innerText;
+				navigator.clipboard.writeText(text).then(() => {
+					btn.textContent = 'Copied';
+					btn.classList.add('copied');
+					setTimeout(() => {
+						btn.textContent = 'Copy';
+						btn.classList.remove('copied');
+					}, 2000);
+				});
+			});
+			pre.appendChild(btn);
+		});
 	});
 
 	const locale = $derived(getLocale());
@@ -101,6 +119,22 @@
 	</div>
 
 	<footer class="mt-16">
+		<div class="border-base-content/10 bg-base-200 mb-10 rounded-xl border px-6 py-6">
+			<p class="text-base-content mb-1 text-[0.9375rem] font-semibold">Want to run this in your workflow?</p>
+			<p class="text-base-content/60 mb-4 text-sm leading-relaxed">I do short calls to walk through setup for your situation — which tools you already have, how many contacts, what enrichment depth makes sense.</p>
+			<a
+				href={CONTACT.cal}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-base-content bg-base-content/8 hover:bg-base-content/12 inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium no-underline transition-all duration-[200ms]"
+			>
+				Book a 15-minute call
+				<svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="none">
+					<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+				</svg>
+			</a>
+		</div>
+
 		<hr class="border-base-content/10 mb-8 border-t" />
 		<a
 			href={localizeHref('/playbooks')}
