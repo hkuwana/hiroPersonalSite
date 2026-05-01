@@ -58,6 +58,36 @@
 	border-radius: 0.75rem;
 	overflow-x: auto;
 	margin-bottom: 1.5rem;
+	position: relative;
+}
+
+.prose-content .copy-btn {
+	position: absolute;
+	top: 0.625rem;
+	right: 0.625rem;
+	font-size: 0.6875rem;
+	font-family: inherit;
+	font-weight: 500;
+	padding: 0.25rem 0.625rem;
+	border-radius: 0.375rem;
+	background: oklch(var(--bc) / 0.08);
+	color: oklch(var(--bc) / 0.5);
+	border: 1px solid oklch(var(--bc) / 0.1);
+	cursor: pointer;
+	transition: all 150ms ease;
+	line-height: 1.5;
+	letter-spacing: 0.01em;
+}
+
+.prose-content .copy-btn:hover {
+	background: oklch(var(--bc) / 0.13);
+	color: oklch(var(--bc) / 0.75);
+}
+
+.prose-content .copy-btn.copied {
+	color: oklch(0.76 0.17 150);
+	border-color: oklch(0.76 0.17 150 / 0.3);
+	background: oklch(0.76 0.17 150 / 0.08);
 }
 
 .prose-content pre code {
