@@ -8,3 +8,11 @@ declare namespace App {
 	// interface PublicEnv {}
 	// interface Session {}
 }
+
+declare module 'async_hooks' {
+	class AsyncLocalStorage<T> {
+		disable(): void;
+		getStore(): T | undefined;
+		run<R>(store: T, callback: (...args: unknown[]) => R, ...args: unknown[]): R;
+	}
+}

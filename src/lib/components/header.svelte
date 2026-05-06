@@ -1,117 +1,51 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
-	import Socials from '$lib/components/socials.svelte';
-	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-	import LanguageToggle from '$lib/components/LanguageToggle.svelte';
-	import * as m from '$lib/paraglide/messages';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { CONTACT, SOCIAL_LINKS } from '$data/constants';
+	import GitHubIcon from '$lib/svg/socials-github.svelte';
+	import LinkedInIcon from '$lib/svg/socials-linkedin.svelte';
+	import TwitterIcon from '$lib/svg/socials-twitter.svelte';
+	import { deLocalizeHref, getLocale, localizeHref } from '$lib/paraglide/runtime';
+	import ThemeToggle from './ThemeToggle.svelte';
+
+	const lang = $derived(($page.data.locale as 'en' | 'ja' | undefined) ?? getLocale());
+	const baseHref = $derived(deLocalizeHref($page.url.pathname));
+	const enHref = $derived(localizeHref(baseHref || '/', { locale: 'en' }));
+	const jaHref = $derived(localizeHref(baseHref || '/', { locale: 'ja' }));
+	const copy = $derived(
+		lang === 'ja'
+			? { writing: '読みもの', contact: 'お問い合わせ', langTitle: '言語を切り替え' }
+			: { writing: 'Writing', contact: 'Contact', langTitle: 'Switch language' }
+	);
 </script>
 
-<header class="header">
-	<div class="header-inner">
-		<nav class="nav">
-			<a href={localizeHref('/')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname === '/' || $page.url.pathname === '/ja'}>
-				{m.nav_home()}
-			</a>
-			<span class="nav-divider"></span>
-			<a href={localizeHref('/essays')} class="nav-link text-secondary hover:text-primary" class:active={$page.url.pathname.startsWith('/essays') || $page.url.pathname.startsWith('/ja/essays')}>
-				{m.nav_essays()}
-			</a>
-		</nav>
+<header class="nav">
+	<a href={localizeHref('/', { locale: lang })} class="wordmark" aria-label="Hiro Kuwana home">
+		<span class="kanji">浩</span>
+		<span class="name">Hiro</span>
+		<em>Kuwana</em>
+	</a>
 
-		<div class="socials-wrapper">
-			<ThemeToggle />
-			<span class="toggle-divider"></span>
-			<LanguageToggle />
-			<span class="toggle-divider"></span>
-			<Socials />
+	<div class="nav-right">
+		<a class="nav-section-link" href={localizeHref('/#writing', { locale: lang })}>{copy.writing}</a>
+		<a class="nav-section-link" href={localizeHref('/#contact', { locale: lang })}>{copy.contact}</a>
+
+		<div class="lang-toggle" role="group" aria-label={copy.langTitle}>
+			<a href={enHref} class:active={lang === 'en'} aria-current={lang === 'en' ? 'true' : undefined}>EN</a>
+			<span aria-hidden="true">/</span>
+			<a href={jaHref} class:active={lang === 'ja'} aria-current={lang === 'ja' ? 'true' : undefined}>日本語</a>
 		</div>
+
+		<a class="icon-link social-link" href={SOCIAL_LINKS.github} target="_blank" rel="noopener" aria-label="GitHub">
+			<GitHubIcon />
+		</a>
+		<a class="icon-link social-link" href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn">
+			<LinkedInIcon />
+		</a>
+		<a class="icon-link social-link" href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener" aria-label="Twitter">
+			<TwitterIcon />
+		</a>
+		<a class="icon-link text-link mail-link" href={`mailto:${CONTACT.email}`} aria-label="Email Hiro">Mail</a>
+
+		<ThemeToggle />
 	</div>
 </header>
-
-<style>
-	.header {
-		position: sticky;
-		top: 0;
-		z-index: 100;
-		padding: 0.875rem 1.5rem;
-		background: oklch(var(--b1) / 0.72);
-		backdrop-filter: blur(24px) saturate(180%);
-		-webkit-backdrop-filter: blur(24px) saturate(180%);
-		border-bottom: 1px solid oklch(var(--bc) / 0.1);
-	}
-
-	.header-inner {
-		max-width: 1080px;
-		margin: 0 auto;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	.nav {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-	}
-
-	.nav-link {
-		padding: 0.4375rem 0.875rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		letter-spacing: -0.01em;
-		color: oklch(var(--bc) / 0.7);
-		text-decoration: none;
-		border-radius: 9999px;
-		transition: all var(--duration-fast) var(--ease-out-quart);
-	}
-
-	.nav-link:hover {
-		color: oklch(var(--bc));
-		background: oklch(var(--b2));
-	}
-
-	.nav-link.active {
-		color: oklch(var(--bc));
-		background: oklch(var(--b2));
-	}
-
-	.nav-divider {
-		width: 3px;
-		height: 3px;
-		background: oklch(var(--bc) / 0.2);
-		border-radius: 50%;
-		margin: 0 0.125rem;
-	}
-
-	.socials-wrapper {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.toggle-divider {
-		width: 1px;
-		height: 20px;
-		background: oklch(var(--bc) / 0.15);
-	}
-
-	@media (max-width: 640px) {
-		.header {
-			padding: 0.75rem 1rem;
-		}
-
-		.header-inner {
-			flex-direction: column;
-			gap: 0.75rem;
-		}
-
-		.nav {
-			order: 1;
-		}
-
-		.socials-wrapper {
-			order: 2;
-		}
-	}
-</style>

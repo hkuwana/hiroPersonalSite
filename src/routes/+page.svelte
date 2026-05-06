@@ -1,499 +1,748 @@
 <script lang="ts">
-	import hiroProfile from '$lib/images/Hiro_profile_shot.png';
 	import { base } from '$app/paths';
+	import { page } from '$app/stores';
+	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+	import HeroCanvas from '$lib/components/HeroCanvas.svelte';
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { onMount } from 'svelte';
-	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, EXPERTISE, FAQS } from '$data/constants';
-	import * as m from '$lib/paraglide/messages';
-	import { goto } from '$app/navigation';
 
-	// For the playful Japanese name easter egg
-	let showMeaning = false;
+	type Locale = 'en' | 'ja';
+	type Status = 'active' | 'shipped' | 'sunset';
+	type Filter = Status | 'all';
 
-	// Intersection Observer for scroll animations
-	let sections: HTMLElement[] = [];
-	let visibleSections = new Set<number>();
+	type Piece = {
+		id: string;
+		status: Status;
+		year: string;
+		href: string;
+		external?: boolean;
+		title: string;
+		subtitle: string;
+		role: string;
+		summary: string;
+		logo: string;
+		pos: { left: string; top: string; width: string; rotate: number };
+	};
+
+	const COPY: Record<Locale, Record<string, string>> = {
+		en: {
+			'hero.season': '初夏 · early summer · 2026',
+			'hero.vert': '人 を 拡 張 す る 道 具',
+			'hero.title.l1': 'Building',
+			'hero.title.tools': 'tools',
+			'hero.title.l2': 'that augment',
+			'hero.title.l3': 'humanity',
+			'hero.tagline':
+				"I'm Hiro Kuwana (桑名浩行). I make practical, opinionated AI utilities, quietly built and carefully made, for people who would rather think than scroll.",
+			'hero.now': 'Open · two seats · this season',
+			'hero.about1.a': 'I run a tiny studio of one and take a few focused projects each year, usually with founders building something',
+			'hero.about1.strong': 'AI-shaped that needs to feel less like a chatbot',
+			'hero.about1.b': 'and more like a tool with taste.',
+			'hero.about2':
+				'I keep notes here on product, language learning, and the slower questions underneath the work.',
+			'hero.meta.based.k': 'Based',
+			'hero.meta.based.v': 'Kyoto / SF',
+			'hero.meta.since.k': 'Since',
+			'hero.meta.since.v': '2019',
+			'hero.meta.stack.k': 'Stack',
+			'hero.meta.stack.v': 'LLMs · TypeScript · taste',
+			'hero.meta.reading.k': 'Reading',
+			'hero.meta.reading.v': 'Tanizaki · Berry',
+			'hero.scroll': '下へ',
+			'work.num': '弐 · 02',
+			'work.title': 'Projects',
+			'work.titleEm': '— things I tend, and things I have set down.',
+			'work.filter.all': 'All',
+			'work.filter.active': 'In hand',
+			'work.filter.shipped': 'Shipped',
+			'work.filter.sunset': 'Sunset',
+			'work.status.active': 'in hand',
+			'work.status.shipped': 'shipped',
+			'work.status.sunset': 'sunset',
+			'work.readMore': 'open →',
+			'writing.num': '参 · 03',
+			'writing.title': 'Two notebooks',
+			'writing.titleEm': '— one with the machines, one without.',
+			'writing.guides': './ai-guides',
+			'writing.guidesJP': '道 具',
+			'writing.philo': 'The Long Way',
+			'writing.philoJP': '手 書 き',
+			'writing.minRead': '~ 6 min',
+			'writing.dateAi': '04 · 2026',
+			'contact.num': '肆 · 04',
+			'contact.title': 'Stay in touch',
+			'contact.titleEm': '— write me, or follow along.',
+			'contact.tab.write': 'Write me · お便り',
+			'contact.tab.follow': 'Follow new posts · 購読',
+			'contact.aside.lead': 'Open for one or two collaborations through autumn. Short engagements, deep work, real outcomes.',
+			'contact.aside.hi': 'Or just say hello. I read every message by hand and usually reply within a few days.',
+			'contact.write.lead': "Tell me what you're working on. No template, no automation, just you and me.",
+			'contact.field.name': 'お名前 · Name',
+			'contact.field.email': '電子メール · Email',
+			'contact.field.msg': 'ご用件 · Message',
+			'contact.field.namePh': 'Your name',
+			'contact.field.emailPh': 'you@somewhere.com',
+			'contact.field.msgPh': "Tell me what you're working on, or just say hi.",
+			'contact.note.write': 'Opens your mail client as a fallback. Nothing is sent to a third party from this page.',
+			'contact.btn.send': 'Send · 送る →',
+			'contact.btn.sending': 'Sending...',
+			'contact.thanks.title': 'Received',
+			'contact.thanks.titleEm': '— ありがとう.',
+			'contact.thanks.note': 'Your mail client should also open with a copy you can send directly.',
+			'contact.thanks.again': 'Send another',
+			'sub.lead':
+				'I publish a few things a month: slow essays, product notes, and practical AI workflows. One short note when something new goes up.',
+			'sub.field.email': '電子メール · Email',
+			'sub.field.emailPh': 'you@somewhere.com',
+			'sub.choose': 'I want to follow:',
+			'sub.opt.both': 'Both',
+			'sub.opt.philo': 'The Long Way',
+			'sub.opt.guides': './ai-guides',
+			'sub.cadence': 'Roughly twice a month. Plain text. Unsubscribe with one click.',
+			'sub.btn.go': 'Subscribe · 購読 →',
+			'sub.btn.going': 'Subscribing...',
+			'sub.thanks.title': 'Subscribed',
+			'sub.thanks.titleEm': '— よろしく.',
+			'sub.thanks.note': "I'll send a short note when the next piece goes up. That's the entire system.",
+			'sub.thanks.again': 'Use a different email'
+		},
+		ja: {
+			'hero.season': '初夏 · 2026年',
+			'hero.vert': '人 を 拡 張 す る 道 具',
+			'hero.title.l1': '人を',
+			'hero.title.tools': '拡張する',
+			'hero.title.l2': '',
+			'hero.title.l3': '道具をつくる',
+			'hero.tagline':
+				'桑名浩行 (Hiro Kuwana) です。実用的で意志のある AI の道具を、静かに、丁寧につくっています。スクロールするより、考えたい人のために。',
+			'hero.now': '受付中 · 二件 · 今季',
+			'hero.about1.a': '一人の小さなスタジオを営んでいます。年に数件、',
+			'hero.about1.strong': 'AI を使いながらもチャットボット然としていない',
+			'hero.about1.b': '道具をつくる人と仕事をしています。',
+			'hero.about2': 'ここには、プロダクト、言語学習、そして作る理由についての覚え書きを置いています。',
+			'hero.meta.based.k': '拠点',
+			'hero.meta.based.v': '京都 / サンフランシスコ',
+			'hero.meta.since.k': '開始',
+			'hero.meta.since.v': '2019年',
+			'hero.meta.stack.k': '手段',
+			'hero.meta.stack.v': 'LLM · TypeScript · 趣味',
+			'hero.meta.reading.k': '読書',
+			'hero.meta.reading.v': '谷崎 · ベリー',
+			'hero.scroll': '下へ',
+			'work.num': '弐 · 02',
+			'work.title': 'プロジェクト',
+			'work.titleEm': '— 手入れしているもの、置いたもの。',
+			'work.filter.all': 'すべて',
+			'work.filter.active': '手入れ中',
+			'work.filter.shipped': '公開済',
+			'work.filter.sunset': '手放した',
+			'work.status.active': '手入れ中',
+			'work.status.shipped': '公開済',
+			'work.status.sunset': '手放した',
+			'work.readMore': '開く →',
+			'writing.num': '参 · 03',
+			'writing.title': '二冊のノート',
+			'writing.titleEm': '— 機械と。機械なしで。',
+			'writing.guides': './ai-guides',
+			'writing.guidesJP': '道 具',
+			'writing.philo': '回り道',
+			'writing.philoJP': '手 書 き',
+			'writing.minRead': '約 6 分',
+			'writing.dateAi': '2026 · 04',
+			'contact.num': '肆 · 04',
+			'contact.title': 'これからも',
+			'contact.titleEm': '— 手紙でも、購読でも。',
+			'contact.tab.write': 'お便りを書く',
+			'contact.tab.follow': '更新を購読する',
+			'contact.aside.lead': '今季は一、二件のお仕事をお受けしています。短い期間で、深く、確かな成果を。',
+			'contact.aside.hi': 'こんにちはの一言でも。届いた便りはすべて手で読み、たいてい数日のうちにお返事します。',
+			'contact.write.lead': 'いま手がけていること、よければ聞かせてください。テンプレートも自動化もありません。',
+			'contact.field.name': 'お名前',
+			'contact.field.email': 'メールアドレス',
+			'contact.field.msg': 'ご用件',
+			'contact.field.namePh': 'お名前',
+			'contact.field.emailPh': 'you@somewhere.com',
+			'contact.field.msgPh': '何を作っているか、あるいは一言だけでも。',
+			'contact.note.write': 'メールクライアントが開きます。このページから第三者へ送信はしません。',
+			'contact.btn.send': '送る →',
+			'contact.btn.sending': '送信中...',
+			'contact.thanks.title': '届きました',
+			'contact.thanks.titleEm': '— ありがとう。',
+			'contact.thanks.note': 'メールクライアントにも控えが開きます。そのままお送りいただけます。',
+			'contact.thanks.again': 'もう一通',
+			'sub.lead': 'ひと月に数本、随筆やプロダクトの覚え書き、AI の実践メモを書いています。新しいものが出たときに短く一通だけ。',
+			'sub.field.email': 'メールアドレス',
+			'sub.field.emailPh': 'you@somewhere.com',
+			'sub.choose': '購読するもの:',
+			'sub.opt.both': '両方',
+			'sub.opt.philo': '回り道',
+			'sub.opt.guides': './ai-guides',
+			'sub.cadence': '月に二度ほど。プレーンテキスト。ワンクリックで解除できます。',
+			'sub.btn.go': '購読する →',
+			'sub.btn.going': '登録中...',
+			'sub.thanks.title': '登録しました',
+			'sub.thanks.titleEm': '— よろしく。',
+			'sub.thanks.note': '次の文章が出たら、短く一通だけ送ります。仕掛けはそれだけです。',
+			'sub.thanks.again': '別のメールで登録'
+		}
+	};
+
+	const STATUS_OPTIONS: { value: Filter; key: string }[] = [
+		{ value: 'all', key: 'work.filter.all' },
+		{ value: 'active', key: 'work.filter.active' },
+		{ value: 'shipped', key: 'work.filter.shipped' },
+		{ value: 'sunset', key: 'work.filter.sunset' }
+	];
+
+	const PIECES: Piece[] = [
+		{
+			id: 'kaiwa',
+			status: 'active',
+			year: '2024 - now',
+			href: PERSONAL.companyWebsite,
+			external: true,
+			title: 'Kaiwa',
+			subtitle: 'language learning, reimagined',
+			role: 'Founder + Product',
+			summary: 'Bite-sized AI conversations for people who want to practice without turning learning into another feed.',
+			logo: `${base}/kaiwa_logo.png`,
+			pos: { left: '0%', top: '0%', width: '38%', rotate: -2 }
+		},
+		{
+			id: 'exonians',
+			status: 'shipped',
+			year: '2024',
+			href: 'https://exoniansjapan.com/',
+			external: true,
+			title: 'Exonians in Japan',
+			subtitle: 'a fast community platform',
+			role: 'Design + Build',
+			summary: 'A small, practical alumni site built quickly enough to prove that execution speed can be a design feature.',
+			logo: `${base}/icon-512x512.png`,
+			pos: { left: '52%', top: '4%', width: '38%', rotate: 1.5 }
+		},
+		{
+			id: 'reddit-scout',
+			status: 'active',
+			year: '2025',
+			href: 'https://github.com/hkuwana/Kaiwa-reddit-scout',
+			external: true,
+			title: 'Kaiwa Reddit Scout',
+			subtitle: 'signal-finding for language learners',
+			role: 'Automation + Research',
+			summary: 'A local workflow that connects Reddit, Drive, and Gemini to find language learners with real intent.',
+			logo: `${base}/kaiwa_logo.png`,
+			pos: { left: '8%', top: '38%', width: '36%', rotate: -1 }
+		},
+		{
+			id: 'flybyrd',
+			status: 'sunset',
+			year: '2023 - 2024',
+			href: '#contact',
+			title: 'Flybyrd',
+			subtitle: 'AI for venture capital',
+			role: 'Founder',
+			summary: 'A deal-flow and startup analysis product. Useful lessons, deliberately closed to focus the studio.',
+			logo: `${base}/flybyrd_logo.png`,
+			pos: { left: '54%', top: '46%', width: '40%', rotate: 1 }
+		},
+		{
+			id: 'pebblr',
+			status: 'sunset',
+			year: '2021 - 2023',
+			href: '#contact',
+			title: 'Pebblr',
+			subtitle: 'connecting nonprofits and donors',
+			role: 'Product + Ops',
+			summary: 'A nonprofit donor experiment that taught me where human trust matters more than platform mechanics.',
+			logo: `${base}/icon-512x512.png`,
+			pos: { left: '22%', top: '78%', width: '42%', rotate: -1.5 }
+		}
+	];
+
+	const GUIDES = {
+		en: [
+			{
+				tag: 'PROMPT',
+				title: 'A self-editing system prompt for technical writing',
+				desc: "Turns drafts into clean docs without flattening the author's voice. Iterates on itself in two passes.",
+				snippet: 'You are an editor with two jobs:\n1. Preserve voice.\n2. Cut anything you cannot defend.',
+				anchor: 'self-editing-system-prompt'
+			},
+			{
+				tag: 'WORKFLOW',
+				title: 'How I run a 4-model debate to find a position I trust',
+				desc: 'A small harness that lets disagreement keep going until the useful shape appears.',
+				snippet: '/debate "Should onboarding ask for the user goal up front?"',
+				anchor: 'four-model-debate'
+			},
+			{
+				tag: 'TOOLING',
+				title: 'Local-first prompt versioning with plain text + git',
+				desc: 'No fancy IDE. Just folders, frontmatter, and diffs that read like edits.',
+				snippet: '$ promptkit diff v0.3..v0.4 --semantic',
+				anchor: 'prompt-versioning'
+			}
+		],
+		ja: [
+			{
+				tag: 'プロンプト',
+				title: '技術文書のための、自分を編集するシステムプロンプト',
+				desc: '下書きを、書き手の声を平たくせずに整える。二度のパスで自分自身に手を入れていく。',
+				snippet: '役割は二つ:\n1. 声を残す。\n2. 守れない文を切る。',
+				anchor: 'self-editing-system-prompt'
+			},
+			{
+				tag: 'ワークフロー',
+				title: '四つのモデルで議論させて、信じられる立場を見つける方法',
+				desc: '反対意見の側だけ続けて話させる、小さな仕掛け。',
+				snippet: '/debate "オンボーディングで目的を先に聞くべきか"',
+				anchor: 'four-model-debate'
+			},
+			{
+				tag: 'ツール',
+				title: 'ローカル中心のプロンプト管理 — テキスト + git だけで',
+				desc: '凝った IDE はなし。フォルダと frontmatter と、編集として読める差分。',
+				snippet: '$ promptkit diff v0.3..v0.4 --semantic',
+				anchor: 'prompt-versioning'
+			}
+		]
+	};
+
+	const PHILO = {
+		en: [
+			{
+				date: 'February 2026',
+				title: 'Your Funnel Is a Lie',
+				desc: 'Why Markov chains are a better mental model for SaaS growth than the traditional sales funnel.',
+				href: '/essays/your-funnel-is-a-lie'
+			},
+			{
+				date: 'December 2025',
+				title: 'On Building for Decades',
+				desc: 'Why simplicity wins in the long run when building personal infrastructure.',
+				href: '/essays/on-building-for-decades'
+			},
+			{
+				date: 'Now',
+				title: 'What I mean when I say augment',
+				desc: 'A working definition with edges. The word does a lot of heavy lifting in my work.',
+				href: '/essays'
+			}
+		],
+		ja: [
+			{
+				date: '2026年2月',
+				title: 'ファネルという嘘',
+				desc: 'SaaS の成長を、直線ではなく遷移として見るためのメモ。',
+				href: '/essays/your-funnel-is-a-lie'
+			},
+			{
+				date: '2025年12月',
+				title: '十年単位でつくる',
+				desc: '個人のインフラを長く残すなら、なぜ単純さが勝つのか。',
+				href: '/essays/on-building-for-decades'
+			},
+			{
+				date: '今',
+				title: '「拡張」と言うとき',
+				desc: '仕事の中でずいぶん働かせている言葉に、少し輪郭を与える。',
+				href: '/essays'
+			}
+		]
+	};
+
+	let lang = getLocale() as Locale;
+	let filter: Filter = 'all';
+	let contactMode: 'write' | 'follow' = 'write';
+	let contactName = '';
+	let contactEmail = '';
+	let contactMessage = '';
+	let contactStatus: 'idle' | 'sending' | 'sent' = 'idle';
+	let contactReply = '';
+	let subscribeEmail = '';
+	let subscribeChoice = 'both';
+	let subscribeStatus: 'idle' | 'sending' | 'sent' = 'idle';
+	let visiblePieces = PIECES;
+
+	$: lang = (($page.data.locale as Locale | undefined) ?? getLocale()) as Locale;
+	$: visiblePieces = filter === 'all' ? PIECES : PIECES.filter((piece) => piece.status === filter);
+
+	const t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
+	const countFor = (status: Filter) => (status === 'all' ? PIECES.length : PIECES.filter((piece) => piece.status === status).length);
+	const statusLabel = (status: Status) => t(`work.status.${status}`);
+	const scrapStyle = (piece: Piece, index: number) =>
+		`left:${piece.pos.left};top:${piece.pos.top};width:${piece.pos.width};transform:rotate(${piece.pos.rotate}deg);z-index:${8 - index}`;
 
 	onMount(() => {
-		// Easter egg for curious developers
-		console.log('%c👋 Hey there, curious one!', 'font-size: 16px; font-weight: bold;');
-		console.log(`%cWhile you're here, reach out if you're curious about how I built this: ${CONTACT.email}`, 'font-size: 12px;');
-		console.log('%cI\'m not a T-1000. Look away... now.', 'font-size: 12px; color: gray;');
+		const elements = document.querySelectorAll<HTMLElement>('.reveal');
+		const revealVisible = (element: HTMLElement) => {
+			const rect = element.getBoundingClientRect();
+			if (rect.top < window.innerHeight && rect.bottom > 0) element.classList.add('in');
+		};
 
+		elements.forEach(revealVisible);
 		const observer = new IntersectionObserver(
 			(entries) => {
-				entries.forEach((entry) => {
-					const index = sections.indexOf(entry.target as HTMLElement);
-					if (entry.isIntersecting) {
-						visibleSections.add(index);
-						visibleSections = visibleSections;
-					}
-				});
+				for (const entry of entries) {
+					if (entry.isIntersecting) entry.target.classList.add('in');
+				}
 			},
-			{ threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+			{ threshold: 0, rootMargin: '0px 0px -10% 0px' }
 		);
 
-		sections.forEach((section) => {
-			if (section) observer.observe(section);
-		});
+		elements.forEach((element) => observer.observe(element));
+		const fallback = window.setTimeout(() => {
+			elements.forEach((element) => element.classList.add('in'));
+		}, 1500);
 
-		return () => observer.disconnect();
+		return () => {
+			window.clearTimeout(fallback);
+			observer.disconnect();
+		};
 	});
 
-	// Map projects to include base path for logos
-	const projects = PROJECTS.map((p) => ({
-		...p,
-		logo: `${base}${p.logo}`,
-	}));
+	function sendContact(event: SubmitEvent) {
+		event.preventDefault();
+		if (!contactName || !contactEmail || !contactMessage) return;
+
+		contactStatus = 'sending';
+		contactReply =
+			lang === 'ja'
+				? `${contactName}さん、届きました。Hiro が手で読み、数日のうちに返事をします。まずは、この形で送ってくれてありがとう。`
+				: `${contactName}, I received this. Hiro reads every note by hand and usually replies within a few days. Thank you for sending the real shape of the work.`;
+
+		const subject = encodeURIComponent(`From your site - ${contactName}`);
+		const body = encodeURIComponent(`From: ${contactName} <${contactEmail}>\n\n${contactMessage}`);
+
+		if (typeof window !== 'undefined') {
+			window.open(`mailto:${CONTACT.email}?subject=${subject}&body=${body}`, '_blank');
+		}
+
+		window.setTimeout(() => {
+			contactStatus = 'sent';
+		}, 350);
+	}
+
+	function resetContact() {
+		contactName = '';
+		contactEmail = '';
+		contactMessage = '';
+		contactReply = '';
+		contactStatus = 'idle';
+	}
+
+	function subscribe(event: SubmitEvent) {
+		event.preventDefault();
+		if (!subscribeEmail) return;
+
+		subscribeStatus = 'sending';
+		if (typeof window !== 'undefined') {
+			localStorage.setItem(
+				'hiro_sub',
+				JSON.stringify({ email: subscribeEmail, choice: subscribeChoice, at: Date.now() })
+			);
+		}
+
+		window.setTimeout(() => {
+			subscribeStatus = 'sent';
+		}, 450);
+	}
+
+	function resetSubscribe() {
+		subscribeEmail = '';
+		subscribeStatus = 'idle';
+	}
 </script>
 
 <svelte:head>
-	<title>{SITE.title}</title>
-	<meta name="description" content={SITE.description} />
+	<title>Hiro Kuwana — building tools that augment humanity</title>
+	<meta
+		name="description"
+		content="Hiro Kuwana builds practical, opinionated AI tools and writes about product, language learning, and building for the long run."
+	/>
 	<meta name="keywords" content={SITE.keywords.join(', ')} />
 	<meta name="author" content={SITE.author} />
-	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-
-	<!-- Geo tags for local SEO -->
-	<meta name="geo.region" content="US" />
-	<meta name="geo.placename" content="United States" />
-
-	<!-- Language and locale -->
-	<meta property="og:locale" content="en_US" />
-	<meta property="og:locale:alternate" content="ja_JP" />
-
-	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={SITE.url} />
-	<meta property="og:title" content={SITE.title} />
-	<meta property="og:description" content={SITE.description} />
+	<meta property="og:title" content="Hiro Kuwana — building tools that augment humanity" />
+	<meta property="og:description" content="A tiny studio of one for practical AI utilities, product notes, and slow essays." />
 	<meta property="og:image" content={SITE.image} />
-	<meta property="og:image:alt" content="{PERSONAL.displayName} - AI Entrepreneur headshot" />
-	<meta property="og:image:width" content="1200" />
-	<meta property="og:image:height" content="630" />
-	<meta property="og:site_name" content={SITE.name} />
-	<meta property="profile:first_name" content="Hiro" />
-	<meta property="profile:last_name" content="Kuwana" />
-
-	<!-- Twitter -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:url" content={SITE.url} />
-	<meta name="twitter:title" content={SITE.title} />
-	<meta name="twitter:description" content={SITE.description} />
-	<meta name="twitter:image" content={SITE.image} />
-	<meta name="twitter:image:alt" content="{PERSONAL.displayName} - AI Entrepreneur headshot" />
-	<meta name="twitter:creator" content="@hirokuwana" />
-
-	<!-- Additional SEO -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta charset="UTF-8" />
 	<link rel="canonical" href={SITE.url} />
-
-	<!-- Preconnect to improve performance -->
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-
-	<!-- Mobile app meta tags -->
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-	<meta name="format-detection" content="telephone=no" />
-
-	<!-- Structured Data for Person -->
-	<script type="application/ld+json">
-		{
-			JSON.stringify({
-				'@context': 'https://schema.org',
-				'@type': 'Person',
-				name: PERSONAL.fullName,
-				alternateName: PERSONAL.displayName,
-				description: SITE.description,
-				url: SITE.url,
-				image: SITE.image,
-				email: CONTACT.email,
-				jobTitle: PERSONAL.jobTitle,
-				worksFor: {
-					'@type': 'Organization',
-					name: PERSONAL.company,
-					url: PERSONAL.companyWebsite,
-				},
-				alumniOf: {
-					'@type': 'EducationalOrganization',
-					name: PERSONAL.university,
-				},
-				nationality: PERSONAL.nationalities,
-				knowsAbout: EXPERTISE,
-				sameAs: [PERSONAL.companyWebsite, SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github],
-			})
-		}
-	</script>
-
-	<!-- Structured Data for Website -->
-	<script type="application/ld+json">
-		{
-			JSON.stringify({
-				'@context': 'https://schema.org',
-				'@type': 'WebSite',
-				name: SITE.name,
-				url: SITE.url,
-				description: SITE.description,
-				author: {
-					'@type': 'Person',
-					name: PERSONAL.fullName,
-				},
-				inLanguage: 'en-US',
-			})
-		}
-	</script>
-
-	<!-- Structured Data for Breadcrumbs -->
-	<script type="application/ld+json">
-		{
-			JSON.stringify({
-				'@context': 'https://schema.org',
-				'@type': 'BreadcrumbList',
-				itemListElement: [
-					{
-						'@type': 'ListItem',
-						position: 1,
-						name: 'Home',
-						item: SITE.url,
-					},
-				],
-			})
-		}
-	</script>
-
-	<!-- Structured Data for FAQ - AEO/GEO Optimization -->
-	<script type="application/ld+json">
-		{
-			JSON.stringify({
-				'@context': 'https://schema.org',
-				'@type': 'FAQPage',
-				mainEntity: FAQS.map((faq) => ({
-					'@type': 'Question',
-					name: faq.question,
-					acceptedAnswer: {
-						'@type': 'Answer',
-						text: faq.answer,
-					},
-				})),
-			})
-		}
-	</script>
 </svelte:head>
 
-<!-- Hero Section -->
-<section
-	class="hero relative min-h-[calc(100vh-80px)] flex items-center justify-center px-8 py-20 md:py-24 bg-base-100"
-	bind:this={sections[0]}
-	class:visible={visibleSections.has(0)}
->
-	<div class="flex flex-col items-center text-center gap-10 md:gap-11 max-w-xl">
-		<!-- Avatar -->
-		<div
-			class="avatar relative"
-			role="img"
-			aria-label="Hiro Kuwana profile photo"
-		>
-			<div class="w-40 h-40 md:w-44 md:h-44 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out hover:scale-[1.03] cursor-default">
-				<img src={hiroProfile} alt="Hiro Kuwana" class="rounded-full" />
-			</div>
-		</div>
+<section class="hero" data-screen-label="01 Landing">
+	<HeroCanvas />
 
-		<!-- Hero Text -->
-		<div class="flex flex-col items-center gap-3.5">
-			<h1 class="text-4xl sm:text-5xl font-bold tracking-tight animate-fade-in-up text-primary">
-				{PERSONAL.displayName}
+	<div class="season-mark">
+		<span class="stamp">浩</span>
+		<span>{t('hero.season')}</span>
+	</div>
+	<div class="vert-mark">{t('hero.vert')}</div>
+
+	<div class="hero-content">
+		{#if lang === 'ja'}
+			<h1 class="h1-ja">
+				{t('hero.title.l1')}<span class="ital">{t('hero.title.tools')}</span><br />
+				{t('hero.title.l3')}<span class="seal">浩</span>
 			</h1>
-
-			<button
-				class="btn btn-ghost btn-sm gap-2.5 rounded-full border border-base-300 hover:border-base-content/20 animate-fade-in-up delay-1 transition-all duration-300"
-				onclick={() => (showMeaning = !showMeaning)}
-				aria-expanded={showMeaning}
-				aria-label={m.hero_show_pronunciation()}
-			>
-				<span class="text-base font-medium tracking-wide">{PERSONAL.japaneseKanji}</span>
-				{#if showMeaning}
-					<span class="text-sm text-primary italic font-medium">{PERSONAL.japaneseKana}</span>
-				{/if}
-			</button>
-
-			<p class="text-base-content/70 text-lg max-w-sm mt-1 leading-relaxed animate-fade-in-up delay-2">
-				{m.hero_tagline()}
-			</p>
-
-			<a href={CONTACT.cal} target="_blank" class="btn btn-primary-outline  mt-5 gap-2 animate-fade-in-up delay-3">
-				{m.hero_lets_talk()}
-				<span class="icon-[mdi--arrow-right] w-4 h-4"></span>
-			</a>
-		</div>
+		{:else}
+			<h1>
+				{t('hero.title.l1')} <span class="ital">{t('hero.title.tools')}</span><br />
+				{t('hero.title.l2')}<br />
+				{t('hero.title.l3')}<span class="seal">浩</span>
+			</h1>
+		{/if}
+		<p class="hero-tagline">{t('hero.tagline')}</p>
 	</div>
 
-	<!-- Scroll Indicator - Subtle pulse -->
-	<div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-fade-in-up delay-4">
-		<div class="w-6 h-10 rounded-full border-2 border-base-content/20 flex justify-center pt-2">
-			<div class="w-1 h-2 rounded-full bg-base-content/40 animate-scroll-hint"></div>
-		</div>
+	<aside class="hero-side">
+		<span class="now-pill">{t('hero.now')}</span>
+		<p>
+			{t('hero.about1.a')}
+			<strong>{t('hero.about1.strong')}</strong>
+			{t('hero.about1.b')}
+		</p>
+		<p>{t('hero.about2')}</p>
+		<dl class="hero-meta">
+			<dt>{t('hero.meta.based.k')}</dt>
+			<dd>{t('hero.meta.based.v')}</dd>
+			<dt>{t('hero.meta.since.k')}</dt>
+			<dd>{t('hero.meta.since.v')}</dd>
+			<dt>{t('hero.meta.stack.k')}</dt>
+			<dd>{t('hero.meta.stack.v')}</dd>
+			<dt>{t('hero.meta.reading.k')}</dt>
+			<dd>{t('hero.meta.reading.v')}</dd>
+		</dl>
+	</aside>
+
+	<div class="scroll-cue">
+		<span>{t('hero.scroll')}</span>
+		<span class="line"></span>
 	</div>
 </section>
 
-<!-- Projects Section -->
-<section
-	class="section-animate py-24 md:py-28 px-8 bg-base-200/50"
-	bind:this={sections[1]}
-	class:visible={visibleSections.has(1)}
->
-	<div class="max-w-5xl mx-auto">
-		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-12 tracking-tight text-primary">
-			{m.projects_heading()}
-		</h2>
+<div class="reveal">
+	<section class="section" id="work" data-screen-label="02 Projects">
+		<div class="sec-head">
+			<span class="num-vert">{t('work.num')}</span>
+			<h2>{t('work.title')} <em>{t('work.titleEm')}</em></h2>
+		</div>
 
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-			{#each projects as project, i}
-				<div
-					class="card border transition-all duration-300 group {project.status === 'current'
-						? 'bg-gradient-to-b from-success/10 via-base-100 to-base-100 border-success/30 hover:border-success/50 hover:shadow-xl hover:shadow-success/10 hover:-translate-y-2 md:scale-[1.02]'
-						: 'bg-base-100 border-base-300/50 hover:border-base-300 hover:bg-base-200/50'}"
-					style="animation-delay: {i * 0.1}s"
+		<div class="proj-filter" role="tablist" aria-label="Project status filter">
+			{#each STATUS_OPTIONS as option}
+				<button
+					type="button"
+					role="tab"
+					aria-selected={filter === option.value}
+					class={`proj-chip status-${option.value} ${filter === option.value ? 'is-on' : ''}`}
+					onclick={() => (filter = option.value)}
 				>
-					<div class="card-body">
-						<!-- Header -->
-						<div class="flex justify-between items-start mb-3">
-							<div class="avatar">
-								{#if project.logo}
-									<div class="w-12 h-12 rounded-lg shadow-sm overflow-hidden bg-white dark:bg-base-300">
-										<img
-											src={project.logo}
-											alt="{project.name} logo"
-											class="w-full h-full object-contain {project.status !== 'current' ? 'opacity-80 group-hover:opacity-100' : ''}"
-										/>
-									</div>
-								{:else}
-									<!-- Fallback letter logo -->
-									<div class="w-12 h-12 rounded-lg shadow-sm flex items-center justify-center font-bold text-xl"
-										style="background: {project.color}; color: white;">
-										{project.name.charAt(0)}
-									</div>
-								{/if}
-							</div>
-							<div
-								class="badge badge-sm font-semibold uppercase tracking-wide"
-								class:badge-success={project.status === 'current'}
-								class:badge-ghost={project.status !== 'current'}
-							>
-								{project.status === 'current' ? m.project_status_current() : project.status === 'sunset' ? m.project_status_sunset() : m.project_status_active()}
-							</div>
-						</div>
-
-						<h3 class="card-title text-xl text-base-content group-hover:text-primary transition-colors">{project.name}</h3>
-						<p class="text-sm font-medium {project.status === 'current' ? 'text-primary' : 'text-base-content/70 group-hover:text-base-content'}">{project.tagline}</p>
-						<p class="text-sm leading-relaxed text-base-content/60 group-hover:text-base-content/80 transition-colors">{project.description}</p>
-
-						{#if project.link || project.github}
-							<div class="card-actions mt-4 flex flex-wrap gap-3">
-								{#if project.link}
-									<a href={project.link} target="_blank" rel="noopener" class="link link-primary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
-										{m.project_visit({ name: project.name })}
-										<span class="icon-[mdi--arrow-top-right] w-3.5 h-3.5"></span>
-									</a>
-								{/if}
-								{#if project.github}
-									<a href={project.github} target="_blank" rel="noopener" class="link link-secondary text-sm font-medium inline-flex items-center gap-1.5 hover:gap-2 transition-all">
-										GitHub
-										<span class="icon-[mdi--github] w-3.5 h-3.5"></span>
-									</a>
-								{/if}
-							</div>
-						{/if}
-					</div>
-				</div>
+					<span class="dot"></span>
+					{t(option.key)}
+					<span class="count">{countFor(option.value)}</span>
+				</button>
 			{/each}
 		</div>
-	</div>
-</section>
 
-<!-- Bio Section -->
-<section
-	class="section-animate py-24 md:py-28 px-8 bg-base-100"
-	bind:this={sections[2]}
-	class:visible={visibleSections.has(2)}
->
-	<div class="max-w-2xl mx-auto text-center">
-		<h2 class="text-2xl md:text-3xl font-semibold mb-10 tracking-tight text-primary">The Story</h2>
-
-		<div class="text-left space-y-5">
-			<p class="text-base-content/70 text-lg leading-relaxed">
-				<strong class="text-base-content font-semibold">Born in Japan, raised in the U.S.</strong> I've lived across Spain, Estonia, and beyond.
-				This global perspective shapes everything I build.
-			</p>
-
-			<p class="text-base-content/70 text-lg leading-relaxed">
-				After studying Environmental Engineering at Brown, I discovered my real passion:
-				<em class="text-accent not-italic font-medium">making powerful tools accessible to everyone</em>.
-			</p>
-
-			<p class="text-base-content/70 text-lg leading-relaxed">
-				I believe AI should be humanity's great equalizer: the tutors, advisors, and assistants
-				once reserved for the privileged few should be available to all.
-			</p>
-
-			<blockquote class="py-12 md:py-16 text-center">
-				<div class="w-16 h-0.5 bg-gradient-to-r from-primary via-secondary to-accent mx-auto mb-8 rounded-full opacity-60"></div>
-				<p class="text-2xl md:text-4xl font-semibold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary leading-relaxed">
-					"AI as the glider for everyone's mind."
-				</p>
-				<div class="w-16 h-0.5 bg-gradient-to-r from-accent via-secondary to-primary mx-auto mt-8 rounded-full opacity-60"></div>
-			</blockquote>
+		<div class="scrap layout-scrapbook">
+			{#each visiblePieces as piece, i}
+				<a
+					href={piece.href}
+					class={`scrap-piece status-${piece.status}`}
+					style={scrapStyle(piece, i)}
+					target={piece.external ? '_blank' : undefined}
+					rel={piece.external ? 'noopener' : undefined}
+				>
+					<div class="frame">
+						<div class="thumb">
+							<span class={`status-pill status-${piece.status}`}>
+								<span class="dot"></span>
+								{statusLabel(piece.status)}
+							</span>
+							<img src={piece.logo} alt="{piece.title} logo" class="project-logo" loading="lazy" />
+							<span class="thumb-label">fig. {i + 1} — {piece.title.toLowerCase()}</span>
+						</div>
+						<h3>{piece.title} <em>— {piece.subtitle}</em></h3>
+						<p class="summary">{piece.summary}</p>
+						<div class="meta">
+							<span>{piece.role}</span>
+							<span>{piece.year}</span>
+						</div>
+						<span class="read-more">{t('work.readMore')}</span>
+					</div>
+				</a>
+			{/each}
 		</div>
+	</section>
+</div>
 
-		<a href={CONTACT.cal} target="_blank" class="btn btn-outline btn-primary mt-8">
-			Schedule a conversation
-		</a>
-	</div>
-</section>
-
-<!-- FAQ Section -->
-<section
-	class="section-animate py-28 md:py-36 px-8 bg-base-200/50"
-	bind:this={sections[3]}
-	class:visible={visibleSections.has(3)}
->
-	<div class="max-w-2xl mx-auto">
-		<h2 class="text-2xl md:text-3xl font-semibold text-center mb-4 tracking-tight text-primary">
-			Frequently Asked Questions
-		</h2>
-		<p class="text-base-content/60 text-center mb-12 text-sm">
-			Questions I get asked more than I'd like.
-		</p>
-
-		<div class="space-y-4">
-			<!-- AI Hot Take -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium text-primary">
-					Will AI take over the world?
-				</div>
-				<div class="collapse-content text-base-content/70">
-					<p>No. But I do worry about how it will either force us to sharpen our critical thinking or make us complacent. In many ways, it's like <em>Up</em> or <em>Brave New World</em>. The question isn't whether AI will control us, but whether we'll choose comfort over growth.</p>
-				</div>
-			</div>
-
-			<!-- Japan -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium text-primary">
-					Is Japan perfect? Do you watch anime?
-				</div>
-				<div class="collapse-content text-base-content/70">
-					<p><strong>No</strong>, Japan is not a perfect country without flaws. And <strong>yes</strong>, I watch anime. <em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces. I will die on this hill.</p>
-				</div>
-			</div>
-
-			<!-- Coffee vs Tea -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium text-primary">
-					Coffee or tea?
-				</div>
-				<div class="collapse-content text-base-content/70">
-					<p>Tea. Green tea specifically. And I'm willing to change your mind on this; most green tea in the US is awful (<em>cough cough Lipton</em>). Try the real stuff and we'll talk.</p>
-				</div>
-			</div>
-
-			<!-- Background surprise -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium text-primary">
-					Wait, you studied Environmental Engineering?
-				</div>
-				<div class="collapse-content text-base-content/70">
-					<p>Yes. My advisor once said, <em>"Now that you have a degree, I'm honestly surprised you became an engineer."</em> I also did conservation work in Maui helping maintain Waikamoi Preserve (one of the wettest places in the world). Somehow it stayed that way even with my dry humor.</p>
-				</div>
-			</div>
-
-			<!-- Fun facts -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium text-primary">
-					Tell me something weird about you
-				</div>
-				<div class="collapse-content text-base-content/70">
-					<ul class="list-disc list-inside space-y-2">
-						<li>I can snap on any surface. Tables, walls, my own face. It's a gift.</li>
-						<li>I beat Total War: Shogun 2 on Legendary as the Tsu faction (the independent republic). If you know, you know.</li>
-						<li>I send postcards to friends around the world. DM me your address, I'm serious.</li>
-						<li>My dream is to make enough friends globally that I always have a couch to crash on.</li>
-						<li>I can only count to three the German way. My hands physically refuse to do it any other way.</li>
-					</ul>
-				</div>
-			</div>
-
-			<!-- Legal disclaimer joke -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium text-primary">
-					Are you funny?
-				</div>
-				<div class="collapse-content text-base-content/70">
-					<p>I grew up in the US of A. I don't have a sense of humour. Please don't sue me.</p>
-				</div>
-			</div>
-
-			<!-- Hills to die on -->
-			<div class="collapse collapse-arrow bg-base-100 border border-base-300">
-				<input type="radio" name="faq-accordion" />
-				<div class="collapse-title font-medium text-primary">
-					What's a hill you will die on?
-				</div>
-				<div class="collapse-content text-base-content/70">
-					<p><em>Cowboy Bebop</em> and <em>Paprika</em> are masterpieces—no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read <em>The Brothers Karamazov</em>. It will change how you see the world.</p>
-				</div>
+<div class="reveal">
+	<section data-screen-label="03 Writing" id="writing" data-philo="journal">
+		<div class="section writing-head">
+			<div class="sec-head">
+				<span class="num-vert">{t('writing.num')}</span>
+				<h2>{t('writing.title')} <em>{t('writing.titleEm')}</em></h2>
 			</div>
 		</div>
 
-		<p class="text-center mt-8 text-sm text-base-content/70">
-			If this site isn't serious enough for you, <button onclick={() => goto('/corporate')} class="btn btn-error text-error-content  gap-2">click here</button>.
-		</p>
-	</div>
-</section>
+		<div class="dual-blog">
+			<div class="col-guides">
+				<div class="blog-col-head">
+					<h3>{t('writing.guides')}</h3>
+					<span class="col-jp">{t('writing.guidesJP')}</span>
+				</div>
+				<div class="post-list">
+					{#each GUIDES[lang] as guide}
+						<a class="post" href={localizeHref(`/ai-guides#${guide.anchor}`, { locale: lang })}>
+							<div class="post-meta">
+								<span class="tag">{guide.tag}</span>
+								<span>{t('writing.dateAi')}</span>
+								<span>{t('writing.minRead')}</span>
+							</div>
+							<h4>{guide.title}</h4>
+							<p>{guide.desc}</p>
+							<div class="prompt-snippet">{guide.snippet}</div>
+						</a>
+					{/each}
+				</div>
+			</div>
 
-<style>
-	/* Hero animation states */
-	.hero {
-		opacity: 0;
-		transform: translateY(16px);
-		transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-	}
+			<div class="col-philo">
+				<div class="blog-col-head">
+					<h3>{t('writing.philo')}</h3>
+					<span class="col-jp">{t('writing.philoJP')}</span>
+				</div>
+				<div class="post-list">
+					{#each PHILO[lang] as post}
+						<a class="post" href={localizeHref(post.href, { locale: lang })}>
+							<div class="post-meta">{post.date}</div>
+							<h4>{post.title}</h4>
+							<p>{post.desc}</p>
+						</a>
+					{/each}
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
 
-	.hero.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
+<div class="reveal">
+	<section class="section contact-sec" id="contact" data-screen-label="04 Contact">
+		<div class="sec-head">
+			<span class="num-vert">{t('contact.num')}</span>
+			<h2>{t('contact.title')} <em>{t('contact.titleEm')}</em></h2>
+		</div>
 
-	/* Section animation states */
-	.section-animate {
-		opacity: 0;
-		transform: translateY(20px);
-		transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-	}
+		<div class="contact-grid">
+			<aside class="contact-aside">
+				<p>{t('contact.aside.lead')}</p>
+				<p>{t('contact.aside.hi')}</p>
+				<a class="contact-email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+				<div class="contact-links">
+					<a href={SOCIAL_LINKS.github} target="_blank" rel="noopener">GitHub</a>
+					<a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+					<a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener">Twitter</a>
+				</div>
+			</aside>
 
-	.section-animate.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
+			<div class="contact-stack">
+				<div class="contact-tabs" role="tablist" aria-label="Contact options">
+					<button
+						type="button"
+						role="tab"
+						aria-selected={contactMode === 'write'}
+						class={`contact-tab ${contactMode === 'write' ? 'is-active' : ''}`}
+						onclick={() => (contactMode = 'write')}
+					>
+						<span class="tab-num">壱</span>
+						<span class="tab-label">{t('contact.tab.write')}</span>
+					</button>
+					<button
+						type="button"
+						role="tab"
+						aria-selected={contactMode === 'follow'}
+						class={`contact-tab ${contactMode === 'follow' ? 'is-active' : ''}`}
+						onclick={() => (contactMode = 'follow')}
+					>
+						<span class="tab-num">弐</span>
+						<span class="tab-label">{t('contact.tab.follow')}</span>
+					</button>
+				</div>
 
-	/* Scroll indicator animation */
-	@keyframes scroll-hint {
-		0%, 100% {
-			opacity: 0.4;
-			transform: translateY(0);
-		}
-		50% {
-			opacity: 0.8;
-			transform: translateY(4px);
-		}
-	}
+				{#if contactMode === 'write'}
+					{#if contactStatus === 'sent'}
+						<div class="contact-thanks">
+							<div class="thanks-stamp">浩</div>
+							<h3>{t('contact.thanks.title')} <em>{t('contact.thanks.titleEm')}</em></h3>
+							<p class="ack">{contactReply}</p>
+							<p class="ack-note">{t('contact.thanks.note')}</p>
+							<button type="button" class="contact-btn ghost" onclick={resetContact}>
+								{t('contact.thanks.again')}
+							</button>
+						</div>
+					{:else}
+						<form class="contact-form" onsubmit={sendContact}>
+							<p class="contact-lead">{t('contact.write.lead')}</p>
+							<label class="field">
+								<span class="field-label">{t('contact.field.name')}</span>
+								<input type="text" required bind:value={contactName} placeholder={t('contact.field.namePh')} />
+							</label>
+							<label class="field">
+								<span class="field-label">{t('contact.field.email')}</span>
+								<input type="email" required bind:value={contactEmail} placeholder={t('contact.field.emailPh')} />
+							</label>
+							<label class="field">
+								<span class="field-label">{t('contact.field.msg')}</span>
+								<textarea required rows="6" bind:value={contactMessage} placeholder={t('contact.field.msgPh')}></textarea>
+							</label>
+							<div class="contact-row">
+								<span class="contact-note">{t('contact.note.write')}</span>
+								<button type="submit" class="contact-btn" disabled={contactStatus === 'sending'}>
+									{contactStatus === 'sending' ? t('contact.btn.sending') : t('contact.btn.send')}
+								</button>
+							</div>
+						</form>
+					{/if}
+				{:else if subscribeStatus === 'sent'}
+					<div class="contact-thanks subscribe-thanks">
+						<div class="thanks-stamp">購</div>
+						<h3>{t('sub.thanks.title')} <em>{t('sub.thanks.titleEm')}</em></h3>
+						<p class="ack">{t('sub.thanks.note')}</p>
+						<button type="button" class="contact-btn ghost" onclick={resetSubscribe}>
+							{t('sub.thanks.again')}
+						</button>
+					</div>
+				{:else}
+					<form class="contact-form sub-form" onsubmit={subscribe}>
+						<p class="contact-lead">{t('sub.lead')}</p>
+						<label class="field">
+							<span class="field-label">{t('sub.field.email')}</span>
+							<input type="email" required bind:value={subscribeEmail} placeholder={t('sub.field.emailPh')} />
+						</label>
 
-	:global(.animate-scroll-hint) {
-		animation: scroll-hint 2s ease-in-out infinite;
-	}
-</style>
+						<fieldset class="sub-choice">
+							<legend class="field-label">{t('sub.choose')}</legend>
+							<div class="sub-choice-row">
+								{#each ['both', 'philo', 'guides'] as choice}
+									<label class={`sub-chip ${subscribeChoice === choice ? 'is-on' : ''}`}>
+										<input type="radio" name="sub-choice" value={choice} bind:group={subscribeChoice} />
+										<span>{t(`sub.opt.${choice}`)}</span>
+									</label>
+								{/each}
+							</div>
+						</fieldset>
+
+						<div class="contact-row">
+							<span class="contact-note">{t('sub.cadence')}</span>
+							<button type="submit" class="contact-btn" disabled={subscribeStatus === 'sending'}>
+								{subscribeStatus === 'sending' ? t('sub.btn.going') : t('sub.btn.go')}
+							</button>
+						</div>
+					</form>
+				{/if}
+			</div>
+		</div>
+	</section>
+</div>
