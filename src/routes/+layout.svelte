@@ -1,13 +1,25 @@
 <script lang="ts">
 	import Header from '../lib/components/header.svelte';
 	import '../style.css';
+	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale } from '$lib/paraglide/runtime';
 
 	let { children, data } = $props();
 
-	const lang = $derived((data.locale as 'en' | 'ja' | undefined) ?? getLocale());
+	const routeLang = $derived((data.locale as 'en' | 'ja' | undefined) ?? getLocale());
+	const lang = $derived($optimisticLocale ?? routeLang);
 	const footerCopy = $derived(lang === 'ja' ? '© 2026 Hiro · 京都' : '© 2026 Hiro · Kyoto');
-	const footerRight = $derived(lang === 'ja' ? '手仕事 · v 4.5' : 'made by hand · v 4.5');
+	const footerRight = $derived(lang === 'ja' ? 'v3.0' : 'v3.0');
+
+	$effect(() => {
+		if (typeof document !== 'undefined') {
+			document.documentElement.lang = lang;
+		}
+
+		if ($optimisticLocale === routeLang) {
+			optimisticLocale.set(null);
+		}
+	});
 </script>
 
 <svelte:head>

@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
 	import HeroCanvas from '$lib/components/HeroCanvas.svelte';
+	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { onMount } from 'svelte';
 
@@ -41,7 +42,7 @@
 			'hero.about2':
 				'I keep notes here on product, language learning, and the slower questions underneath the work.',
 			'hero.meta.based.k': 'Based',
-			'hero.meta.based.v': 'Kyoto / SF',
+			'hero.meta.based.v': 'Kyoto',
 			'hero.meta.since.k': 'Since',
 			'hero.meta.since.v': '2019',
 			'hero.meta.stack.k': 'Stack',
@@ -49,7 +50,7 @@
 			'hero.meta.reading.k': 'Reading',
 			'hero.meta.reading.v': 'Tanizaki · Berry',
 			'hero.scroll': '下へ',
-			'work.num': '弐 · 02',
+			'work.num': '02',
 			'work.title': 'Projects',
 			'work.titleEm': '— things I tend, and things I have set down.',
 			'work.filter.all': 'All',
@@ -60,7 +61,7 @@
 			'work.status.shipped': 'shipped',
 			'work.status.sunset': 'sunset',
 			'work.readMore': 'open →',
-			'writing.num': '参 · 03',
+			'writing.num': '03',
 			'writing.title': 'Two notebooks',
 			'writing.titleEm': '— one with the machines, one without.',
 			'writing.guides': './ai-guides',
@@ -69,7 +70,7 @@
 			'writing.philoJP': '手 書 き',
 			'writing.minRead': '~ 6 min',
 			'writing.dateAi': '04 · 2026',
-			'contact.num': '肆 · 04',
+			'contact.num': '04',
 			'contact.title': 'Stay in touch',
 			'contact.titleEm': '— write me, or follow along.',
 			'contact.tab.write': 'Write me · お便り',
@@ -121,7 +122,7 @@
 			'hero.about1.b': '道具をつくる人と仕事をしています。',
 			'hero.about2': 'ここには、プロダクト、言語学習、そして作る理由についての覚え書きを置いています。',
 			'hero.meta.based.k': '拠点',
-			'hero.meta.based.v': '京都 / サンフランシスコ',
+			'hero.meta.based.v': '京都',
 			'hero.meta.since.k': '開始',
 			'hero.meta.since.v': '2019年',
 			'hero.meta.stack.k': '手段',
@@ -129,7 +130,7 @@
 			'hero.meta.reading.k': '読書',
 			'hero.meta.reading.v': '谷崎 · ベリー',
 			'hero.scroll': '下へ',
-			'work.num': '弐 · 02',
+			'work.num': '02',
 			'work.title': 'プロジェクト',
 			'work.titleEm': '— 手入れしているもの、置いたもの。',
 			'work.filter.all': 'すべて',
@@ -140,7 +141,7 @@
 			'work.status.shipped': '公開済',
 			'work.status.sunset': '手放した',
 			'work.readMore': '開く →',
-			'writing.num': '参 · 03',
+			'writing.num': '03',
 			'writing.title': '二冊のノート',
 			'writing.titleEm': '— 機械と。機械なしで。',
 			'writing.guides': './ai-guides',
@@ -149,7 +150,7 @@
 			'writing.philoJP': '手 書 き',
 			'writing.minRead': '約 6 分',
 			'writing.dateAi': '2026 · 04',
-			'contact.num': '肆 · 04',
+			'contact.num': '04',
 			'contact.title': 'これからも',
 			'contact.titleEm': '— 手紙でも、購読でも。',
 			'contact.tab.write': 'お便りを書く',
@@ -364,13 +365,15 @@
 	let subscribeChoice = 'both';
 	let subscribeStatus: 'idle' | 'sending' | 'sent' = 'idle';
 	let visiblePieces = PIECES;
+	let t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
+	let statusLabel = (status: Status) => t(`work.status.${status}`);
 
-	$: lang = (($page.data.locale as Locale | undefined) ?? getLocale()) as Locale;
+	$: lang = ($optimisticLocale ?? (($page.data.locale as Locale | undefined) ?? getLocale())) as Locale;
 	$: visiblePieces = filter === 'all' ? PIECES : PIECES.filter((piece) => piece.status === filter);
+	$: t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
+	$: statusLabel = (status: Status) => t(`work.status.${status}`);
 
-	const t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	const countFor = (status: Filter) => (status === 'all' ? PIECES.length : PIECES.filter((piece) => piece.status === status).length);
-	const statusLabel = (status: Status) => t(`work.status.${status}`);
 	const scrapStyle = (piece: Piece, index: number) =>
 		`left:${piece.pos.left};top:${piece.pos.top};width:${piece.pos.width};transform:rotate(${piece.pos.rotate}deg);z-index:${8 - index}`;
 
@@ -656,7 +659,7 @@
 						class={`contact-tab ${contactMode === 'write' ? 'is-active' : ''}`}
 						onclick={() => (contactMode = 'write')}
 					>
-						<span class="tab-num">壱</span>
+						<span class="tab-num">01</span>
 						<span class="tab-label">{t('contact.tab.write')}</span>
 					</button>
 					<button
@@ -666,7 +669,7 @@
 						class={`contact-tab ${contactMode === 'follow' ? 'is-active' : ''}`}
 						onclick={() => (contactMode = 'follow')}
 					>
-						<span class="tab-num">弐</span>
+						<span class="tab-num">02</span>
 						<span class="tab-label">{t('contact.tab.follow')}</span>
 					</button>
 				</div>

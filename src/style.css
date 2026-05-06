@@ -224,38 +224,41 @@ main {
 .nav-right {
 	display: flex;
 	align-items: center;
-	gap: 1.25rem;
+	gap: clamp(0.625rem, 1.35vw, 1.45rem);
 }
 
 .nav-right > a:not(.icon-link) {
+	min-height: 2.25rem;
+	display: inline-flex;
+	align-items: center;
 	font-family: var(--f-mono);
 	font-size: 0.6875rem;
 	text-transform: uppercase;
 	color: var(--ink-soft);
 	position: relative;
-	padding: 0.25rem 0;
-	transition: color 0.25s;
+	padding: 0 0.625rem;
+	border: 1px solid transparent;
+	border-radius: 999px;
+	transition:
+		background 0.2s,
+		border-color 0.2s,
+		color 0.2s,
+		transform 0.2s;
 }
 
 .nav-right > a:not(.icon-link):hover {
+	background: color-mix(in oklch, var(--paper-2) 52%, transparent);
+	border-color: color-mix(in oklch, var(--rule) 84%, transparent);
 	color: var(--ink);
+	transform: translateY(-1px);
 }
 
 .nav-right > a:not(.icon-link)::after {
-	content: '';
-	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	height: 1px;
-	background: var(--shu);
-	transform: scaleX(0);
-	transform-origin: left;
-	transition: transform 0.3s ease;
+	display: none;
 }
 
 .nav-right > a:not(.icon-link):hover::after {
-	transform: scaleX(1);
+	display: none;
 }
 
 .icon-link {
@@ -267,12 +270,18 @@ main {
 	align-items: center;
 	justify-content: center;
 	color: var(--ink-soft);
+	border: 1px solid transparent;
+	border-radius: 999px;
 	transition:
+		background 0.2s,
+		border-color 0.2s,
 		color 0.2s,
 		transform 0.2s;
 }
 
 .icon-link:hover {
+	background: color-mix(in oklch, var(--paper-2) 52%, transparent);
+	border-color: color-mix(in oklch, var(--rule) 84%, transparent);
 	color: var(--ink);
 	transform: translateY(-1px);
 }
@@ -282,16 +291,10 @@ main {
 	height: 1rem;
 }
 
-.icon-link.text-link {
-	width: auto;
-	font-family: var(--f-mono);
-	font-size: 0.6875rem;
-	text-transform: uppercase;
-}
-
 .theme-toggle {
 	appearance: none;
-	border: 0;
+	border: 1px solid transparent;
+	border-radius: 999px;
 	background: transparent;
 	min-width: 2.75rem;
 	min-height: 2.75rem;
@@ -304,13 +307,17 @@ main {
 	cursor: pointer;
 	font-size: 0.875rem;
 	transition:
+		background 0.2s,
+		border-color 0.2s,
 		color 0.2s,
 		transform 0.3s;
 }
 
 .theme-toggle:hover {
+	background: color-mix(in oklch, var(--paper-2) 52%, transparent);
+	border-color: color-mix(in oklch, var(--rule) 84%, transparent);
 	color: var(--ink);
-	transform: rotate(15deg);
+	transform: translateY(-1px) rotate(15deg);
 }
 
 .lang-toggle {
@@ -332,12 +339,21 @@ main {
 
 .lang-toggle:hover {
 	border-color: var(--moss-green);
+	background: color-mix(in oklch, var(--paper-2) 46%, transparent);
 	color: var(--ink);
 }
 
 .lang-toggle a {
 	color: var(--ink-mute);
 	padding: 0.625rem 0.25rem;
+	border-radius: 999px;
+	transition:
+		background 0.2s,
+		color 0.2s;
+}
+
+.lang-toggle a:hover {
+	background: color-mix(in oklch, var(--paper) 72%, transparent);
 }
 
 .lang-toggle a.active {
@@ -1557,14 +1573,6 @@ html[lang='ja'] .col-guides .post h4 {
 
 	.social-link {
 		display: none;
-	}
-
-	.mail-link {
-		width: auto;
-		padding-inline: 0.75rem;
-		border: 1px solid color-mix(in oklch, var(--rule) 72%, transparent);
-		border-radius: 999px;
-		background: color-mix(in oklch, var(--paper-2) 44%, transparent);
 	}
 
 	.hero {
