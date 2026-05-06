@@ -16,8 +16,8 @@
 	const jaHref = $derived(localizeHref(baseHref, { locale: 'ja' }));
 	const copy = $derived(
 		lang === 'ja'
-			? { writing: '読みもの', contact: 'お問い合わせ', langTitle: '言語を切り替え' }
-			: { writing: 'Writing', contact: 'Contact', langTitle: 'Switch language' }
+			? { writing: '読みもの', about: '自己紹介', contact: 'お問い合わせ', langTitle: '言語を切り替え' }
+			: { writing: 'Writing', about: 'About', contact: 'Contact', langTitle: 'Switch language' }
 	);
 
 	function switchLocale(event: MouseEvent, locale: SiteLocale, href: string) {
@@ -44,6 +44,7 @@
 
 	<div class="nav-right">
 		<a class="nav-section-link" href={localizeHref('/#writing', { locale: lang })}>{copy.writing}</a>
+		<a class="nav-section-link" href={localizeHref('/about', { locale: lang })}>{copy.about}</a>
 		<a class="nav-section-link" href={localizeHref('/#contact', { locale: lang })}>{copy.contact}</a>
 
 		<div class="lang-toggle" role="group" aria-label={copy.langTitle}>

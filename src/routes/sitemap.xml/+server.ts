@@ -12,6 +12,7 @@ interface EssayMetadata {
 const STATIC_ROUTES: { path: string; changefreq: string; priority: string }[] = [
 	{ path: '/', changefreq: 'monthly', priority: '1.0' },
 	{ path: '/essays', changefreq: 'weekly', priority: '0.9' },
+	{ path: '/about', changefreq: 'monthly', priority: '0.85' },
 	{ path: '/ai-guides', changefreq: 'weekly', priority: '0.8' },
 	{ path: '/case-study', changefreq: 'monthly', priority: '0.6' },
 	{ path: '/corporate', changefreq: 'monthly', priority: '0.5' }
