@@ -1,29 +1,32 @@
 <script lang="ts">
-	import mermaid from 'mermaid';
 	import { onMount } from 'svelte';
+	import type { Mermaid } from 'mermaid';
 
 	let { chart = '' } = $props();
 	let container: HTMLDivElement;
-	let renderId = 'mermaid-' + Math.random().toString(36).slice(2, 9);
+	const renderId = 'mermaid-' + Math.random().toString(36).slice(2, 9);
+	let mermaid: Mermaid | null = null;
 
 	onMount(async () => {
+		const mod = await import('mermaid');
+		mermaid = mod.default;
 		mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
 		await renderChart();
 	});
 
 	async function renderChart() {
-		if (!container) return;
+		if (!container || !mermaid) return;
 		try {
 			const { svg } = await mermaid.render(renderId, chart);
 			container.innerHTML = svg;
 		} catch (error) {
 			console.error('Mermaid render error:', error);
-			if (container) container.innerHTML = `<pre class="text-red-500">${error}</pre>`;
+			if (container) container.innerHTML = `<pre class="text-red-500">${String(error)}</pre>`;
 		}
 	}
 
 	$effect(() => {
-		if (chart) renderChart();
+		if (chart && mermaid) renderChart();
 	});
 </script>
 

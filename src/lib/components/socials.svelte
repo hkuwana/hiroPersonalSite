@@ -12,7 +12,7 @@
 		href={SOCIAL_LINKS.quora}
 		target="_blank"
 		rel="noopener"
-		class="social-link"
+		class="social-link quora-link"
 		title="Check my answers on Quora"
 		aria-label="Quora"
 	>
@@ -61,17 +61,26 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 36px;
-		height: 36px;
-		color: var(--color-text-secondary);
-		border-radius: var(--radius-sm);
+		min-width: 44px;
+		min-height: 44px;
+		color: oklch(var(--bc) / 0.7);
+		border-radius: 0.375rem;
 		transition: all var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.social-link:hover {
-		color: var(--color-text);
-		background: var(--color-bg-muted);
+		color: oklch(var(--bc));
+		background: oklch(var(--b2));
 		transform: translateY(-2px);
+	}
+
+	.quora-link {
+		color: #b92b27;
+	}
+
+	.quora-link:hover {
+		color: #b92b27;
+		background: oklch(var(--b2));
 	}
 
 	.social-link :global(svg) {

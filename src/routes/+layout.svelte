@@ -29,11 +29,13 @@
 		href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap"
 		rel="stylesheet"
 	/>
+	<link rel="alternate" type="application/rss+xml" title="Hiro Kuwana — Essays" href="/feed.xml" />
 </svelte:head>
 
 <div class="app-shell">
+	<a href="#main" class="skip-link">Skip to content</a>
 	<Header />
-	<main>
+	<main id="main">
 		{@render children()}
 	</main>
 	<footer class="site-footer">
@@ -42,3 +44,22 @@
 		<span class="right">{footerRight}</span>
 	</footer>
 </div>
+
+<style>
+	.skip-link {
+		position: fixed;
+		top: -100%;
+		left: 0;
+		z-index: 9999;
+		background: oklch(var(--b1));
+		color: oklch(var(--bc));
+		padding: 0.75rem 1.5rem;
+		font-weight: 600;
+		text-decoration: underline;
+		transition: top 0.2s ease;
+	}
+
+	.skip-link:focus {
+		top: 0;
+	}
+</style>

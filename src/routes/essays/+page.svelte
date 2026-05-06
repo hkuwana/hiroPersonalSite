@@ -1,51 +1,69 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
+	import * as m from '$lib/paraglide/messages';
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 
-	export let data: PageData;
+	let { data } = $props<{ data: PageData }>();
 
-	let visible = false;
+	let visible = $state(false);
+
+	const locale = $derived(getLocale());
 
 	onMount(() => {
-		// Trigger animation after mount
-		requestAnimationFrame(() => {
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 			visible = true;
-		});
+		} else {
+			requestAnimationFrame(() => { visible = true; });
+		}
 	});
 </script>
 
 <svelte:head>
-	<title>Essays - Hiro Kuwana</title>
+	<title>{m.nav_essays()} - Hiro Kuwana</title>
 	<meta name="description" content="Essays on technology, startups, education, and building things that last." />
-	<meta property="og:title" content="Essays - Hiro Kuwana" />
+	<meta property="og:title" content="{m.nav_essays()} - Hiro Kuwana" />
 	<meta property="og:description" content="Essays on technology, startups, education, and building things that last." />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://hirokuwana.com/essays" />
 	<link rel="canonical" href="https://hirokuwana.com/essays" />
 </svelte:head>
 
-<article class="essays-page" class:visible>
-	<header class="page-header">
-		<h1 class="page-title text-primary">Essays</h1>
-		<p class="page-subtitle text-secondary">Thoughts on technology, startups, and building things that matter</p>
+<main
+	class="mx-auto max-w-[720px] px-6 pt-12 pb-16 transition-all duration-[600ms] [transition-timing-function:var(--ease-out-expo)] sm:px-8 sm:pt-16 sm:pb-24 {visible ? 'translate-y-0 opacity-100' : 'translate-y-5 opacity-0'}"
+>
+	<header class="mb-12 text-center">
+		<h1 class="text-primary m-0 mb-3 text-[2rem] font-bold tracking-[-0.03em] sm:text-[2.5rem]">{m.nav_essays()}</h1>
+		<p class="text-secondary m-0 text-[1.0625rem]">Thoughts on technology, startups, and building things that matter</p>
 	</header>
 
-	<div class="essays-list">
+	<div class="flex flex-col gap-3">
 		{#each data.essays as essay, i}
 			<a
-				href="/essays/{essay.slug}"
-				class="essay-card"
-				style="--delay: {i * 0.05}s"
+				href={localizeHref(`/essays/${essay.slug}`)}
+				class="group bg-base-100 border-base-content/10 hover:bg-base-200 hover:border-base-content/[0.12] flex flex-col items-start gap-2 rounded-2xl border px-5 py-4 no-underline transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)] hover:translate-x-1 hover:shadow-md sm:flex-row sm:items-start sm:gap-6 sm:px-6 sm:py-5"
+				style="transition-delay: {i * 0.05}s"
 			>
-				<time class="essay-date text-base-content/50">
-					{new Date(essay.date).toLocaleDateString('en-US', {
+				<time
+					datetime={essay.date}
+					class="text-base-content/50 shrink-0 text-[0.8125rem] sm:min-w-[120px] sm:pt-[0.15rem]"
+				>
+					{new Date(essay.date).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
 						year: 'numeric',
 						month: 'long',
 						day: 'numeric'
 					})}
 				</time>
-				<h2 class="essay-title text-primary hover:text-accent">{essay.title}</h2>
-				<div class="essay-arrow">
+				<div class="flex flex-1 flex-col gap-1">
+					<h2 class="text-primary group-hover:text-accent m-0 text-[1.0625rem] font-medium transition-colors duration-[250ms] [transition-timing-function:var(--ease-out-expo)]">
+						{essay.title}
+						{#if essay.isDraft}<span class="text-warning border-warning/40 ml-2 rounded-full border px-2 py-0.5 align-middle text-[0.625rem] font-semibold uppercase tracking-wider">Draft</span>{/if}
+					</h2>
+					{#if essay.description}
+						<p class="text-base-content/50 m-0 text-[0.875rem] leading-[1.5]">{essay.description}</p>
+					{/if}
+				</div>
+				<div aria-hidden="true" class="text-base-content/50 group-hover:text-accent hidden -translate-x-2 opacity-0 transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover:translate-x-0 group-hover:opacity-100 sm:block sm:pt-[0.15rem]">
 					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
 						<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 					</svg>
@@ -54,164 +72,12 @@
 		{/each}
 	</div>
 
-	<footer class="page-footer">
-		<a href="/" class="back-link text-secondary hover:text-accent">
-			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+	<footer class="border-base-content/10 mt-16 border-t pt-8">
+		<a href={localizeHref('/')} class="group/back text-secondary hover:text-accent inline-flex items-center gap-2 text-[0.9375rem] font-medium no-underline transition-all duration-[250ms] [transition-timing-function:var(--ease-out-expo)]">
+			<svg aria-hidden="true" class="transition-transform duration-[250ms] [transition-timing-function:var(--ease-out-expo)] group-hover/back:-translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<span>Back to home</span>
+			<span>{m.nav_home()}</span>
 		</a>
 	</footer>
-</article>
-
-<style>
-	.essays-page {
-		max-width: 720px;
-		margin: 0 auto;
-		padding: 4rem 2rem 6rem;
-		opacity: 0;
-		transform: translateY(20px);
-		transition: all 0.6s var(--ease-out-expo);
-	}
-
-	.essays-page.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	/* Header */
-	.page-header {
-		margin-bottom: 3rem;
-		text-align: center;
-	}
-
-	.page-title {
-		font-size: 2.5rem;
-		font-weight: 700;
-		color: var(--color-text);
-		margin: 0 0 0.75rem;
-		letter-spacing: -0.03em;
-	}
-
-	.page-subtitle {
-		font-size: 1.0625rem;
-		color: var(--color-text-secondary);
-		margin: 0;
-	}
-
-	/* Essays List */
-	.essays-list {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-
-	.essay-card {
-		display: flex;
-		align-items: center;
-		gap: 1.5rem;
-		padding: 1.25rem 1.5rem;
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
-		text-decoration: none;
-		transition: all var(--duration-normal) var(--ease-out-expo);
-		transition-delay: var(--delay);
-	}
-
-	.essay-card:hover {
-		background: var(--color-bg-subtle);
-		border-color: rgba(0, 0, 0, 0.12);
-		transform: translateX(4px);
-		box-shadow: var(--shadow-md);
-	}
-
-	.essay-date {
-		font-size: 0.8125rem;
-		color: var(--color-text-tertiary);
-		min-width: 120px;
-		flex-shrink: 0;
-	}
-
-	.essay-title {
-		flex: 1;
-		font-size: 1.0625rem;
-		font-weight: 500;
-		color: var(--color-text);
-		margin: 0;
-		transition: color var(--duration-normal) var(--ease-out-expo);
-	}
-
-	.essay-card:hover .essay-title {
-		color: var(--color-accent);
-	}
-
-	.essay-arrow {
-		color: var(--color-text-tertiary);
-		opacity: 0;
-		transform: translateX(-8px);
-		transition: all var(--duration-normal) var(--ease-out-expo);
-	}
-
-	.essay-card:hover .essay-arrow {
-		opacity: 1;
-		transform: translateX(0);
-		color: var(--color-accent);
-	}
-
-	/* Footer */
-	.page-footer {
-		margin-top: 4rem;
-		padding-top: 2rem;
-		border-top: 1px solid var(--color-border);
-	}
-
-	.back-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		font-size: 0.9375rem;
-		font-weight: 500;
-		color: var(--color-text-secondary);
-		text-decoration: none;
-		transition: all var(--duration-normal) var(--ease-out-expo);
-	}
-
-	.back-link:hover {
-		color: var(--color-accent);
-	}
-
-	.back-link:hover svg {
-		transform: translateX(-4px);
-	}
-
-	.back-link svg {
-		transition: transform var(--duration-normal) var(--ease-out-expo);
-	}
-
-	/* Responsive */
-	@media (max-width: 640px) {
-		.essays-page {
-			padding: 3rem 1.5rem 4rem;
-		}
-
-		.page-title {
-			font-size: 2rem;
-		}
-
-		.essay-card {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 0.5rem;
-			padding: 1rem 1.25rem;
-		}
-
-		.essay-date {
-			min-width: auto;
-		}
-
-		.essay-arrow {
-			display: none;
-		}
-	}
-</style>
+</main>

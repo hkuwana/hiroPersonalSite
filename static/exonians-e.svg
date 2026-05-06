@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Exonians in Japan">
+	<title>Exonians in Japan</title>
+	<rect width="96" height="96" rx="18" fill="#9E1B32" />
+	<text
+		x="50%"
+		y="52%"
+		dominant-baseline="central"
+		text-anchor="middle"
+		font-family="Georgia, 'Times New Roman', serif"
+		font-weight="700"
+		font-size="64"
+		letter-spacing="-0.02em"
+		fill="#ffffff"
+	>E</text>
+</svg>
