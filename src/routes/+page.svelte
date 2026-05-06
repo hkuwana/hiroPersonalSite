@@ -542,7 +542,7 @@
 <section class="hero" data-screen-label="01 Landing">
 	<HeroCanvas />
 
-	<div class="season-mark">
+	<div class="season-mark mb-2">
 		<span class="stamp">浩</span>
 		<span>{t('hero.season')}</span>
 	</div>
