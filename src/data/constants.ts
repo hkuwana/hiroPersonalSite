@@ -152,7 +152,7 @@ export const FAQS = [
 	{
 		question: "What's a hill you will die on?",
 		answer:
-			"Cowboy Bebop and Paprika are masterpieces—no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read The Brothers Karamazov. It will change how you see the world.",
+			"Cowboy Bebop and Paprika are masterpieces, no debate. Also, if you're anywhere from your late teens through your early thirties, you absolutely must read The Brothers Karamazov. It will change how you see the world.",
 	},
 	{
 		question: 'What is Hiro Kuwana working on?',

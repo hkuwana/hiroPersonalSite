@@ -18,16 +18,20 @@
 		href: string;
 		external?: boolean;
 		title: string;
+		titleJa: string;
 		subtitle: string;
+		subtitleJa: string;
 		role: string;
+		roleJa: string;
 		summary: string;
+		summaryJa: string;
 		logo: string;
 		pos: { left: string; top: string; width: string; rotate: number };
 	};
 
 	const COPY: Record<Locale, Record<string, string>> = {
 		en: {
-			'hero.season': '初夏 · early summer · 2026',
+			'hero.season': '夏 · summer · 2026',
 			'hero.vert': '人 を 拡 張 す る 道 具',
 			'hero.title.l1': 'Building',
 			'hero.title.tools': 'tools',
@@ -35,24 +39,24 @@
 			'hero.title.l3': 'humanity',
 			'hero.tagline':
 				"I'm Hiro Kuwana (桑名浩行). I make practical, opinionated AI utilities, quietly built and carefully made, for people who would rather think than scroll.",
-			'hero.now': 'Open · two seats · this season',
-			'hero.about1.a': 'I run a tiny studio of one and take a few focused projects each year, usually with founders building something',
+			'hero.now': 'Open · three seats · this season',
+			'hero.about1.a': 'I write and make things. I take on a few focused projects each season, usually with founders or teams building human-centric products with AI.',
 			'hero.about1.strong': 'AI-shaped that needs to feel less like a chatbot',
 			'hero.about1.b': 'and more like a tool with taste.',
 			'hero.about2':
 				'I keep notes here on product, language learning, and the slower questions underneath the work.',
 			'hero.meta.based.k': 'Based',
-			'hero.meta.based.v': 'Kyoto',
+			'hero.meta.based.v': 'Tokyo · New York',
 			'hero.meta.since.k': 'Since',
 			'hero.meta.since.v': '2019',
 			'hero.meta.stack.k': 'Stack',
 			'hero.meta.stack.v': 'LLMs · TypeScript · taste',
 			'hero.meta.reading.k': 'Reading',
-			'hero.meta.reading.v': 'Tanizaki · Berry',
-			'hero.scroll': '下へ',
+			'hero.meta.reading.v': 'Bulgakov · Mishima',
+			'hero.scroll': 'Scroll',
 			'work.num': '02',
 			'work.title': 'Projects',
-			'work.titleEm': '— things I tend, and things I have set down.',
+			'work.titleEm': 'Things I tend, and things I have set down.',
 			'work.filter.all': 'All',
 			'work.filter.active': 'In hand',
 			'work.filter.shipped': 'Shipped',
@@ -63,7 +67,7 @@
 			'work.readMore': 'open →',
 			'writing.num': '03',
 			'writing.title': 'Two notebooks',
-			'writing.titleEm': '— one with the machines, one without.',
+			'writing.titleEm': 'one with the machines, one without.',
 			'writing.guides': './ai-guides',
 			'writing.guidesJP': '道 具',
 			'writing.philo': 'The Long Way',
@@ -72,7 +76,7 @@
 			'writing.dateAi': '04 · 2026',
 			'contact.num': '04',
 			'contact.title': 'Stay in touch',
-			'contact.titleEm': '— write me, or follow along.',
+			'contact.titleEm': 'write me, or follow along.',
 			'contact.tab.write': 'Write me · お便り',
 			'contact.tab.follow': 'Follow new posts · 購読',
 			'contact.aside.lead': 'Open for one or two collaborations through autumn. Short engagements, deep work, real outcomes.',
@@ -88,7 +92,7 @@
 			'contact.btn.send': 'Send · 送る →',
 			'contact.btn.sending': 'Sending...',
 			'contact.thanks.title': 'Received',
-			'contact.thanks.titleEm': '— ありがとう.',
+			'contact.thanks.titleEm': 'ありがとう.',
 			'contact.thanks.note': 'Your mail client should also open with a copy you can send directly.',
 			'contact.thanks.again': 'Send another',
 			'sub.lead':
@@ -103,47 +107,47 @@
 			'sub.btn.go': 'Subscribe · 購読 →',
 			'sub.btn.going': 'Subscribing...',
 			'sub.thanks.title': 'Subscribed',
-			'sub.thanks.titleEm': '— よろしく.',
+			'sub.thanks.titleEm': 'よろしく.',
 			'sub.thanks.note': "I'll send a short note when the next piece goes up. That's the entire system.",
 			'sub.thanks.again': 'Use a different email'
 		},
 		ja: {
-			'hero.season': '初夏 · 2026年',
+			'hero.season': '夏 · summer · 2026',
 			'hero.vert': '人 を 拡 張 す る 道 具',
 			'hero.title.l1': '人を',
 			'hero.title.tools': '拡張する',
 			'hero.title.l2': '',
 			'hero.title.l3': '道具をつくる',
 			'hero.tagline':
-				'桑名浩行 (Hiro Kuwana) です。実用的で意志のある AI の道具を、静かに、丁寧につくっています。スクロールするより、考えたい人のために。',
-			'hero.now': '受付中 · 二件 · 今季',
-			'hero.about1.a': '一人の小さなスタジオを営んでいます。年に数件、',
-			'hero.about1.strong': 'AI を使いながらもチャットボット然としていない',
-			'hero.about1.b': '道具をつくる人と仕事をしています。',
-			'hero.about2': 'ここには、プロダクト、言語学習、そして作る理由についての覚え書きを置いています。',
+				'桑名浩行 (Hiro Kuwana) です。実用的で、ちょっと意地のある AI の道具を、静かに、ていねいに作っています。スクロールするより、考えたい人のために。',
+			'hero.now': '受付中 · 三件 · 今季',
+			'hero.about1.a': '書いたり、つくったりしています。季節ごとに数件、AI を使った人中心のプロダクトをつくるファウンダーやチームと組みます。目指しているのは、',
+			'hero.about1.strong': 'チャットボットっぽくなく、',
+			'hero.about1.b': '使っていてしっくりくる道具です。',
+			'hero.about2': 'ここでは、プロダクトや言語学習、そして仕事の奥にあるゆっくりした問いについて書いています。',
 			'hero.meta.based.k': '拠点',
-			'hero.meta.based.v': '京都',
+			'hero.meta.based.v': '東京 · ニューヨーク',
 			'hero.meta.since.k': '開始',
 			'hero.meta.since.v': '2019年',
 			'hero.meta.stack.k': '手段',
-			'hero.meta.stack.v': 'LLM · TypeScript · 趣味',
+			'hero.meta.stack.v': 'LLM · TypeScript · センス',
 			'hero.meta.reading.k': '読書',
-			'hero.meta.reading.v': '谷崎 · ベリー',
-			'hero.scroll': '下へ',
+			'hero.meta.reading.v': 'ブルガーコフ · 三島',
+			'hero.scroll': 'スクロール',
 			'work.num': '02',
 			'work.title': 'プロジェクト',
-			'work.titleEm': '— 手入れしているもの、置いたもの。',
+			'work.titleEm': '手をかけているもの、置いてきたもの。',
 			'work.filter.all': 'すべて',
-			'work.filter.active': '手入れ中',
-			'work.filter.shipped': '公開済',
-			'work.filter.sunset': '手放した',
-			'work.status.active': '手入れ中',
-			'work.status.shipped': '公開済',
-			'work.status.sunset': '手放した',
+			'work.filter.active': '進行中',
+			'work.filter.shipped': '公開済み',
+			'work.filter.sunset': '終了',
+			'work.status.active': '進行中',
+			'work.status.shipped': '公開済み',
+			'work.status.sunset': '終了',
 			'work.readMore': '開く →',
 			'writing.num': '03',
 			'writing.title': '二冊のノート',
-			'writing.titleEm': '— 機械と。機械なしで。',
+			'writing.titleEm': '一冊は機械と、もう一冊は手書きで。',
 			'writing.guides': './ai-guides',
 			'writing.guidesJP': '道 具',
 			'writing.philo': '回り道',
@@ -152,38 +156,38 @@
 			'writing.dateAi': '2026 · 04',
 			'contact.num': '04',
 			'contact.title': 'これからも',
-			'contact.titleEm': '— 手紙でも、購読でも。',
-			'contact.tab.write': 'お便りを書く',
-			'contact.tab.follow': '更新を購読する',
-			'contact.aside.lead': '今季は一、二件のお仕事をお受けしています。短い期間で、深く、確かな成果を。',
-			'contact.aside.hi': 'こんにちはの一言でも。届いた便りはすべて手で読み、たいてい数日のうちにお返事します。',
-			'contact.write.lead': 'いま手がけていること、よければ聞かせてください。テンプレートも自動化もありません。',
-			'contact.field.name': 'お名前',
-			'contact.field.email': 'メールアドレス',
-			'contact.field.msg': 'ご用件',
-			'contact.field.namePh': 'お名前',
+			'contact.titleEm': 'お便りでも、購読でも。',
+			'contact.tab.write': 'お便りを書く · Write',
+			'contact.tab.follow': '更新を購読 · Follow',
+			'contact.aside.lead': '秋までに一、二件、ご一緒できます。短い期間で、深く、ちゃんと成果を。',
+			'contact.aside.hi': 'ひとことの挨拶でも歓迎です。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
+			'contact.write.lead': 'いま何をやっているか、教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
+			'contact.field.name': '名前 · Name',
+			'contact.field.email': 'メール · Email',
+			'contact.field.msg': '用件 · Message',
+			'contact.field.namePh': '名前',
 			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': '何を作っているか、あるいは一言だけでも。',
-			'contact.note.write': 'メールクライアントが開きます。このページから第三者へ送信はしません。',
-			'contact.btn.send': '送る →',
+			'contact.field.msgPh': 'いま何を作っているか、ひとことでも。',
+			'contact.note.write': 'お使いのメールアプリが代わりに開きます。このページから第三者には何も送りません。',
+			'contact.btn.send': '送る · Send →',
 			'contact.btn.sending': '送信中...',
 			'contact.thanks.title': '届きました',
-			'contact.thanks.titleEm': '— ありがとう。',
-			'contact.thanks.note': 'メールクライアントにも控えが開きます。そのままお送りいただけます。',
+			'contact.thanks.titleEm': 'ありがとう。',
+			'contact.thanks.note': 'メールアプリにも下書きが開くので、そのまま送れます。',
 			'contact.thanks.again': 'もう一通',
-			'sub.lead': 'ひと月に数本、随筆やプロダクトの覚え書き、AI の実践メモを書いています。新しいものが出たときに短く一通だけ。',
-			'sub.field.email': 'メールアドレス',
+			'sub.lead': '月に数本書いています。じっくり書いた随筆、プロダクトのメモ、AI の実践ワークフロー。新しいものが出たときに、短いメールを一通だけ送ります。',
+			'sub.field.email': 'メール · Email',
 			'sub.field.emailPh': 'you@somewhere.com',
-			'sub.choose': '購読するもの:',
+			'sub.choose': '読みたいもの:',
 			'sub.opt.both': '両方',
 			'sub.opt.philo': '回り道',
 			'sub.opt.guides': './ai-guides',
-			'sub.cadence': '月に二度ほど。プレーンテキスト。ワンクリックで解除できます。',
-			'sub.btn.go': '購読する →',
+			'sub.cadence': '月に二回ほど。プレーンテキスト。解除はワンクリック。',
+			'sub.btn.go': '購読する · Subscribe →',
 			'sub.btn.going': '登録中...',
 			'sub.thanks.title': '登録しました',
-			'sub.thanks.titleEm': '— よろしく。',
-			'sub.thanks.note': '次の文章が出たら、短く一通だけ送ります。仕掛けはそれだけです。',
+			'sub.thanks.titleEm': 'よろしく。',
+			'sub.thanks.note': '次の文章が出たら、短いメールを一通送ります。仕組みはそれだけです。',
 			'sub.thanks.again': '別のメールで登録'
 		}
 	};
@@ -199,26 +203,34 @@
 		{
 			id: 'kaiwa',
 			status: 'active',
-			year: '2024 - now',
+			year: '2025 - now',
 			href: PERSONAL.companyWebsite,
 			external: true,
 			title: 'Kaiwa',
-			subtitle: 'language learning, reimagined',
+			titleJa: 'Kaiwa',
+			subtitle: 'augment language coaches',
+			subtitleJa: '語学コーチを拡張する',
 			role: 'Founder + Product',
-			summary: 'Bite-sized AI conversations for people who want to practice without turning learning into another feed.',
+			roleJa: 'ファウンダー + プロダクト',
+			summary: 'A platform where language learners speak daily with AI, and coaches can architect and individualize learner journeys',
+			summaryJa: '学習者が AI と毎日話し、コーチは学習の道筋を設計して一人ひとりに合わせられるプラットフォーム。',
 			logo: asset('/kaiwa_logo.png'),
 			pos: { left: '0%', top: '0%', width: '38%', rotate: -2 }
 		},
 		{
 			id: 'exonians',
 			status: 'shipped',
-			year: '2024',
+			year: '2026',
 			href: 'https://exoniansjapan.com/',
 			external: true,
 			title: 'Exonians in Japan',
+			titleJa: 'Exonians in Japan',
 			subtitle: 'a fast community platform',
+			subtitleJa: '素早く立ち上げた同窓会サイト',
 			role: 'Design + Build',
-			summary: 'A small, practical alumni site built quickly enough to prove that execution speed can be a design feature.',
+			roleJa: 'デザイン + 開発',
+			summary: 'A small, practical alumni site I built on a subway ride home. Focused on photos and community building',
+			summaryJa: '帰りの電車の中で作った、小さくて実用的な同窓会サイト。写真と、人のつながりに集中。',
 			logo: asset('/icon-512x512.png'),
 			pos: { left: '52%', top: '4%', width: '38%', rotate: 1.5 }
 		},
@@ -229,21 +241,29 @@
 			href: 'https://github.com/hkuwana/Kaiwa-reddit-scout',
 			external: true,
 			title: 'Kaiwa Reddit Scout',
+			titleJa: 'Kaiwa Reddit Scout',
 			subtitle: 'signal-finding for language learners',
+			subtitleJa: '語学学習者のシグナルを探す',
 			role: 'Automation + Research',
+			roleJa: '自動化 + リサーチ',
 			summary: 'A local workflow that connects Reddit, Drive, and Gemini to find language learners with real intent.',
+			summaryJa: 'Reddit、Drive、Gemini をつないで、本気で学びたい人を見つけるローカルのワークフロー。',
 			logo: asset('/kaiwa_logo.png'),
 			pos: { left: '8%', top: '38%', width: '36%', rotate: -1 }
 		},
 		{
 			id: 'flybyrd',
 			status: 'sunset',
-			year: '2023 - 2024',
+			year: '2024 - 2025',
 			href: '#contact',
 			title: 'Flybyrd',
-			subtitle: 'AI for venture capital',
+			titleJa: 'Flybyrd',
+			subtitle: 'AI for product managers',
+			subtitleJa: 'プロダクトマネージャー向け AI',
 			role: 'Founder',
-			summary: 'A deal-flow and startup analysis product. Useful lessons, deliberately closed to focus the studio.',
+			roleJa: 'ファウンダー',
+			summary: 'Organizing scattered feedback for product managers. A practical, private dashboard for the signals that matter.',
+			summaryJa: 'PM のためにバラバラのフィードバックを整理する、実用的で非公開のダッシュボード。大事なシグナルだけを残す。',
 			logo: asset('/flybyrd_logo.png'),
 			pos: { left: '54%', top: '46%', width: '40%', rotate: 1 }
 		},
@@ -253,9 +273,13 @@
 			year: '2021 - 2023',
 			href: '#contact',
 			title: 'Pebblr',
-			subtitle: 'connecting nonprofits and donors',
+			titleJa: 'Pebblr',
+			subtitle: 'connecting nonprofits and donors/volunteers',
+			subtitleJa: 'NPO と寄付者・ボランティアをつなぐ',
 			role: 'Product + Ops',
+			roleJa: 'プロダクト + 運営',
 			summary: 'A nonprofit donor experiment that taught me where human trust matters more than platform mechanics.',
+			summaryJa: 'NPO の寄付者向けの実験。プラットフォームの仕組みより、人と人の信頼の方がずっと大事だと教えてくれた。',
 			logo: asset('/icon-512x512.png'),
 			pos: { left: '22%', top: '78%', width: '42%', rotate: -1.5 }
 		}
@@ -302,7 +326,7 @@
 			},
 			{
 				tag: 'ツール',
-				title: 'ローカル中心のプロンプト管理 — テキスト + git だけで',
+				title: 'ローカル中心のプロンプト管理（テキスト + git だけ）',
 				desc: '凝った IDE はなし。フォルダと frontmatter と、編集として読める差分。',
 				snippet: '$ promptkit diff v0.3..v0.4 --semantic',
 				anchor: 'prompt-versioning'
@@ -459,20 +483,60 @@
 </script>
 
 <svelte:head>
-	<title>Hiro Kuwana — building tools that augment humanity</title>
+	<title>Hiro Kuwana · building tools that augment humanity</title>
 	<meta
 		name="description"
 		content="Hiro Kuwana builds practical, opinionated AI tools and writes about product, language learning, and building for the long run."
 	/>
 	<meta name="keywords" content={SITE.keywords.join(', ')} />
 	<meta name="author" content={SITE.author} />
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+	<meta name="googlebot" content="index, follow" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={SITE.url} />
-	<meta property="og:title" content="Hiro Kuwana — building tools that augment humanity" />
-	<meta property="og:description" content="A tiny studio of one for practical AI utilities, product notes, and slow essays." />
+	<meta property="og:title" content="Hiro Kuwana · building tools that augment humanity" />
+	<meta property="og:description" content="A small studio of one for practical AI utilities, product notes, and slow essays." />
 	<meta property="og:image" content={SITE.image} />
+	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
+	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
+	<meta property="profile:first_name" content="Hiro" />
+	<meta property="profile:last_name" content="Kuwana" />
 	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Hiro Kuwana · building tools that augment humanity" />
+	<meta name="twitter:description" content="Practical AI utilities, product notes, and slow essays by Hiro Kuwana." />
+	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href={SITE.url} />
+	<link rel="alternate" hreflang="en" href={SITE.url} />
+	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja`} />
+	<link rel="alternate" hreflang="x-default" href={SITE.url} />
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'Person',
+		name: 'Hiro Kuwana',
+		alternateName: ['桑名浩行', 'Hiroyuki Kuwana'],
+		url: SITE.url,
+		image: SITE.image,
+		email: CONTACT.email,
+		jobTitle: 'Founder & CEO',
+		worksFor: { '@type': 'Organization', name: 'Kaiwa', url: PERSONAL.companyWebsite },
+		alumniOf: { '@type': 'CollegeOrUniversity', name: 'Brown University' },
+		nationality: ['Japanese', 'American'],
+		knowsAbout: ['Artificial Intelligence', 'Educational Technology', 'Language Learning', 'Product Design', 'Startups'],
+		sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github, SOCIAL_LINKS.twitter, SOCIAL_LINKS.quora]
+	})}</` + `script>`}
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'WebSite',
+		name: 'Hiro Kuwana',
+		url: SITE.url,
+		inLanguage: ['en', 'ja'],
+		author: { '@type': 'Person', name: 'Hiro Kuwana' },
+		potentialAction: {
+			'@type': 'SearchAction',
+			target: `${SITE.url}/essays?q={query}`,
+			'query-input': 'required name=query'
+		}
+	})}</` + `script>`}
 </svelte:head>
 
 <section class="hero" data-screen-label="01 Landing">
@@ -565,12 +629,12 @@
 								{statusLabel(piece.status)}
 							</span>
 							<img src={piece.logo} alt="{piece.title} logo" class="project-logo" loading="lazy" />
-							<span class="thumb-label">fig. {i + 1} — {piece.title.toLowerCase()}</span>
+							<span class="thumb-label">fig. {i + 1} · {piece.title.toLowerCase()}</span>
 						</div>
-						<h3>{piece.title} <em>— {piece.subtitle}</em></h3>
-						<p class="summary">{piece.summary}</p>
+						<h3>{lang === 'ja' ? piece.titleJa : piece.title} <em>{lang === 'ja' ? piece.subtitleJa : piece.subtitle}</em></h3>
+						<p class="summary">{lang === 'ja' ? piece.summaryJa : piece.summary}</p>
 						<div class="meta">
-							<span>{piece.role}</span>
+							<span>{lang === 'ja' ? piece.roleJa : piece.role}</span>
 							<span>{piece.year}</span>
 						</div>
 						<span class="read-more">{t('work.readMore')}</span>
