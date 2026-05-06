@@ -1,6 +1,5 @@
 <script lang="ts">
 	import hiroProfile from '$lib/images/Hiro_profile_shot.png';
-	import { base } from '$app/paths';
 
 	const calLink = 'https://cal.com/hirokuwana/15min';
 </script>

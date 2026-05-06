@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { base } from '$app/paths';
+	import { asset } from '$app/paths';
 	import { page } from '$app/stores';
 	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
 	import HeroCanvas from '$lib/components/HeroCanvas.svelte';
@@ -206,7 +206,7 @@
 			subtitle: 'language learning, reimagined',
 			role: 'Founder + Product',
 			summary: 'Bite-sized AI conversations for people who want to practice without turning learning into another feed.',
-			logo: `${base}/kaiwa_logo.png`,
+			logo: asset('/kaiwa_logo.png'),
 			pos: { left: '0%', top: '0%', width: '38%', rotate: -2 }
 		},
 		{
@@ -219,7 +219,7 @@
 			subtitle: 'a fast community platform',
 			role: 'Design + Build',
 			summary: 'A small, practical alumni site built quickly enough to prove that execution speed can be a design feature.',
-			logo: `${base}/icon-512x512.png`,
+			logo: asset('/icon-512x512.png'),
 			pos: { left: '52%', top: '4%', width: '38%', rotate: 1.5 }
 		},
 		{
@@ -232,7 +232,7 @@
 			subtitle: 'signal-finding for language learners',
 			role: 'Automation + Research',
 			summary: 'A local workflow that connects Reddit, Drive, and Gemini to find language learners with real intent.',
-			logo: `${base}/kaiwa_logo.png`,
+			logo: asset('/kaiwa_logo.png'),
 			pos: { left: '8%', top: '38%', width: '36%', rotate: -1 }
 		},
 		{
@@ -244,7 +244,7 @@
 			subtitle: 'AI for venture capital',
 			role: 'Founder',
 			summary: 'A deal-flow and startup analysis product. Useful lessons, deliberately closed to focus the studio.',
-			logo: `${base}/flybyrd_logo.png`,
+			logo: asset('/flybyrd_logo.png'),
 			pos: { left: '54%', top: '46%', width: '40%', rotate: 1 }
 		},
 		{
@@ -256,7 +256,7 @@
 			subtitle: 'connecting nonprofits and donors',
 			role: 'Product + Ops',
 			summary: 'A nonprofit donor experiment that taught me where human trust matters more than platform mechanics.',
-			logo: `${base}/icon-512x512.png`,
+			logo: asset('/icon-512x512.png'),
 			pos: { left: '22%', top: '78%', width: '42%', rotate: -1.5 }
 		}
 	];
