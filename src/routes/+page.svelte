@@ -38,13 +38,13 @@
 			'hero.title.l2': 'that augment',
 			'hero.title.l3': 'humanity',
 			'hero.tagline':
-				"I'm Hiro Kuwana (桑名浩行). I make practical, opinionated AI utilities, quietly built and carefully made, for people who would rather think than scroll.",
-			'hero.now': 'Open · three seats · this season',
-			'hero.about1.a': 'I write and make things. I take on a few focused projects each season, usually with founders or teams building human-centric products with AI. The aim is',
-			'hero.about1.strong': 'AI-fluent design that augments you, rather than becomes another chatbot.',
-			'hero.about1.b': 'Tools with taste, for people who think.',
+				"I'm Hiro Kuwana (桑名浩行). Most of my time goes to helping language coaches use AI — quietly, hands-on, so they get hours back each week and keep doing the human part of teaching.",
+			'hero.now': 'Now · AI help for language coaches · 3 seats',
+			'hero.about1.a': 'I work closely with a small number of language coaches each season, mostly Kaiwa coaches building real practice loops with their students. The aim is',
+			'hero.about1.strong': 'AI that gives you hours back, not another chatbot to babysit.',
+			'hero.about1.b': 'Practical workflows, set up with you, tuned to how you teach.',
 			'hero.about2':
-				'I keep notes here on product, language learning, and the slower questions underneath the work.',
+				'In the time around that, I write here about product, language learning, and the slower questions underneath the work.',
 			'hero.meta.based.k': 'Based',
 			'hero.meta.based.v': 'Tokyo · New York',
 			'hero.meta.since.k': 'Since',
@@ -79,15 +79,15 @@
 			'contact.titleEm': 'write me, or follow along.',
 			'contact.tab.write': 'Write me · お便り',
 			'contact.tab.follow': 'Follow new posts · 購読',
-			'contact.aside.lead': 'Open for one or two collaborations through autumn. Short engagements, deep work, real outcomes.',
-			'contact.aside.hi': 'Or just say hello. I read every message by hand and usually reply within a few days.',
-			'contact.write.lead': "Tell me what you're working on. No template, no automation, just you and me.",
+			'contact.aside.lead': 'If you teach languages and want to use AI without it eating your evenings, write me. I work hands-on with a few coaches at a time over a few weeks — outreach, lesson prep, the workflows that quietly steal your day.',
+			'contact.aside.hi': 'Not a coach? Still say hello. I read every message by hand and usually reply within a few days.',
+			'contact.write.lead': "Tell me what you teach and where AI keeps getting in the way. No template, no automation, just you and me.",
 			'contact.field.name': 'お名前 · Name',
 			'contact.field.email': '電子メール · Email',
 			'contact.field.msg': 'ご用件 · Message',
 			'contact.field.namePh': 'Your name',
 			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': "Tell me what you're working on, or just say hi.",
+			'contact.field.msgPh': 'What you teach, where AI keeps slowing you down, what you wish it would do.',
 			'contact.note.write': 'Opens your mail client as a fallback. Nothing is sent to a third party from this page.',
 			'contact.btn.send': 'Send · 送る →',
 			'contact.btn.sending': 'Sending...',
@@ -119,12 +119,12 @@
 			'hero.title.l2': '',
 			'hero.title.l3': '道具をつくる',
 			'hero.tagline':
-				'桑名浩行 (Hiro Kuwana) です。実用的で、ちょっと意地のある AI の道具を、静かに、ていねいに作っています。スクロールするより、考えたい人のために。',
-			'hero.now': '受付中 · 三件 · 今季',
-			'hero.about1.a': '書いたり、つくったりしています。季節ごとに数件、AI を使った人中心のプロダクトをつくるファウンダーやチームと組みます。目指すのは、',
-			'hero.about1.strong': 'もう一つのチャットボットではなく、あなたを拡張する、AI に馴染んだ設計。',
-			'hero.about1.b': '考える人のための、センスのある道具を。',
-			'hero.about2': 'ここでは、プロダクトや言語学習、そして仕事の奥にあるゆっくりした問いについて書いています。',
+				'桑名浩行 (Hiro Kuwana) です。最近は時間のほとんどを、語学コーチが AI で週に数時間を取り戻せるように、静かに、近くで一緒に整えることに使っています。教える人の、人間らしい仕事を残すために。',
+			'hero.now': '受付中 · 語学コーチの AI 支援 · 三席',
+			'hero.about1.a': '季節ごとに、数名の語学コーチと近くで仕事をしています。多くは Kaiwa で学習の道筋をつくっているコーチです。目指すのは、',
+			'hero.about1.strong': 'もう一つチャットボットを抱えるのではなく、時間を取り戻すための AI の使い方。',
+			'hero.about1.b': 'あなたの教え方に合わせて、実用的な仕組みを一緒に組み立てます。',
+			'hero.about2': 'その合間に、プロダクトや言語学習、そして仕事の奥にあるゆっくりした問いについて書いています。',
 			'hero.meta.based.k': '拠点',
 			'hero.meta.based.v': '東京 · ニューヨーク',
 			'hero.meta.since.k': '開始',
@@ -159,15 +159,15 @@
 			'contact.titleEm': 'お便りでも、購読でも。',
 			'contact.tab.write': 'お便りを書く · Write',
 			'contact.tab.follow': '更新を購読 · Follow',
-			'contact.aside.lead': '秋までに一、二件、ご一緒できます。短い期間で、深く、ちゃんと成果を。',
-			'contact.aside.hi': 'ひとことの挨拶でも歓迎です。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
-			'contact.write.lead': 'いま何をやっているか、教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
+			'contact.aside.lead': '語学を教えていて、AI を使いたいけれど夜の時間まで取られたくない、という方は、ぜひお便りを。同時に数名のコーチと、数週間、近くで一緒に組み立てます。集客、授業準備、気づかぬうちに一日を奪う作業まで。',
+			'contact.aside.hi': 'コーチの方でなくても、ひとことの挨拶を歓迎します。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
+			'contact.write.lead': '何を教えているか、どこで AI に手間取っているか、教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
 			'contact.field.name': '名前 · Name',
 			'contact.field.email': 'メール · Email',
 			'contact.field.msg': '用件 · Message',
 			'contact.field.namePh': '名前',
 			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': 'いま何を作っているか、ひとことでも。',
+			'contact.field.msgPh': '何を教えているか、どこで AI に時間を取られているか、何ができたら嬉しいか。',
 			'contact.note.write': 'お使いのメールアプリが代わりに開きます。このページから第三者には何も送りません。',
 			'contact.btn.send': '送る · Send →',
 			'contact.btn.sending': '送信中...',
@@ -483,10 +483,10 @@
 </script>
 
 <svelte:head>
-	<title>Hiro Kuwana · building tools that augment humanity</title>
+	<title>Hiro Kuwana · AI help for language coaches</title>
 	<meta
 		name="description"
-		content="Hiro Kuwana builds practical, opinionated AI tools and writes about product, language learning, and building for the long run."
+		content="Founder-led, hands-on AI help for language coaches — set up the workflows that give you hours back each week. Also notes on product, language learning, and building for the long run."
 	/>
 	<meta name="keywords" content={SITE.keywords.join(', ')} />
 	<meta name="author" content={SITE.author} />
@@ -494,16 +494,16 @@
 	<meta name="googlebot" content="index, follow" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={SITE.url} />
-	<meta property="og:title" content="Hiro Kuwana · building tools that augment humanity" />
-	<meta property="og:description" content="A small studio of one for practical AI utilities, product notes, and slow essays." />
+	<meta property="og:title" content="Hiro Kuwana · AI help for language coaches" />
+	<meta property="og:description" content="Founder-led, hands-on AI help for language coaches. Plus product notes and slow essays." />
 	<meta property="og:image" content={SITE.image} />
 	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
 	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta property="profile:first_name" content="Hiro" />
 	<meta property="profile:last_name" content="Kuwana" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Hiro Kuwana · building tools that augment humanity" />
-	<meta name="twitter:description" content="Practical AI utilities, product notes, and slow essays by Hiro Kuwana." />
+	<meta name="twitter:title" content="Hiro Kuwana · AI help for language coaches" />
+	<meta name="twitter:description" content="Founder-led, hands-on AI help for language coaches. Plus product notes and slow essays by Hiro Kuwana." />
 	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href={SITE.url} />
 	<link rel="alternate" hreflang="en" href={SITE.url} />
