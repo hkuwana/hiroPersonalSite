@@ -18,6 +18,20 @@
 		selected: boolean;
 	};
 
+	type ContactName = {
+		formatted: string;
+		family: string;
+		given: string;
+		additional: string;
+		prefix: string;
+		suffix: string;
+	};
+
+	type ZipFile = {
+		name: string;
+		content: string;
+	};
+
 	let vcfInput = $state('');
 	let contacts = $state<Contact[]>([]);
 	let hasSplit = $state(false);
@@ -76,6 +90,141 @@ END:VCARD`;
 		return line.substring(colonIdx + 1).trim();
 	}
 
+	function isPropertyLine(line: string, property: string): boolean {
+		const upper = line.toUpperCase();
+		const prop = property.toUpperCase();
+		return upper.startsWith(`${prop}:`) || upper.startsWith(`${prop};`);
+	}
+
+	function escapeVcardText(value: string): string {
+		return value
+			.replace(/\\/g, '\\\\')
+			.replace(/\n/g, '\\n')
+			.replace(/;/g, '\\;')
+			.replace(/,/g, '\\,');
+	}
+
+	function unescapeVcardText(value: string): string {
+		return value.replace(/\\([nN,;\\])/g, (_, escaped: string) => {
+			if (escaped.toLowerCase() === 'n') return '\n';
+			return escaped;
+		});
+	}
+
+	function splitVcardComponents(value: string): string[] {
+		const parts: string[] = [];
+		let current = '';
+		let escaped = false;
+
+		for (const char of value) {
+			if (escaped) {
+				current += `\\${char}`;
+				escaped = false;
+			} else if (char === '\\') {
+				escaped = true;
+			} else if (char === ';') {
+				parts.push(current);
+				current = '';
+			} else {
+				current += char;
+			}
+		}
+
+		parts.push(escaped ? `${current}\\` : current);
+		return parts;
+	}
+
+	function deriveNameFromFormatted(formatted: string): ContactName {
+		const cleaned = formatted.trim().replace(/\s+/g, ' ');
+		if (!cleaned) {
+			return { formatted: 'Unknown', family: '', given: 'Unknown', additional: '', prefix: '', suffix: '' };
+		}
+
+		const parts = cleaned.split(' ');
+		if (parts.length === 1) {
+			return { formatted: cleaned, family: '', given: cleaned, additional: '', prefix: '', suffix: '' };
+		}
+
+		const familyParticles = new Set(['da', 'de', 'del', 'der', 'di', 'du', 'la', 'le', 'van', 'von']);
+		let familyStart = parts.length - 1;
+
+		for (let i = parts.length - 2; i >= 0; i -= 1) {
+			const normalized = parts[i].replace(/\.$/, '').toLowerCase();
+			if (!familyParticles.has(normalized)) break;
+			familyStart = i;
+		}
+
+		return {
+			formatted: cleaned,
+			family: parts.slice(familyStart).join(' '),
+			given: parts.slice(0, familyStart).join(' '),
+			additional: '',
+			prefix: '',
+			suffix: ''
+		};
+	}
+
+	function buildContactName(fn: string, structuredName: string): ContactName {
+		if (structuredName) {
+			const parts = splitVcardComponents(structuredName).map(unescapeVcardText);
+			const family = parts[0] ?? '';
+			const given = parts[1] ?? '';
+			const additional = parts[2] ?? '';
+			const prefix = parts[3] ?? '';
+			const suffix = parts[4] ?? '';
+			const formatted =
+				fn ||
+				[prefix, given, additional, family, suffix]
+					.map((part) => part.trim())
+					.filter(Boolean)
+					.join(' ') ||
+				'Unknown';
+
+			return { formatted, family, given, additional, prefix, suffix };
+		}
+
+		return deriveNameFromFormatted(fn);
+	}
+
+	function structuredNameLine(name: ContactName): string {
+		return `N:${[
+			name.family,
+			name.given,
+			name.additional,
+			name.prefix,
+			name.suffix
+		]
+			.map(escapeVcardText)
+			.join(';')}`;
+	}
+
+	function normalizeVcardBlock(block: string, name: ContactName): string {
+		const lines = block
+			.trim()
+			.split('\n')
+			.map((line) => line.trimEnd());
+		const fnIndex = lines.findIndex((line) => isPropertyLine(line, 'FN'));
+		const versionIndex = lines.findIndex((line) => isPropertyLine(line, 'VERSION'));
+		const normalized = [...lines];
+
+		if (fnIndex === -1) {
+			const insertAt = versionIndex === -1 ? 1 : versionIndex + 1;
+			normalized.splice(insertAt, 0, `FN:${escapeVcardText(name.formatted)}`);
+		}
+
+		const freshFnIndex = normalized.findIndex((line) => isPropertyLine(line, 'FN'));
+		const freshNIndex = normalized.findIndex((line) => isPropertyLine(line, 'N'));
+		const line = structuredNameLine(name);
+
+		if (freshNIndex === -1) {
+			normalized.splice(freshFnIndex === -1 ? 1 : freshFnIndex + 1, 0, line);
+		} else {
+			normalized[freshNIndex] = line;
+		}
+
+		return normalized.join('\r\n');
+	}
+
 	function parseVcf(text: string): Contact[] {
 		const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n[ \t]/g, '');
 		const result: Contact[] = [];
@@ -85,6 +234,7 @@ END:VCARD`;
 			const block = match[0];
 			const lines = block.split('\n');
 			let fn = '';
+			let structuredName = '';
 			let email = '';
 			let tel = '';
 			let org = '';
@@ -92,11 +242,8 @@ END:VCARD`;
 				const upper = line.toUpperCase();
 				if (upper.startsWith('FN:') || upper.startsWith('FN;')) {
 					fn = extractValue(line);
-				} else if (!fn && (upper.startsWith('N:') || upper.startsWith('N;'))) {
-					const parts = extractValue(line).split(';');
-					const first = parts[1] || '';
-					const last = parts[0] || '';
-					fn = `${first} ${last}`.trim();
+				} else if (upper.startsWith('N:') || upper.startsWith('N;')) {
+					structuredName = extractValue(line);
 				} else if (!email && (upper.startsWith('EMAIL:') || upper.startsWith('EMAIL;'))) {
 					email = extractValue(line);
 				} else if (!tel && (upper.startsWith('TEL:') || upper.startsWith('TEL;'))) {
@@ -105,9 +252,10 @@ END:VCARD`;
 					org = extractValue(line).replace(/;+$/, '');
 				}
 			}
+			const name = buildContactName(fn, structuredName);
 			result.push({
-				raw: block.trim(),
-				fn: fn || 'Unknown',
+				raw: normalizeVcardBlock(block, name),
+				fn: name.formatted,
 				email,
 				tel,
 				org,
@@ -171,25 +319,170 @@ END:VCARD`;
 		return name.replace(/[^a-zA-Z0-9_\-\s.]/g, '').replace(/\s+/g, '_') || 'contact';
 	}
 
-	function downloadOne(contact: Contact) {
-		const blob = new Blob([contact.raw + '\r\n'], { type: 'text/vcard;charset=utf-8' });
+	function downloadBlob(blob: Blob, filename: string) {
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
 		a.href = url;
-		a.download = `${sanitize(contact.fn)}.vcf`;
+		a.download = filename;
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
 	}
 
-	function downloadEachSelected() {
+	function downloadOne(contact: Contact) {
+		const blob = new Blob([contact.raw + '\r\n'], { type: 'text/vcard;charset=utf-8' });
+		downloadBlob(blob, `${sanitize(contact.fn)}.vcf`);
+	}
+
+	function makeUniqueFilename(base: string, used: Set<string>): string {
+		let filename = `${sanitize(base)}.vcf`;
+		let index = 2;
+		while (used.has(filename.toLowerCase())) {
+			filename = `${sanitize(base)}_${index}.vcf`;
+			index += 1;
+		}
+		used.add(filename.toLowerCase());
+		return filename;
+	}
+
+	const CRC_TABLE = new Uint32Array(256);
+	for (let i = 0; i < CRC_TABLE.length; i += 1) {
+		let crc = i;
+		for (let bit = 0; bit < 8; bit += 1) {
+			crc = crc & 1 ? 0xedb88320 ^ (crc >>> 1) : crc >>> 1;
+		}
+		CRC_TABLE[i] = crc >>> 0;
+	}
+
+	function crc32(data: Uint8Array): number {
+		let crc = 0xffffffff;
+		for (const byte of data) {
+			crc = CRC_TABLE[(crc ^ byte) & 0xff] ^ (crc >>> 8);
+		}
+		return (crc ^ 0xffffffff) >>> 0;
+	}
+
+	function uint16(value: number): Uint8Array {
+		const bytes = new Uint8Array(2);
+		new DataView(bytes.buffer).setUint16(0, value, true);
+		return bytes;
+	}
+
+	function uint32(value: number): Uint8Array {
+		const bytes = new Uint8Array(4);
+		new DataView(bytes.buffer).setUint32(0, value, true);
+		return bytes;
+	}
+
+	function concatBytes(chunks: Uint8Array[]): Uint8Array {
+		const size = chunks.reduce((total, chunk) => total + chunk.length, 0);
+		const output = new Uint8Array(size);
+		let offset = 0;
+		for (const chunk of chunks) {
+			output.set(chunk, offset);
+			offset += chunk.length;
+		}
+		return output;
+	}
+
+	function bytesToArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+		const buffer = new ArrayBuffer(bytes.byteLength);
+		new Uint8Array(buffer).set(bytes);
+		return buffer;
+	}
+
+	function getDosDateParts(date: Date): { time: number; date: number } {
+		const year = Math.max(1980, date.getFullYear());
+		return {
+			time: (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2),
+			date: ((year - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate()
+		};
+	}
+
+	function createZip(files: ZipFile[]): Blob {
+		const encoder = new TextEncoder();
+		const now = getDosDateParts(new Date());
+		const localChunks: Uint8Array[] = [];
+		const centralChunks: Uint8Array[] = [];
+		let offset = 0;
+
+		for (const file of files) {
+			const nameBytes = encoder.encode(file.name);
+			const contentBytes = encoder.encode(file.content);
+			const crc = crc32(contentBytes);
+			const localHeader = concatBytes([
+				uint32(0x04034b50),
+				uint16(20),
+				uint16(0),
+				uint16(0),
+				uint16(now.time),
+				uint16(now.date),
+				uint32(crc),
+				uint32(contentBytes.length),
+				uint32(contentBytes.length),
+				uint16(nameBytes.length),
+				uint16(0),
+				nameBytes
+			]);
+			const centralHeader = concatBytes([
+				uint32(0x02014b50),
+				uint16(20),
+				uint16(20),
+				uint16(0),
+				uint16(0),
+				uint16(now.time),
+				uint16(now.date),
+				uint32(crc),
+				uint32(contentBytes.length),
+				uint32(contentBytes.length),
+				uint16(nameBytes.length),
+				uint16(0),
+				uint16(0),
+				uint16(0),
+				uint16(0),
+				uint32(file.name.endsWith('/') ? 0x10 : 0),
+				uint32(offset),
+				nameBytes
+			]);
+
+			localChunks.push(localHeader, contentBytes);
+			centralChunks.push(centralHeader);
+			offset += localHeader.length + contentBytes.length;
+		}
+
+		const centralDirectory = concatBytes(centralChunks);
+		const localFileData = concatBytes(localChunks);
+		const end = concatBytes([
+			uint32(0x06054b50),
+			uint16(0),
+			uint16(0),
+			uint16(files.length),
+			uint16(files.length),
+			uint32(centralDirectory.length),
+			uint32(localFileData.length),
+			uint16(0)
+		]);
+
+		return new Blob(
+			[localFileData, centralDirectory, end].map(bytesToArrayBuffer),
+			{ type: 'application/zip' }
+		);
+	}
+
+	function downloadSelectedFolder() {
 		const selected = contacts.filter((c) => c.selected);
 		if (selected.length === 0) return;
-		// Browsers throttle rapid downloads; stagger slightly.
-		selected.forEach((contact, i) => {
-			setTimeout(() => downloadOne(contact), i * 150);
+		const used = new Set<string>();
+		const folderName = 'contacts_selected';
+		const files: ZipFile[] = [{ name: `${folderName}/`, content: '' }];
+		selected.forEach((contact) => {
+			files.push({
+				name: `${folderName}/${makeUniqueFilename(contact.fn, used)}`,
+				content: `${contact.raw}\r\n`
+			});
 		});
+		downloadBlob(createZip(files), 'contacts_selected_vcf_folder.zip');
 	}
 
 	function downloadCombinedSelected() {
@@ -197,14 +490,7 @@ END:VCARD`;
 		if (selected.length === 0) return;
 		const combined = selected.map((c) => c.raw).join('\r\n') + '\r\n';
 		const blob = new Blob([combined], { type: 'text/vcard;charset=utf-8' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = 'contacts_selected.vcf';
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-		URL.revokeObjectURL(url);
+		downloadBlob(blob, 'contacts_selected.vcf');
 	}
 
 	let filtered = $derived.by(() => {
@@ -236,14 +522,17 @@ END:VCARD`;
 	<title>VCF splitter · one vCard per contact · Hiro Kuwana</title>
 	<meta
 		name="description"
-		content="Free browser-based VCF splitter. Split a .vcf file with many contacts into individual vCard files. Search, select, and download as one .vcf or per-contact files. Runs locally."
+		content="Free browser-based VCF splitter. Split a .vcf file with many contacts into individual vCard files. Fix missing structured name fields and download selected contacts as one .vcf or a zip folder. Runs locally."
 	/>
 	<meta name="keywords" content="vcf splitter, vcard splitter, split vcf file, split contacts, vcard tool, contact splitter, iphone contacts, android contacts" />
 	<meta name="robots" content="index, follow" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={`${SITE.url}/tools/vcf-splitter`} />
 	<meta property="og:title" content="VCF splitter · Hiro Kuwana" />
-	<meta property="og:description" content="Split a multi-contact .vcf into individual vCards. Search, select, download. Runs locally in your browser." />
+	<meta
+		property="og:description"
+		content="Split a multi-contact .vcf into individual vCards. Fix structured name fields, search, select, and download. Runs locally in your browser."
+	/>
 	<meta property="og:image" content={SITE.image} />
 	<meta name="twitter:card" content="summary" />
 	<link rel="canonical" href={`${SITE.url}/tools/vcf-splitter`} />
@@ -258,8 +547,8 @@ END:VCARD`;
 		<h1>VCF splitter<span class="seal">名</span></h1>
 		<p class="lede">
 			{lang === 'ja'
-				? '複数の連絡先がまとまった .vcf ファイルを、ひとりずつの vCard に分けます。検索 · 選択 · ダウンロード。iPhone・Android・Google の間で連絡先を移すときに便利です。'
-				: 'Split a single .vcf file containing many contacts into individual vCard files. Search, select, and download — useful for moving contacts between iPhone, Android, and Google.'}
+				? '複数の連絡先がまとまった .vcf ファイルを、ひとりずつの vCard に分けます。名前フィールドを整え、検索 · 選択 · ダウンロードできます。'
+				: 'Split a single .vcf file containing many contacts into individual vCard files. It also fixes missing structured name fields before download.'}
 		</p>
 		<p class="sub">
 			{lang === 'ja'
@@ -390,14 +679,14 @@ END:VCARD`;
 					<button type="button" class="btn primary" disabled={selectedCount === 0} onclick={downloadCombinedSelected}>
 						{lang === 'ja' ? '選択をひとつの .vcf に' : 'Download selected as one .vcf'}
 					</button>
-					<button type="button" class="btn" disabled={selectedCount === 0} onclick={downloadEachSelected}>
-						{lang === 'ja' ? '選択をひとつずつ' : 'Download each selected'}
+					<button type="button" class="btn" disabled={selectedCount === 0} onclick={downloadSelectedFolder}>
+						{lang === 'ja' ? '選択をフォルダ .zip に' : 'Download selected folder .zip'}
 					</button>
 				</div>
 				<p class="footnote">
 					{lang === 'ja'
-						? 'ブラウザによっては「複数のダウンロードを許可しますか?」と聞かれます。'
-						: 'Some browsers will ask permission for multiple downloads — please allow.'}
+						? '.zip には、選択した連絡先ごとの .vcf がひとつのフォルダに入ります。'
+						: 'The .zip contains one folder with one fixed .vcf file per selected contact.'}
 				</p>
 			</section>
 		{/if}
