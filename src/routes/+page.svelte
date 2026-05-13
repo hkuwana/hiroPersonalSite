@@ -38,13 +38,13 @@
 			'hero.title.l2': 'that augment',
 			'hero.title.l3': 'humanity',
 			'hero.tagline':
-				"I'm Hiro Kuwana (桑名浩行). Most of my time goes to working directly with the language coaches building on Kaiwa — quietly, hands-on, so they get hours back each week and keep doing the human part of teaching.",
-			'hero.now': 'Now · with the coaches on Kaiwa',
-			'hero.about1.a': 'I work directly with the language coaches building on Kaiwa — designing learner journeys, setting up the AI that handles the tedious parts, and figuring out what good practice looks like between lessons. The aim is',
-			'hero.about1.strong': 'AI that gives you hours back, not another chatbot to babysit.',
-			'hero.about1.b': 'Practical workflows, built with you on Kaiwa, tuned to how you teach.',
-			'hero.about2':
-				'In the time around that, I write here about product, language learning, and the slower questions underneath the work.',
+				"I'm Hiro Kuwana (桑名浩行). I write and make things, usually with founders or teams building human-centric products with AI.",
+			'hero.now': 'Now · product design for human-centric AI',
+			'hero.about1.a':
+				'I take on a few focused projects each season, usually with founders or teams building human-centric products with AI. The aim is',
+			'hero.about1.strong': 'AI-fluent design that augments you, rather than becomes another chatbot.',
+			'hero.about1.b': 'Tools with taste, for people who think.',
+			'hero.about2': 'I keep notes here on product, language learning, and the slower questions underneath the work.',
 			'hero.meta.based.k': 'Based',
 			'hero.meta.based.v': 'Tokyo · New York',
 			'hero.meta.since.k': 'Since',
@@ -70,8 +70,8 @@
 			'writing.titleEm': 'one with the machines, one without.',
 			'writing.guides': './ai-guides',
 			'writing.guidesJP': '道 具',
-			'writing.philo': 'The Long Way',
-			'writing.philoJP': '手 書 き',
+			'writing.philo': 'essays',
+			'writing.philoJP': '作 文',
 			'writing.minRead': '~ 6 min',
 			'writing.dateAi': '04 · 2026',
 			'contact.num': '04',
@@ -79,20 +79,23 @@
 			'contact.titleEm': 'write me, or follow along.',
 			'contact.tab.write': 'Write me · お便り',
 			'contact.tab.follow': 'Follow new posts · 購読',
-			'contact.aside.lead': 'If you teach languages — or want to — come build with us on Kaiwa. I work alongside our coaches: designing learner journeys, sorting out outreach, and quietly removing the workflows that steal your day.',
-			'contact.aside.hi': 'Not a coach? Still say hello. I read every message by hand and usually reply within a few days.',
+			'contact.aside.lead':
+				'If you are building a human-centric product with AI, send me the real shape of it. I am most useful where product taste, workflow design, and applied AI have to meet.',
+			'contact.aside.hi':
+				'Not sure if it fits? Still say hello. I read every message by hand and usually reply within a few days.',
 			'contact.tools.title': 'Side tools · 道具',
 			'contact.tools.vcf.label': 'vCard · save my contact',
 			'contact.tools.vcf.desc': 'A standard .vcf for your phone or address book.',
 			'contact.tools.ics.label': 'Tea on the calendar',
 			'contact.tools.ics.desc': 'A .ics with my cal.com link, so the next pot of tea is one click away.',
-			'contact.write.lead': "Tell me what you teach and where AI keeps getting in the way. No template, no automation, just you and me.",
+			'contact.write.lead':
+				"Tell me what you are building, who it serves, and where AI is getting in the way. No template, no automation, just you and me.",
 			'contact.field.name': 'お名前 · Name',
 			'contact.field.email': '電子メール · Email',
 			'contact.field.msg': 'ご用件 · Message',
 			'contact.field.namePh': 'Your name',
 			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': 'What you teach, where AI keeps slowing you down, what you wish it would do.',
+			'contact.field.msgPh': 'What you are building, who it serves, and what you wish the AI would do better.',
 			'contact.note.write': 'Opens your mail client as a fallback. Nothing is sent to a third party from this page.',
 			'contact.btn.send': 'Send · 送る →',
 			'contact.btn.sending': 'Sending...',
@@ -106,7 +109,7 @@
 			'sub.field.emailPh': 'you@somewhere.com',
 			'sub.choose': 'I want to follow:',
 			'sub.opt.both': 'Both',
-			'sub.opt.philo': 'The Long Way',
+			'sub.opt.philo': 'essays',
 			'sub.opt.guides': './ai-guides',
 			'sub.cadence': 'Roughly twice a month. Plain text. Unsubscribe with one click.',
 			'sub.btn.go': 'Subscribe · 購読 →',
@@ -124,12 +127,13 @@
 			'hero.title.l2': '',
 			'hero.title.l3': '道具をつくる',
 			'hero.tagline':
-				'桑名浩行 (Hiro Kuwana) です。最近は時間のほとんどを、Kaiwa で教えている語学コーチと直接、近くで仕事をすることに使っています。AI で週に数時間を取り戻して、教える人の、人間らしい仕事を残すために。',
-			'hero.now': 'いま · Kaiwa のコーチと一緒に',
-			'hero.about1.a': 'Kaiwa で教えている語学コーチと直接、近くで仕事をしています。学習の道筋を設計したり、面倒な部分を AI に任せたり、レッスンの合間の良い練習とは何かを一緒に考えたり。目指すのは、',
-			'hero.about1.strong': 'もう一つチャットボットを抱えるのではなく、時間を取り戻すための AI の使い方。',
-			'hero.about1.b': 'あなたの教え方に合わせて、Kaiwa の上で実用的な仕組みを一緒に組み立てます。',
-			'hero.about2': 'その合間に、プロダクトや言語学習、そして仕事の奥にあるゆっくりした問いについて書いています。',
+				'桑名浩行 (Hiro Kuwana) です。AI で人を置き換えるのではなく、人の力を拡張するプロダクトや設計をつくっています。',
+			'hero.now': 'いま · 人中心の AI プロダクト設計',
+			'hero.about1.a':
+				'季節ごとに、少数の集中したプロジェクトを引き受けています。多くは、AI を使って人中心のプロダクトをつくる創業者やチームと一緒です。目指すのは、',
+			'hero.about1.strong': 'もう一つのチャットボットではなく、人を拡張する AI に慣れた設計。',
+			'hero.about1.b': '考える人のための、品のある道具をつくります。',
+			'hero.about2': 'ここには、プロダクトや言語学習、そして仕事の奥にあるゆっくりした問いについてのメモを置いています。',
 			'hero.meta.based.k': '拠点',
 			'hero.meta.based.v': '東京 · ニューヨーク',
 			'hero.meta.since.k': '開始',
@@ -152,11 +156,11 @@
 			'work.readMore': '開く →',
 			'writing.num': '03',
 			'writing.title': '二冊のノート',
-			'writing.titleEm': '一冊は機械と、もう一冊は手書きで。',
+			'writing.titleEm': '一冊は機械と、もう一冊は作文で。',
 			'writing.guides': './ai-guides',
 			'writing.guidesJP': '道 具',
 			'writing.philo': '回り道',
-			'writing.philoJP': '手 書 き',
+			'writing.philoJP': '作 文',
 			'writing.minRead': '約 6 分',
 			'writing.dateAi': '2026 · 04',
 			'contact.num': '04',
@@ -164,20 +168,22 @@
 			'contact.titleEm': 'お便りでも、購読でも。',
 			'contact.tab.write': 'お便りを書く · Write',
 			'contact.tab.follow': '更新を購読 · Follow',
-			'contact.aside.lead': '語学を教えている、あるいは教えたいと思っている方は、ぜひ Kaiwa で一緒につくりましょう。コーチと並んで、学習の道筋を設計し、集客を整え、気づかぬうちに一日を奪う作業を静かに減らしていきます。',
-			'contact.aside.hi': 'コーチの方でなくても、ひとことの挨拶を歓迎します。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
+			'contact.aside.lead':
+				'AI を使って、人中心のプロダクトをつくっているなら、その実際の形を送ってください。プロダクトの感覚、ワークフロー設計、応用 AI が重なる場所でいちばん力になれます。',
+			'contact.aside.hi': '合うか分からなくても、ひとことの挨拶を歓迎します。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
 			'contact.tools.title': '道具 · side tools',
 			'contact.tools.vcf.label': 'vCard · 連絡先を保存',
 			'contact.tools.vcf.desc': '電話帳や連絡先にそのまま取り込める .vcf。',
 			'contact.tools.ics.label': '予定にお茶を入れる',
 			'contact.tools.ics.desc': '私の cal.com のリンクが入った .ics。次の一服までワンクリック。',
-			'contact.write.lead': '何を教えているか、どこで AI に手間取っているか、教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
+			'contact.write.lead':
+				'何をつくっているか、誰のためのものか、AI がどこで邪魔になっているかを教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
 			'contact.field.name': '名前 · Name',
 			'contact.field.email': 'メール · Email',
 			'contact.field.msg': '用件 · Message',
 			'contact.field.namePh': '名前',
 			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': '何を教えているか、どこで AI に時間を取られているか、何ができたら嬉しいか。',
+			'contact.field.msgPh': '何をつくっているか、誰のためか、AI に何をもっと良くしてほしいか。',
 			'contact.note.write': 'お使いのメールアプリが代わりに開きます。このページから第三者には何も送りません。',
 			'contact.btn.send': '送る · Send →',
 			'contact.btn.sending': '送信中...',
@@ -190,7 +196,7 @@
 			'sub.field.emailPh': 'you@somewhere.com',
 			'sub.choose': '読みたいもの:',
 			'sub.opt.both': '両方',
-			'sub.opt.philo': '回り道',
+			'sub.opt.philo': '作文',
 			'sub.opt.guides': './ai-guides',
 			'sub.cadence': '月に二回ほど。プレーンテキスト。解除はワンクリック。',
 			'sub.btn.go': '購読する · Subscribe →',
@@ -493,10 +499,10 @@
 </script>
 
 <svelte:head>
-	<title>Hiro Kuwana · with the coaches building on Kaiwa</title>
+	<title>Hiro Kuwana · product design for human-centric AI</title>
 	<meta
 		name="description"
-		content="Hiro Kuwana works directly with the language coaches building on Kaiwa — designing learner journeys and setting up the AI that gives them hours back each week. Plus notes on product, language learning, and building for the long run."
+		content="Hiro Kuwana writes and makes things with founders and teams building human-centric products with AI. Product design that augments people rather than replacing them."
 	/>
 	<meta name="keywords" content={SITE.keywords.join(', ')} />
 	<meta name="author" content={SITE.author} />
@@ -504,16 +510,16 @@
 	<meta name="googlebot" content="index, follow" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={SITE.url} />
-	<meta property="og:title" content="Hiro Kuwana · with the coaches building on Kaiwa" />
-	<meta property="og:description" content="Hiro Kuwana works directly with the language coaches on Kaiwa. Plus product notes and slow essays." />
+	<meta property="og:title" content="Hiro Kuwana · product design for human-centric AI" />
+	<meta property="og:description" content="Product design for human-centric AI: tools with taste, for people who think." />
 	<meta property="og:image" content={SITE.image} />
 	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
 	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta property="profile:first_name" content="Hiro" />
 	<meta property="profile:last_name" content="Kuwana" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Hiro Kuwana · with the coaches building on Kaiwa" />
-	<meta name="twitter:description" content="Hiro Kuwana works directly with the language coaches on Kaiwa. Plus product notes and slow essays." />
+	<meta name="twitter:title" content="Hiro Kuwana · product design for human-centric AI" />
+	<meta name="twitter:description" content="Product design for human-centric AI: tools with taste, for people who think." />
 	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href={SITE.url} />
 	<link rel="alternate" hreflang="en" href={SITE.url} />
@@ -527,7 +533,7 @@
 		url: SITE.url,
 		image: SITE.image,
 		email: CONTACT.email,
-		jobTitle: 'Founder & CEO',
+		jobTitle: 'Founder & Product Designer',
 		worksFor: { '@type': 'Organization', name: 'Kaiwa', url: PERSONAL.companyWebsite },
 		alumniOf: { '@type': 'CollegeOrUniversity', name: 'Brown University' },
 		nationality: ['Japanese', 'American'],
