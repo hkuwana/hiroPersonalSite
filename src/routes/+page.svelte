@@ -38,11 +38,11 @@
 			'hero.title.l2': 'that augment',
 			'hero.title.l3': 'humanity',
 			'hero.tagline':
-				"I'm Hiro Kuwana (桑名浩行). Most of my time goes to helping language coaches use AI — quietly, hands-on, so they get hours back each week and keep doing the human part of teaching.",
-			'hero.now': 'Now · AI help for language coaches · 3 seats',
-			'hero.about1.a': 'I work closely with a small number of language coaches each season, mostly Kaiwa coaches building real practice loops with their students. The aim is',
+				"I'm Hiro Kuwana (桑名浩行). Most of my time goes to working directly with the language coaches building on Kaiwa — quietly, hands-on, so they get hours back each week and keep doing the human part of teaching.",
+			'hero.now': 'Now · with the coaches on Kaiwa',
+			'hero.about1.a': 'I work directly with the language coaches building on Kaiwa — designing learner journeys, setting up the AI that handles the tedious parts, and figuring out what good practice looks like between lessons. The aim is',
 			'hero.about1.strong': 'AI that gives you hours back, not another chatbot to babysit.',
-			'hero.about1.b': 'Practical workflows, set up with you, tuned to how you teach.',
+			'hero.about1.b': 'Practical workflows, built with you on Kaiwa, tuned to how you teach.',
 			'hero.about2':
 				'In the time around that, I write here about product, language learning, and the slower questions underneath the work.',
 			'hero.meta.based.k': 'Based',
@@ -79,7 +79,7 @@
 			'contact.titleEm': 'write me, or follow along.',
 			'contact.tab.write': 'Write me · お便り',
 			'contact.tab.follow': 'Follow new posts · 購読',
-			'contact.aside.lead': 'If you teach languages and want to use AI without it eating your evenings, write me. I work hands-on with a few coaches at a time over a few weeks — outreach, lesson prep, the workflows that quietly steal your day.',
+			'contact.aside.lead': 'If you teach languages — or want to — come build with us on Kaiwa. I work alongside our coaches: designing learner journeys, sorting out outreach, and quietly removing the workflows that steal your day.',
 			'contact.aside.hi': 'Not a coach? Still say hello. I read every message by hand and usually reply within a few days.',
 			'contact.write.lead': "Tell me what you teach and where AI keeps getting in the way. No template, no automation, just you and me.",
 			'contact.field.name': 'お名前 · Name',
@@ -119,11 +119,11 @@
 			'hero.title.l2': '',
 			'hero.title.l3': '道具をつくる',
 			'hero.tagline':
-				'桑名浩行 (Hiro Kuwana) です。最近は時間のほとんどを、語学コーチが AI で週に数時間を取り戻せるように、静かに、近くで一緒に整えることに使っています。教える人の、人間らしい仕事を残すために。',
-			'hero.now': '受付中 · 語学コーチの AI 支援 · 三席',
-			'hero.about1.a': '季節ごとに、数名の語学コーチと近くで仕事をしています。多くは Kaiwa で学習の道筋をつくっているコーチです。目指すのは、',
+				'桑名浩行 (Hiro Kuwana) です。最近は時間のほとんどを、Kaiwa で教えている語学コーチと直接、近くで仕事をすることに使っています。AI で週に数時間を取り戻して、教える人の、人間らしい仕事を残すために。',
+			'hero.now': 'いま · Kaiwa のコーチと一緒に',
+			'hero.about1.a': 'Kaiwa で教えている語学コーチと直接、近くで仕事をしています。学習の道筋を設計したり、面倒な部分を AI に任せたり、レッスンの合間の良い練習とは何かを一緒に考えたり。目指すのは、',
 			'hero.about1.strong': 'もう一つチャットボットを抱えるのではなく、時間を取り戻すための AI の使い方。',
-			'hero.about1.b': 'あなたの教え方に合わせて、実用的な仕組みを一緒に組み立てます。',
+			'hero.about1.b': 'あなたの教え方に合わせて、Kaiwa の上で実用的な仕組みを一緒に組み立てます。',
 			'hero.about2': 'その合間に、プロダクトや言語学習、そして仕事の奥にあるゆっくりした問いについて書いています。',
 			'hero.meta.based.k': '拠点',
 			'hero.meta.based.v': '東京 · ニューヨーク',
@@ -159,7 +159,7 @@
 			'contact.titleEm': 'お便りでも、購読でも。',
 			'contact.tab.write': 'お便りを書く · Write',
 			'contact.tab.follow': '更新を購読 · Follow',
-			'contact.aside.lead': '語学を教えていて、AI を使いたいけれど夜の時間まで取られたくない、という方は、ぜひお便りを。同時に数名のコーチと、数週間、近くで一緒に組み立てます。集客、授業準備、気づかぬうちに一日を奪う作業まで。',
+			'contact.aside.lead': '語学を教えている、あるいは教えたいと思っている方は、ぜひ Kaiwa で一緒につくりましょう。コーチと並んで、学習の道筋を設計し、集客を整え、気づかぬうちに一日を奪う作業を静かに減らしていきます。',
 			'contact.aside.hi': 'コーチの方でなくても、ひとことの挨拶を歓迎します。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
 			'contact.write.lead': '何を教えているか、どこで AI に手間取っているか、教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
 			'contact.field.name': '名前 · Name',
@@ -483,10 +483,10 @@
 </script>
 
 <svelte:head>
-	<title>Hiro Kuwana · AI help for language coaches</title>
+	<title>Hiro Kuwana · with the coaches building on Kaiwa</title>
 	<meta
 		name="description"
-		content="Founder-led, hands-on AI help for language coaches — set up the workflows that give you hours back each week. Also notes on product, language learning, and building for the long run."
+		content="Hiro Kuwana works directly with the language coaches building on Kaiwa — designing learner journeys and setting up the AI that gives them hours back each week. Plus notes on product, language learning, and building for the long run."
 	/>
 	<meta name="keywords" content={SITE.keywords.join(', ')} />
 	<meta name="author" content={SITE.author} />
@@ -494,16 +494,16 @@
 	<meta name="googlebot" content="index, follow" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={SITE.url} />
-	<meta property="og:title" content="Hiro Kuwana · AI help for language coaches" />
-	<meta property="og:description" content="Founder-led, hands-on AI help for language coaches. Plus product notes and slow essays." />
+	<meta property="og:title" content="Hiro Kuwana · with the coaches building on Kaiwa" />
+	<meta property="og:description" content="Hiro Kuwana works directly with the language coaches on Kaiwa. Plus product notes and slow essays." />
 	<meta property="og:image" content={SITE.image} />
 	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
 	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta property="profile:first_name" content="Hiro" />
 	<meta property="profile:last_name" content="Kuwana" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Hiro Kuwana · AI help for language coaches" />
-	<meta name="twitter:description" content="Founder-led, hands-on AI help for language coaches. Plus product notes and slow essays by Hiro Kuwana." />
+	<meta name="twitter:title" content="Hiro Kuwana · with the coaches building on Kaiwa" />
+	<meta name="twitter:description" content="Hiro Kuwana works directly with the language coaches on Kaiwa. Plus product notes and slow essays." />
 	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href={SITE.url} />
 	<link rel="alternate" hreflang="en" href={SITE.url} />

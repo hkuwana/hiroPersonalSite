@@ -44,7 +44,7 @@
 			? {
 					eyebrow: '自己紹介 · about',
 					title: '少しだけ、自分のこと',
-					lede: '桑名浩行 (Hiro Kuwana) です。日本生まれ、アメリカ育ち。最近は時間のほとんどを、語学コーチが AI で週に数時間を取り戻せるように、静かに、近くで一緒に整えることに使っています。残りの時間は、ここに随筆や手書きの問いとして置いています。',
+					lede: '桑名浩行 (Hiro Kuwana) です。日本生まれ、アメリカ育ち。最近は時間のほとんどを、Kaiwa で教えている語学コーチと直接、近くで仕事をすることに使っています。残りの時間は、ここに随筆や手書きの問いとして置いています。',
 					sub: 'よく聞かれる問い、ゆっくり考えていること、そして雑談。',
 					backHome: 'ホームに戻る',
 					contactPrompt: '話してみたい、書いてみたい、そんな方は',
@@ -53,7 +53,7 @@
 			: {
 					eyebrow: 'about · 自己紹介',
 					title: 'A little about me',
-					lede: "I'm Hiro Kuwana (桑名浩行). Born in Japan, raised in the United States. Most of my time goes to helping language coaches use AI to save hours each week — quiet, hands-on work. The rest of it shows up here as essays, notes, and slow questions.",
+					lede: "I'm Hiro Kuwana (桑名浩行). Born in Japan, raised in the United States. Most of my time goes to working directly with the language coaches building on Kaiwa — quiet, hands-on work. The rest of it shows up here as essays, notes, and slow questions.",
 					sub: "Questions I get asked, things I've been turning over slowly, and a few small ones too.",
 					backHome: 'Back to home',
 					contactPrompt: 'Rather just talk?',
