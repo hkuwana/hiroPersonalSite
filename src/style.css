@@ -1076,6 +1076,60 @@ main {
 	color: var(--ink);
 }
 
+.contact-tools {
+	margin-top: 2.25rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--rule);
+}
+
+.tools-eyebrow {
+	display: block;
+	margin-bottom: 0.85rem;
+	font-family: var(--f-mono);
+	font-size: 0.6875rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--ink-mute);
+}
+
+.tools-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.9rem;
+}
+
+.tools-list li {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+}
+
+.tools-list a {
+	font-family: var(--f-display);
+	font-size: 1.0625rem;
+	color: var(--ink);
+	border-bottom: 1px solid var(--rule);
+	align-self: flex-start;
+	padding-bottom: 0.1rem;
+	transition:
+		color 0.25s,
+		border-color 0.25s;
+}
+
+.tools-list a:hover {
+	color: var(--shu);
+	border-bottom-color: var(--shu);
+}
+
+.tools-list span {
+	font-size: 0.875rem;
+	line-height: 1.5;
+	color: var(--ink-mute);
+}
+
 .contact-stack {
 	display: flex;
 	flex-direction: column;
