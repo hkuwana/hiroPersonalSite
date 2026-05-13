@@ -1,10 +1,12 @@
 ---
 title: "./ai-guides"
 description: "Practical prompts and workflows for using AI as a thinking partner without flattening your judgment."
-updated: "2026-05-06"
+updated: "2026-05-12"
 ---
 
 These are working notes, not commandments. I keep them small enough to copy, revise, and commit beside the work they affect.
+
+If you want a longer, technical walkthrough on running your own automated AI experiments, read the companion essay: [Build your own autoresearch](/essays/build-your-own-autoresearch).
 
 <h2 id="self-editing-system-prompt">A self-editing system prompt for technical writing</h2>
 
@@ -67,3 +69,54 @@ eval: "manual: 10 recent drafts"
 ```
 
 The habit is simple: change one prompt, write why, run a small check, and keep the old version until the new one earns trust.
+
+<h2 id="three-line-context">Give AI the right context in three lines</h2>
+
+The single highest-leverage habit I've seen for people new to AI is front-loading three lines before the actual question. Most bad AI answers come from asking a precise question into a vacuum.
+
+```txt
+Role: I am a [your role], working on [your project].
+Goal: I want to [end state, in plain language].
+Constraint: I cannot [budget, time, taste, or scope limit].
+
+Now: [your actual question]
+```
+
+That is enough scaffolding for the model to skip a paragraph of warmup and answer the question you actually have. If the answer still feels generic, the missing piece is almost always the constraint line.
+
+<h2 id="show-me-where-youre-guessing">The "show me where you're guessing" prompt</h2>
+
+Use this when an AI answer sounds confident and you cannot tell if it is grounded or hallucinated. Run it as a second turn after any answer that matters.
+
+```txt
+For the answer you just gave, mark each claim as one of:
+- KNOWN: I can point to a specific source or well-known fact.
+- INFERRED: I am reasoning from the inputs you gave me.
+- GUESSED: I do not have a basis and may be wrong.
+
+Return the answer again with these tags inline.
+Do not soften the GUESSED ones.
+```
+
+The reason this works is not that the model gains new knowledge. It is that you force the model to separate retrieval from invention. The "guessed" sentences are the ones to verify by hand.
+
+<h2 id="weekly-ai-checkin">A 20-minute weekly AI check-in</h2>
+
+If you feel behind on AI and do not know where to start, do not try to learn everything. Run this ritual once a week. It is enough to compound.
+
+```txt
+1. Open last week's calendar (5 min).
+   Find the three tasks that took the most time.
+
+2. For each, ask one question (10 min):
+   "If I had to do this again next week, where could AI have
+   saved me time without hurting quality?"
+   Try the change live on a small piece of next week's version.
+
+3. Write one line in a notes file (5 min):
+   - What I tried
+   - Whether it helped
+   - Whether I would do it again
+```
+
+The point is not the tool. The point is the notes file. After eight weeks you will have a personal map of where AI helps your actual work and where it gets in the way. That map is more valuable than any prompt library.
