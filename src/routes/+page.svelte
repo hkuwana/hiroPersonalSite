@@ -81,6 +81,11 @@
 			'contact.tab.follow': 'Follow new posts · 購読',
 			'contact.aside.lead': 'If you teach languages — or want to — come build with us on Kaiwa. I work alongside our coaches: designing learner journeys, sorting out outreach, and quietly removing the workflows that steal your day.',
 			'contact.aside.hi': 'Not a coach? Still say hello. I read every message by hand and usually reply within a few days.',
+			'contact.tools.title': 'Side tools · 道具',
+			'contact.tools.vcf.label': 'vCard · save my contact',
+			'contact.tools.vcf.desc': 'A standard .vcf for your phone or address book.',
+			'contact.tools.ics.label': 'Coffee on the calendar',
+			'contact.tools.ics.desc': 'A .ics with my cal.com link, so the next chat is one click away.',
 			'contact.write.lead': "Tell me what you teach and where AI keeps getting in the way. No template, no automation, just you and me.",
 			'contact.field.name': 'お名前 · Name',
 			'contact.field.email': '電子メール · Email',
@@ -161,6 +166,11 @@
 			'contact.tab.follow': '更新を購読 · Follow',
 			'contact.aside.lead': '語学を教えている、あるいは教えたいと思っている方は、ぜひ Kaiwa で一緒につくりましょう。コーチと並んで、学習の道筋を設計し、集客を整え、気づかぬうちに一日を奪う作業を静かに減らしていきます。',
 			'contact.aside.hi': 'コーチの方でなくても、ひとことの挨拶を歓迎します。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
+			'contact.tools.title': '道具 · side tools',
+			'contact.tools.vcf.label': 'vCard · 連絡先を保存',
+			'contact.tools.vcf.desc': '電話帳や連絡先にそのまま取り込める .vcf。',
+			'contact.tools.ics.label': '予定にコーヒーを入れる',
+			'contact.tools.ics.desc': '私の cal.com のリンクが入った .ics。次の一杯までワンクリック。',
 			'contact.write.lead': '何を教えているか、どこで AI に手間取っているか、教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
 			'contact.field.name': '名前 · Name',
 			'contact.field.email': 'メール · Email',
@@ -711,6 +721,20 @@
 					<a href={SOCIAL_LINKS.github} target="_blank" rel="noopener">GitHub</a>
 					<a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener">LinkedIn</a>
 					<a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener">Twitter</a>
+				</div>
+
+				<div class="contact-tools">
+					<span class="tools-eyebrow">{t('contact.tools.title')}</span>
+					<ul class="tools-list">
+						<li>
+							<a href={asset('/hiro-kuwana.vcf')} download>{t('contact.tools.vcf.label')}</a>
+							<span>{t('contact.tools.vcf.desc')}</span>
+						</li>
+						<li>
+							<a href={asset('/coffee-with-hiro.ics')} download>{t('contact.tools.ics.label')}</a>
+							<span>{t('contact.tools.ics.desc')}</span>
+						</li>
+					</ul>
 				</div>
 			</aside>
 
