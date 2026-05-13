@@ -23,7 +23,7 @@
 		"@inlang/plugin-m-function-matcher": "^2.2.5",
 		"@inlang/plugin-message-format": "^4.4.0",
 		"@sveltejs/adapter-static": "^3.0.8",
-		"@sveltejs/kit": "^2.50.1",
+		"@sveltejs/kit": "^2.57.1",
 		"@sveltejs/vite-plugin-svelte": "^5.1.1",
 		"@tailwindcss/vite": "^4.1.18",
 		"@types/node": "^25.5.2",
