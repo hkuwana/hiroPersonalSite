@@ -13,13 +13,13 @@ TZNAME:JST
 END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
-UID:coffee-with-hiro-kuwana@hirokuwana.com
+UID:tea-with-hiro-kuwana@hirokuwana.com
 DTSTAMP:20260513T000000Z
 DTSTART;TZID=Asia/Tokyo:20260601T140000
 DTEND;TZID=Asia/Tokyo:20260601T141500
-SUMMARY:Coffee with Hiro Kuwana
+SUMMARY:Tea with Hiro Kuwana
 URL:https://cal.com/hirokuwana/15min
 LOCATION:https://cal.com/hirokuwana/15min
-DESCRIPTION:A 15-min chat with Hiro. Pick a time that suits you: https://cal.com/hirokuwana/15min . Feel free to drag this event to whenever works.
+DESCRIPTION:A 15-min tea with Hiro. Pick a time that suits you: https://cal.com/hirokuwana/15min . Feel free to drag this event to whenever works.
 END:VEVENT
 END:VCALENDAR

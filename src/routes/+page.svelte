@@ -84,8 +84,8 @@
 			'contact.tools.title': 'Side tools · 道具',
 			'contact.tools.vcf.label': 'vCard · save my contact',
 			'contact.tools.vcf.desc': 'A standard .vcf for your phone or address book.',
-			'contact.tools.ics.label': 'Coffee on the calendar',
-			'contact.tools.ics.desc': 'A .ics with my cal.com link, so the next chat is one click away.',
+			'contact.tools.ics.label': 'Tea on the calendar',
+			'contact.tools.ics.desc': 'A .ics with my cal.com link, so the next pot of tea is one click away.',
 			'contact.write.lead': "Tell me what you teach and where AI keeps getting in the way. No template, no automation, just you and me.",
 			'contact.field.name': 'お名前 · Name',
 			'contact.field.email': '電子メール · Email',
@@ -169,8 +169,8 @@
 			'contact.tools.title': '道具 · side tools',
 			'contact.tools.vcf.label': 'vCard · 連絡先を保存',
 			'contact.tools.vcf.desc': '電話帳や連絡先にそのまま取り込める .vcf。',
-			'contact.tools.ics.label': '予定にコーヒーを入れる',
-			'contact.tools.ics.desc': '私の cal.com のリンクが入った .ics。次の一杯までワンクリック。',
+			'contact.tools.ics.label': '予定にお茶を入れる',
+			'contact.tools.ics.desc': '私の cal.com のリンクが入った .ics。次の一服までワンクリック。',
 			'contact.write.lead': '何を教えているか、どこで AI に手間取っているか、教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
 			'contact.field.name': '名前 · Name',
 			'contact.field.email': 'メール · Email',
@@ -731,7 +731,7 @@
 							<span>{t('contact.tools.vcf.desc')}</span>
 						</li>
 						<li>
-							<a href={asset('/coffee-with-hiro.ics')} download>{t('contact.tools.ics.label')}</a>
+							<a href={asset('/tea-with-hiro.ics')} download>{t('contact.tools.ics.label')}</a>
 							<span>{t('contact.tools.ics.desc')}</span>
 						</li>
 					</ul>
