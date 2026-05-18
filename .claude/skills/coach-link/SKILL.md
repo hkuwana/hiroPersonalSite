@@ -14,6 +14,8 @@ Verified against production PostHog pageviews and the Supabase `Kaiwa-PROD` proj
 | Source table | Purpose | URL pattern |
 |---|---|---|
 | `public.coach_invites` | An existing coach shares a link with **their students** so they can sign up under that coach | `https://trykaiwa.com/join/coach/{token}` |
+
+> **Important caveat for `coach_invites`:** Visiting the link does **not** auto-attach the student to the coach. Paid coach access requires checkout on the coach's public site. If the coach hasn't published a site yet (`users.username` null), the link shows a "Coach site not ready" state — the visitor can still continue free, but they won't be tied to that coach until they pay. Describe it as "join Nikki's program" rather than "this link gives you Nikki as your coach" in outbound copy.
 | `public.coach_onboarding_tokens` | Onboard a **brand-new** coach (bio + website + socials pre-filled, editable) | `https://trykaiwa.com/join/start-coaching/{token}` |
 
 `/join/start-coaching/{token}` is **wrong** for a `coach_invites` token. Pick the URL pattern by which table the token came from, not by what the user said.
