@@ -8,7 +8,9 @@
 
 	const routeLang = $derived((data.locale as 'en' | 'ja' | undefined) ?? getLocale());
 	const lang = $derived($optimisticLocale ?? routeLang);
-	const footerCopy = $derived(lang === 'ja' ? '© 2026 Hiro · 京都' : '© 2026 Hiro · Kyoto');
+	const footerCopy = $derived(
+		lang === 'ja' ? '© 2026 Hiro · 東京 · ニューヨーク' : '© 2026 Hiro · Tokyo · New York'
+	);
 	const footerRight = $derived(lang === 'ja' ? 'v3.0' : 'v3.0');
 
 	$effect(() => {

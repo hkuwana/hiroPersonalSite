@@ -25,9 +25,20 @@
 		roleJa: string;
 		summary: string;
 		summaryJa: string;
+		stats?: string;
+		statsJa?: string;
 		logo: string;
 		pos: { left: string; top: string; width: string; rotate: number };
 	};
+
+	// Kaiwa traction, sourced from PostHog (project "Kaiwa PROD").
+	// Organic figure is the trailing 30 days; signups are cumulative since
+	// the signup event was instrumented. Refresh these before you cite them.
+	const KAIWA_STATS: { value: string; label: string; labelJa: string }[] = [
+		{ value: '28,000', label: 'organic visitors a month', labelJa: '自然検索の訪問者 / 月' },
+		{ value: '1,700+', label: 'learners signed up', labelJa: '登録した学習者' },
+		{ value: 'solo', label: 'built and run by one person', labelJa: 'ひとりで開発・運用' }
+	];
 
 	const COPY: Record<Locale, Record<string, string>> = {
 		en: {
@@ -38,10 +49,10 @@
 			'hero.title.l2': 'that augment',
 			'hero.title.l3': 'humanity',
 			'hero.tagline':
-				"I'm Hiro Kuwana (桑名浩行). I write and make things, usually with founders or teams building human-centric products with AI.",
-			'hero.now': 'Now · product design for human-centric AI',
+				"I'm Hiro Kuwana (桑名浩行). I build Kaiwa full-time, and write about product, language, and human-centric AI.",
+			'hero.now': 'Now · Kaiwa, full-time',
 			'hero.about1.a':
-				'I take on a few focused projects each season, usually with founders or teams building human-centric products with AI. The aim is',
+				'All of my time goes to Kaiwa: solo founder, full-time, not taking on outside projects. It is a platform where language learners speak daily with AI, and coaches design and individualize the journey. What I am after is',
 			'hero.about1.strong': 'AI-fluent design that augments you, rather than becomes another chatbot.',
 			'hero.about1.b': 'Tools with taste, for people who think.',
 			'hero.about2': 'I keep notes here on product, language learning, and the slower questions underneath the work.',
@@ -80,7 +91,7 @@
 			'contact.tab.write': 'Write me · お便り',
 			'contact.tab.follow': 'Follow new posts · 購読',
 			'contact.aside.lead':
-				'If you are building a human-centric product with AI, send me the real shape of it. I am most useful where product taste, workflow design, and applied AI have to meet.',
+				'If you are building a human-centric product with AI, send me the real shape of it. I am heads-down on Kaiwa and not taking on outside projects, but I always have room for a good conversation where product taste, workflow design, and applied AI have to meet.',
 			'contact.aside.hi':
 				'Not sure if it fits? Still say hello. I read every message by hand and usually reply within a few days.',
 			'contact.tools.title': 'Side tools · 道具',
@@ -127,10 +138,10 @@
 			'hero.title.l2': '',
 			'hero.title.l3': '道具をつくる',
 			'hero.tagline':
-				'桑名浩行 (Hiro Kuwana) です。AI で人を置き換えるのではなく、人の力を拡張するプロダクトや設計をつくっています。',
-			'hero.now': 'いま · 人中心の AI プロダクト設計',
+				'桑名浩行 (Hiro Kuwana) です。いまは Kaiwa をひとりでフルタイムでつくりながら、プロダクトと言語、人中心の AI について書いています。',
+			'hero.now': 'いま · Kaiwa をフルタイムで',
 			'hero.about1.a':
-				'季節ごとに、少数の集中したプロジェクトを引き受けています。多くは、AI を使って人中心のプロダクトをつくる創業者やチームと一緒です。目指すのは、',
+				'いまは時間のすべてを Kaiwa に注いでいます。ひとりの創業者として、フルタイムで。外部の案件は受けていません。学習者が AI と毎日話し、コーチが学びの道筋を設計して一人ひとりに合わせられるプラットフォームです。目指すのは、',
 			'hero.about1.strong': 'もう一つのチャットボットではなく、人を拡張する AI に慣れた設計。',
 			'hero.about1.b': '考える人のための、品のある道具をつくります。',
 			'hero.about2': 'ここには、プロダクトや言語学習、そして仕事の奥にあるゆっくりした問いについてのメモを置いています。',
@@ -169,7 +180,7 @@
 			'contact.tab.write': 'お便りを書く · Write',
 			'contact.tab.follow': '更新を購読 · Follow',
 			'contact.aside.lead':
-				'AI を使って、人中心のプロダクトをつくっているなら、その実際の形を送ってください。プロダクトの感覚、ワークフロー設計、応用 AI が重なる場所でいちばん力になれます。',
+				'AI を使って、人中心のプロダクトをつくっているなら、その実際の形を送ってください。いまは Kaiwa に専念していて外部の案件は受けていませんが、プロダクトの感覚、ワークフロー設計、応用 AI が重なる話ならいつでも歓迎します。',
 			'contact.aside.hi': '合うか分からなくても、ひとことの挨拶を歓迎します。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
 			'contact.tools.title': '道具 · side tools',
 			'contact.tools.vcf.label': 'vCard · 連絡先を保存',
@@ -230,6 +241,8 @@
 			roleJa: 'ファウンダー + プロダクト',
 			summary: 'A platform where language learners speak daily with AI, and coaches can architect and individualize learner journeys',
 			summaryJa: '学習者が AI と毎日話し、コーチは学習の道筋を設計して一人ひとりに合わせられるプラットフォーム。',
+			stats: '28k organic visitors / mo · 1,700+ learners',
+			statsJa: '自然検索 28k / 月 · 学習者 1,700+',
 			logo: asset('/kaiwa_logo.png'),
 			pos: { left: '0%', top: '0%', width: '38%', rotate: -2 }
 		},
@@ -502,7 +515,7 @@
 	<title>Hiro Kuwana · product design for human-centric AI</title>
 	<meta
 		name="description"
-		content="Hiro Kuwana writes and makes things with founders and teams building human-centric products with AI. Product design that augments people rather than replacing them."
+		content="Hiro Kuwana is a solo founder building Kaiwa full-time, and writes about product, language learning, and human-centric AI. Product design that augments people rather than replacing them."
 	/>
 	<meta name="keywords" content={SITE.keywords.join(', ')} />
 	<meta name="author" content={SITE.author} />
@@ -588,6 +601,14 @@
 			{t('hero.about1.b')}
 		</p>
 		<p>{t('hero.about2')}</p>
+		<dl class="now-stats">
+			{#each KAIWA_STATS as stat}
+				<div class="now-stat">
+					<dt>{stat.value}</dt>
+					<dd>{lang === 'ja' ? stat.labelJa : stat.label}</dd>
+				</div>
+			{/each}
+		</dl>
 		<dl class="hero-meta">
 			<dt>{t('hero.meta.based.k')}</dt>
 			<dd>{t('hero.meta.based.v')}</dd>
@@ -649,6 +670,9 @@
 						</div>
 						<h3>{lang === 'ja' ? piece.titleJa : piece.title} <em>{lang === 'ja' ? piece.subtitleJa : piece.subtitle}</em></h3>
 						<p class="summary">{lang === 'ja' ? piece.summaryJa : piece.summary}</p>
+						{#if piece.stats}
+							<p class="piece-stats">{lang === 'ja' ? piece.statsJa : piece.stats}</p>
+						{/if}
 						<div class="meta">
 							<span>{lang === 'ja' ? piece.roleJa : piece.role}</span>
 							<span>{piece.year}</span>

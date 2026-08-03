@@ -543,6 +543,43 @@ main {
 	animation: pulse 2.4s infinite;
 }
 
+.now-stats {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.5rem 1rem;
+	margin: 0;
+	border-top: 1px solid var(--rule);
+	padding-top: 1.125rem;
+}
+
+.now-stat dt {
+	font-family: var(--f-display);
+	font-size: 1.5rem;
+	line-height: 1.1;
+	color: var(--ink);
+	font-variant-numeric: tabular-nums;
+}
+
+.now-stat dd {
+	margin: 0.25rem 0 0;
+	font-family: var(--f-mono);
+	font-size: 0.625rem;
+	line-height: 1.4;
+	text-transform: uppercase;
+	color: var(--ink-mute);
+	text-wrap: balance;
+}
+
+.scrap-piece .piece-stats {
+	margin: 0.75rem 0 0;
+	font-family: var(--f-mono);
+	font-size: 0.625rem;
+	line-height: 1.4;
+	text-transform: uppercase;
+	color: var(--shu);
+	font-variant-numeric: tabular-nums;
+}
+
 .hero-meta {
 	display: grid;
 	grid-template-columns: auto 1fr;
@@ -1488,6 +1525,13 @@ html[lang='ja'] .hero-side {
 	line-height: 1.85;
 }
 
+html[lang='ja'] .now-stat dd,
+html[lang='ja'] .scrap-piece .piece-stats {
+	font-family: var(--f-jp);
+	text-transform: none;
+	letter-spacing: 0.02em;
+}
+
 html[lang='ja'] .sec-head h2,
 html[lang='ja'] .scrap-piece h3,
 html[lang='ja'] [data-philo='journal'] .col-philo h4 {
@@ -1762,6 +1806,14 @@ html[lang='ja'] .col-guides .post h4 {
 	.hero-meta {
 		grid-template-columns: 1fr;
 		gap: 0.125rem;
+	}
+
+	.now-stats {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.now-stat dt {
+		font-size: 1.25rem;
 	}
 }
 

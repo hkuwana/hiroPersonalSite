@@ -22,7 +22,7 @@ export const SITE = {
 	name: 'Hiro Kuwana',
 	title: 'Hiro Kuwana - Product Design for Human-Centric AI',
 	description:
-		'Hiro Kuwana writes and makes things with founders and teams building human-centric products with AI. Product design that augments people rather than replacing them.',
+		'Hiro Kuwana is a solo founder building Kaiwa full-time, and writes about product, language learning, and human-centric AI. Product design that augments people rather than replacing them.',
 	url: 'https://hirokuwana.com',
 	image: 'https://hirokuwana.com/hiro-social-preview.jpg',
 	author: 'Hiro Kuwana',
