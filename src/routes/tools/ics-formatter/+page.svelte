@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { SITE } from '$data/constants';
+	import { formatIcs } from '$lib/tools/ics';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/stores';
@@ -43,186 +44,11 @@ END:VCALENDAR`;
 		icsInput = SAMPLE_ICS;
 	});
 
-	function unfold(text: string): string {
-		return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n[ \t]/g, '');
-	}
-
-	function fold(text: string): string {
-		const lines = text.split('\n');
-		const out: string[] = [];
-		for (const line of lines) {
-			if (line.length <= 75) {
-				out.push(line);
-				continue;
-			}
-			let remaining = line;
-			out.push(remaining.slice(0, 75));
-			remaining = remaining.slice(75);
-			while (remaining.length > 0) {
-				out.push(' ' + remaining.slice(0, 74));
-				remaining = remaining.slice(74);
-			}
-		}
-		return out.join('\r\n');
-	}
-
-	function nowStamp(): string {
-		const d = new Date();
-		const pad = (n: number) => String(n).padStart(2, '0');
-		return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
-	}
-
-	function makeUid(i: number): string {
-		const rand = Math.random().toString(36).slice(2, 10);
-		return `${nowStamp()}-${i}-${rand}@hirokuwana.com`;
-	}
-
-	function parseDate(value: string): string {
-		// Loose readable rendering of an ICS date-time value
-		const m = value.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})Z?)?$/);
-		if (!m) return value;
-		const [, y, mo, d, h, mi] = m;
-		if (!h) return `${y}-${mo}-${d}`;
-		return `${y}-${mo}-${d} ${h}:${mi}`;
-	}
-
 	function validateAndFix() {
-		const log: Issue[] = [];
-		if (!icsInput.trim()) {
-			issues = [{ kind: 'error', message: 'Input is empty. Paste an .ics file or load the sample.' }];
-			fixedIcs = '';
-			events = [];
-			hasValidated = true;
-			return;
-		}
-
-		const lineEndingChanged = /\r(?!\n)|(?<!\r)\n/.test(icsInput) && !/\r\n/.test(icsInput);
-		if (lineEndingChanged) log.push({ kind: 'fixed', message: 'Normalized line endings to CRLF (RFC 5545 §3.1).' });
-
-		const unfolded = unfold(icsInput);
-		const lines = unfolded.split('\n').map((l) => l.trimEnd()).filter((l) => l.length > 0);
-
-		// Track block structure
-		const calBegin = lines.findIndex((l) => l.toUpperCase() === 'BEGIN:VCALENDAR');
-		const calEnd = lines.findIndex((l) => l.toUpperCase() === 'END:VCALENDAR');
-		if (calBegin === -1) log.push({ kind: 'error', message: 'Missing BEGIN:VCALENDAR.' });
-		if (calEnd === -1) log.push({ kind: 'error', message: 'Missing END:VCALENDAR.' });
-
-		// Required calendar headers
-		const hasVersion = lines.some((l) => /^VERSION:/i.test(l));
-		const hasProdId = lines.some((l) => /^PRODID:/i.test(l));
-		if (!hasVersion) log.push({ kind: 'fixed', message: 'Added VERSION:2.0 (required by RFC 5545).' });
-		if (!hasProdId) log.push({ kind: 'fixed', message: 'Added a PRODID line.' });
-
-		// Walk through events
-		const output: string[] = [];
-		output.push('BEGIN:VCALENDAR');
-		output.push('VERSION:2.0');
-		output.push('PRODID:-//Hiro Kuwana//ICS Formatter//EN');
-		output.push('CALSCALE:GREGORIAN');
-
-		const eventList: { summary: string; start: string; end: string; rrule?: string }[] = [];
-
-		let i = 0;
-		let eventIndex = 0;
-		let pendingVtimezones: string[] = [];
-		while (i < lines.length) {
-			const line = lines[i];
-			const upper = line.toUpperCase();
-
-			if (upper === 'BEGIN:VTIMEZONE') {
-				const tzBlock: string[] = [line];
-				i++;
-				while (i < lines.length && lines[i].toUpperCase() !== 'END:VTIMEZONE') {
-					tzBlock.push(lines[i]);
-					i++;
-				}
-				if (i < lines.length) tzBlock.push(lines[i]);
-				pendingVtimezones.push(tzBlock.join('\r\n'));
-				i++;
-				continue;
-			}
-
-			if (upper === 'BEGIN:VEVENT') {
-				const block: string[] = [];
-				i++;
-				while (i < lines.length && lines[i].toUpperCase() !== 'END:VEVENT') {
-					block.push(lines[i]);
-					i++;
-				}
-				if (i >= lines.length) {
-					log.push({ kind: 'error', message: `VEVENT block #${eventIndex + 1} is missing END:VEVENT.` });
-				}
-				i++; // skip END:VEVENT
-
-				let uid = '';
-				let dtstamp = '';
-				let dtstart = '';
-				let dtend = '';
-				let summary = '';
-				let rrule = '';
-				const out: string[] = [];
-
-				for (const raw of block) {
-					const u = raw.toUpperCase();
-					if (u.startsWith('UID:') || u.startsWith('UID;')) uid = raw.split(':').slice(1).join(':');
-					else if (u.startsWith('DTSTAMP:') || u.startsWith('DTSTAMP;')) dtstamp = raw.split(':').slice(1).join(':');
-					else if (u.startsWith('DTSTART:') || u.startsWith('DTSTART;')) dtstart = raw.split(':').slice(1).join(':');
-					else if (u.startsWith('DTEND:') || u.startsWith('DTEND;')) dtend = raw.split(':').slice(1).join(':');
-					else if (u.startsWith('SUMMARY:') || u.startsWith('SUMMARY;')) summary = raw.split(':').slice(1).join(':');
-					else if (u.startsWith('RRULE:')) rrule = raw.slice(6);
-					out.push(raw);
-				}
-
-				const label = summary || `event #${eventIndex + 1}`;
-				if (!uid) {
-					out.unshift(`UID:${makeUid(eventIndex)}`);
-					log.push({ kind: 'fixed', message: `Added missing UID for ${label}.` });
-				}
-				if (!dtstamp) {
-					out.unshift(`DTSTAMP:${nowStamp()}`);
-					log.push({ kind: 'fixed', message: `Added missing DTSTAMP for ${label}.` });
-				}
-				if (!dtstart) log.push({ kind: 'error', message: `${label} is missing DTSTART. Events without DTSTART will not import.` });
-				if (dtstart && !dtend) log.push({ kind: 'warning', message: `${label} has DTSTART but no DTEND. Some clients will interpret as all-day.` });
-				if (!summary) log.push({ kind: 'warning', message: `${label} has no SUMMARY. It will appear as “(No title).”` });
-
-				output.push('BEGIN:VEVENT');
-				for (const l of out) output.push(l);
-				output.push('END:VEVENT');
-
-				eventList.push({
-					summary: summary || '(no title)',
-					start: parseDate(dtstart.replace(/^.*:/, '')),
-					end: parseDate(dtend.replace(/^.*:/, '')),
-					rrule: rrule || undefined
-				});
-				eventIndex++;
-				continue;
-			}
-
-			i++;
-		}
-
-		if (eventIndex === 0) log.push({ kind: 'warning', message: 'No VEVENT blocks were found in the calendar.' });
-
-		// Insert VTIMEZONEs after PRODID
-		if (pendingVtimezones.length > 0) {
-			// reconstruct: output currently starts with BEGIN:VCALENDAR + headers, then events
-			const headerEnd = output.findIndex((l) => l.startsWith('CALSCALE')) + 1;
-			output.splice(headerEnd, 0, ...pendingVtimezones.flatMap((b) => b.split('\r\n')));
-		}
-
-		output.push('END:VCALENDAR');
-
-		const folded = fold(output.join('\n'));
-		fixedIcs = folded;
-		events = eventList;
-
-		if (log.length === 0) {
-			log.push({ kind: 'fixed', message: 'Looks clean. Nothing material to fix — output is canonicalized only.' });
-		}
-		issues = log;
+		const result = formatIcs(icsInput);
+		issues = result.issues;
+		fixedIcs = result.ics;
+		events = result.events;
 		hasValidated = true;
 	}
 
@@ -448,6 +274,25 @@ END:VCALENDAR`;
 			</section>
 		{/if}
 	{/if}
+
+	<section class="panel">
+		<div class="panel-head">
+			<span class="num">API</span>
+			<h2>API <em>{lang === 'ja' ? 'エージェントやスクリプトから' : 'for agents and scripts'}</em></h2>
+		</div>
+		<p class="api-note">
+			{lang === 'ja'
+				? '同じ処理を POST でも使えます。入力はメモリ上で処理し、保存しません。'
+				: 'The same logic runs over POST. Input is processed in memory and not stored.'}
+		</p>
+		<pre class="api-snippet">curl -X POST {SITE.url}/api/ics/format \
+  --data-binary @calendar.ics</pre>
+		<p class="footnote">
+			{lang === 'ja'
+				? 'JSON で issues · events · 整えた ics が返ります。?output=ics を付けると text/calendar で返ります。GET で使い方の JSON が返ります。'
+				: 'Returns JSON with issues, events, and the repaired ics. Append ?output=ics for raw text/calendar. GET the endpoint for usage as JSON.'}
+		</p>
+	</section>
 
 	<footer class="tool-foot">
 		<a class="back-link" href={localizeHref('/tools', { locale: lang })}>← {lang === 'ja' ? '道具に戻る' : 'Back to tools'}</a>
@@ -751,6 +596,32 @@ END:VCALENDAR`;
 
 	.event-meta .rrule {
 		color: var(--color-accent);
+	}
+
+	.api-note {
+		margin: 0 0 1rem;
+		max-width: 60ch;
+	}
+
+	.api-snippet {
+		font-family: var(--f-mono);
+		font-size: 0.8rem;
+		line-height: 1.6;
+		padding: 1rem 1.1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		background: var(--color-bg-subtle);
+		overflow-x: auto;
+		margin: 0 0 0.75rem;
+		white-space: pre;
+	}
+
+	.footnote {
+		font-family: var(--f-mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.06em;
+		color: var(--color-text-tertiary);
+		margin: 0.5rem 0 0;
 	}
 
 	.tool-foot {
