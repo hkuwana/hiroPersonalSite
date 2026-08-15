@@ -134,7 +134,8 @@
 			'sub.thanks.title': 'Subscribed',
 			'sub.thanks.titleEm': 'よろしく.',
 			'sub.thanks.note': "I'll send a short note when the next piece goes up. That's the entire system.",
-			'sub.thanks.again': 'Use a different email'
+			'sub.thanks.again': 'Use a different email',
+			'sub.error': "That didn't go through. Email me instead and I'll add you by hand:"
 		},
 		ja: {
 			'hero.season': '夏 · summer · 2026',
@@ -224,7 +225,8 @@
 			'sub.thanks.title': '登録しました',
 			'sub.thanks.titleEm': 'よろしく。',
 			'sub.thanks.note': '次の文章が出たら、短いメールを一通送ります。仕組みはそれだけです。',
-			'sub.thanks.again': '別のメールで登録'
+			'sub.thanks.again': '別のメールで登録',
+			'sub.error': '送信がうまくいきませんでした。メールをくれたら、手で追加します：'
 		}
 	};
 
@@ -504,7 +506,7 @@
 	let contactReply = '';
 	let subscribeEmail = '';
 	let subscribeChoice = 'both';
-	let subscribeStatus: 'idle' | 'sending' | 'sent' = 'idle';
+	let subscribeStatus: 'idle' | 'sending' | 'sent' | 'error' = 'idle';
 	let visiblePieces = PIECES;
 	let t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	let statusLabel = (status: Status) => t(`work.status.${status}`);
@@ -576,21 +578,26 @@
 		contactStatus = 'idle';
 	}
 
-	function subscribe(event: SubmitEvent) {
+	async function subscribe(event: SubmitEvent) {
 		event.preventDefault();
 		if (!subscribeEmail) return;
 
 		subscribeStatus = 'sending';
-		if (typeof window !== 'undefined') {
+		try {
+			const res = await fetch('/api/subscribe', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ email: subscribeEmail, choice: subscribeChoice })
+			});
+			if (!res.ok) throw new Error(`subscribe failed: ${res.status}`);
 			localStorage.setItem(
 				'hiro_sub',
 				JSON.stringify({ email: subscribeEmail, choice: subscribeChoice, at: Date.now() })
 			);
-		}
-
-		window.setTimeout(() => {
 			subscribeStatus = 'sent';
-		}, 450);
+		} catch {
+			subscribeStatus = 'error';
+		}
 	}
 
 	function resetSubscribe() {
@@ -989,6 +996,13 @@
 								{/each}
 							</div>
 						</fieldset>
+
+						{#if subscribeStatus === 'error'}
+							<p class="sub-error" role="alert">
+								{t('sub.error')}
+								<a href={`mailto:${CONTACT.email}?subject=${encodeURIComponent('Subscribe me')}`}>{CONTACT.email}</a>
+							</p>
+						{/if}
 
 						<div class="contact-row">
 							<span class="contact-note">{t('sub.cadence')}</span>
