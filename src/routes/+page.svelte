@@ -27,6 +27,9 @@
 		summaryJa: string;
 		stats?: string;
 		statsJa?: string;
+		// Voice slots (Hiro's words only — see COPY_WORKSHEET.md §3).
+		lesson?: string;
+		lessonJa?: string;
 		logo: string;
 		pos: { left: string; top: string; width: string; rotate: number };
 	};
@@ -76,6 +79,9 @@
 			'work.status.shipped': 'shipped',
 			'work.status.sunset': 'sunset',
 			'work.readMore': 'open →',
+			'record.title': 'The record',
+			'record.titleEm': 'founder cycles since 2018.',
+			'record.colophon': 'colophon · how I work',
 			'writing.num': '03',
 			'writing.title': 'Two notebooks',
 			'writing.titleEm': 'one with the machines, one without.',
@@ -165,6 +171,9 @@
 			'work.status.shipped': '公開済み',
 			'work.status.sunset': '終了',
 			'work.readMore': '開く →',
+			'record.title': '記録',
+			'record.titleEm': '2018年から続く、ものづくりのサイクル。',
+			'record.colophon': '奥付 · 仕事の流儀',
 			'writing.num': '03',
 			'writing.title': '二冊のノート',
 			'writing.titleEm': '一冊は機械と、もう一冊は作文で。',
@@ -313,6 +322,85 @@
 			pos: { left: '22%', top: '78%', width: '42%', rotate: -1.5 }
 		}
 	];
+
+	// The record — founder cycles. Ship lines are factual and functional.
+	// Lesson lines are voice slots: Hiro's own words, both languages, from
+	// COPY_WORKSHEET.md §2. The whole section stays hidden until every
+	// lesson slot is filled. No flag to flip; fill the slots and it appears.
+	type Cycle = {
+		id: string;
+		years: string;
+		yearsJa: string;
+		name: string;
+		ship: string;
+		shipJa: string;
+		lesson: string;
+		lessonJa: string;
+	};
+
+	const RECORD_CYCLES: Cycle[] = [
+		{
+			id: 'pebblr',
+			years: '2021 – 2023',
+			yearsJa: '2021 – 2023',
+			name: 'Pebblr',
+			ship: 'Connected nonprofits with donors and volunteers. Product and operations.',
+			shipJa: 'NPO と寄付者・ボランティアをつないだ。プロダクトと運営。',
+			lesson: '', // voice slot
+			lessonJa: '' // voice slot
+		},
+		{
+			id: 'flybyrd',
+			years: '2024 – 2025',
+			yearsJa: '2024 – 2025',
+			name: 'Flybyrd',
+			ship: 'Organized scattered feedback into signal for product managers. Founder.',
+			shipJa: '散らばったフィードバックを、PM のためのシグナルに整理した。ファウンダー。',
+			lesson: '', // voice slot
+			lessonJa: '' // voice slot
+		},
+		{
+			id: 'kaiwa',
+			years: '2025 – now',
+			yearsJa: '2025 – 現在',
+			name: 'Kaiwa',
+			ship: 'A real-time AI conversation platform for language learners. 28k organic visitors a month, 1,700+ learners. Built and run by one person.',
+			shipJa: '学習者が AI と毎日話すリアルタイム会話プラットフォーム。自然検索 28k/月、学習者 1,700+。ひとりで開発・運用。',
+			lesson: '', // voice slot
+			lessonJa: '' // voice slot
+		}
+	];
+
+	const CYCLE_NUMERALS = ['一', '二', '三', '四', '五'];
+
+	const COLOPHON: { k: string; kJa: string; v: string; vJa: string }[] = [
+		{
+			k: 'stack',
+			kJa: '技術',
+			v: 'LLMs · TypeScript · Svelte · Python',
+			vJa: 'LLM · TypeScript · Svelte · Python'
+		},
+		{
+			k: 'solo',
+			kJa: 'ひとり',
+			v: 'Product, code, growth, support. One person.',
+			vJa: 'プロダクト、開発、成長、サポート。すべて一人。'
+		},
+		{
+			k: 'speed',
+			kJa: '速さ',
+			v: 'Exonians in Japan: an alumni site shipped in 1.5 hours, on the train home.',
+			vJa: 'Exonians in Japan：帰りの電車の中、1.5 時間で公開した同窓会サイト。'
+		},
+		{
+			k: 'automation',
+			kJa: '自動化',
+			v: 'Reddit Scout: a pipeline that finds language learners with real intent.',
+			vJa: 'Reddit Scout：本気の学習者を見つける自動化パイプライン。'
+		}
+	];
+
+	const recordReady = RECORD_CYCLES.every((cycle) => cycle.lesson.trim() !== '' && cycle.lessonJa.trim() !== '');
 
 	const GUIDES = {
 		en: [
@@ -673,6 +761,9 @@
 						{#if piece.stats}
 							<p class="piece-stats">{lang === 'ja' ? piece.statsJa : piece.stats}</p>
 						{/if}
+						{#if piece.lesson && piece.lessonJa}
+							<p class="piece-lesson">{lang === 'ja' ? piece.lessonJa : piece.lesson}</p>
+						{/if}
 						<div class="meta">
 							<span>{lang === 'ja' ? piece.roleJa : piece.role}</span>
 							<span>{piece.year}</span>
@@ -685,11 +776,52 @@
 	</section>
 </div>
 
+{#if recordReady}
+	<div class="reveal">
+		<section class="section" id="record" data-screen-label="03 Record">
+			<div class="sec-head">
+				<span class="num-vert">03</span>
+				<h2>{t('record.title')} <em>{t('record.titleEm')}</em></h2>
+			</div>
+
+			<div class="record">
+				<ol class="cycles">
+					{#each RECORD_CYCLES as cycle, i}
+						<li class="cycle">
+							<span class="cycle-no" aria-hidden="true">{CYCLE_NUMERALS[i]}</span>
+							<div class="cycle-body">
+								<div class="cycle-head">
+									<h3>{cycle.name}</h3>
+									<span class="cycle-years">{lang === 'ja' ? cycle.yearsJa : cycle.years}</span>
+								</div>
+								<p class="cycle-ship">{lang === 'ja' ? cycle.shipJa : cycle.ship}</p>
+								<p class="cycle-lesson">{lang === 'ja' ? cycle.lessonJa : cycle.lesson}</p>
+							</div>
+						</li>
+					{/each}
+				</ol>
+
+				<aside class="colophon">
+					<span class="colophon-title">{t('record.colophon')}</span>
+					<dl>
+						{#each COLOPHON as item}
+							<div class="colophon-item">
+								<dt>{lang === 'ja' ? item.kJa : item.k}</dt>
+								<dd>{lang === 'ja' ? item.vJa : item.v}</dd>
+							</div>
+						{/each}
+					</dl>
+				</aside>
+			</div>
+		</section>
+	</div>
+{/if}
+
 <div class="reveal">
 	<section data-screen-label="03 Writing" id="writing" data-philo="journal">
 		<div class="section writing-head">
 			<div class="sec-head">
-				<span class="num-vert">{t('writing.num')}</span>
+				<span class="num-vert">{recordReady ? '04' : t('writing.num')}</span>
 				<h2>{t('writing.title')} <em>{t('writing.titleEm')}</em></h2>
 			</div>
 		</div>
@@ -738,7 +870,7 @@
 <div class="reveal">
 	<section class="section contact-sec" id="contact" data-screen-label="04 Contact">
 		<div class="sec-head">
-			<span class="num-vert">{t('contact.num')}</span>
+			<span class="num-vert">{recordReady ? '05' : t('contact.num')}</span>
 			<h2>{t('contact.title')} <em>{t('contact.titleEm')}</em></h2>
 		</div>
 
@@ -747,6 +879,9 @@
 				<p>{t('contact.aside.lead')}</p>
 				<p>{t('contact.aside.hi')}</p>
 				<a class="contact-email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+				<a class="contact-cal" href={CONTACT.cal} target="_blank" rel="noopener">
+					cal.com · {lang === 'ja' ? '15分のお茶' : '15-minute tea'}
+				</a>
 				<div class="contact-links">
 					<a href={SOCIAL_LINKS.github} target="_blank" rel="noopener">GitHub</a>
 					<a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener">LinkedIn</a>
