@@ -1,6 +1,12 @@
 import type { RequestHandler } from './$types';
 import { formatIcs } from '$lib/tools/ics';
-import { CORS_HEADERS, corsPreflight, jsonResponse, readToolInput } from '$lib/server/api';
+import {
+	CORS_HEADERS,
+	checkRateLimit,
+	corsPreflight,
+	jsonResponse,
+	readToolInput
+} from '$lib/server/api';
 
 export const prerender = false;
 
@@ -13,15 +19,26 @@ const USAGE = {
 	returns:
 		'JSON { ok, issues: [{ kind, message }], events: [{ summary, start, end, rrule? }], ics }. "ics" is the repaired calendar (CRLF, folded, UID and DTSTAMP guaranteed).',
 	options: 'Append ?output=ics to receive the repaired calendar as text/calendar instead of JSON.',
+	limits: 'Max body 2 MB. 60 requests per minute per IP.',
 	notes: 'Input is processed in memory and not stored.',
-	example: 'curl -X POST https://hirokuwana.com/api/ics/format --data-binary @calendar.ics'
+	example: 'curl -X POST https://hirokuwana.com/api/ics/format --data-binary @calendar.ics',
+	openapi: 'https://hirokuwana.com/api/openapi.json'
 };
 
 export const GET: RequestHandler = () => jsonResponse(USAGE);
 
 export const OPTIONS: RequestHandler = () => corsPreflight();
 
-export const POST: RequestHandler = async ({ request, url }) => {
+export const POST: RequestHandler = async ({ request, url, getClientAddress }) => {
+	let ip = 'unknown';
+	try {
+		ip = getClientAddress();
+	} catch {
+		// keep the shared 'unknown' bucket when the address is unavailable
+	}
+	const limited = checkRateLimit(ip);
+	if (limited) return limited;
+
 	const input = await readToolInput(request, 'ics');
 	if (input instanceof Response) return input;
 

@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 import { splitVcf } from '$lib/tools/vcf';
-import { corsPreflight, jsonResponse, readToolInput } from '$lib/server/api';
+import { checkRateLimit, corsPreflight, jsonResponse, readToolInput } from '$lib/server/api';
 
 export const prerender = false;
 
@@ -12,15 +12,26 @@ const USAGE = {
 	],
 	returns:
 		'JSON { ok, count, contacts: [{ fn, email, tel, org, vcf }] }. Each "vcf" is one normalized single-contact vCard (CRLF, FN and N guaranteed).',
+	limits: 'Max body 2 MB. 60 requests per minute per IP.',
 	notes: 'Input is processed in memory and not stored.',
-	example: 'curl -X POST https://hirokuwana.com/api/vcf/split --data-binary @contacts.vcf'
+	example: 'curl -X POST https://hirokuwana.com/api/vcf/split --data-binary @contacts.vcf',
+	openapi: 'https://hirokuwana.com/api/openapi.json'
 };
 
 export const GET: RequestHandler = () => jsonResponse(USAGE);
 
 export const OPTIONS: RequestHandler = () => corsPreflight();
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+	let ip = 'unknown';
+	try {
+		ip = getClientAddress();
+	} catch {
+		// keep the shared 'unknown' bucket when the address is unavailable
+	}
+	const limited = checkRateLimit(ip);
+	if (limited) return limited;
+
 	const input = await readToolInput(request, 'vcf');
 	if (input instanceof Response) return input;
 

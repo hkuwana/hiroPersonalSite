@@ -84,3 +84,6 @@ Allow: /
 
 # Sitemap
 Sitemap: https://hirokuwana.com/sitemap.xml
+
+# Guide for LLM agents (tool API, content map)
+# https://hirokuwana.com/llms.txt

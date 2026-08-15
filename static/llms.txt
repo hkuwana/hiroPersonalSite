@@ -1,0 +1,30 @@
+# Hiro Kuwana — hirokuwana.com
+
+> Personal site of Hiro Kuwana, solo founder of Kaiwa (https://www.trykaiwa.com), a real-time AI conversation platform for language learners. The site holds essays, practical AI guides, and a small public tool API for calendar (.ics) and contact (.vcf) files.
+
+## Tool API
+
+No auth. No storage: input is processed in memory only. Rate limit: 60 requests per minute per IP. Max body: 2 MB. CORS is open. Each endpoint answers GET with its own usage description in JSON.
+
+- [API index](https://hirokuwana.com/api): JSON list of all endpoints and limits
+- [OpenAPI 3.1 spec](https://hirokuwana.com/api/openapi.json): full request and response schemas
+- POST https://hirokuwana.com/api/ics/format — validate and repair an ICS calendar (RFC 5545). Accepts raw .ics text or {"ics": "..."}. Returns JSON with issues, parsed events, and the repaired ics. Append ?output=ics to get raw text/calendar back, ready to save as a file.
+- POST https://hirokuwana.com/api/vcf/split — split a multi-contact VCF into normalized single-contact vCards. Accepts raw .vcf text or {"vcf": "..."}. Returns JSON with fn, email, tel, org, and the vcf block per contact.
+
+Examples:
+
+    curl -X POST https://hirokuwana.com/api/ics/format --data-binary @calendar.ics
+    curl -X POST "https://hirokuwana.com/api/ics/format?output=ics" --data-binary @broken.ics -o fixed.ics
+    curl -X POST https://hirokuwana.com/api/vcf/split --data-binary @contacts.vcf
+
+## Content
+
+- [Essays](https://hirokuwana.com/essays): product, language learning, human-centric AI
+- [AI guides](https://hirokuwana.com/ai-guides): practical prompts and workflows
+- [About](https://hirokuwana.com/about): who Hiro is, frequently asked questions
+- [Tools](https://hirokuwana.com/tools): browser versions of the API tools
+
+## Contact
+
+- Email: hiro@trykaiwa.com
+- Calendar: https://cal.com/hirokuwana/15min
