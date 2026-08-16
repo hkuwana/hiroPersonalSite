@@ -29,6 +29,10 @@
 			<span>Case study 01</span>
 		</div>
 
+		<p class="case-disclaimer">
+			A design study. Thread is not a real product, and the numbers on this page are fictional.
+		</p>
+
 		<h1>Thread <em>- a quieter inbox for AI agents.</em></h1>
 		<p class="lede">
 			Reframing agent output as <strong>letters, not chat</strong>, so the work feels
@@ -216,6 +220,19 @@
 
 	.crumb a:hover {
 		color: var(--ink);
+	}
+
+	.case-disclaimer {
+		display: inline-block;
+		margin: 0 0 2.5rem;
+		padding: 0.45rem 0.75rem;
+		border: 1px solid var(--rule);
+		border-radius: 2px;
+		font-family: var(--f-mono);
+		font-size: 0.6875rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--ink-mute);
 	}
 
 	.case-hero h1 {

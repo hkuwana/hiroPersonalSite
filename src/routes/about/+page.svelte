@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { asset } from '$app/paths';
 	import { CONTACT, FAQS, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
@@ -49,7 +50,9 @@
 					sub: 'よく聞かれる問い、ゆっくり考えていること、そして雑談。',
 					backHome: 'ホームに戻る',
 					contactPrompt: '話してみたい、書いてみたい、そんな方は',
-					contactCta: 'お便りを書く →'
+					contactCta: 'お便りを書く →',
+					photoAlt: '山道を歩く桑名浩行',
+					photoCaption: 'fig. 0 · 山にいるほうの私'
 				}
 			: {
 						eyebrow: 'about · 自己紹介',
@@ -59,7 +62,9 @@
 					sub: "Questions I get asked, things I've been turning over slowly, and a few small ones too.",
 					backHome: 'Back to home',
 					contactPrompt: 'Rather just talk?',
-					contactCta: 'Write me →'
+					contactCta: 'Write me →',
+					photoAlt: 'Hiro Kuwana on a mountain trail',
+					photoCaption: 'fig. 0 · the one behind the seal'
 				};
 </script>
 
@@ -88,10 +93,16 @@
 
 <article class="about-page">
 	<header class="about-head">
-		<span class="eyebrow">{copy.eyebrow}</span>
-		<h1>{copy.title}<span class="seal">浩</span></h1>
-		<p class="lede">{copy.lede}</p>
-		<p class="sub">{copy.sub}</p>
+		<div class="about-intro">
+			<span class="eyebrow">{copy.eyebrow}</span>
+			<h1>{copy.title}<span class="seal">浩</span></h1>
+			<p class="lede">{copy.lede}</p>
+			<p class="sub">{copy.sub}</p>
+		</div>
+		<figure class="about-photo">
+			<img src={asset('/hiro-avatar.jpg')} alt={copy.photoAlt} width="640" height="640" loading="lazy" />
+			<figcaption>{copy.photoCaption}</figcaption>
+		</figure>
 	</header>
 
 	<section class="faq-list" aria-label="Frequently asked questions">
@@ -129,6 +140,34 @@
 
 	.about-head {
 		margin-bottom: 3.5rem;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 2.5rem;
+		align-items: start;
+	}
+
+	.about-photo {
+		margin: 0.5rem 0 0;
+		width: 200px;
+		transform: rotate(1.5deg);
+	}
+
+	.about-photo img {
+		display: block;
+		width: 100%;
+		height: auto;
+		background: #fff;
+		padding: 8px 8px 10px;
+		box-shadow: var(--shadow-md, 0 0.75rem 2rem rgba(21, 23, 15, 0.08));
+	}
+
+	.about-photo figcaption {
+		margin-top: 0.6rem;
+		font-family: var(--font-mono, 'JetBrains Mono', monospace);
+		font-size: 0.65rem;
+		letter-spacing: 0.08em;
+		color: var(--color-text-tertiary, #888);
+		text-align: center;
 	}
 
 	.eyebrow {
@@ -292,6 +331,15 @@
 	@media (max-width: 640px) {
 		.about-page {
 			padding: 3.5rem 1.25rem 4rem;
+		}
+
+		.about-head {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+
+		.about-photo {
+			width: 180px;
 		}
 
 		.faq-item summary {

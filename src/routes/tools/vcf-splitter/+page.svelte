@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { SITE } from '$data/constants';
+	import { splitVcf } from '$lib/tools/vcf';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/stores';
@@ -16,15 +17,6 @@
 		tel: string;
 		org: string;
 		selected: boolean;
-	};
-
-	type ContactName = {
-		formatted: string;
-		family: string;
-		given: string;
-		additional: string;
-		prefix: string;
-		suffix: string;
 	};
 
 	type ZipFile = {
@@ -84,189 +76,15 @@ END:VCARD`;
 		vcfInput = SAMPLE_VCF;
 	});
 
-	function extractValue(line: string): string {
-		const colonIdx = line.indexOf(':');
-		if (colonIdx === -1) return '';
-		return line.substring(colonIdx + 1).trim();
-	}
-
-	function isPropertyLine(line: string, property: string): boolean {
-		const upper = line.toUpperCase();
-		const prop = property.toUpperCase();
-		return upper.startsWith(`${prop}:`) || upper.startsWith(`${prop};`);
-	}
-
-	function escapeVcardText(value: string): string {
-		return value
-			.replace(/\\/g, '\\\\')
-			.replace(/\n/g, '\\n')
-			.replace(/;/g, '\\;')
-			.replace(/,/g, '\\,');
-	}
-
-	function unescapeVcardText(value: string): string {
-		return value.replace(/\\([nN,;\\])/g, (_, escaped: string) => {
-			if (escaped.toLowerCase() === 'n') return '\n';
-			return escaped;
-		});
-	}
-
-	function splitVcardComponents(value: string): string[] {
-		const parts: string[] = [];
-		let current = '';
-		let escaped = false;
-
-		for (const char of value) {
-			if (escaped) {
-				current += `\\${char}`;
-				escaped = false;
-			} else if (char === '\\') {
-				escaped = true;
-			} else if (char === ';') {
-				parts.push(current);
-				current = '';
-			} else {
-				current += char;
-			}
-		}
-
-		parts.push(escaped ? `${current}\\` : current);
-		return parts;
-	}
-
-	function deriveNameFromFormatted(formatted: string): ContactName {
-		const cleaned = formatted.trim().replace(/\s+/g, ' ');
-		if (!cleaned) {
-			return { formatted: 'Unknown', family: '', given: 'Unknown', additional: '', prefix: '', suffix: '' };
-		}
-
-		const parts = cleaned.split(' ');
-		if (parts.length === 1) {
-			return { formatted: cleaned, family: '', given: cleaned, additional: '', prefix: '', suffix: '' };
-		}
-
-		const familyParticles = new Set(['da', 'de', 'del', 'der', 'di', 'du', 'la', 'le', 'van', 'von']);
-		let familyStart = parts.length - 1;
-
-		for (let i = parts.length - 2; i >= 0; i -= 1) {
-			const normalized = parts[i].replace(/\.$/, '').toLowerCase();
-			if (!familyParticles.has(normalized)) break;
-			familyStart = i;
-		}
-
-		return {
-			formatted: cleaned,
-			family: parts.slice(familyStart).join(' '),
-			given: parts.slice(0, familyStart).join(' '),
-			additional: '',
-			prefix: '',
-			suffix: ''
-		};
-	}
-
-	function buildContactName(fn: string, structuredName: string): ContactName {
-		if (structuredName) {
-			const parts = splitVcardComponents(structuredName).map(unescapeVcardText);
-			const family = parts[0] ?? '';
-			const given = parts[1] ?? '';
-			const additional = parts[2] ?? '';
-			const prefix = parts[3] ?? '';
-			const suffix = parts[4] ?? '';
-			const formatted =
-				fn ||
-				[prefix, given, additional, family, suffix]
-					.map((part) => part.trim())
-					.filter(Boolean)
-					.join(' ') ||
-				'Unknown';
-
-			return { formatted, family, given, additional, prefix, suffix };
-		}
-
-		return deriveNameFromFormatted(fn);
-	}
-
-	function structuredNameLine(name: ContactName): string {
-		return `N:${[
-			name.family,
-			name.given,
-			name.additional,
-			name.prefix,
-			name.suffix
-		]
-			.map(escapeVcardText)
-			.join(';')}`;
-	}
-
-	function normalizeVcardBlock(block: string, name: ContactName): string {
-		const lines = block
-			.trim()
-			.split('\n')
-			.map((line) => line.trimEnd());
-		const fnIndex = lines.findIndex((line) => isPropertyLine(line, 'FN'));
-		const versionIndex = lines.findIndex((line) => isPropertyLine(line, 'VERSION'));
-		const normalized = [...lines];
-
-		if (fnIndex === -1) {
-			const insertAt = versionIndex === -1 ? 1 : versionIndex + 1;
-			normalized.splice(insertAt, 0, `FN:${escapeVcardText(name.formatted)}`);
-		}
-
-		const freshFnIndex = normalized.findIndex((line) => isPropertyLine(line, 'FN'));
-		const freshNIndex = normalized.findIndex((line) => isPropertyLine(line, 'N'));
-		const line = structuredNameLine(name);
-
-		if (freshNIndex === -1) {
-			normalized.splice(freshFnIndex === -1 ? 1 : freshFnIndex + 1, 0, line);
-		} else {
-			normalized[freshNIndex] = line;
-		}
-
-		return normalized.join('\r\n');
-	}
-
-	function parseVcf(text: string): Contact[] {
-		const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n[ \t]/g, '');
-		const result: Contact[] = [];
-		const regex = /BEGIN:VCARD[\s\S]*?END:VCARD/gi;
-		let match: RegExpExecArray | null;
-		while ((match = regex.exec(normalized)) !== null) {
-			const block = match[0];
-			const lines = block.split('\n');
-			let fn = '';
-			let structuredName = '';
-			let email = '';
-			let tel = '';
-			let org = '';
-			for (const line of lines) {
-				const upper = line.toUpperCase();
-				if (upper.startsWith('FN:') || upper.startsWith('FN;')) {
-					fn = extractValue(line);
-				} else if (upper.startsWith('N:') || upper.startsWith('N;')) {
-					structuredName = extractValue(line);
-				} else if (!email && (upper.startsWith('EMAIL:') || upper.startsWith('EMAIL;'))) {
-					email = extractValue(line);
-				} else if (!tel && (upper.startsWith('TEL:') || upper.startsWith('TEL;'))) {
-					tel = extractValue(line);
-				} else if (!org && (upper.startsWith('ORG:') || upper.startsWith('ORG;'))) {
-					org = extractValue(line).replace(/;+$/, '');
-				}
-			}
-			const name = buildContactName(fn, structuredName);
-			result.push({
-				raw: normalizeVcardBlock(block, name),
-				fn: name.formatted,
-				email,
-				tel,
-				org,
-				selected: true
-			});
-		}
-		return result;
-	}
-
 	function split() {
-		contacts = parseVcf(vcfInput);
+		contacts = splitVcf(vcfInput).map((contact) => ({
+			raw: contact.vcf,
+			fn: contact.fn,
+			email: contact.email,
+			tel: contact.tel,
+			org: contact.org,
+			selected: true
+		}));
 		hasSplit = true;
 	}
 
@@ -692,6 +510,25 @@ END:VCARD`;
 		{/if}
 	{/if}
 
+	<section class="panel">
+		<div class="panel-head">
+			<span class="num">API</span>
+			<h2>API <em>{lang === 'ja' ? 'エージェントやスクリプトから' : 'for agents and scripts'}</em></h2>
+		</div>
+		<p class="api-note">
+			{lang === 'ja'
+				? '同じ処理を POST でも使えます。入力はメモリ上で処理し、保存しません。'
+				: 'The same logic runs over POST. Input is processed in memory and not stored.'}
+		</p>
+		<pre class="api-snippet">curl -X POST {SITE.url}/api/vcf/split \
+  --data-binary @contacts.vcf</pre>
+		<p class="footnote">
+			{lang === 'ja'
+				? 'JSON で {"{"}fn, email, tel, org, vcf{"}"} の配列が返ります。GET で使い方の JSON が返ります。'
+				: 'Returns JSON with an array of {"{"}fn, email, tel, org, vcf{"}"}. GET the endpoint for usage as JSON.'}
+		</p>
+	</section>
+
 	<footer class="tool-foot">
 		<a class="back-link" href={localizeHref('/tools', { locale: lang })}>← {lang === 'ja' ? '道具に戻る' : 'Back to tools'}</a>
 	</footer>
@@ -1005,6 +842,24 @@ END:VCARD`;
 		letter-spacing: 0.06em;
 		color: var(--color-text-tertiary);
 		margin: 0.5rem 0 0;
+	}
+
+	.api-note {
+		margin: 0 0 1rem;
+		max-width: 60ch;
+	}
+
+	.api-snippet {
+		font-family: var(--f-mono);
+		font-size: 0.8rem;
+		line-height: 1.6;
+		padding: 1rem 1.1rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
+		background: var(--color-bg-subtle);
+		overflow-x: auto;
+		margin: 0 0 0.75rem;
+		white-space: pre;
 	}
 
 	.tool-foot {

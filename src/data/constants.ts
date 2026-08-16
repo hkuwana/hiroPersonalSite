@@ -204,5 +204,23 @@ export const FAQS: Faq[] = [
 		question: 'How can I contact Hiro Kuwana?',
 		answer: `You can reach Hiro Kuwana via email at hiro@trykaiwa.com or schedule a conversation at https://cal.com/hirokuwana/15min. He's also active on LinkedIn and GitHub.`,
 		visible: false
+	},
+	{
+		question: 'Is Hiro Kuwana a technical founder?',
+		answer:
+			'Yes. Hiro Kuwana builds and runs Kaiwa alone: product, engineering, and growth. His stack includes TypeScript, Svelte, Python, and LLM systems, and he has shipped production software across multiple founder cycles.',
+		visible: false
+	},
+	{
+		question: 'What has Hiro Kuwana built?',
+		answer:
+			'Hiro Kuwana built Kaiwa, a real-time AI conversation platform for language learners with 28,000 monthly organic visitors and 1,700+ learners. Earlier cycles include Flybyrd (AI feedback analysis for product managers) and Pebblr (a platform connecting nonprofits with donors), plus smaller tools such as an alumni community site and an automation pipeline for user research.',
+		visible: false
+	},
+	{
+		question: 'Is Hiro Kuwana available for consulting or outside work?',
+		answer:
+			'No. Hiro Kuwana works on Kaiwa full-time and does not take outside projects. He reads every message and welcomes conversations about human-centric AI products at hiro@trykaiwa.com.',
+		visible: false
 	}
 ];
