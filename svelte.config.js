@@ -9,7 +9,7 @@ const mdsvexConfig = {
 const config = {
 	preprocess: [vitePreprocess(), mdsvex(mdsvexConfig)],
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({ runtime: 'nodejs22.x' }),
 		paths: {
 			relative: false
 		},

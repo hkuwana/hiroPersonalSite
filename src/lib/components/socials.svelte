@@ -1,5 +1,4 @@
 <script>
-	import TwitterIcon from '$lib/svg/socials-twitter.svelte';
 	import GitHubIcon from '$lib/svg/socials-github.svelte';
 	import LinkedInIcon from '$lib/svg/socials-linkedin.svelte';
 	import EmailIcon from '$lib/svg/socials-email.svelte';
