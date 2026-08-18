@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types';
 import { corsPreflight, jsonResponse, RATE_LIMIT_PER_MINUTE } from '$lib/server/api';
 import { REDACTION_TYPES } from '$lib/tools/redact';
+import { CLEAN_TYPES } from '$lib/tools/clean';
 import { SITE } from '$data/constants';
 
 export const prerender = false;
@@ -19,7 +20,7 @@ const SPEC = {
 	info: {
 		title: 'hirokuwana.com tool API',
 		version: '1.0.0',
-		description: `Small public utilities for calendar (.ics) and contact (.vcf) files, and for redacting personal data out of text. No auth. Input is processed in memory and not stored. Rate limit: ${RATE_LIMIT_PER_MINUTE} requests per minute per IP. Max body: 2 MB.`,
+		description: `Small public utilities for calendar (.ics) and contact (.vcf) files, and for cleaning and redacting text before it reaches a model. No auth. Input is processed in memory and not stored. Rate limit: ${RATE_LIMIT_PER_MINUTE} requests per minute per IP. Max body: 2 MB.`,
 		contact: { name: 'Hiro Kuwana', url: SITE.url }
 	},
 	servers: [{ url: SITE.url }],
@@ -208,6 +209,82 @@ const SPEC = {
 										}
 									},
 									required: ['ok', 'text', 'map', 'counts']
+								}
+							}
+						}
+					},
+					'400': { description: 'Empty or malformed body.' },
+					'413': { description: 'Body over 2 MB.' },
+					'429': { description: 'Rate limit exceeded. Respect Retry-After.' }
+				}
+			}
+		},
+		'/api/text/clean': {
+			post: {
+				operationId: 'cleanText',
+				summary: 'Remove characters that hide inside text',
+				description:
+					'Removes zero-width marks, text-direction overrides (Trojan Source), Unicode tag characters, control characters, private-use characters, look-alike spaces, and look-alike letters. Run it before untrusted text reaches a model: a pasted page, contract, or job description can carry an instruction a person cannot see and a model still obeys. Restraint is deliberate. A zero-width joiner between emoji, a zero-width non-joiner in a joining script, and U+3000 (the ordinary Japanese space) are left alone. A look-alike letter is replaced only inside a word that also holds a Latin letter, so Cyrillic and Greek words survive intact.',
+				requestBody: {
+					required: true,
+					content: {
+						'text/plain': { schema: { type: 'string' } },
+						'application/json': {
+							schema: {
+								type: 'object',
+								properties: {
+									text: { type: 'string' },
+									types: {
+										type: 'array',
+										description: 'Categories to act on. Defaults to all of them.',
+										items: { type: 'string', enum: [...CLEAN_TYPES] }
+									}
+								},
+								required: ['text']
+							}
+						}
+					}
+				},
+				responses: {
+					'200': {
+						description: 'Cleaned text plus what was found.',
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: {
+										ok: { type: 'boolean' },
+										text: { type: 'string', description: 'The cleaned text.' },
+										findings: {
+											type: 'array',
+											items: {
+												type: 'object',
+												properties: {
+													type: { type: 'string', enum: [...CLEAN_TYPES] },
+													value: { type: 'string' },
+													codepoints: {
+														type: 'array',
+														items: { type: 'string' },
+														description: 'For example ["U+200B"].'
+													},
+													start: { type: 'integer' },
+													end: { type: 'integer' },
+													decoded: {
+														type: 'string',
+														description:
+															'Present on a TAG finding: the ASCII text the hidden run spells.'
+													}
+												},
+												required: ['type', 'value', 'codepoints', 'start', 'end']
+											}
+										},
+										counts: {
+											type: 'object',
+											description: 'Number of findings per category.',
+											additionalProperties: { type: 'integer' }
+										}
+									},
+									required: ['ok', 'text', 'findings', 'counts']
 								}
 							}
 						}
