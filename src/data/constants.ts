@@ -214,7 +214,7 @@ export const FAQS: Faq[] = [
 	{
 		question: 'What has Hiro Kuwana built?',
 		answer:
-			'Hiro Kuwana built Kaiwa, a real-time AI conversation platform for language learners with 28,000 monthly organic visitors and 1,700+ learners. Earlier cycles include Flybyrd (AI feedback analysis for product managers) and Pebblr (a platform connecting nonprofits with donors), plus smaller tools such as an alumni community site and an automation pipeline for user research.',
+			'Hiro Kuwana built Kaiwa, a real-time AI conversation platform for language learners with 28,000 monthly organic visitors and 2,000+ learners. Earlier cycles include Flybyrd (AI feedback analysis for product managers) and Pebblr (a platform connecting nonprofits with donors), plus smaller tools such as an alumni community site and an automation pipeline for user research.',
 		visible: false
 	},
 	{
