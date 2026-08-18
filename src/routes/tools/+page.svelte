@@ -51,6 +51,21 @@
 			descJa:
 				'複数の連絡先がまとまった .vcf ファイルを、ひとつずつの vCard に分けます。検索 · 選択 · ダウンロード。iPhone・Android・Google の間で連絡先を移すときに。',
 			stamp: '名'
+		},
+		{
+			num: '03',
+			href: '/tools/safe-paste',
+			// Full page load, so the page's own strict connect-src header applies.
+			reload: true,
+			titleEn: 'Safe paste',
+			titleJa: 'セーフペースト',
+			subEn: 'redact before you paste into AI',
+			subJa: 'AI に貼る前に伏せ字にする',
+			descEn:
+				'Hide emails, phone numbers, card numbers, bank details, API keys, and your own names before you paste text into ChatGPT or Claude. Paste the answer back and the real values return. Nothing is uploaded.',
+			descJa:
+				'メール、電話番号、カード番号、口座情報、API キー、そして自分で指定した人名や社名を、AI に貼り付ける前に伏せ字にします。返ってきた答えを貼り戻せば、本当の値が元に戻ります。送信は一切ありません。',
+			stamp: '守'
 		}
 	];
 </script>
@@ -86,7 +101,11 @@
 
 	<section class="tool-list" aria-label="Available tools">
 		{#each TOOLS as tool}
-			<a class="tool-card" href={localizeHref(tool.href, { locale: lang })}>
+			<a
+				class="tool-card"
+				href={localizeHref(tool.href, { locale: lang })}
+				data-sveltekit-reload={tool.reload ? '' : undefined}
+			>
 				<div class="tool-card-head">
 					<span class="num">{tool.num}</span>
 					<span class="stamp" aria-hidden="true">{tool.stamp}</span>

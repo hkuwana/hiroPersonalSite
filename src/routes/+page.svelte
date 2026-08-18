@@ -37,9 +37,11 @@
 	// Kaiwa traction, sourced from PostHog (project "Kaiwa PROD").
 	// Organic figure is the trailing 30 days; signups are cumulative since
 	// the signup event was instrumented. Refresh these before you cite them.
+	// Refreshed 2026-08-18: 28,398 organic-search visitors over the trailing
+	// 30 days, and 2,019 unique persons on user_signed_up since 2026-02-09.
 	const KAIWA_STATS: { value: string; label: string; labelJa: string }[] = [
 		{ value: '28,000', label: 'organic visitors a month', labelJa: '自然検索の訪問者 / 月' },
-		{ value: '1,700+', label: 'learners signed up', labelJa: '登録した学習者' },
+		{ value: '2,000+', label: 'learners signed up', labelJa: '登録した学習者' },
 		{ value: 'solo', label: 'built and run by one person', labelJa: 'ひとりで開発・運用' }
 	];
 
@@ -264,8 +266,8 @@
 			roleJa: 'ファウンダー + プロダクト',
 			summary: 'A platform where language learners speak daily with AI, and coaches can architect and individualize learner journeys',
 			summaryJa: '学習者が AI と毎日話し、コーチは学習の道筋を設計して一人ひとりに合わせられるプラットフォーム。',
-			stats: '28k organic visitors / mo · 1,700+ learners',
-			statsJa: '自然検索 28k / 月 · 学習者 1,700+',
+			stats: '28k organic visitors / mo · 2,000+ learners',
+			statsJa: '自然検索 28k / 月 · 学習者 2,000+',
 			logo: asset('/kaiwa_logo.png'),
 			pos: { left: '0%', top: '0%', width: '38%', rotate: -2 }
 		},
@@ -378,8 +380,8 @@
 			years: '2025 – now',
 			yearsJa: '2025 – 現在',
 			name: 'Kaiwa',
-			ship: 'A real-time AI conversation platform for language learners. 28k organic visitors a month, 1,700+ learners. Built and run by one person.',
-			shipJa: '学習者が AI と毎日話すリアルタイム会話プラットフォーム。自然検索 28k/月、学習者 1,700+。ひとりで開発・運用。',
+			ship: 'A real-time AI conversation platform for language learners. 28k organic visitors a month, 2,000+ learners. Built and run by one person.',
+			shipJa: '学習者が AI と毎日話すリアルタイム会話プラットフォーム。自然検索 28k/月、学習者 2,000+。ひとりで開発・運用。',
 			lesson: '', // voice slot
 			lessonJa: '' // voice slot
 		}

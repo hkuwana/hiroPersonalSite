@@ -1,6 +1,6 @@
 # Hiro Kuwana — hirokuwana.com
 
-> Personal site of Hiro Kuwana, solo founder of Kaiwa (https://www.trykaiwa.com), a real-time AI conversation platform for language learners. The site holds essays, practical AI guides, and a small public tool API for calendar (.ics) and contact (.vcf) files.
+> Personal site of Hiro Kuwana, solo founder of Kaiwa (https://www.trykaiwa.com), a real-time AI conversation platform for language learners. The site holds essays, practical AI guides, and a small public tool API for calendar (.ics) files, contact (.vcf) files, and cleaning and redacting text before it reaches a model.
 
 ## Tool API
 
@@ -10,12 +10,16 @@ No auth. No storage: input is processed in memory only. Rate limit: 60 requests 
 - [OpenAPI 3.1 spec](https://hirokuwana.com/api/openapi.json): full request and response schemas
 - POST https://hirokuwana.com/api/ics/format — validate and repair an ICS calendar (RFC 5545). Accepts raw .ics text or {"ics": "..."}. Returns JSON with issues, parsed events, and the repaired ics. Append ?output=ics to get raw text/calendar back, ready to save as a file.
 - POST https://hirokuwana.com/api/vcf/split — split a multi-contact VCF into normalized single-contact vCards. Accepts raw .vcf text or {"vcf": "..."}. Returns JSON with fn, email, tel, org, and the vcf block per contact.
+- POST https://hirokuwana.com/api/text/redact — replace personal data in text with reversible placeholders such as [EMAIL_1]. Accepts raw text or {"text": "...", "types": [...], "terms": [...]}. Returns JSON with the redacted text, the placeholder map, and counts per type. Detects only what a checksum or a fixed prefix confirms: card numbers (Luhn), IBANs (mod-97), Japan My Number, API keys and JWTs, emails, phone numbers, IP addresses, query URLs, postal codes. Person names are never detected. Pass them in "terms". There is no restore endpoint: reversal needs the real values, so it stays in the browser at /tools/safe-paste.
+- POST https://hirokuwana.com/api/text/clean — remove characters that hide inside text: zero-width marks, text-direction overrides (Trojan Source), Unicode tag characters, control characters, private-use characters, look-alike spaces, and look-alike letters. Accepts raw text or {"text": "...", "types": [...]}. Returns JSON with the cleaned text, findings (type, codepoints, offsets), and counts. A TAG finding also carries "decoded": the ASCII the hidden run spells. Run this before untrusted text reaches a model, because a hidden instruction can travel this way. Deliberately keeps a zero-width joiner between emoji, a zero-width non-joiner in a joining script, and U+3000 (the ordinary Japanese space).
 
 Examples:
 
     curl -X POST https://hirokuwana.com/api/ics/format --data-binary @calendar.ics
     curl -X POST "https://hirokuwana.com/api/ics/format?output=ics" --data-binary @broken.ics -o fixed.ics
     curl -X POST https://hirokuwana.com/api/vcf/split --data-binary @contacts.vcf
+    curl -X POST https://hirokuwana.com/api/text/redact -H "content-type: application/json" -d '{"text": "call me on 03-1234-5678", "terms": ["Acme Corp"]}'
+    curl -X POST https://hirokuwana.com/api/text/clean --data-binary @pasted.txt
 
 ## Content
 
