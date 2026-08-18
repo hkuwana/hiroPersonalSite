@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
 import { corsPreflight, jsonResponse, RATE_LIMIT_PER_MINUTE } from '$lib/server/api';
+import { REDACTION_TYPES } from '$lib/tools/redact';
 import { SITE } from '$data/constants';
 
 export const prerender = false;
@@ -18,7 +19,7 @@ const SPEC = {
 	info: {
 		title: 'hirokuwana.com tool API',
 		version: '1.0.0',
-		description: `Small public utilities for calendar (.ics) and contact (.vcf) files. No auth. Input is processed in memory and not stored. Rate limit: ${RATE_LIMIT_PER_MINUTE} requests per minute per IP. Max body: 2 MB.`,
+		description: `Small public utilities for calendar (.ics) and contact (.vcf) files, and for redacting personal data out of text. No auth. Input is processed in memory and not stored. Rate limit: ${RATE_LIMIT_PER_MINUTE} requests per minute per IP. Max body: 2 MB.`,
 		contact: { name: 'Hiro Kuwana', url: SITE.url }
 	},
 	servers: [{ url: SITE.url }],
@@ -139,6 +140,74 @@ const SPEC = {
 										}
 									},
 									required: ['ok', 'count', 'contacts']
+								}
+							}
+						}
+					},
+					'400': { description: 'Empty or malformed body.' },
+					'413': { description: 'Body over 2 MB.' },
+					'429': { description: 'Rate limit exceeded. Respect Retry-After.' }
+				}
+			}
+		},
+		'/api/text/redact': {
+			post: {
+				operationId: 'redactText',
+				summary: 'Replace personal data in text with reversible placeholders',
+				description:
+					'Detects only what a checksum or a fixed prefix confirms: card numbers (Luhn), IBANs (mod-97), Japan My Number (check digit), API keys and JWTs by prefix, emails, phone numbers, IP addresses, URLs with a query string, and postal codes. Person names are never detected, because no pattern finds a name without guessing; pass them in "terms" instead. One value always maps to one placeholder, so the text stays coherent for the model. There is no restore endpoint: reversal needs the original values and belongs in the browser.',
+				requestBody: {
+					required: true,
+					content: {
+						'text/plain': { schema: { type: 'string' } },
+						'application/json': {
+							schema: {
+								type: 'object',
+								properties: {
+									text: { type: 'string' },
+									types: {
+										type: 'array',
+										description: 'Types to look for. Defaults to all of them.',
+										items: {
+											type: 'string',
+											enum: [...REDACTION_TYPES]
+										}
+									},
+									terms: {
+										type: 'array',
+										description:
+											'Exact strings to hide, such as people and company names. Matched case-insensitively. Maximum 200.',
+										items: { type: 'string' }
+									}
+								},
+								required: ['text']
+							}
+						}
+					}
+				},
+				responses: {
+					'200': {
+						description: 'Redacted text plus the map needed to reverse it.',
+						content: {
+							'application/json': {
+								schema: {
+									type: 'object',
+									properties: {
+										ok: { type: 'boolean' },
+										text: { type: 'string', description: 'The text with placeholders in place.' },
+										map: {
+											type: 'object',
+											description:
+												'Placeholder to original value, for example {"[EMAIL_1]": "a@b.com"}. Returned once and never stored.',
+											additionalProperties: { type: 'string' }
+										},
+										counts: {
+											type: 'object',
+											description: 'Number of replacements per type.',
+											additionalProperties: { type: 'integer' }
+										}
+									},
+									required: ['ok', 'text', 'map', 'counts']
 								}
 							}
 						}
