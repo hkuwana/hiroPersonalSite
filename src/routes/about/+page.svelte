@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
-	import { CONTACT, FAQS, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+	import { FAQS, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/stores';
@@ -32,7 +32,6 @@
 			'@type': 'Person',
 			name: PERSONAL.displayName,
 			alternateName: [PERSONAL.japaneseKanji, PERSONAL.fullName],
-			email: CONTACT.email,
 			jobTitle: PERSONAL.jobTitle,
 			worksFor: { '@type': 'Organization', name: PERSONAL.company, url: PERSONAL.companyWebsite },
 			alumniOf: { '@type': 'CollegeOrUniversity', name: PERSONAL.university },
@@ -43,11 +42,11 @@
 	$: copy =
 		lang === 'ja'
 			? {
-						eyebrow: '自己紹介 · about',
-						title: '少しだけ、自分のこと',
-						lede:
-							'桑名浩行 (Hiro Kuwana) です。日本生まれ、アメリカ育ち。AI で人を置き換えるのではなく、人の力を拡張するプロダクトや設計をつくっています。残りの時間は、ここに作文やメモ、ゆっくりした問いとして置いています。',
-					sub: 'よく聞かれる問い、ゆっくり考えていること、そして雑談。',
+					eyebrow: '自己紹介 · about',
+					title: '少しだけ、自分のこと',
+					lede:
+						'桑名浩行 (Hiro Kuwana) です。日本生まれ、アメリカ育ち。いまは Kaiwa をほぼひとりで、フルタイムでつくっています。ここには、実際の仕事から学んだことを書き留めています。プロダクト、語学学習、そして AI に必要以上の判断を預けずに使う方法について。',
+					sub: '実用的な答えもあれば、まだ考え終えていない問いもあります。',
 					backHome: 'ホームに戻る',
 					contactPrompt: '話してみたい、書いてみたい、そんな方は',
 					contactCta: 'お便りを書く →',
@@ -55,11 +54,11 @@
 					photoCaption: 'fig. 0 · 山にいるほうの私'
 				}
 			: {
-						eyebrow: 'about · 自己紹介',
-						title: 'A little about me',
-						lede:
-							"I'm Hiro Kuwana (桑名浩行). Born in Japan, raised in the United States. I write and make things with founders and teams building human-centric products with AI. The rest of it shows up here as essays, notes, and slow questions.",
-					sub: "Questions I get asked, things I've been turning over slowly, and a few small ones too.",
+					eyebrow: 'about · 自己紹介',
+					title: 'A little about me',
+					lede:
+						"I'm Hiro Kuwana (桑名浩行). Born in Japan, raised in the United States. I build Kaiwa full-time, mostly on my own. This is where I write down what the work is teaching me—about product, language learning, and using AI without giving it more authority than it deserves.",
+					sub: "Some answers are practical. Some are questions I haven't finished thinking through.",
 					backHome: 'Back to home',
 					contactPrompt: 'Rather just talk?',
 					contactCta: 'Write me →',
@@ -68,21 +67,21 @@
 				};
 </script>
 
-	<svelte:head>
-		<title>About · Hiro Kuwana</title>
-		<meta
-			name="description"
-			content="About Hiro Kuwana — product design for human-centric AI, essays, language learning, and the questions underneath the work."
-		/>
+<svelte:head>
+	<title>About · Hiro Kuwana</title>
+	<meta
+		name="description"
+		content="About Hiro Kuwana, a solo founder building Kaiwa and writing field notes on product, AI workflows, language learning, and human judgment."
+	/>
 	<meta name="robots" content="index, follow, max-image-preview:large" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={`${SITE.url}/about`} />
 	<meta property="og:title" content="About · Hiro Kuwana" />
-	<meta property="og:description" content="Questions Hiro Kuwana gets asked, and the slower ones underneath the work." />
+	<meta property="og:description" content="A solo founder building Kaiwa and writing down what the work is teaching him." />
 	<meta property="og:image" content={SITE.image} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="About · Hiro Kuwana" />
-	<meta name="twitter:description" content="Questions Hiro Kuwana gets asked, and the slower ones underneath the work." />
+	<meta name="twitter:description" content="A solo founder building Kaiwa and writing down what the work is teaching him." />
 	<link rel="canonical" href={`${SITE.url}/about`} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/about`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/about`} />

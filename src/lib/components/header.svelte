@@ -74,7 +74,7 @@
 		<a class="icon-link social-link" href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn">
 			<LinkedInIcon />
 		</a>
-		<a class="icon-link social-link" href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener" aria-label="Twitter">
+		<a class="icon-link social-link" href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener" aria-label="X">
 			<TwitterIcon />
 		</a>
 
