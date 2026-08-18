@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
-
-	const calLink = 'https://cal.com/hirokuwana/15min';
+	import { CONTACT } from '$data/constants';
 
 	const skills = [
 		'Strategic Planning',
@@ -109,7 +108,7 @@
 		<!-- CTA -->
 		<div class="corp-cta">
 			<p>Open to strategic conversations about synergistic opportunities.</p>
-			<a href={calLink} target="_blank" rel="noopener" class="corp-btn">
+			<a href={CONTACT.cal} target="_blank" rel="noopener" class="corp-btn">
 				Schedule a Strategic Alignment Session
 			</a>
 		</div>
