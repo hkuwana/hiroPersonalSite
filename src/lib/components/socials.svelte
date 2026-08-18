@@ -1,10 +1,9 @@
 <script>
-	import TwitterIcon from '$lib/svg/socials-twitter.svelte';
 	import GitHubIcon from '$lib/svg/socials-github.svelte';
 	import LinkedInIcon from '$lib/svg/socials-linkedin.svelte';
 	import EmailIcon from '$lib/svg/socials-email.svelte';
 	import QuoraIcon from '$lib/svg/socials-quora.svelte';
-	import { CONTACT, SOCIAL_LINKS } from '$data/constants';
+	import { SOCIAL_LINKS } from '$data/constants';
 </script>
 
 <div class="socials">
@@ -40,11 +39,9 @@
 	</a>
 	<a
 		class="social-link"
-		href="mailto:{CONTACT.email}"
-		target="_blank"
-		rel="noopener"
-		title="Send an email"
-		aria-label="Email"
+		href="/#contact"
+		title="Open the contact section"
+		aria-label="Contact Hiro"
 	>
 		<EmailIcon />
 	</a>

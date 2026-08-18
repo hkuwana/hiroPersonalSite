@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { CONTACT, SITE } from '$data/constants';
+	import { SITE } from '$data/constants';
 	import { localizeHref } from '$lib/paraglide/runtime';
 
 	const caseStudyUrl = `${SITE.url}/case-study`;
@@ -183,7 +183,7 @@
 			<p>
 				I am continuing to work on Thread with a small group of teams through the rest
 				of the year. If your team is making something agent-shaped and you want to talk
-				about the surface around it, <a href={`mailto:${CONTACT.email}`}>write to me</a>.
+				about the surface around it, <a href={localizeHref('/#contact')}>write to me</a>.
 			</p>
 		</section>
 	</div>

@@ -8,10 +8,13 @@ export const prerender = false;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CHOICES = new Set(['both', 'philo', 'guides']);
+const [contactUser, contactDomain, contactTopLevelDomain] = CONTACT.emailParts;
+const contactEmail = `${contactUser}@${contactDomain}.${contactTopLevelDomain}`;
 
 // Storage: Supabase table `subscribers` (email text primary key, choice text,
 // created_at timestamptz default now()) with an anon INSERT policy.
-// Notification: Resend email to CONTACT.email. Either channel alone counts as success.
+// Notification: Resend email to the address assembled from CONTACT.emailParts.
+// Either channel alone counts as success.
 export const POST: RequestHandler = async ({ request, fetch }) => {
 	let body: { email?: string; choice?: string };
 	try {
@@ -57,7 +60,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 				},
 				body: JSON.stringify({
 					from: env.RESEND_FROM ?? 'Site <onboarding@resend.dev>',
-					to: [CONTACT.email],
+					to: [contactEmail],
 					subject: `New subscriber: ${email}`,
 					text: `${email} subscribed to: ${choice}`
 				})

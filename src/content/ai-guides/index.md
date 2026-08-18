@@ -1,6 +1,6 @@
 ---
 title: "./ai-guides"
-description: "Practical prompts and workflows for using AI as a thinking partner without flattening your judgment."
+description: "Practical prompts and workflows for building with AI: what they are good for, where they break, and what still needs human judgment."
 updated: "2026-05-12"
 ---
 

@@ -5,8 +5,9 @@
 
 // Contact Information
 export const CONTACT = {
-	email: 'hiro@trykaiwa.com',
-	cal: 'https://cal.com/hirokuwana/15min'
+	emailParts: ['hiro', 'trykaiwa', 'com'],
+	emailLabel: 'hiro [at] trykaiwa [dot] com',
+	cal: 'https://cal.com/hiro-kuwana/25-min?user=hiro-kuwana'
 } as const;
 
 // Social Media Links
@@ -14,22 +15,24 @@ export const SOCIAL_LINKS = {
 	quora: 'https://www.quora.com/profile/Hiro-Kuwana',
 	linkedin: 'https://www.linkedin.com/in/hiroyuki-kuwana/',
 	github: 'https://github.com/hkuwana',
-	twitter: 'https://twitter.com/hirokuwana'
+	twitter: 'https://x.com/KuwanaHiroyuki'
 } as const;
 
 // Site Metadata
 export const SITE = {
 	name: 'Hiro Kuwana',
-	title: 'Hiro Kuwana - Product Design for Human-Centric AI',
+	title: 'Hiro Kuwana — Building Kaiwa with AI',
 	description:
-		'Hiro Kuwana is a solo founder building Kaiwa full-time, and writes about product, language learning, and human-centric AI. Product design that augments people rather than replacing them.',
+		'Hiro Kuwana is a solo founder building Kaiwa full-time. Field notes on product decisions, practical AI workflows, mistakes, and keeping human judgment in the loop.',
 	url: 'https://hirokuwana.com',
 	image: 'https://hirokuwana.com/hiro-social-preview.jpg',
 	author: 'Hiro Kuwana',
 	keywords: [
 		'Hiro Kuwana',
-		'AI product design',
-		'startup founder',
+		'solo founder',
+		'building a startup with AI',
+		'AI workflows',
+		'product decisions',
 		'human-centric AI',
 		'educational technology',
 		'AI augmentation',
@@ -47,7 +50,7 @@ export const PERSONAL = {
 	displayName: 'Hiro Kuwana',
 	japaneseKanji: '桑名 浩行',
 	japaneseKana: 'くわな ひろゆき',
-	tagline: 'Product design for AI that augments humanity, not replaces it',
+	tagline: 'Building a company with AI while keeping the judgment human',
 	jobTitle: 'Founder & Product Designer',
 	company: 'Kaiwa',
 	companyWebsite: 'https://www.trykaiwa.com/',
@@ -202,7 +205,7 @@ export const FAQS: Faq[] = [
 	},
 	{
 		question: 'How can I contact Hiro Kuwana?',
-		answer: `You can reach Hiro Kuwana via email at hiro@trykaiwa.com or schedule a conversation at https://cal.com/hirokuwana/15min. He's also active on LinkedIn and GitHub.`,
+		answer: `Use the contact section at https://hirokuwana.com/#contact or book a 25-minute conversation at ${CONTACT.cal}. Hiro is also active on LinkedIn, GitHub, and X.`,
 		visible: false
 	},
 	{
@@ -220,7 +223,7 @@ export const FAQS: Faq[] = [
 	{
 		question: 'Is Hiro Kuwana available for consulting or outside work?',
 		answer:
-			'No. Hiro Kuwana works on Kaiwa full-time and does not take outside projects. He reads every message and welcomes conversations about human-centric AI products at hiro@trykaiwa.com.',
+			'No. Hiro Kuwana works on Kaiwa full-time and does not take outside projects. He reads every message and welcomes conversations about human-centric AI products through the contact section at https://hirokuwana.com/#contact.',
 		visible: false
 	}
 ];

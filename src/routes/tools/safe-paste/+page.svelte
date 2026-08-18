@@ -500,7 +500,7 @@ Hiro`;
 
 		<pre class="api-snippet">curl -X POST {SITE.url}/api/text/redact \
   -H "content-type: application/json" \
-  -d '{'{'}"text": "call me on 03-1234-5678", "terms": ["Acme Corp"]{'}'}'</pre>
+  -d '{'{'}"text": "call me on 03-1234-5678", "terms": ["Acme Corp"]}'</pre>
 
 		<p class="footnote">
 			{lang === 'ja' ? '入力は保存されません。60 リクエスト / 分 / IP。' : 'Input is not stored. 60 requests per minute per IP.'}

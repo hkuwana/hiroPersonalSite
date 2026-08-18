@@ -49,18 +49,19 @@
 		en: {
 			'hero.season': '夏 · summer · 2026',
 			'hero.vert': '人 を 拡 張 す る 道 具',
-			'hero.title.l1': 'Building',
-			'hero.title.tools': 'tools',
-			'hero.title.l2': 'that augment',
-			'hero.title.l3': 'humanity',
+			'hero.title.l1': 'Building a',
+			'hero.title.tools': 'company',
+			'hero.title.l2': 'with AI, while',
+			'hero.title.l3': 'keeping judgment human',
 			'hero.tagline':
-				"I'm Hiro Kuwana (桑名浩行). I build Kaiwa full-time, and write about product, language, and human-centric AI.",
+				"I'm Hiro Kuwana (桑名浩行). I build Kaiwa full-time and write down the product calls, systems, mistakes, and small wins along the way.",
 			'hero.now': 'Now · Kaiwa, full-time',
 			'hero.about1.a':
-				'All of my time goes to Kaiwa: solo founder, full-time, not taking on outside projects. It is a platform where language learners speak daily with AI, and coaches design and individualize the journey. What I am after is',
-			'hero.about1.strong': 'AI-fluent design that augments you, rather than becomes another chatbot.',
-			'hero.about1.b': 'Tools with taste, for people who think.',
-			'hero.about2': 'I keep notes here on product, language learning, and the slower questions underneath the work.',
+				'Kaiwa is where I do the real work: product, code, growth, support, and the messy decisions in between. It is a language-learning platform where learners practice with AI and coaches shape the journey. I use AI wherever it helps, but',
+			'hero.about1.strong': "I don't hand it the judgment.",
+			'hero.about1.b': 'That line is at the heart of what I build.',
+			'hero.about2':
+				'If you are building with AI on a small team—or no team—I hope these notes save you a few wrong turns.',
 			'hero.meta.based.k': 'Based',
 			'hero.meta.based.v': 'Tokyo · New York',
 			'hero.meta.since.k': 'Since',
@@ -85,8 +86,8 @@
 			'record.titleEm': 'founder cycles since 2018.',
 			'record.colophon': 'colophon · how I work',
 			'writing.num': '03',
-			'writing.title': 'Two notebooks',
-			'writing.titleEm': 'one with the machines, one without.',
+			'writing.title': 'Notes from the build,',
+			'writing.titleEm': 'and the questions underneath it.',
 			'writing.guides': './ai-guides',
 			'writing.guidesJP': '道 具',
 			'writing.philo': 'essays',
@@ -95,65 +96,71 @@
 			'writing.dateAi': '04 · 2026',
 			'contact.num': '04',
 			'contact.title': 'Stay in touch',
-			'contact.titleEm': 'write me, or follow along.',
-			'contact.tab.write': 'Write me · お便り',
-			'contact.tab.follow': 'Follow new posts · 購読',
+			'contact.titleEm': 'write me, or follow the build.',
+			'contact.tab.write': 'Write to me · お便り',
+			'contact.tab.follow': 'Follow the build · 購読',
 			'contact.aside.lead':
-				'If you are building a human-centric product with AI, send me the real shape of it. I am heads-down on Kaiwa and not taking on outside projects, but I always have room for a good conversation where product taste, workflow design, and applied AI have to meet.',
+				"I'm always interested in how other people are building with AI—especially the places where it creates more work instead of less. I'm not taking on outside projects, but thoughtful notes are welcome.",
 			'contact.aside.hi':
-				'Not sure if it fits? Still say hello. I read every message by hand and usually reply within a few days.',
+				'Tell me what you are working on, what surprised you, or where you are stuck. I read every message myself and usually reply within a few days.',
 			'contact.tools.title': 'Side tools · 道具',
+			'contact.tools.cal.label': 'Tea for 25 minutes',
+			'contact.tools.cal.desc': 'Pick a time directly. No pitch deck required.',
 			'contact.tools.vcf.label': 'vCard · save my contact',
-			'contact.tools.vcf.desc': 'A standard .vcf for your phone or address book.',
+			'contact.tools.vcf.desc': 'A simple contact card without a public email address.',
 			'contact.tools.ics.label': 'Tea on the calendar',
-			'contact.tools.ics.desc': 'A .ics with my cal.com link, so the next pot of tea is one click away.',
+			'contact.tools.ics.desc': 'A 25-minute placeholder with the booking link tucked inside.',
+			'contact.email.copy': 'copy address',
+			'contact.email.copied': 'copied · ありがとう',
+			'contact.email.revealed': 'copy unavailable · address revealed',
 			'contact.write.lead':
-				"Tell me what you are building, who it serves, and where AI is getting in the way. No template, no automation, just you and me.",
+				'What are you building? What have you tried? Where is AI helping—or getting in the way? A few honest sentences are plenty.',
 			'contact.field.name': 'お名前 · Name',
 			'contact.field.email': '電子メール · Email',
 			'contact.field.msg': 'ご用件 · Message',
 			'contact.field.namePh': 'Your name',
 			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': 'What you are building, who it serves, and what you wish the AI would do better.',
+			'contact.field.msgPh': 'What you are building, what you have tried, and where you are stuck.',
 			'contact.note.write': 'Opens your mail client as a fallback. Nothing is sent to a third party from this page.',
 			'contact.btn.send': 'Send · 送る →',
 			'contact.btn.sending': 'Sending...',
-			'contact.thanks.title': 'Received',
-			'contact.thanks.titleEm': 'ありがとう.',
-			'contact.thanks.note': 'Your mail client should also open with a copy you can send directly.',
+			'contact.thanks.title': 'Draft ready',
+			'contact.thanks.titleEm': 'one last step.',
+			'contact.thanks.note': 'Your mail app should be open. Send the draft there to reach me.',
 			'contact.thanks.again': 'Send another',
 			'sub.lead':
-				'I publish a few things a month: slow essays, product notes, and practical AI workflows. One short note when something new goes up.',
+				"I send a note when I have something worth sharing: a product decision, a workflow that held up, a mistake I don't want to repeat, or a longer essay.",
 			'sub.field.email': '電子メール · Email',
 			'sub.field.emailPh': 'you@somewhere.com',
-			'sub.choose': 'I want to follow:',
-			'sub.opt.both': 'Both',
-			'sub.opt.philo': 'essays',
-			'sub.opt.guides': './ai-guides',
-			'sub.cadence': 'Roughly twice a month. Plain text. Unsubscribe with one click.',
-			'sub.btn.go': 'Subscribe · 購読 →',
+			'sub.choose': 'Send me:',
+			'sub.opt.both': 'Everything',
+			'sub.opt.philo': 'Essays',
+			'sub.opt.guides': 'Build notes',
+			'sub.cadence': 'Usually twice a month. Plain text, no noise. Unsubscribe in one click.',
+			'sub.btn.go': 'Follow the build · 購読 →',
 			'sub.btn.going': 'Subscribing...',
 			'sub.thanks.title': 'Subscribed',
 			'sub.thanks.titleEm': 'よろしく.',
-			'sub.thanks.note': "I'll send a short note when the next piece goes up. That's the entire system.",
+			'sub.thanks.note': "You'll hear from me when the next useful note is ready.",
 			'sub.thanks.again': 'Use a different email',
-			'sub.error': "That didn't go through. Email me instead and I'll add you by hand:"
+			'sub.error': "That didn't go through. Try again in a moment, or use the contact form."
 		},
 		ja: {
 			'hero.season': '夏 · summer · 2026',
 			'hero.vert': '人 を 拡 張 す る 道 具',
-			'hero.title.l1': '人を',
-			'hero.title.tools': '拡張する',
+			'hero.title.l1': 'AI と',
+			'hero.title.tools': '会社をつくる',
 			'hero.title.l2': '',
-			'hero.title.l3': '道具をつくる',
+			'hero.title.l3': '判断は、人のままで',
 			'hero.tagline':
-				'桑名浩行 (Hiro Kuwana) です。いまは Kaiwa をひとりでフルタイムでつくりながら、プロダクトと言語、人中心の AI について書いています。',
+				'桑名浩行 (Hiro Kuwana) です。いまは Kaiwa をフルタイムでつくりながら、プロダクトの判断や仕組み、失敗、小さな前進を書き留めています。',
 			'hero.now': 'いま · Kaiwa をフルタイムで',
 			'hero.about1.a':
-				'いまは時間のすべてを Kaiwa に注いでいます。ひとりの創業者として、フルタイムで。外部の案件は受けていません。学習者が AI と毎日話し、コーチが学びの道筋を設計して一人ひとりに合わせられるプラットフォームです。目指すのは、',
-			'hero.about1.strong': 'もう一つのチャットボットではなく、人を拡張する AI に慣れた設計。',
-			'hero.about1.b': '考える人のための、品のある道具をつくります。',
-			'hero.about2': 'ここには、プロダクトや言語学習、そして仕事の奥にあるゆっくりした問いについてのメモを置いています。',
+				'Kaiwa は、プロダクト、開発、成長、サポート、その間にある面倒な判断まで、すべてを実地で試す場所です。学習者が AI と会話し、コーチが一人ひとりの学びを設計する語学学習のプラットフォームです。AI は役立つところで使います。でも、',
+			'hero.about1.strong': '判断までは渡しません。',
+			'hero.about1.b': 'その境目が、つくるものの中心にあります。',
+			'hero.about2':
+				'AI を使って、小さなチームで、あるいはひとりで何かをつくっているなら、ここにあるメモが少しでも遠回りを減らせたらうれしいです。',
 			'hero.meta.based.k': '拠点',
 			'hero.meta.based.v': '東京 · ニューヨーク',
 			'hero.meta.since.k': '開始',
@@ -178,8 +185,8 @@
 			'record.titleEm': '2018年から続く、ものづくりのサイクル。',
 			'record.colophon': '奥付 · 仕事の流儀',
 			'writing.num': '03',
-			'writing.title': '二冊のノート',
-			'writing.titleEm': '一冊は機械と、もう一冊は作文で。',
+			'writing.title': 'つくりながら書いたこと',
+			'writing.titleEm': 'その奥で考えていること。',
 			'writing.guides': './ai-guides',
 			'writing.guidesJP': '道 具',
 			'writing.philo': '回り道',
@@ -188,47 +195,52 @@
 			'writing.dateAi': '2026 · 04',
 			'contact.num': '04',
 			'contact.title': 'これからも',
-			'contact.titleEm': 'お便りでも、購読でも。',
+			'contact.titleEm': 'お便りでも、つづきを読むでも。',
 			'contact.tab.write': 'お便りを書く · Write',
-			'contact.tab.follow': '更新を購読 · Follow',
+			'contact.tab.follow': 'つづきを読む · Follow',
 			'contact.aside.lead':
-				'AI を使って、人中心のプロダクトをつくっているなら、その実際の形を送ってください。いまは Kaiwa に専念していて外部の案件は受けていませんが、プロダクトの感覚、ワークフロー設計、応用 AI が重なる話ならいつでも歓迎します。',
-			'contact.aside.hi': '合うか分からなくても、ひとことの挨拶を歓迎します。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
+				'ほかの人が AI をどう使ってものをつくっているのか、いつも気になります。とくに、仕事が減るはずの AI で、かえって仕事が増えてしまうところ。外部の仕事は受けていませんが、考えのあるお便りは歓迎です。',
+			'contact.aside.hi': 'いま何をつくっているか、何を試したか、どこで行き詰まったか。届いたメッセージはすべて自分で読み、たいてい数日以内に返事します。',
 			'contact.tools.title': '道具 · side tools',
+			'contact.tools.cal.label': '25分、お茶でも',
+			'contact.tools.cal.desc': '都合のいい時間を直接選べます。資料はいりません。',
 			'contact.tools.vcf.label': 'vCard · 連絡先を保存',
-			'contact.tools.vcf.desc': '電話帳や連絡先にそのまま取り込める .vcf。',
+			'contact.tools.vcf.desc': 'メールアドレスを公開しない、シンプルな連絡先カード。',
 			'contact.tools.ics.label': '予定にお茶を入れる',
-			'contact.tools.ics.desc': '私の cal.com のリンクが入った .ics。次の一服までワンクリック。',
+			'contact.tools.ics.desc': '予約リンクを入れた、25分のお茶の予定。',
+			'contact.email.copy': 'アドレスをコピー',
+			'contact.email.copied': 'コピーしました · copied',
+			'contact.email.revealed': 'コピーできません · アドレスを表示',
 			'contact.write.lead':
-				'何をつくっているか、誰のためのものか、AI がどこで邪魔になっているかを教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
+				'何をつくっていますか。何を試しましたか。AI はどこで役立ち、どこで邪魔になっていますか。飾らない数行で十分です。',
 			'contact.field.name': '名前 · Name',
 			'contact.field.email': 'メール · Email',
 			'contact.field.msg': '用件 · Message',
 			'contact.field.namePh': '名前',
 			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': '何をつくっているか、誰のためか、AI に何をもっと良くしてほしいか。',
+			'contact.field.msgPh': '何をつくっているか、何を試したか、どこで行き詰まっているか。',
 			'contact.note.write': 'お使いのメールアプリが代わりに開きます。このページから第三者には何も送りません。',
 			'contact.btn.send': '送る · Send →',
 			'contact.btn.sending': '送信中...',
-			'contact.thanks.title': '届きました',
-			'contact.thanks.titleEm': 'ありがとう。',
-			'contact.thanks.note': 'メールアプリにも下書きが開くので、そのまま送れます。',
+			'contact.thanks.title': '下書きを開きました',
+			'contact.thanks.titleEm': 'あとは送るだけ。',
+			'contact.thanks.note': 'メールアプリで内容を確認して、そこから送信してください。',
 			'contact.thanks.again': 'もう一通',
-			'sub.lead': '月に数本書いています。じっくり書いた随筆、プロダクトのメモ、AI の実践ワークフロー。新しいものが出たときに、短いメールを一通だけ送ります。',
+			'sub.lead': '共有する価値があると思えたときだけ送ります。プロダクトの判断、実際に使えたワークフロー、繰り返したくない失敗、ときどき長い文章。',
 			'sub.field.email': 'メール · Email',
 			'sub.field.emailPh': 'you@somewhere.com',
 			'sub.choose': '読みたいもの:',
-			'sub.opt.both': '両方',
+			'sub.opt.both': 'すべて',
 			'sub.opt.philo': '作文',
-			'sub.opt.guides': './ai-guides',
-			'sub.cadence': '月に二回ほど。プレーンテキスト。解除はワンクリック。',
-			'sub.btn.go': '購読する · Subscribe →',
+			'sub.opt.guides': '開発メモ',
+			'sub.cadence': 'だいたい月に二回。プレーンテキストで、余計なものはなし。解除はワンクリック。',
+			'sub.btn.go': 'つづきを読む · Follow →',
 			'sub.btn.going': '登録中...',
 			'sub.thanks.title': '登録しました',
 			'sub.thanks.titleEm': 'よろしく。',
-			'sub.thanks.note': '次の文章が出たら、短いメールを一通送ります。仕組みはそれだけです。',
+			'sub.thanks.note': '次に役立つメモができたら、短いメールを送ります。',
 			'sub.thanks.again': '別のメールで登録',
-			'sub.error': '送信がうまくいきませんでした。メールをくれたら、手で追加します：'
+			'sub.error': '送信がうまくいきませんでした。少し待ってもう一度試すか、お便りフォームを使ってください。'
 		}
 	};
 
@@ -509,6 +521,9 @@
 	let subscribeEmail = '';
 	let subscribeChoice = 'both';
 	let subscribeStatus: 'idle' | 'sending' | 'sent' | 'error' = 'idle';
+	let emailCopyStatus: 'idle' | 'copied' | 'revealed' = 'idle';
+	let revealedEmail = '';
+	let emailStatusTimer: number | undefined;
 	let visiblePieces = PIECES;
 	let t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	let statusLabel = (status: Status) => t(`work.status.${status}`);
@@ -517,6 +532,11 @@
 	$: visiblePieces = filter === 'all' ? PIECES : PIECES.filter((piece) => piece.status === filter);
 	$: t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	$: statusLabel = (status: Status) => t(`work.status.${status}`);
+
+	const getContactEmail = () => {
+		const [user, domain, topLevelDomain] = CONTACT.emailParts;
+		return `${user}@${domain}.${topLevelDomain}`;
+	};
 
 	const countFor = (status: Filter) => (status === 'all' ? PIECES.length : PIECES.filter((piece) => piece.status === status).length);
 	const scrapStyle = (piece: Piece, index: number) =>
@@ -546,9 +566,26 @@
 
 		return () => {
 			window.clearTimeout(fallback);
+			if (emailStatusTimer) window.clearTimeout(emailStatusTimer);
 			observer.disconnect();
 		};
 	});
+
+	async function copyContactEmail() {
+		const email = getContactEmail();
+
+		try {
+			await navigator.clipboard.writeText(email);
+			emailCopyStatus = 'copied';
+			if (emailStatusTimer) window.clearTimeout(emailStatusTimer);
+			emailStatusTimer = window.setTimeout(() => {
+				emailCopyStatus = 'idle';
+			}, 3200);
+		} catch {
+			revealedEmail = email;
+			emailCopyStatus = 'revealed';
+		}
+	}
 
 	function sendContact(event: SubmitEvent) {
 		event.preventDefault();
@@ -557,14 +594,14 @@
 		contactStatus = 'sending';
 		contactReply =
 			lang === 'ja'
-				? `${contactName}さん、届きました。Hiro が手で読み、数日のうちに返事をします。まずは、この形で送ってくれてありがとう。`
-				: `${contactName}, I received this. Hiro reads every note by hand and usually replies within a few days. Thank you for sending the real shape of the work.`;
+				? `${contactName}さん、メールの下書きを開きました。内容を確認して、準備ができたら送ってください。`
+				: `${contactName}, your note is ready in your mail app. Give it a quick look, then send it when you are ready.`;
 
 		const subject = encodeURIComponent(`From your site - ${contactName}`);
 		const body = encodeURIComponent(`From: ${contactName} <${contactEmail}>\n\n${contactMessage}`);
 
 		if (typeof window !== 'undefined') {
-			window.open(`mailto:${CONTACT.email}?subject=${subject}&body=${body}`, '_blank');
+			window.open(`mailto:${getContactEmail()}?subject=${subject}&body=${body}`, '_blank');
 		}
 
 		window.setTimeout(() => {
@@ -609,10 +646,10 @@
 </script>
 
 <svelte:head>
-	<title>Hiro Kuwana · product design for human-centric AI</title>
+	<title>{SITE.title}</title>
 	<meta
 		name="description"
-		content="Hiro Kuwana is a solo founder building Kaiwa full-time, and writes about product, language learning, and human-centric AI. Product design that augments people rather than replacing them."
+		content={SITE.description}
 	/>
 	<meta name="keywords" content={SITE.keywords.join(', ')} />
 	<meta name="author" content={SITE.author} />
@@ -620,16 +657,16 @@
 	<meta name="googlebot" content="index, follow" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={SITE.url} />
-	<meta property="og:title" content="Hiro Kuwana · product design for human-centric AI" />
-	<meta property="og:description" content="Product design for human-centric AI: tools with taste, for people who think." />
+	<meta property="og:title" content={SITE.title} />
+	<meta property="og:description" content={SITE.description} />
 	<meta property="og:image" content={SITE.image} />
 	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
 	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta property="profile:first_name" content="Hiro" />
 	<meta property="profile:last_name" content="Kuwana" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Hiro Kuwana · product design for human-centric AI" />
-	<meta name="twitter:description" content="Product design for human-centric AI: tools with taste, for people who think." />
+	<meta name="twitter:title" content={SITE.title} />
+	<meta name="twitter:description" content={SITE.description} />
 	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href={SITE.url} />
 	<link rel="alternate" hreflang="en" href={SITE.url} />
@@ -642,7 +679,6 @@
 		alternateName: ['桑名浩行', 'Hiroyuki Kuwana'],
 		url: SITE.url,
 		image: SITE.image,
-		email: CONTACT.email,
 		jobTitle: 'Founder & Product Designer',
 		worksFor: { '@type': 'Organization', name: 'Kaiwa', url: PERSONAL.companyWebsite },
 		alumniOf: { '@type': 'CollegeOrUniversity', name: 'Brown University' },
@@ -887,19 +923,37 @@
 			<aside class="contact-aside">
 				<p>{t('contact.aside.lead')}</p>
 				<p>{t('contact.aside.hi')}</p>
-				<a class="contact-email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
-				<a class="contact-cal" href={CONTACT.cal} target="_blank" rel="noopener">
-					cal.com · {lang === 'ja' ? '15分のお茶' : '15-minute tea'}
-				</a>
+				<button
+					type="button"
+					class:copied={emailCopyStatus === 'copied'}
+					class="contact-email"
+					onclick={copyContactEmail}
+					aria-label={lang === 'ja' ? 'Hiro のメールアドレスをコピー' : "Copy Hiro's email address"}
+				>
+					<span class="contact-email-address">
+						{emailCopyStatus === 'revealed' ? revealedEmail : CONTACT.emailLabel}
+					</span>
+					<span class="contact-email-action" aria-live="polite">
+						{emailCopyStatus === 'copied'
+							? t('contact.email.copied')
+							: emailCopyStatus === 'revealed'
+								? t('contact.email.revealed')
+								: t('contact.email.copy')}
+					</span>
+				</button>
 				<div class="contact-links">
 					<a href={SOCIAL_LINKS.github} target="_blank" rel="noopener">GitHub</a>
 					<a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener">LinkedIn</a>
-					<a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener">Twitter</a>
+					<a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener">X</a>
 				</div>
 
 				<div class="contact-tools">
 					<span class="tools-eyebrow">{t('contact.tools.title')}</span>
 					<ul class="tools-list">
+						<li>
+							<a href={CONTACT.cal} target="_blank" rel="noopener">{t('contact.tools.cal.label')} →</a>
+							<span>{t('contact.tools.cal.desc')}</span>
+						</li>
 						<li>
 							<a href={asset('/hiro-kuwana.vcf')} download>{t('contact.tools.vcf.label')}</a>
 							<span>{t('contact.tools.vcf.desc')}</span>
@@ -1000,10 +1054,7 @@
 						</fieldset>
 
 						{#if subscribeStatus === 'error'}
-							<p class="sub-error" role="alert">
-								{t('sub.error')}
-								<a href={`mailto:${CONTACT.email}?subject=${encodeURIComponent('Subscribe me')}`}>{CONTACT.email}</a>
-							</p>
+							<p class="sub-error" role="alert">{t('sub.error')}</p>
 						{/if}
 
 						<div class="contact-row">

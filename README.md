@@ -1,38 +1,21 @@
-# create-svelte
+# Hiro's personal site
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+SvelteKit personal site, managed with pnpm.
 
-## Creating a project
+## Development
 
-If you're seeing this, you've probably already done this step. Congrats!
+1. Install dependencies with `pnpm install --frozen-lockfile`.
+2. Start the site with `pnpm dev`.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## Validation
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+- `pnpm test` is the routine, memory-bounded validation command. It runs type checking and cached source linting sequentially.
+- `pnpm test:release` adds the production Vercel build. Use it before publishing, not after every edit.
+- `pnpm check:watch` keeps type checking open while editing.
+- `pnpm format:check` checks formatting separately; it is not part of the fast test gate while existing content is brought onto one formatting baseline.
 
-## Developing
+The project intentionally uses one package manager (`pnpm`) and one lockfile (`pnpm-lock.yaml`).
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
+You can preview the production build with `pnpm preview`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
