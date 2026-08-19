@@ -37,8 +37,8 @@
 	// Kaiwa traction, sourced from PostHog (project "Kaiwa PROD").
 	// Organic figure is the trailing 30 days; signups are cumulative since
 	// the signup event was instrumented. Refresh these before you cite them.
-	// Refreshed 2026-08-18: 28,398 organic-search visitors over the trailing
-	// 30 days, and 2,019 unique persons on user_signed_up since 2026-02-09.
+	// Refreshed 2026-08-19: 27,602 organic-search visitors over the trailing
+	// 30 days, and 2,043 unique persons on user_signed_up since 2026-02-09.
 	const KAIWA_STATS: { value: string; label: string; labelJa: string }[] = [
 		{ value: '28,000', label: 'organic visitors a month', labelJa: '自然検索の訪問者 / 月' },
 		{ value: '2,000+', label: 'learners signed up', labelJa: '登録した学習者' },
@@ -70,6 +70,7 @@
 			'hero.meta.stack.v': 'LLMs · TypeScript · Svelte · Python',
 			'hero.meta.reading.k': 'Reading',
 			'hero.meta.reading.v': 'Bulgakov · Mishima',
+			'hero.stats.source': 'PostHog · verified 19 Aug 2026',
 			'hero.scroll': 'Scroll',
 			'work.num': '02',
 			'work.title': 'Projects',
@@ -169,6 +170,7 @@
 			'hero.meta.stack.v': 'LLM · TypeScript · Svelte · Python',
 			'hero.meta.reading.k': '読書',
 			'hero.meta.reading.v': 'ブルガーコフ · 三島',
+			'hero.stats.source': 'PostHog · 2026年8月19日 確認',
 			'hero.scroll': 'スクロール',
 			'work.num': '02',
 			'work.title': 'プロジェクト',
@@ -734,7 +736,7 @@
 			{t('hero.about1.b')}
 		</p>
 		<p>{t('hero.about2')}</p>
-		<dl class="now-stats">
+		<dl class="now-stats" aria-describedby="kaiwa-stats-source">
 			{#each KAIWA_STATS as stat}
 				<div class="now-stat">
 					<dt>{stat.value}</dt>
@@ -742,6 +744,7 @@
 				</div>
 			{/each}
 		</dl>
+		<p class="stats-source" id="kaiwa-stats-source">{t('hero.stats.source')}</p>
 		<dl class="hero-meta">
 			<dt>{t('hero.meta.based.k')}</dt>
 			<dd>{t('hero.meta.based.v')}</dd>
@@ -754,10 +757,10 @@
 		</dl>
 	</aside>
 
-	<div class="scroll-cue">
+	<a class="scroll-cue" href="#work" aria-label={lang === 'ja' ? 'プロジェクトへスクロール' : 'Scroll to projects'}>
 		<span>{t('hero.scroll')}</span>
-		<span class="line"></span>
-	</div>
+		<span class="line" aria-hidden="true"></span>
+	</a>
 </section>
 
 <div class="reveal">
