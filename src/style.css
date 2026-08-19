@@ -385,7 +385,13 @@ main {
 	width: 100%;
 	height: 100%;
 	z-index: 1;
-	cursor: crosshair;
+	cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.hero-canvas {
+		cursor: crosshair;
+	}
 }
 
 .hero-content {
@@ -567,8 +573,28 @@ main {
 	font-size: 0.625rem;
 	line-height: 1.4;
 	text-transform: uppercase;
-	color: var(--ink-mute);
+	color: var(--ink-soft);
 	text-wrap: balance;
+}
+
+.stats-source {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: -0.75rem 0 0;
+	font-family: var(--f-mono);
+	font-size: 0.625rem;
+	line-height: 1.4;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--ink-soft);
+}
+
+.stats-source::before {
+	content: '';
+	width: 1.25rem;
+	height: 1px;
+	background: var(--rule);
 }
 
 .scrap-piece .piece-stats {
@@ -616,7 +642,15 @@ main {
 	font-family: var(--f-jp);
 	font-size: 0.6875rem;
 	color: var(--ink-mute);
-	pointer-events: none;
+	min-width: 2.75rem;
+	min-height: 4.5rem;
+	padding: 0.5rem;
+	cursor: pointer;
+	transition: color var(--duration-normal) var(--ease-out-quart);
+}
+
+.scroll-cue:hover {
+	color: var(--shu);
 }
 
 .scroll-cue .line {
@@ -625,6 +659,64 @@ main {
 	background: var(--ink-mute);
 	animation: lineDraw 2.4s ease-in-out infinite;
 	transform-origin: top;
+}
+
+.scroll-cue:hover .line {
+	background: var(--shu);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.season-mark,
+	.vert-mark,
+	.hero h1,
+	.hero-tagline,
+	.hero-side {
+		animation: hero-enter 760ms var(--ease-out-expo) both;
+	}
+
+	.hero h1 {
+		animation-delay: 80ms;
+	}
+
+	.season-mark {
+		animation-delay: 140ms;
+	}
+
+	.vert-mark {
+		animation-delay: 220ms;
+	}
+
+	.hero-tagline {
+		animation-delay: 250ms;
+	}
+
+	.hero-side {
+		animation-delay: 340ms;
+	}
+
+	.scroll-cue {
+		animation: hero-cue-enter 680ms var(--ease-out-expo) 560ms both;
+	}
+}
+
+@keyframes hero-enter {
+	from {
+		opacity: 0;
+		transform: translateY(0.875rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes hero-cue-enter {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
 
 .section {
@@ -1884,6 +1976,10 @@ html[lang='ja'] .col-guides .post h4 {
 }
 
 @media (hover: none) {
+	.hero-canvas {
+		display: none;
+	}
+
 	.scrap-piece:hover,
 	.contact-email:hover,
 	.contact-btn:hover,
@@ -1961,6 +2057,10 @@ html[lang='ja'] .col-guides .post h4 {
 		animation-iteration-count: 1 !important;
 		scroll-behavior: auto !important;
 		transition-duration: 0.01ms !important;
+	}
+
+	.hero-canvas {
+		display: none;
 	}
 }
 
