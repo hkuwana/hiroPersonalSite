@@ -14,11 +14,10 @@ interface EssayModule {
 	metadata: EssayMetadata;
 }
 
-// Eager load all essays at build time
-const essays = import.meta.glob('/src/content/essays/*.md', { eager: true }) as Record<
-	string,
-	EssayModule
->;
+// Exclude drafts and templates from both direct lookup and prerender entries.
+const essays = import.meta.glob(['/src/content/essays/*.md', '!/src/content/essays/_*.md'], {
+	eager: true
+}) as Record<string, EssayModule>;
 
 export const load: PageLoad = async ({ params }) => {
 	const path = `/src/content/essays/${params.slug}.md`;

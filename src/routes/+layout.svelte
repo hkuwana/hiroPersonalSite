@@ -1,8 +1,15 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { trackOutboundClick } from '$lib/analytics';
 	import Header from '../lib/components/header.svelte';
 	import '../style.css';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale } from '$lib/paraglide/runtime';
+
+	onMount(() => {
+		document.addEventListener('click', trackOutboundClick);
+		return () => document.removeEventListener('click', trackOutboundClick);
+	});
 
 	let { children, data } = $props();
 

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
 	import { page } from '$app/stores';
-	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS, KAIWA_METRICS } from '$data/constants';
 	import HeroCanvas from '$lib/components/HeroCanvas.svelte';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { onMount } from 'svelte';
+	import { track } from '$lib/analytics';
 
 	type Locale = 'en' | 'ja';
 	type Status = 'active' | 'shipped' | 'sunset';
@@ -34,14 +35,10 @@
 		pos: { left: string; top: string; width: string; rotate: number };
 	};
 
-	// Kaiwa traction, sourced from PostHog (project "Kaiwa PROD").
-	// Organic figure is the trailing 30 days; signups are cumulative since
-	// the signup event was instrumented. Refresh these before you cite them.
-	// Refreshed 2026-08-19: 27,602 organic-search visitors over the trailing
-	// 30 days, and 2,043 unique persons on user_signed_up since 2026-02-09.
+	// Latest owner-reported milestone snapshot; source and date live in KAIWA_METRICS.
 	const KAIWA_STATS: { value: string; label: string; labelJa: string }[] = [
-		{ value: '28,000', label: 'organic visitors a month', labelJa: '自然検索の訪問者 / 月' },
-		{ value: '2,000+', label: 'learners signed up', labelJa: '登録した学習者' },
+		{ value: KAIWA_METRICS.monthlyOrganicVisitors, label: 'organic visitors a month', labelJa: '自然検索の訪問者 / 月' },
+		{ value: KAIWA_METRICS.signups, label: 'learners signed up', labelJa: '登録した学習者' },
 		{ value: 'solo', label: 'built and run by one person', labelJa: 'ひとりで開発・運用' }
 	];
 
@@ -70,7 +67,7 @@
 			'hero.meta.stack.v': 'LLMs · TypeScript · Svelte · Python',
 			'hero.meta.reading.k': 'Reading',
 			'hero.meta.reading.v': 'Bulgakov · Mishima',
-			'hero.stats.source': 'PostHog · verified 19 Aug 2026',
+			'hero.stats.source': `Kaiwa · updated ${KAIWA_METRICS.updatedLabel}`,
 			'hero.scroll': 'Scroll',
 			'work.num': '02',
 			'work.title': 'Projects',
@@ -122,12 +119,13 @@
 			'contact.field.namePh': 'Your name',
 			'contact.field.emailPh': 'you@somewhere.com',
 			'contact.field.msgPh': 'What you are building, what you have tried, and where you are stuck.',
-			'contact.note.write': 'Opens your mail client as a fallback. Nothing is sent to a third party from this page.',
+			'contact.note.write': 'Your name, email, and message are sent to Hiro through Resend.',
 			'contact.btn.send': 'Send · 送る →',
 			'contact.btn.sending': 'Sending...',
-			'contact.thanks.title': 'Draft ready',
-			'contact.thanks.titleEm': 'one last step.',
-			'contact.thanks.note': 'Your mail app should be open. Send the draft there to reach me.',
+			'contact.error': 'We couldn’t confirm your message was sent. Your note is still here—please try again, or copy my email address to contact me directly.',
+			'contact.thanks.title': 'Message sent',
+			'contact.thanks.titleEm': 'thank you.',
+			'contact.thanks.note': 'I usually reply within a few days.',
 			'contact.thanks.again': 'Send another',
 			'sub.lead':
 				"I send a note when I have something worth sharing: a product decision, a workflow that held up, a mistake I don't want to repeat, or a longer essay.",
@@ -170,7 +168,7 @@
 			'hero.meta.stack.v': 'LLM · TypeScript · Svelte · Python',
 			'hero.meta.reading.k': '読書',
 			'hero.meta.reading.v': 'ブルガーコフ · 三島',
-			'hero.stats.source': 'PostHog · 2026年8月19日 確認',
+			'hero.stats.source': `Kaiwa · ${KAIWA_METRICS.updatedLabelJa} 更新`,
 			'hero.scroll': 'スクロール',
 			'work.num': '02',
 			'work.title': 'プロジェクト',
@@ -221,12 +219,13 @@
 			'contact.field.namePh': '名前',
 			'contact.field.emailPh': 'you@somewhere.com',
 			'contact.field.msgPh': '何をつくっているか、何を試したか、どこで行き詰まっているか。',
-			'contact.note.write': 'お使いのメールアプリが代わりに開きます。このページから第三者には何も送りません。',
+			'contact.note.write': 'お名前、メールアドレス、メッセージを Resend 経由で浩に送ります。',
 			'contact.btn.send': '送る · Send →',
 			'contact.btn.sending': '送信中...',
-			'contact.thanks.title': '下書きを開きました',
-			'contact.thanks.titleEm': 'あとは送るだけ。',
-			'contact.thanks.note': 'メールアプリで内容を確認して、そこから送信してください。',
+			'contact.error': '送信を確認できませんでした。入力内容は残っています。もう一度試すか、メールアドレスをコピーして直接ご連絡ください。',
+			'contact.thanks.title': '送信しました',
+			'contact.thanks.titleEm': 'ありがとうございます。',
+			'contact.thanks.note': '通常、数日以内にお返事します。',
 			'contact.thanks.again': 'もう一通',
 			'sub.lead': '共有する価値があると思えたときだけ送ります。プロダクトの判断、実際に使えたワークフロー、繰り返したくない失敗、ときどき長い文章。',
 			'sub.field.email': 'メール · Email',
@@ -268,8 +267,8 @@
 			roleJa: 'ファウンダー + プロダクト',
 			summary: 'A platform where language learners speak daily with AI, and coaches can architect and individualize learner journeys',
 			summaryJa: '学習者が AI と毎日話し、コーチは学習の道筋を設計して一人ひとりに合わせられるプラットフォーム。',
-			stats: '28k organic visitors / mo · 2,000+ learners',
-			statsJa: '自然検索 28k / 月 · 学習者 2,000+',
+			stats: `${KAIWA_METRICS.monthlyOrganicVisitorsShort} organic visitors / mo · ${KAIWA_METRICS.signups} signups`,
+			statsJa: `自然検索 ${KAIWA_METRICS.monthlyOrganicVisitorsShort} / 月 · 登録者 ${KAIWA_METRICS.signups}`,
 			logo: asset('/kaiwa_logo.png'),
 			pos: { left: '0%', top: '0%', width: '38%', rotate: -2 }
 		},
@@ -382,8 +381,8 @@
 			years: '2025 – now',
 			yearsJa: '2025 – 現在',
 			name: 'Kaiwa',
-			ship: 'A real-time AI conversation platform for language learners. 28k organic visitors a month, 2,000+ learners. Built and run by one person.',
-			shipJa: '学習者が AI と毎日話すリアルタイム会話プラットフォーム。自然検索 28k/月、学習者 2,000+。ひとりで開発・運用。',
+			ship: `A real-time AI conversation platform for language learners. ${KAIWA_METRICS.monthlyOrganicVisitorsShort} organic visitors a month, ${KAIWA_METRICS.signups} signups. Built and run by one person.`,
+			shipJa: `学習者が AI と毎日話すリアルタイム会話プラットフォーム。自然検索 ${KAIWA_METRICS.monthlyOrganicVisitorsShort}/月、登録者 ${KAIWA_METRICS.signups}。ひとりで開発・運用。`,
 			lesson: '', // voice slot
 			lessonJa: '' // voice slot
 		}
@@ -518,7 +517,8 @@
 	let contactName = '';
 	let contactEmail = '';
 	let contactMessage = '';
-	let contactStatus: 'idle' | 'sending' | 'sent' = 'idle';
+	let contactStatus: 'idle' | 'sending' | 'sent' | 'error' = 'idle';
+	let contactWebsite = '';
 	let contactReply = '';
 	let subscribeEmail = '';
 	let subscribeChoice = 'both';
@@ -579,6 +579,7 @@
 		try {
 			await navigator.clipboard.writeText(email);
 			emailCopyStatus = 'copied';
+			track('contact_email_copied', { locale: lang });
 			if (emailStatusTimer) window.clearTimeout(emailStatusTimer);
 			emailStatusTimer = window.setTimeout(() => {
 				emailCopyStatus = 'idle';
@@ -589,26 +590,26 @@
 		}
 	}
 
-	function sendContact(event: SubmitEvent) {
+	async function sendContact(event: SubmitEvent) {
 		event.preventDefault();
-		if (!contactName || !contactEmail || !contactMessage) return;
-
+		if (contactStatus === 'sending' || !contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) return;
 		contactStatus = 'sending';
-		contactReply =
-			lang === 'ja'
-				? `${contactName}さん、メールの下書きを開きました。内容を確認して、準備ができたら送ってください。`
-				: `${contactName}, your note is ready in your mail app. Give it a quick look, then send it when you are ready.`;
-
-		const subject = encodeURIComponent(`From your site - ${contactName}`);
-		const body = encodeURIComponent(`From: ${contactName} <${contactEmail}>\n\n${contactMessage}`);
-
-		if (typeof window !== 'undefined') {
-			window.open(`mailto:${getContactEmail()}?subject=${subject}&body=${body}`, '_blank');
-		}
-
-		window.setTimeout(() => {
+		track('contact_submit_started', { locale: lang });
+		try {
+			const response = await fetch('/api/contact', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ name: contactName, email: contactEmail, message: contactMessage, website: contactWebsite }),
+				signal: AbortSignal.timeout(15_000)
+			});
+			if (!response.ok || (await response.json()).ok !== true) throw new Error('contact failed');
+			contactReply = lang === 'ja' ? `${contactName}さん、メッセージをありがとうございます。` : `Thanks for writing, ${contactName}.`;
 			contactStatus = 'sent';
-		}, 350);
+			track('contact_submit_succeeded', { locale: lang });
+		} catch {
+			contactStatus = 'error';
+			track('contact_submit_failed', { locale: lang });
+		}
 	}
 
 	function resetContact() {
@@ -616,14 +617,16 @@
 		contactEmail = '';
 		contactMessage = '';
 		contactReply = '';
+		contactWebsite = '';
 		contactStatus = 'idle';
 	}
 
 	async function subscribe(event: SubmitEvent) {
 		event.preventDefault();
-		if (!subscribeEmail) return;
+		if (!subscribeEmail || subscribeStatus === 'sending') return;
 
 		subscribeStatus = 'sending';
+		track('newsletter_submit_started', { locale: lang, choice: subscribeChoice });
 		try {
 			const res = await fetch('/api/subscribe', {
 				method: 'POST',
@@ -631,13 +634,12 @@
 				body: JSON.stringify({ email: subscribeEmail, choice: subscribeChoice })
 			});
 			if (!res.ok) throw new Error(`subscribe failed: ${res.status}`);
-			localStorage.setItem(
-				'hiro_sub',
-				JSON.stringify({ email: subscribeEmail, choice: subscribeChoice, at: Date.now() })
-			);
+
 			subscribeStatus = 'sent';
+			track('newsletter_submit_succeeded', { locale: lang, choice: subscribeChoice });
 		} catch {
 			subscribeStatus = 'error';
+			track('newsletter_submit_failed', { locale: lang, choice: subscribeChoice });
 		}
 	}
 
@@ -995,7 +997,7 @@
 
 				{#if contactMode === 'write'}
 					{#if contactStatus === 'sent'}
-						<div class="contact-thanks">
+						<div class="contact-thanks" role="status">
 							<div class="thanks-stamp">浩</div>
 							<h3>{t('contact.thanks.title')} <em>{t('contact.thanks.titleEm')}</em></h3>
 							<p class="ack">{contactReply}</p>
@@ -1005,20 +1007,24 @@
 							</button>
 						</div>
 					{:else}
-						<form class="contact-form" onsubmit={sendContact}>
+						<form class="contact-form ph-no-capture" onsubmit={sendContact} aria-busy={contactStatus === 'sending'}>
+							<label hidden aria-hidden="true">Website<input tabindex="-1" autocomplete="off" bind:value={contactWebsite} /></label>
 							<p class="contact-lead">{t('contact.write.lead')}</p>
 							<label class="field">
 								<span class="field-label">{t('contact.field.name')}</span>
-								<input type="text" required bind:value={contactName} placeholder={t('contact.field.namePh')} />
+								<input type="text" autocomplete="name" maxlength="120" required bind:value={contactName} placeholder={t('contact.field.namePh')} />
 							</label>
 							<label class="field">
 								<span class="field-label">{t('contact.field.email')}</span>
-								<input type="email" required bind:value={contactEmail} placeholder={t('contact.field.emailPh')} />
+								<input type="email" autocomplete="email" maxlength="254" required bind:value={contactEmail} placeholder={t('contact.field.emailPh')} />
 							</label>
 							<label class="field">
 								<span class="field-label">{t('contact.field.msg')}</span>
-								<textarea required rows="6" bind:value={contactMessage} placeholder={t('contact.field.msgPh')}></textarea>
+								<textarea required maxlength="10000" rows="6" bind:value={contactMessage} placeholder={t('contact.field.msgPh')}></textarea>
 							</label>
+							{#if contactStatus === 'error'}
+								<p class="sub-error" role="alert">{t('contact.error')}</p>
+							{/if}
 							<div class="contact-row">
 								<span class="contact-note">{t('contact.note.write')}</span>
 								<button type="submit" class="contact-btn" disabled={contactStatus === 'sending'}>

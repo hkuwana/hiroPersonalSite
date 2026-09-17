@@ -1,3 +1,13 @@
+// Owner-reported Kaiwa milestones. Update this snapshot when new figures are confirmed.
+export const KAIWA_METRICS = {
+	monthlyOrganicVisitors: '30,000',
+	monthlyOrganicVisitorsShort: '30k',
+	signups: '3,000',
+	updatedAt: '2026-09-15',
+	updatedLabel: '15 Sep 2026',
+	updatedLabelJa: '2026年9月15日'
+} as const;
+
 /**
  * Site-wide constants
  * Centralized configuration for personal information and site metadata
@@ -134,7 +144,7 @@ export const FAQS: Faq[] = [
 	{
 		question: 'Will AI take over the world?',
 		answer:
-			"No. But I do worry about how it will either force us to sharpen our critical thinking or make us complacent. In many ways, it's like Up or Brave New World. The question isn't whether AI will control us, but whether we'll choose comfort over growth.",
+			"No. But I do worry about how it will either force us to sharpen our critical thinking or make us complacent. In many ways, it's like WALL-E or Brave New World. The question isn't whether AI will control us, but whether we'll choose comfort over growth.",
 		visible: true
 	},
 	{
@@ -170,7 +180,7 @@ export const FAQS: Faq[] = [
 	{
 		question: 'Coffee or tea?',
 		answer:
-			"Tea. Green tea mostly. And I'm willing to change your mind on this; try some delicious Jasmine, Gyokuro, or Sencha from a local tea shop, brewed at 75~90 degrees celsius (roughly 167~194 degrees fahrenheit). Or just have tea with me and we'll see.",
+			"Tea. Green tea mostly. And I'm willing to change your mind on this; try some delicious Jasmine, Gyokuro, or Sencha from a local tea shop, brewed at 75~90 degrees celsius (roughly 167~194 degrees fahrenheit). Or just have tea with me and we'll see. Edit: Try cold brewing loose-leaf jasmine green tea or gyokuro. Leave the leaves in cold water in the fridge overnight, strain in the morning, and enjoy. No bitterness. Might be the best tea you've ever had.",
 		visible: true
 	},
 	{
@@ -217,7 +227,7 @@ export const FAQS: Faq[] = [
 	{
 		question: 'What has Hiro Kuwana built?',
 		answer:
-			'Hiro Kuwana built Kaiwa, a real-time AI conversation platform for language learners with 28,000 monthly organic visitors and 2,000+ learners. Earlier cycles include Flybyrd (AI feedback analysis for product managers) and Pebblr (a platform connecting nonprofits with donors), plus smaller tools such as an alumni community site and an automation pipeline for user research.',
+			`Hiro Kuwana built Kaiwa, a real-time AI conversation platform for language learners with ${KAIWA_METRICS.monthlyOrganicVisitors} monthly organic visitors and ${KAIWA_METRICS.signups} signups. Earlier cycles include Flybyrd (AI feedback analysis for product managers) and Pebblr (a platform connecting nonprofits with donors), plus smaller tools such as an alumni community site and an automation pipeline for user research.`,
 		visible: false
 	},
 	{

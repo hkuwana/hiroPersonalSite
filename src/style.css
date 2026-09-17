@@ -2259,3 +2259,23 @@ html[lang='ja'] .col-guides .post h4 {
 		gap: 1.5rem;
 	}
 }
+
+/* Taisho paper/ink palettes sweep across a still page like a passing terminator. */
+html[data-theme-transition]::view-transition-old(root),
+html[data-theme-transition]::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+html[data-theme-transition]::view-transition-old(root) { z-index: 1; }
+html[data-theme-transition]::view-transition-new(root) {
+	z-index: 2;
+	animation: sky-sweep 480ms var(--ease-out-quart) both;
+}
+html[data-theme-transition]::view-transition { pointer-events: none; }
+@keyframes sky-sweep {
+	from { clip-path: inset(0 0 0 100%); }
+	to { clip-path: inset(0 0 0 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+	html[data-theme-transition]::view-transition-new(root) { animation: none; }
+}
