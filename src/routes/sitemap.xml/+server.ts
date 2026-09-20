@@ -31,14 +31,14 @@ const buildAlternates = (path: string) => {
 export const GET: RequestHandler = async () => {
 	const today = new Date().toISOString().split('T')[0];
 
-	const essayFiles = import.meta.glob('/src/content/essays/*.md', { eager: true });
-	const essays = Object.entries(essayFiles)
-		.filter(([path]) => !path.split('/').pop()?.startsWith('_'))
-		.map(([path, module]) => {
-			const slug = path.split('/').pop()?.replace('.md', '') || '';
-			const { metadata } = module as { metadata: EssayMetadata };
-			return { slug, date: metadata?.date };
-		});
+	const essayFiles = import.meta.glob(['/src/content/essays/*.md', '!/src/content/essays/_*.md'], {
+		eager: true
+	});
+	const essays = Object.entries(essayFiles).map(([path, module]) => {
+		const slug = path.split('/').pop()?.replace('.md', '') || '';
+		const { metadata } = module as { metadata: EssayMetadata };
+		return { slug, date: metadata?.date };
+	});
 
 	const urls: string[] = [];
 

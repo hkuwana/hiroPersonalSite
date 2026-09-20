@@ -61,7 +61,7 @@
 					sub: "Some answers are practical. Some are questions I haven't finished thinking through.",
 					backHome: 'Back to home',
 					contactPrompt: 'Rather just talk?',
-					contactCta: 'Write me →',
+					contactCta: 'Write to me →',
 					photoAlt: 'Hiro Kuwana on a mountain trail',
 					photoCaption: 'fig. 0 · the one behind the seal'
 				};
