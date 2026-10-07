@@ -270,7 +270,7 @@
 			stats: `${KAIWA_METRICS.monthlyOrganicVisitorsShort} organic visitors / mo · ${KAIWA_METRICS.signups} signups`,
 			statsJa: `自然検索 ${KAIWA_METRICS.monthlyOrganicVisitorsShort} / 月 · 登録者 ${KAIWA_METRICS.signups}`,
 			logo: asset('/kaiwa_logo.png'),
-			pos: { left: '0%', top: '0%', width: '38%', rotate: -2 }
+			pos: { left: '0%', top: '0%', width: '38%', rotate: 0 }
 		},
 		{
 			id: 'exonians',
@@ -287,7 +287,7 @@
 			summary: 'A small, practical alumni site I built on a subway ride home. Focused on photos and community building',
 			summaryJa: '帰りの電車の中で作った、小さくて実用的な同窓会サイト。写真と、人のつながりに集中。',
 			logo: asset('/icon-512x512.png'),
-			pos: { left: '52%', top: '4%', width: '38%', rotate: 1.5 }
+			pos: { left: '52%', top: '4%', width: '38%', rotate: 0 }
 		},
 		{
 			id: 'reddit-scout',
@@ -304,7 +304,7 @@
 			summary: 'A local workflow that connects Reddit, Drive, and Gemini to find language learners with real intent.',
 			summaryJa: 'Reddit、Drive、Gemini をつないで、本気で学びたい人を見つけるローカルのワークフロー。',
 			logo: asset('/kaiwa_logo.png'),
-			pos: { left: '8%', top: '38%', width: '36%', rotate: -1 }
+			pos: { left: '8%', top: '38%', width: '36%', rotate: 0 }
 		},
 		{
 			id: 'flybyrd',
@@ -320,7 +320,7 @@
 			summary: 'Organizing scattered feedback for product managers. A practical, private dashboard for the signals that matter.',
 			summaryJa: 'PM のためにバラバラのフィードバックを整理する、実用的で非公開のダッシュボード。大事なシグナルだけを残す。',
 			logo: asset('/flybyrd_logo.png'),
-			pos: { left: '54%', top: '46%', width: '40%', rotate: 1 }
+			pos: { left: '54%', top: '46%', width: '40%', rotate: 0 }
 		},
 		{
 			id: 'pebblr',
@@ -336,7 +336,7 @@
 			summary: 'A nonprofit donor experiment that taught me where human trust matters more than platform mechanics.',
 			summaryJa: 'NPO の寄付者向けの実験。プラットフォームの仕組みより、人と人の信頼の方がずっと大事だと教えてくれた。',
 			logo: asset('/icon-512x512.png'),
-			pos: { left: '22%', top: '78%', width: '42%', rotate: -1.5 }
+			pos: { left: '22%', top: '78%', width: '42%', rotate: 0 }
 		}
 	];
 

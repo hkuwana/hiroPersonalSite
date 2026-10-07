@@ -259,7 +259,7 @@
 	.footer-divider {
 		width: 60px;
 		height: 3px;
-		background: linear-gradient(90deg, var(--color-accent), #8b5cf6);
+		background: var(--color-accent);
 		border-radius: 2px;
 		margin-bottom: 2rem;
 	}

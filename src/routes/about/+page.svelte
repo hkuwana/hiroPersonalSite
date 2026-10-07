@@ -157,7 +157,6 @@
 		height: auto;
 		background: #fff;
 		padding: 8px 8px 10px;
-		box-shadow: var(--shadow-md, 0 0.75rem 2rem rgba(21, 23, 15, 0.08));
 	}
 
 	.about-photo figcaption {

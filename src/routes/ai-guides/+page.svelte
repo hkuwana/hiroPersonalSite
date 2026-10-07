@@ -167,7 +167,6 @@
 		background: var(--paper-2);
 		border: 1px solid var(--rule);
 		border-radius: var(--radius-lg);
-		box-shadow: var(--shadow-md);
 	}
 
 	.guide-content :global(code) {

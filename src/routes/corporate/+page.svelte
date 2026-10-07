@@ -146,7 +146,6 @@
 		margin: 0 auto 1.5rem;
 		border-radius: 50%;
 		overflow: hidden;
-		box-shadow: 0 0 0 4px #dfe3e8;
 	}
 
 	.corp-avatar img {

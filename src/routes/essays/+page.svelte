@@ -123,7 +123,6 @@
 		background: var(--color-bg-subtle);
 		border-color: rgba(0, 0, 0, 0.12);
 		transform: translateX(4px);
-		box-shadow: var(--shadow-md);
 	}
 
 	.essay-date {

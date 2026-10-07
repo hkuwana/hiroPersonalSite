@@ -265,7 +265,7 @@
 	.case-body strong {
 		color: var(--ink);
 		font-weight: inherit;
-		background: linear-gradient(180deg, transparent 60%, var(--highlight) 60%);
+		background: var(--highlight);
 		padding: 0 0.125rem;
 	}
 
@@ -312,7 +312,6 @@
 		border: 1px solid var(--rule);
 		border-radius: 4px;
 		background: var(--paper-2);
-		box-shadow: 0 1rem 3rem rgba(21, 23, 15, 0.08);
 	}
 
 	.case-mockup {
@@ -356,7 +355,7 @@
 
 	.letter.active {
 		background: var(--paper);
-		box-shadow: inset 3px 0 0 var(--shu);
+		border-left: 3px solid var(--shu);
 	}
 
 	.letter-kicker,
@@ -424,7 +423,7 @@
 	.prototype-board div {
 		flex: 1;
 		padding: 0.875rem;
-		background: repeating-linear-gradient(135deg, var(--paper-edge) 0 6px, var(--paper-2) 6px 12px);
+		background: var(--paper-2);
 	}
 
 	.prototype-board span {
