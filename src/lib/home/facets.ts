@@ -22,6 +22,6 @@ export const FACETS: Facet[] = [
 		line: { en: 'Tokyo and New York. Japanese and American. I build between languages.', ja: '東京とニューヨーク。日本とアメリカ。言葉のあいだで、ものをつくっています。' },
 		link: { href: PERSONAL.companyWebsite, external: true, label: { en: 'About Kaiwa →', ja: 'Kaiwa について →' } } },
 	{ id: 'nature', kanji: '然', color: 'moss', title: { en: 'Nature', ja: '自然' },
-		line: { en: '自然: things as they are, of themselves. I want my tools to feel the same: calm, grown, never loud.', ja: '自然、おのずからそうであること。道具もそうありたい。静かで、育ったように、うるさくない。' },
+		line: { en: 'Nature has run countless iterations of design, each one smoothed to fit its environment. That is where I find my inspiration.', ja: '自然は数えきれないほどの試作を重ね、それぞれを環境になじむ形へと磨いてきました。私はそこから着想を得ています。' },
 		link: { href: '/about', label: { en: 'About me →', ja: '私について →' } } }
 ];

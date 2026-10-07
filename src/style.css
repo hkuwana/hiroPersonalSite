@@ -2309,3 +2309,15 @@ html[data-theme-transition]::view-transition { pointer-events: none; }
 }
 .ink-link:hover,
 .ink-link:focus-visible { background-size: 100% 6px; }
+
+.mill { display: grid; gap: 1.5rem; }
+.mill-canvas { width: 100%; max-width: 560px; aspect-ratio: 560 / 540; touch-action: pan-y; }
+.mill-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.mill-tabs button { border: 1px solid var(--ink); background: transparent; padding: 0.3rem 0.9rem; cursor: pointer; font-size: 0.95rem; }
+.mill-tabs button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+.mill-panel { border-left: 3px solid var(--ebicha); padding-left: 1.25rem; min-height: 12rem; margin-top: 1.25rem; }
+.mill-panel .kanji { font-family: var(--f-jp); font-size: 3.5rem; line-height: 1; }
+.mill-panel h3 { font-family: var(--f-display); font-size: 1.5rem; margin: 0.5rem 0 0.25rem; }
+.mill-panel p { margin: 0 0 0.75rem; max-width: 36ch; }
+.mill-panel a { color: var(--kon); }
+.mill-hint { font-size: 0.9rem; font-style: italic; color: var(--ink-mute); }

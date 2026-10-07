@@ -6,7 +6,7 @@ const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, '');
 const css = strip(readFileSync('src/style.css', 'utf8'));
 
 function svelteFiles(dir: string): string[] {
-	return readdirSync(dir).flatMap((name) => {
+	return readdirSync(dir).flatMap((name: string) => {
 		const p = join(dir, name);
 		if (statSync(p).isDirectory()) return name === 'paraglide' ? [] : svelteFiles(p);
 		return p.endsWith('.svelte') ? [p] : [];
