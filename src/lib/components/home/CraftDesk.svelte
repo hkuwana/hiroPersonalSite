@@ -5,7 +5,14 @@
 	import { whenVisible } from '$lib/home/when-visible';
 	import { COPY_DESK, type Locale } from '$lib/home/copy';
 	import { DESK_ITEMS, SHELVES, type DeskItem } from '$lib/home/desk-items';
-	import { DESK, isClick, layoutShelves, nextDeskMode, tagWidth, type DeskMode } from '$lib/home/desk-layout';
+	import {
+		DESK,
+		isClick,
+		layoutShelves,
+		nextDeskMode,
+		tagWidth,
+		type DeskMode
+	} from '$lib/home/desk-layout';
 	import { drawDesk, type DrawnItem } from '$lib/home/desk-scene';
 	import { onThemeChange, readPalette, type Palette } from '$lib/home/palette';
 	import { clampDelta } from '$lib/home/windmill-model';
@@ -22,9 +29,13 @@
 	let toggle = $state<() => void>(() => {});
 	let drop = $state<() => void>(() => {});
 	let animateCard: (() => void) | null = null;
-	const href = (i: DeskItem) => (i.href && !i.external ? localizeHref(i.href, { locale: lang }) : i.href);
+	const href = (i: DeskItem) =>
+		i.href && !i.external ? localizeHref(i.href, { locale: lang }) : i.href;
 	const shelfLabel = (i: DeskItem) => SHELVES.find((s) => s.id === i.cat)!.label[lang];
-	const open = (i: DeskItem) => { selected = i; queueMicrotask(() => animateCard?.()); };
+	const open = (i: DeskItem) => {
+		selected = i;
+		queueMicrotask(() => animateCard?.());
+	};
 
 	onMount(() => {
 		let stopped = false;
@@ -32,7 +43,10 @@
 		(async () => {
 			await whenVisible(canvasEl, '0px');
 			if (stopped) return;
-			const [{ default: Matter }, { gsap }] = await Promise.all([import('matter-js'), import('gsap')]);
+			const [{ default: Matter }, { gsap }] = await Promise.all([
+				import('matter-js'),
+				import('gsap')
+			]);
 			if (stopped) return;
 			const { Engine, Bodies, Body, Composite, Mouse, MouseConstraint, Query } = Matter;
 			const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -44,10 +58,23 @@
 			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 			let palette: Palette = readPalette();
 			const stopTheme = onThemeChange(() => (palette = readPalette()));
-			animateCard = () => { if (!reduce && cardEl) gsap.fromTo(cardEl.children, { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: 'power2.out', overwrite: true }); };
+			animateCard = () => {
+				if (!reduce && cardEl)
+					gsap.fromTo(
+						cardEl.children,
+						{ y: 8, opacity: 0 },
+						{ y: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: 'power2.out', overwrite: true }
+					);
+			};
 
+			// eslint-disable-next-line svelte/prefer-svelte-reactivity -- local cache, not reactive state
 			const logos = new Map<string, HTMLImageElement>();
-			for (const i of DESK_ITEMS) if (i.logo) { const img = new Image(); img.src = i.logo; logos.set(i.logo, img); }
+			for (const i of DESK_ITEMS)
+				if (i.logo) {
+					const img = new Image();
+					img.src = i.logo;
+					logos.set(i.logo, img);
+				}
 
 			const engine = Engine.create();
 			Composite.add(engine.world, [
@@ -57,31 +84,48 @@
 			]);
 			const mouse = Mouse.create(canvasEl);
 			// let the page scroll over the canvas
-			const m = mouse as unknown as { mousewheel: EventListener };
+			const m = mouse as unknown as { mousewheel: (e: Event) => void };
 			canvasEl.removeEventListener('wheel', m.mousewheel);
 			canvasEl.removeEventListener('mousewheel', m.mousewheel);
 			canvasEl.removeEventListener('DOMMouseScroll', m.mousewheel);
-			Composite.add(engine.world, MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.15, render: { visible: false } } as never }));
+			Composite.add(
+				engine.world,
+				MouseConstraint.create(engine, {
+					mouse,
+					constraint: { stiffness: 0.15, render: { visible: false } } as never
+				})
+			);
 
 			// measure tags once fonts are ready
 			await document.fonts.ready;
+			// eslint-disable-next-line svelte/prefer-svelte-reactivity -- local cache, not reactive state
 			const sizes = new Map<string, { w: number; h: number }>();
 			for (const i of DESK_ITEMS) {
-				if (i.kind === 'seal') { sizes.set(i.id, { w: 60, h: 60 }); continue; }
+				if (i.kind === 'seal') {
+					sizes.set(i.id, { w: 60, h: 60 });
+					continue;
+				}
 				ctx.font = '18px "Newsreader", serif';
 				const main = ctx.measureText(i.label).width;
 				ctx.font = 'italic 13px "Newsreader", serif';
 				const sub = i.sub ? ctx.measureText(i.sub).width : 0;
 				sizes.set(i.id, { w: tagWidth(main, sub, !!i.logo), h: i.sub ? 52 : 38 });
 			}
-			const shelfPos = layoutShelves(DESK_ITEMS.map((i) => ({ id: i.id, cat: i.cat, ...sizes.get(i.id)! })));
+			const shelfPos = layoutShelves(
+				DESK_ITEMS.map((i) => ({ id: i.id, cat: i.cat, ...sizes.get(i.id)! }))
+			);
 			let bodies: { item: DeskItem; body: MBody }[] = [];
 			const timers: number[] = [];
 			const makeBody = (i: DeskItem, x: number, y: number) => {
 				const s = sizes.get(i.id)!;
 				return i.kind === 'seal'
 					? Bodies.circle(x, y, 30, { restitution: 0.25, friction: 0.6 })
-					: Bodies.rectangle(x, y, s.w, s.h, { chamfer: { radius: 4 }, restitution: 0.15, friction: 0.7, angle: (Math.random() - 0.5) * 0.8 });
+					: Bodies.rectangle(x, y, s.w, s.h, {
+							chamfer: { radius: 4 },
+							restitution: 0.15,
+							friction: 0.7,
+							angle: (Math.random() - 0.5) * 0.8
+						});
 			};
 
 			const organize = () => {
@@ -92,9 +136,16 @@
 					const to = shelfPos.get(item.id)!;
 					const proxy = { x: body.position.x, y: body.position.y, a: body.angle };
 					gsap.to(proxy, {
-						x: to.x, y: to.y, a: Math.round(body.angle / (2 * Math.PI)) * 2 * Math.PI,
-						duration: reduce ? 0 : 0.8, delay: reduce ? 0 : k * 0.03, ease: 'power3.inOut',
-						onUpdate: () => { Body.setPosition(body, { x: proxy.x, y: proxy.y }); Body.setAngle(body, proxy.a); }
+						x: to.x,
+						y: to.y,
+						a: Math.round(body.angle / (2 * Math.PI)) * 2 * Math.PI,
+						duration: reduce ? 0 : 0.8,
+						delay: reduce ? 0 : k * 0.03,
+						ease: 'power3.inOut',
+						onUpdate: () => {
+							Body.setPosition(body, { x: proxy.x, y: proxy.y });
+							Body.setAngle(body, proxy.a);
+						}
 					});
 				});
 			};
@@ -114,25 +165,36 @@
 				bodies = [];
 				mode = 'loose';
 				DESK_ITEMS.forEach((item, k) => {
-					timers.push(window.setTimeout(() => {
-						const body = makeBody(item, 70 + Math.random() * (DESK.W - 140), -40);
-						bodies.push({ item, body });
-						Composite.add(engine.world, body);
-					}, k * 120));
+					timers.push(
+						window.setTimeout(() => {
+							const body = makeBody(item, 70 + Math.random() * (DESK.W - 140), -40);
+							bodies.push({ item, body });
+							Composite.add(engine.world, body);
+						}, k * 120)
+					);
 				});
 			};
 
 			// click (not drag) opens a card
 			const local = (e: PointerEvent) => {
 				const r = canvasEl.getBoundingClientRect();
-				return { x: ((e.clientX - r.left) / r.width) * DESK.W, y: ((e.clientY - r.top) / r.height) * DESK.H, t: performance.now() };
+				return {
+					x: ((e.clientX - r.left) / r.width) * DESK.W,
+					y: ((e.clientY - r.top) / r.height) * DESK.H,
+					t: performance.now()
+				};
 			};
 			const hit = (p: { x: number; y: number }) => {
-				const b = Query.point(bodies.map((x) => x.body), p)[0];
+				const b = Query.point(
+					bodies.map((x) => x.body),
+					p
+				)[0];
 				return b ? bodies.find((x) => x.body === b)?.item : undefined;
 			};
 			let down: { x: number; y: number; t: number } | null = null;
-			const onDown = (e: PointerEvent) => { down = local(e); };
+			const onDown = (e: PointerEvent) => {
+				down = local(e);
+			};
 			const onUp = (e: PointerEvent) => {
 				if (!down) return;
 				const up = local(e);
@@ -140,7 +202,9 @@
 				down = null;
 				if (item) open(item);
 			};
-			const onMove = (e: PointerEvent) => { canvasEl.style.cursor = hit(local(e)) ? 'pointer' : 'default'; };
+			const onMove = (e: PointerEvent) => {
+				canvasEl.style.cursor = hit(local(e)) ? 'pointer' : 'default';
+			};
 			canvasEl.addEventListener('pointerdown', onDown);
 			canvasEl.addEventListener('pointerup', onUp);
 			canvasEl.addEventListener('pointermove', onMove);
@@ -151,29 +215,55 @@
 			const frame = (now: number) => {
 				Engine.update(engine, clampDelta(now - last));
 				last = now;
-				const items: DrawnItem[] = bodies.map(({ item, body }) => ({ item, ...sizes.get(item.id)!, x: body.position.x, y: body.position.y, angle: body.angle }));
+				const items: DrawnItem[] = bodies.map(({ item, body }) => ({
+					item,
+					...sizes.get(item.id)!,
+					x: body.position.x,
+					y: body.position.y,
+					angle: body.angle
+				}));
 				drawDesk(ctx, palette, { items, mode, lang, logos });
 				raf = requestAnimationFrame(frame);
 			};
-			const start = () => { if (!raf && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } };
-			const stop = () => { cancelAnimationFrame(raf); raf = 0; };
-			const io = new IntersectionObserver(([e]) => {
-				if (!e.isIntersecting) return stop();
-				start();
-				if (!started) {
-					started = true;
-					if (reduce) {
-						for (const item of DESK_ITEMS) { const p = shelfPos.get(item.id)!; const body = makeBody(item, p.x, p.y); Body.setAngle(body, 0); bodies.push({ item, body }); Composite.add(engine.world, body); }
-						organize();
-					} else drop();
+			const start = () => {
+				if (!raf && !document.hidden) {
+					last = performance.now();
+					raf = requestAnimationFrame(frame);
 				}
-			}, { threshold: 0.3 });
+			};
+			const stop = () => {
+				cancelAnimationFrame(raf);
+				raf = 0;
+			};
+			const io = new IntersectionObserver(
+				([e]) => {
+					if (!e.isIntersecting) return stop();
+					start();
+					if (!started) {
+						started = true;
+						if (reduce) {
+							for (const item of DESK_ITEMS) {
+								const p = shelfPos.get(item.id)!;
+								const body = makeBody(item, p.x, p.y);
+								Body.setAngle(body, 0);
+								bodies.push({ item, body });
+								Composite.add(engine.world, body);
+							}
+							organize();
+						} else drop();
+					}
+				},
+				{ threshold: 0.3 }
+			);
 			io.observe(canvasEl);
 			const onVis = () => (document.hidden ? stop() : start());
 			document.addEventListener('visibilitychange', onVis);
 
 			cleanup = () => {
-				stop(); io.disconnect(); stopTheme(); timers.forEach(clearTimeout);
+				stop();
+				io.disconnect();
+				stopTheme();
+				timers.forEach(clearTimeout);
 				document.removeEventListener('visibilitychange', onVis);
 				canvasEl.removeEventListener('pointerdown', onDown);
 				canvasEl.removeEventListener('pointerup', onUp);
@@ -181,7 +271,10 @@
 				Engine.clear(engine);
 			};
 		})();
-		return () => { stopped = true; cleanup(); };
+		return () => {
+			stopped = true;
+			cleanup();
+		};
 	});
 </script>
 
@@ -193,7 +286,9 @@
 		<canvas bind:this={canvasEl} class="desk-canvas" aria-label={t('canvas')}></canvas>
 		<div class="desk-side">
 			<div class="desk-actions">
-				<button type="button" class="contact-btn" onclick={() => toggle()}>{mode === 'organized' ? t('scatter') : t('organize')}</button>
+				<button type="button" class="contact-btn" onclick={() => toggle()}
+					>{mode === 'organized' ? t('scatter') : t('organize')}</button
+				>
 				<button type="button" class="contact-btn ghost" onclick={() => drop()}>{t('drop')}</button>
 			</div>
 			<div class="desk-card" bind:this={cardEl} aria-live="polite">
@@ -203,32 +298,66 @@
 					<span class="desk-kicker">{shelfLabel(selected)}</span>
 					<div class="desk-row">
 						{#if selected.author.portrait}
-							<img class="desk-portrait" src={selected.author.portrait} alt={selected.label} width="84" height="84" />
+							<img
+								class="desk-portrait"
+								src={selected.author.portrait}
+								alt={selected.label}
+								width="84"
+								height="84"
+							/>
 						{:else}
 							<span class="desk-portrait monogram">{selected.label[0]}</span>
 						{/if}
-						<div><h3>{selected.label}</h3><p class="desk-sub">{selected.author.descriptor[lang]}</p></div>
+						<div>
+							<h3>{selected.label}</h3>
+							<p class="desk-sub">{selected.author.descriptor[lang]}</p>
+						</div>
 					</div>
 					<span class="desk-kicker">{t('take')}</span>
 					<p class="desk-take">{selected.take?.[lang]}</p>
-					<a class="ink-link" href={selected.author.wiki} target="_blank" rel="noopener">{t('wiki')}</a>
+					<a class="ink-link" href={selected.author.wiki} target="_blank" rel="noopener"
+						>{t('wiki')}</a
+					>
 				{:else if selected.avatar}
 					<span class="desk-kicker">{shelfLabel(selected)}</span>
 					<div class="desk-row">
-						<img class="desk-portrait self" src={selected.avatar} alt={selected.name} width="84" height="84" />
-						<div><h3>{selected.name}</h3><p class="desk-sub">{selected.nameJa}</p></div>
+						<img
+							class="desk-portrait self"
+							src={selected.avatar}
+							alt={selected.name}
+							width="84"
+							height="84"
+						/>
+						<div>
+							<h3>{selected.name}</h3>
+							<p class="desk-sub">{selected.nameJa}</p>
+						</div>
 					</div>
 					<p class="desk-take">{selected.desc?.[lang]}</p>
 					<a class="ink-link" href={href(selected)}>{selected.cta?.[lang]} →</a>
 				{:else}
 					<span class="desk-kicker">{shelfLabel(selected)}</span>
 					<div class="desk-row">
-						{#if selected.logo}<img class="desk-logo" src={selected.logo} alt="" width="64" height="64" />{/if}
-						<h3>{selected.label}{#if selected.sub} <em>{selected.sub}</em>{/if}</h3>
+						{#if selected.logo}<img
+								class="desk-logo"
+								src={selected.logo}
+								alt=""
+								width="64"
+								height="64"
+							/>{/if}
+						<h3>
+							{selected.label}{#if selected.sub}
+								<em>{selected.sub}</em>{/if}
+						</h3>
 					</div>
 					<p>{selected.desc?.[lang]}</p>
 					{#if selected.href}
-						<a class="ink-link" href={href(selected)} target={selected.external ? '_blank' : undefined} rel={selected.external ? 'noopener' : undefined}>{selected.cta?.[lang]} ↗</a>
+						<a
+							class="ink-link"
+							href={href(selected)}
+							target={selected.external ? '_blank' : undefined}
+							rel={selected.external ? 'noopener' : undefined}>{selected.cta?.[lang]} ↗</a
+						>
 					{/if}
 				{/if}
 			</div>
@@ -239,7 +368,11 @@
 			<h3>{shelf.label[lang]}</h3>
 			<ul>
 				{#each DESK_ITEMS.filter((i) => i.cat === shelf.id) as item}
-					<li><button type="button" onclick={() => open(item)}>{item.name ?? item.label}{item.sub ? ` (${item.sub})` : ''}</button></li>
+					<li>
+						<button type="button" onclick={() => open(item)}
+							>{item.name ?? item.label}{item.sub ? ` (${item.sub})` : ''}</button
+						>
+					</li>
 				{/each}
 			</ul>
 		{/each}

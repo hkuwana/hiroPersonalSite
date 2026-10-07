@@ -19,8 +19,8 @@
 	let animatePanel: (() => void) | null = null;
 
 	$effect(() => {
-		active; // re-run when the facet changes
-		animatePanel?.();
+		// re-run when the facet changes
+		if (active >= 0) animatePanel?.();
 	});
 
 	onMount(() => {
@@ -29,7 +29,10 @@
 		(async () => {
 			await whenVisible(canvasEl, '0px');
 			if (stopped) return;
-			const [{ default: Matter }, { gsap }] = await Promise.all([import('matter-js'), import('gsap')]);
+			const [{ default: Matter }, { gsap }] = await Promise.all([
+				import('matter-js'),
+				import('gsap')
+			]);
 			if (stopped) return;
 			const { Engine, Bodies, Body, Composite } = Matter;
 			const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -42,7 +45,10 @@
 			const stopTheme = onThemeChange(() => (palette = readPalette()));
 
 			const engine = Engine.create({ gravity: { x: 0, y: 0 } });
-			const rotor = Bodies.circle(M.MILL.HUB.x, M.MILL.HUB.y, M.MILL.REACH, { frictionAir: 0.016, collisionFilter: { mask: 0 } });
+			const rotor = Bodies.circle(M.MILL.HUB.x, M.MILL.HUB.y, M.MILL.REACH, {
+				frictionAir: 0.016,
+				collisionFilter: { mask: 0 }
+			});
 			Composite.add(engine.world, rotor);
 
 			let target: number | null = null;
@@ -50,22 +56,40 @@
 			let userTookOver = false;
 			let paused = false;
 			let lastGust = performance.now();
-			const takeOver = () => { userTookOver = true; target = null; };
+			const takeOver = () => {
+				userTookOver = true;
+				target = null;
+			};
 			choose = (i: number) => {
 				takeOver();
 				target = M.angleForSail(i, rotor.angle);
-				if (reduce) { Body.setAngle(rotor, target); Body.setAngularVelocity(rotor, 0); }
+				if (reduce) {
+					Body.setAngle(rotor, target);
+					Body.setAngularVelocity(rotor, 0);
+				}
 			};
 			animatePanel = () => {
-				if (!reduce && panelEl) gsap.fromTo(panelEl.children, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: 'power2.out', overwrite: true });
+				if (!reduce && panelEl)
+					gsap.fromTo(
+						panelEl.children,
+						{ y: 10, opacity: 0 },
+						{ y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: 'power2.out', overwrite: true }
+					);
 			};
 
 			// pointer: drag, flick, click to spin
 			const local = (e: PointerEvent) => {
 				const r = canvasEl.getBoundingClientRect();
-				return { x: ((e.clientX - r.left) / r.width) * M.MILL.W, y: ((e.clientY - r.top) / r.height) * M.MILL.H };
+				return {
+					x: ((e.clientX - r.left) / r.width) * M.MILL.W,
+					y: ((e.clientY - r.top) / r.height) * M.MILL.H
+				};
 			};
-			let lastA = 0, lastT = 0, moved = 0, vel = 0, downX = 0;
+			let lastA = 0,
+				lastT = 0,
+				moved = 0,
+				vel = 0,
+				downX = 0;
 			const onDown = (e: PointerEvent) => {
 				const p = local(e);
 				if (!M.onRotor(p)) return;
@@ -74,7 +98,10 @@
 				grabbing = true;
 				canvasEl.setPointerCapture(e.pointerId);
 				lastA = Math.atan2(p.y - M.MILL.HUB.y, p.x - M.MILL.HUB.x);
-				lastT = performance.now(); moved = 0; vel = 0; downX = p.x;
+				lastT = performance.now();
+				moved = 0;
+				vel = 0;
+				downX = p.x;
 				Body.setAngularVelocity(rotor, 0);
 			};
 			const onMove = (e: PointerEvent) => {
@@ -89,17 +116,31 @@
 				vel = vel * 0.5 + (d / (Math.max(1, now - lastT) / (1000 / 60))) * 0.5;
 				Body.setAngle(rotor, rotor.angle + d);
 				moved += Math.abs(d);
-				lastA = a; lastT = now;
+				lastA = a;
+				lastT = now;
 			};
 			const onUp = () => {
 				if (!grabbing) return;
 				grabbing = false;
-				Body.setAngularVelocity(rotor, moved < 0.04 ? M.clickSpin(downX, M.MILL.HUB.x) : M.clampFlick(vel));
+				Body.setAngularVelocity(
+					rotor,
+					moved < 0.04 ? M.clickSpin(downX, M.MILL.HUB.x) : M.clampFlick(vel)
+				);
 			};
 			const onKey = (e: KeyboardEvent) => {
-				if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); takeOver(); Body.setAngularVelocity(rotor, 0.32); }
-				if (e.key === 'ArrowRight') { e.preventDefault(); choose((M.topIndex(rotor.angle) + 3) % 4); }
-				if (e.key === 'ArrowLeft') { e.preventDefault(); choose((M.topIndex(rotor.angle) + 1) % 4); }
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					takeOver();
+					Body.setAngularVelocity(rotor, 0.32);
+				}
+				if (e.key === 'ArrowRight') {
+					e.preventDefault();
+					choose((M.topIndex(rotor.angle) + 3) % 4);
+				}
+				if (e.key === 'ArrowLeft') {
+					e.preventDefault();
+					choose((M.topIndex(rotor.angle) + 1) % 4);
+				}
 			};
 			const pause = () => (paused = true);
 			const resume = () => (paused = false);
@@ -130,8 +171,13 @@
 						target = M.nearestSnap(rotor.angle) + M.QUARTER;
 						lastGust = now;
 					}
-					if (target === null && Math.abs(rotor.angularVelocity) < M.SETTLE_SPEED) target = M.nearestSnap(rotor.angle);
-					if (target !== null) Body.setAngularVelocity(rotor, M.springVelocity(rotor.angularVelocity, rotor.angle, target));
+					if (target === null && Math.abs(rotor.angularVelocity) < M.SETTLE_SPEED)
+						target = M.nearestSnap(rotor.angle);
+					if (target !== null)
+						Body.setAngularVelocity(
+							rotor,
+							M.springVelocity(rotor.angularVelocity, rotor.angle, target)
+						);
 				}
 				Engine.update(engine, dt);
 				const turn = rotor.angle - prevAngle;
@@ -143,9 +189,21 @@
 				drawMill(ctx, palette, { angle: rotor.angle, sunPhase, top, wind });
 				raf = requestAnimationFrame(frame);
 			};
-			const start = () => { if (!raf && visible && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } };
-			const stop = () => { cancelAnimationFrame(raf); raf = 0; };
-			const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? start() : stop(); });
+			const start = () => {
+				if (!raf && visible && !document.hidden) {
+					last = performance.now();
+					raf = requestAnimationFrame(frame);
+				}
+			};
+			const stop = () => {
+				cancelAnimationFrame(raf);
+				raf = 0;
+			};
+			const io = new IntersectionObserver(([e]) => {
+				visible = e.isIntersecting;
+				if (visible) start();
+				else stop();
+			});
 			io.observe(canvasEl);
 			const onVis = () => (document.hidden ? stop() : start());
 			document.addEventListener('visibilitychange', onVis);
@@ -153,7 +211,9 @@
 			start();
 
 			cleanup = () => {
-				stop(); io.disconnect(); stopTheme();
+				stop();
+				io.disconnect();
+				stopTheme();
 				document.removeEventListener('visibilitychange', onVis);
 				canvasEl.removeEventListener('pointerdown', onDown);
 				canvasEl.removeEventListener('pointermove', onMove);
@@ -163,7 +223,10 @@
 				Engine.clear(engine);
 			};
 		})();
-		return () => { stopped = true; cleanup(); };
+		return () => {
+			stopped = true;
+			cleanup();
+		};
 	});
 
 	const facet = $derived(FACETS[active]);
@@ -174,16 +237,34 @@
 	<div class="mill-side">
 		<div class="mill-tabs" role="group" aria-label={t('label')}>
 			{#each FACETS as f, i}
-				<button type="button" aria-pressed={i === active} onclick={() => { active = i; choose(i); }}>
-					<span class="k">{f.kanji}</span> {f.title[lang]}
+				<button
+					type="button"
+					aria-pressed={i === active}
+					onclick={() => {
+						active = i;
+						choose(i);
+					}}
+				>
+					<span class="k">{f.kanji}</span>
+					{f.title[lang]}
 				</button>
 			{/each}
 		</div>
 		<div class="mill-panel" bind:this={panelEl} aria-live="polite">
-			<div class="kanji" style={`color: var(--${facet.color === 'moss' ? 'moss-green' : facet.color})`}>{facet.kanji}</div>
+			<div
+				class="kanji"
+				style={`color: var(--${facet.color === 'moss' ? 'moss-green' : facet.color})`}
+			>
+				{facet.kanji}
+			</div>
 			<h3>{facet.title[lang]}</h3>
 			<p>{facet.line[lang]}</p>
-			<a class="ink-link" href={facet.link.href} target={facet.link.external ? '_blank' : undefined} rel={facet.link.external ? 'noopener' : undefined}>{facet.link.label[lang]}</a>
+			<a
+				class="ink-link"
+				href={facet.link.href}
+				target={facet.link.external ? '_blank' : undefined}
+				rel={facet.link.external ? 'noopener' : undefined}>{facet.link.label[lang]}</a
+			>
 		</div>
 		<p class="mill-hint">{t('hint')}</p>
 	</div>

@@ -14,7 +14,16 @@ function svelteFiles(dir: string): string[] {
 }
 
 test('palette tokens', () => {
-	const tokens = { '--paper': '#eeebdd', '--ink': '#1e1a16', '--moss-green': '#5e6b45', '--moss-light': '#a3ad86', '--ebicha': '#6e2f2a', '--kon': '#233a5e', '--gold': '#a8894a', '--wood': '#8a6a45' };
+	const tokens = {
+		'--paper': '#eeebdd',
+		'--ink': '#1e1a16',
+		'--moss-green': '#5e6b45',
+		'--moss-light': '#a3ad86',
+		'--ebicha': '#6e2f2a',
+		'--kon': '#233a5e',
+		'--gold': '#a8894a',
+		'--wood': '#8a6a45'
+	};
 	for (const [k, v] of Object.entries(tokens)) expect(css.toLowerCase()).toContain(`${k}: ${v}`);
 });
 
@@ -27,14 +36,17 @@ test('flat: style.css has no box-shadow and no gradient fills', () => {
 
 test('flat: component styles have no box-shadow and no gradient fills', () => {
 	for (const f of svelteFiles('src')) {
-		const style = strip(readFileSync(f, 'utf8').match(/<style[^>]*>([\s\S]*?)<\/style>/)?.[1] ?? '');
+		const style = strip(
+			readFileSync(f, 'utf8').match(/<style[^>]*>([\s\S]*?)<\/style>/)?.[1] ?? ''
+		);
 		expect(style, f).not.toMatch(/box-shadow:\s*(?!none)/);
 		expect(style, f).not.toMatch(/(linear|radial)-gradient\(/);
 	}
 });
 
 test('frame and helpers exist', () => {
-	for (const sel of ['.frame-deco', '.asanoha-break', '.sr-only', '.ink-link']) expect(css).toContain(sel);
+	for (const sel of ['.frame-deco', '.asanoha-break', '.sr-only', '.ink-link'])
+		expect(css).toContain(sel);
 });
 
 test('Taishō ornament is used across pages', () => {

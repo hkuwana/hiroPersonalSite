@@ -3,8 +3,16 @@ import type { PaletteKey } from './desk-items';
 export type Palette = Record<PaletteKey, string>;
 
 const VARS: Record<PaletteKey, string> = {
-	paper: '--paper', paper2: '--paper-2', ink: '--ink', inkMute: '--ink-mute', moss: '--moss-green',
-	mossLight: '--moss-light', ebicha: '--ebicha', kon: '--kon', gold: '--gold', wood: '--wood'
+	paper: '--paper',
+	paper2: '--paper-2',
+	ink: '--ink',
+	inkMute: '--ink-mute',
+	moss: '--moss-green',
+	mossLight: '--moss-light',
+	ebicha: '--ebicha',
+	kon: '--kon',
+	gold: '--gold',
+	wood: '--wood'
 };
 
 // Read live tokens, so canvases follow the light/dark theme.

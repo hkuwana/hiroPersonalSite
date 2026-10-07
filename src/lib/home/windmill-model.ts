@@ -35,7 +35,8 @@ export function angleForSail(i: number, current: number): number {
 export const springVelocity = (av: number, angle: number, target: number) =>
 	av * 0.88 + (target - angle) * 0.012;
 
-export const clickSpin = (pointerX: number, hubX: number) => (pointerX >= hubX ? CLICK_SPIN : -CLICK_SPIN);
+export const clickSpin = (pointerX: number, hubX: number) =>
+	pointerX >= hubX ? CLICK_SPIN : -CLICK_SPIN;
 
 export const clampFlick = (v: number) => Math.max(-MAX_FLICK, Math.min(MAX_FLICK, v));
 

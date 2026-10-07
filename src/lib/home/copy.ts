@@ -18,7 +18,8 @@ export const COPY_DESK: Record<Locale, Record<string, string>> = {
 	en: {
 		title: 'The desk',
 		titleEm: 'the things I work with.',
-		intro: 'Pick up a tag and toss it, or click one to see what it is. Organize puts everything on its shelf.',
+		intro:
+			'Pick up a tag and toss it, or click one to see what it is. Organize puts everything on its shelf.',
 		organize: 'Organize ☰',
 		scatter: 'Scatter ↻',
 		drop: 'Drop again ↻',

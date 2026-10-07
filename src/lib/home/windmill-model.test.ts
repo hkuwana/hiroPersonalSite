@@ -1,13 +1,26 @@
 import { describe, expect, test } from 'vitest';
 import {
-	MILL, QUARTER, angleForSail, clampDelta, clampFlick, clickSpin, nearestSnap, onRotor,
-	shouldGust, springVelocity, stepSunPhase, stepWindDir, sunPosition, topIndex
+	MILL,
+	QUARTER,
+	angleForSail,
+	clampDelta,
+	clampFlick,
+	clickSpin,
+	nearestSnap,
+	onRotor,
+	shouldGust,
+	springVelocity,
+	stepSunPhase,
+	stepWindDir,
+	sunPosition,
+	topIndex
 } from '$lib/home/windmill-model';
 
 describe('sail index', () => {
 	test('sail 0 is on top at angle 0', () => expect(topIndex(0)).toBe(0));
 	test('clockwise quarter turn brings sail 3 to the top', () => expect(topIndex(QUARTER)).toBe(3));
-	test('counterclockwise quarter turn brings sail 1 to the top', () => expect(topIndex(-QUARTER)).toBe(1));
+	test('counterclockwise quarter turn brings sail 1 to the top', () =>
+		expect(topIndex(-QUARTER)).toBe(1));
 	test('works after many turns', () => expect(topIndex(QUARTER + 10 * 2 * Math.PI)).toBe(3));
 	test('angleForSail puts that sail on top, near the current angle', () => {
 		const current = 7.1;
@@ -17,7 +30,8 @@ describe('sail index', () => {
 			expect(Math.abs(a - current)).toBeLessThanOrEqual(Math.PI + 1e-9);
 		}
 	});
-	test('nearestSnap rounds to quarter turns', () => expect(nearestSnap(QUARTER * 1.4)).toBeCloseTo(QUARTER));
+	test('nearestSnap rounds to quarter turns', () =>
+		expect(nearestSnap(QUARTER * 1.4)).toBeCloseTo(QUARTER));
 });
 
 describe('motion rules', () => {
@@ -62,10 +76,19 @@ describe('wind and sun', () => {
 });
 
 describe('gusts', () => {
-	const base = { now: 10_000, lastGust: 0, userTookOver: false, paused: false, reduceMotion: false };
+	const base = {
+		now: 10_000,
+		lastGust: 0,
+		userTookOver: false,
+		paused: false,
+		reduceMotion: false
+	};
 	test('gust after the interval', () => expect(shouldGust(base)).toBe(true));
-	test('no gust after the user took over', () => expect(shouldGust({ ...base, userTookOver: true })).toBe(false));
+	test('no gust after the user took over', () =>
+		expect(shouldGust({ ...base, userTookOver: true })).toBe(false));
 	test('no gust while paused', () => expect(shouldGust({ ...base, paused: true })).toBe(false));
-	test('no gust with reduced motion', () => expect(shouldGust({ ...base, reduceMotion: true })).toBe(false));
-	test('no gust before the interval', () => expect(shouldGust({ ...base, lastGust: 9000 })).toBe(false));
+	test('no gust with reduced motion', () =>
+		expect(shouldGust({ ...base, reduceMotion: true })).toBe(false));
+	test('no gust before the interval', () =>
+		expect(shouldGust({ ...base, lastGust: 9000 })).toBe(false));
 });

@@ -18,7 +18,8 @@ describe('facets', () => {
 });
 
 describe('desk items', () => {
-	test('unique ids', () => expect(new Set(DESK_ITEMS.map((i) => i.id)).size).toBe(DESK_ITEMS.length));
+	test('unique ids', () =>
+		expect(new Set(DESK_ITEMS.map((i) => i.id)).size).toBe(DESK_ITEMS.length));
 	test('every item is on a known shelf', () => {
 		const ids = new Set(SHELVES.map((s) => s.id));
 		for (const i of DESK_ITEMS) expect(ids.has(i.cat)).toBe(true);
@@ -28,11 +29,20 @@ describe('desk items', () => {
 	});
 	test('authors have a take and descriptor', () => {
 		const authors = DESK_ITEMS.filter((i) => i.cat === 'reading');
-		expect(authors.map((a) => a.label)).toEqual(['Mishima', 'Bulgakov', 'Dostoevsky', 'Chekhov', 'Hemingway']);
+		expect(authors.map((a) => a.label)).toEqual([
+			'Mishima',
+			'Bulgakov',
+			'Dostoevsky',
+			'Chekhov',
+			'Hemingway'
+		]);
 		for (const a of authors) expect(both(a.take) && both(a.author?.descriptor)).toBe(true);
 	});
 	test('learning languages are Spanish and Dutch', () => {
-		expect(DESK_ITEMS.filter((i) => i.cat === 'learn').map((i) => i.sub)).toEqual(['Spanish', 'Dutch']);
+		expect(DESK_ITEMS.filter((i) => i.cat === 'learn').map((i) => i.sub)).toEqual([
+			'Spanish',
+			'Dutch'
+		]);
 	});
 	test('every referenced asset exists in static/', () => {
 		for (const i of DESK_ITEMS) {
