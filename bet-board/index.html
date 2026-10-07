@@ -1,0 +1,1221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<title>Bet Board</title>
+<script>
+  try {
+    var t = localStorage.getItem('betboard.theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#F1F3F6, #10151C);
+    --surface: light-dark(#FFFFFF, #171E28);
+    --raised: light-dark(#F6F7F9, #1D2531);
+    --track: light-dark(#E4E8EE, #232C3A);
+    --ink: light-dark(#18202C, #E6EAF0);
+    --ink2: light-dark(#465163, #B0B9C6);
+    --ink3: light-dark(#5B6577, #8E99A9);
+    --line: light-dark(#D8DDE5, #2B3544);
+    --line2: light-dark(#B4BCC9, #3F4B5E);
+    --hover: light-dark(rgba(27, 52, 112, .07), rgba(255, 255, 255, .07));
+
+    --accent: light-dark(#2B4A8B, #93ADF2);
+    --on-accent: light-dark(#FFFFFF, #0E1420);
+    --accent-soft: light-dark(#E3E9F6, #1F2A44);
+
+    --green: light-dark(#2F7D4F, #4FBF84);
+    --amber: light-dark(#C27C0E, #E5A93A);
+    --red: light-dark(#C0392B, #F0736A);
+    --green-t: light-dark(#256640, #6FD3A0);
+    --amber-t: light-dark(#7F4C00, #F0BF63);
+    --red-t: light-dark(#A82E22, #F58C84);
+    --green-bg: light-dark(#E3F2E9, #16301F);
+    --amber-bg: light-dark(#FBF0DB, #342910);
+    --red-bg: light-dark(#FBE8E5, #3A1D1B);
+
+    --s0: light-dark(#1B3470, #B7C6EE);  --s0t: light-dark(#FFFFFF, #0E1420);
+    --s1: light-dark(#3F62B0, #8AA3E0);  --s1t: light-dark(#FFFFFF, #0E1420);
+    --s2: light-dark(#7791D2, #5F7DC8);  --s2t: light-dark(#0F1726, #0E1420);
+    --s3: light-dark(#A9BAE4, #3F5BA6);  --s3t: light-dark(#0F1726, #FFFFFF);
+    --so: light-dark(#8F97A6, #7C8494);  --sot: light-dark(#0F1726, #0E1420);
+
+    --serif: Charter, "Iowan Old Style", "Palatino Linotype", Georgia, "Hiragino Mincho ProN", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  }
+  :root[data-theme="light"] { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.5 var(--sans);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px 72px; }
+  main > section { margin-top: 56px; }
+  .narrow { max-width: 760px; }
+  h1, h2, h3, h4 { margin: 0; }
+  h1 { font: 600 clamp(38px, 8vw, 58px)/1.02 var(--serif); letter-spacing: -.015em; }
+  h2 { font: 600 27px/1.2 var(--serif); margin-bottom: 6px; }
+  .hint { color: var(--ink2); margin: 0 0 20px; font-size: 15px; max-width: 62ch; }
+  .small { font-size: 14px; }
+  .muted { color: var(--ink3); }
+
+  /* Buttons */
+  .btn {
+    min-height: 44px; padding: 0 18px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--line2); background: var(--surface); color: var(--ink);
+    font-weight: 600; font-size: 15px; line-height: 1.2;
+  }
+  .btn:hover { background: var(--raised); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .btn.primary:hover { filter: brightness(1.08); background: var(--accent); }
+  .btn.sm { min-height: 40px; padding: 0 14px; }
+  .btn[disabled] { opacity: .5; cursor: not-allowed; }
+  .btn.danger { color: var(--red-t); border-color: var(--red); }
+  .linkbtn { background: none; border: 0; padding: 6px 2px; min-height: 32px; color: var(--accent); font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Header */
+  .top { padding: 40px 0 0; display: grid; gap: 12px; }
+  .premise { font: 400 clamp(19px, 3.4vw, 24px)/1.35 var(--serif); color: var(--ink2); max-width: 36ch; }
+  .top .meta { margin: 0; color: var(--ink2); font-size: 15px; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+  .top .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+
+  /* Editable text */
+  .ed {
+    display: block; width: 100%; border: 0; background: transparent; resize: none; overflow: hidden;
+    padding: 3px 6px; margin: -3px -6px; width: calc(100% + 12px); border-radius: 5px;
+    font: inherit; color: inherit; field-sizing: content; min-height: 1.5em;
+  }
+  .ed:hover { background: var(--hover); }
+  .ed:focus { background: var(--surface); outline: 2px solid var(--accent); }
+  .ed::placeholder { color: var(--ink3); }
+  .nin, .din, .tin {
+    min-height: 40px; border: 1px solid var(--line2); border-radius: 6px; background: var(--surface);
+    padding: 0 8px; font-size: 16px;
+  }
+  .nin { width: 76px; text-align: right; }
+  .din { min-width: 0; }
+  .tin { width: 100%; }
+
+  /* Portfolio map */
+  #mapBox { width: 100%; max-width: 560px; }
+  #map { display: block; max-width: 100%; height: auto; }
+  #map text { font-family: var(--sans); fill: var(--ink2); font-size: 13px; }
+  #map .q { fill: var(--ink3); font-size: 13px; font-weight: 600; }
+  #map .ax { fill: var(--ink2); font-size: 13px; }
+  #map .axt { fill: var(--ink); font-size: 13px; font-weight: 600; }
+  #map .bl { fill: var(--ink); font-size: 14px; font-weight: 600; }
+  #map .bh { fill: var(--ink2); font-size: 13px; }
+  #map .plot { fill: var(--surface); stroke: var(--line2); stroke-width: 1; }
+  #map .mid { stroke: var(--line2); stroke-dasharray: 4 4; }
+  #map .hatch-line { stroke: var(--line); }
+  #map .bub { cursor: grab; touch-action: none; outline: none; }
+  #map .bub:active { cursor: grabbing; }
+  #map .bub circle.bc { stroke: var(--surface); stroke-width: 2; fill-opacity: .94; }
+  #map .bub:focus-visible circle.bc { stroke: var(--ink); stroke-width: 3; }
+  #map .f-green { fill: var(--green); }
+  #map .f-amber { fill: var(--amber); }
+  #map .f-red { fill: var(--red); }
+  .maplegend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 14px 0 6px; padding: 0; list-style: none; font-size: 14px; color: var(--ink2); }
+  .maplegend li { display: flex; align-items: center; gap: 6px; }
+  .maplegend svg { flex: none; }
+
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 20px; align-items: start; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--hc, var(--line2));
+    border-radius: 8px; padding: 20px; min-width: 0;
+  }
+  .card > * + * { margin-top: 18px; }
+  .card-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+  .role { font-weight: 600; font-size: 14px; color: var(--accent); border: 1px solid var(--accent); border-radius: 99px; padding: 1px 12px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; padding: 3px 10px 3px 6px; border-radius: 99px; }
+  .pill.green { background: var(--green-bg); color: var(--green-t); }
+  .pill.amber { background: var(--amber-bg); color: var(--amber-t); }
+  .pill.red { background: var(--red-bg); color: var(--red-t); }
+  .card-name { font: 600 23px/1.25 var(--serif); }
+  .plan { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; color: var(--ink2); font-size: 15px; }
+  .plan label { display: inline-flex; align-items: center; gap: 8px; }
+  .lbl { font-weight: 600; font-size: 14px; color: var(--ink2); margin-bottom: 4px; }
+  .hyp { font-size: 16px; }
+  .parknote { font-size: 14px; color: var(--ink2); margin: 0; }
+
+  .banner { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 6px; font-weight: 600; font-size: 15px; }
+  .banner svg { flex: none; margin-top: 2px; }
+  .banner.kill { background: var(--red-bg); color: var(--red-t); border: 1px solid var(--red); }
+  .banner.commit { background: var(--green-bg); color: var(--green-t); border: 1px solid var(--green); }
+
+  /* Assumption ladder */
+  .ladder { list-style: none; margin: 0; padding: 0; }
+  .rung { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 6px; padding-bottom: 14px; }
+  .rung::before { content: ""; position: absolute; left: 21px; top: 36px; bottom: -4px; width: 2px; background: var(--line); }
+  .rung:last-child { padding-bottom: 0; }
+  .rung:last-child::before { display: none; }
+  .dotbtn { width: 44px; height: 44px; background: none; border: 0; border-radius: 50%; display: grid; place-items: center; cursor: pointer; padding: 0; position: relative; z-index: 1; }
+  .dotbtn:hover { background: var(--hover); }
+  .rung-main { padding-top: 9px; min-width: 0; }
+  .rung-text { font-size: 16px; }
+  .rmeta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; margin-top: 4px; font-size: 14px; color: var(--ink2); }
+  .tag { font-size: 13px; font-weight: 600; color: var(--accent); border: 1px solid var(--accent); border-radius: 99px; padding: 0 9px; line-height: 20px; }
+  .st { font-weight: 600; }
+  .st-confirmed { color: var(--green-t); }
+  .st-broken { color: var(--red-t); }
+  .st-untested { color: var(--amber-t); }
+  .evid { margin: 4px 0 0; font-size: 14px; color: var(--ink2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .dpanel { margin-top: 10px; padding: 12px; background: var(--raised); border: 1px solid var(--line); border-radius: 6px; display: grid; gap: 12px; }
+  .dpanel .ed { background: var(--surface); border: 1px solid var(--line2); padding: 6px 8px; margin: 0; width: 100%; }
+  .drow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .hist { list-style: none; margin: 0; padding: 0; font-size: 14px; display: grid; gap: 6px; }
+  .hist li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; color: var(--ink2); }
+  .hist b { color: var(--ink); font-weight: 600; }
+  .addrow { margin-top: 12px; }
+
+  .sigrow { display: grid; gap: 4px; }
+  .chk { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; font-size: 15px; cursor: pointer; }
+  .chk input { width: 22px; height: 22px; margin: 0; }
+  .sigrow.kill .chk input { accent-color: var(--red); }
+  .sigrow.commit .chk input { accent-color: var(--green); }
+  .gate-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+  .gate-note { font-size: 14px; color: var(--ink2); }
+
+  /* Time */
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 14px; padding: 0; list-style: none; font-size: 14px; color: var(--ink2); }
+  .legend li { display: flex; align-items: center; gap: 6px; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; flex: none; }
+  .wk { display: grid; grid-template-columns: 72px minmax(0, 1fr) 54px; gap: 10px; align-items: center; width: 100%; text-align: left; background: none; border: 1px solid transparent; border-radius: 6px; padding: 5px 6px; margin: 0 -6px; cursor: pointer; width: calc(100% + 12px); }
+  .wk:hover { background: var(--hover); }
+  .wk.sel { border-color: var(--accent); background: var(--accent-soft); }
+  .wk.ref { cursor: default; }
+  .wk.ref:hover { background: none; }
+  .wk-l { font-size: 14px; color: var(--ink2); font-weight: 600; }
+  .wk-t { font-size: 14px; color: var(--ink2); text-align: right; }
+  .bar { position: relative; display: flex; gap: 2px; height: 28px; background: var(--track); border-radius: 4px; overflow: hidden; }
+  .seg { flex: 1 1 0; min-width: 0; display: grid; place-items: center; font-size: 13px; font-weight: 600; border-radius: 3px; overflow: hidden; white-space: nowrap; }
+  .slot-0 { background: var(--s0); color: var(--s0t); }
+  .slot-1 { background: var(--s1); color: var(--s1t); }
+  .slot-2 { background: var(--s2); color: var(--s2t); }
+  .slot-3 { background: var(--s3); color: var(--s3t); }
+  .slot-other { background: repeating-linear-gradient(135deg, var(--so) 0 5px, color-mix(in srgb, var(--so) 62%, var(--surface)) 5px 9px); color: var(--sot); }
+  .sw.slot-other { background: repeating-linear-gradient(135deg, var(--so) 0 3px, color-mix(in srgb, var(--so) 62%, var(--surface)) 3px 6px); }
+  .bar-empty { flex: 1; display: grid; place-items: center; font-size: 13px; color: var(--ink3); }
+  .tick { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px dashed var(--ink); opacity: .55; pointer-events: none; }
+  .weeks { display: grid; gap: 2px; }
+  .ticknote { font-size: 14px; color: var(--ink2); margin: 10px 0 0; }
+  .logbox { margin-top: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
+  .logbox h3 { font: 600 20px/1.3 var(--serif); margin-bottom: 12px; }
+  .logrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+  .logrow:first-of-type { border-top: 0; }
+  .logrow .nm { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .logrow .unit { display: inline-flex; align-items: center; gap: 6px; }
+  .logrow .stat { grid-column: 1 / -1; font-size: 14px; color: var(--ink2); }
+  .driftnote { margin: 14px 0 0; font-weight: 600; }
+
+  /* Parked */
+  .parked { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .parked summary { cursor: pointer; min-height: 52px; display: flex; align-items: center; gap: 10px; font: 600 22px/1.2 var(--serif); list-style: none; }
+  .parked summary::-webkit-details-marker { display: none; }
+  .parked summary::before { content: ""; width: 9px; height: 9px; border-right: 2px solid var(--ink2); border-bottom: 2px solid var(--ink2); transform: rotate(-45deg); transition: transform .12s; margin-right: 4px; }
+  .parked[open] summary::before { transform: rotate(45deg); }
+  .parked summary .count { font: 400 16px var(--sans); color: var(--ink2); }
+  .plist { list-style: none; margin: 0; padding: 0 0 8px; }
+  .plist li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--line); }
+  .plist .pn { display: grid; min-width: 0; flex: 1 1 200px; }
+  .plist .pn span { color: var(--ink2); font-size: 15px; }
+
+  /* Signals */
+  table.sig { width: 100%; border-collapse: collapse; }
+  table.sig th { text-align: left; font-size: 14px; font-weight: 600; color: var(--ink2); padding: 0 8px 8px 0; border-bottom: 1px solid var(--line2); }
+  table.sig td { padding: 10px 8px 10px 0; vertical-align: top; border-bottom: 1px solid var(--line); }
+  table.sig th:nth-child(1) { width: 38%; }
+  table.sig th:nth-child(2) { width: 28%; }
+  table.sig th:nth-child(3) { width: 22%; }
+  table.sig th:nth-child(4) { width: 12%; }
+  .trend { width: 44px; height: 44px; display: grid; place-items: center; background: none; border: 1px solid var(--line2); border-radius: 6px; cursor: pointer; color: var(--ink); }
+  .trend:hover { background: var(--hover); }
+
+  .datarow { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 12px; }
+  .datanote { margin: 0 0 6px; font-size: 14px; color: var(--ink2); }
+
+  /* Dialog */
+  dialog { border: 1px solid var(--line2); border-radius: 10px; padding: 0; background: var(--surface); color: var(--ink); width: min(580px, calc(100% - 20px)); max-height: calc(100dvh - 20px); }
+  dialog[open] { display: flex; flex-direction: column; }
+  dialog::backdrop { background: rgba(8, 12, 18, .6); }
+  .dlg-head { padding: 16px 20px 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .dlg-head h2 { margin: 0; font-size: 22px; }
+  .prog { height: 4px; background: var(--track); margin: 0 20px; border-radius: 2px; overflow: hidden; }
+  .prog span { display: block; height: 100%; background: var(--accent); }
+  .dlg-count { padding: 8px 20px 0; font-size: 14px; color: var(--ink2); margin: 0; }
+  .dlg-body { padding: 14px 20px 20px; overflow: auto; display: grid; gap: 14px; }
+  .dlg-foot { padding: 12px 20px; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+  .dlg-bet { margin: 0; font-size: 14px; font-weight: 600; color: var(--accent); }
+  .dlg-q { font: 600 21px/1.3 var(--serif); }
+  .cur { display: flex; align-items: flex-start; gap: 8px; font-size: 15px; color: var(--ink2); }
+  .cur svg { flex: none; margin-top: 1px; }
+  .dlg textarea.note { width: 100%; min-height: 84px; resize: vertical; border: 1px solid var(--line2); border-radius: 6px; background: var(--surface); padding: 8px 10px; font-size: 16px; }
+  .answers { display: grid; gap: 10px; }
+  .ans { min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 6px; border: 2px solid var(--line2); background: var(--surface); font-weight: 600; font-size: 16px; cursor: pointer; }
+  .ans.confirmed { border-color: var(--green); color: var(--green-t); }
+  .ans.broken { border-color: var(--red); color: var(--red-t); }
+  .ans.untested { border-color: var(--amber); color: var(--amber-t); }
+  .ans:hover { background: var(--raised); }
+  .sum h3 { font: 600 18px/1.3 var(--serif); margin-bottom: 6px; }
+  .sum ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+  .sum p { margin: 0; }
+  .sum .hl { display: flex; align-items: center; gap: 8px; }
+  .sigstep { display: grid; gap: 16px; }
+  .sigstep fieldset { border: 1px solid var(--line); border-radius: 6px; padding: 12px; margin: 0; display: grid; gap: 8px; min-width: 0; }
+  .sigstep legend { font-weight: 600; padding: 0 6px; }
+  .sigstep p { margin: 0; font-size: 15px; color: var(--ink2); }
+
+  /* Phones */
+  @media (max-width: 639px) {
+    .wrap { padding: 0 14px 56px; }
+    main > section { margin-top: 44px; }
+    .card { padding: 16px; }
+    .wk { grid-template-columns: 58px minmax(0, 1fr) 46px; gap: 8px; }
+    .logbox { padding: 14px; }
+
+    table.sig thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    table.sig, table.sig tbody { display: block; }
+    table.sig tr { display: grid; grid-template-columns: minmax(0, 1fr) auto 44px; gap: 8px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    table.sig td { padding: 0; border: 0; }
+    table.sig td:first-child { grid-column: 1 / -1; font-weight: 600; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top" id="top"></header>
+  <main>
+    <section class="narrow" aria-labelledby="h-map">
+      <h2 id="h-map">Portfolio map</h2>
+      <p class="hint">Bubble size is planned hours per week. Colour is health, from the assumptions. Drag a bubble, or select it and use the arrow keys.</p>
+      <div id="mapBox"></div>
+      <ul class="maplegend" id="mapLegend"></ul>
+    </section>
+
+    <section aria-labelledby="h-bets">
+      <h2 id="h-bets">Bets</h2>
+      <p class="hint">Select a status dot to cycle untested, confirmed, broken. Select any text to edit it.</p>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section class="narrow" aria-labelledby="h-time">
+      <h2 id="h-time">Where the time goes</h2>
+      <p class="hint">Each bar is one week. Dashed lines mark the planned split, so drift shows as a segment that crosses a line. Select a week to log its hours.</p>
+      <div id="timeBox"></div>
+    </section>
+
+    <section class="narrow" id="parkedBox" aria-label="Parked list"></section>
+
+    <section class="narrow" aria-labelledby="h-sig">
+      <h2 id="h-sig">Signals to watch</h2>
+      <p class="hint">Fill in monthly. The trend button cycles up, flat, down, none.</p>
+      <div id="sigBox"></div>
+    </section>
+
+    <section class="narrow" aria-labelledby="h-data">
+      <h2 id="h-data">Your data</h2>
+      <div id="dataBox"></div>
+    </section>
+  </main>
+</div>
+<dialog id="dlg" aria-labelledby="dlgTitle"></dialog>
+
+<script>
+'use strict';
+
+/* ---------- Constants and small helpers ---------- */
+const KEY = 'betboard.v1';
+const THEME_KEY = 'betboard.theme';
+const STATUSES = ['untested', 'confirmed', 'broken'];
+const STATUS_LABEL = { untested: 'Untested', confirmed: 'Confirmed', broken: 'Broken' };
+const HEALTH_LABEL = { green: 'Mostly confirmed', amber: 'Mostly untested', red: 'Riskiest assumption broken' };
+const HEALTH_AS_STATUS = { green: 'confirmed', amber: 'untested', red: 'broken' };
+const DEFAULT_PREMISE = 'AI agents will become the primary way businesses buy and sell.';
+
+const $ = (s, r = document) => r.querySelector(s);
+const pad = n => String(n).padStart(2, '0');
+const isoDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const today = () => isoDate(new Date());
+const parseISO = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); };
+const fmtDate = (s, year = true) => {
+  if (!s) return '';
+  const d = parseISO(s);
+  if (isNaN(d)) return s;
+  return d.toLocaleDateString('en-US', year ? { month: 'short', day: 'numeric', year: 'numeric' } : { month: 'short', day: 'numeric' });
+};
+const uid = () => Math.random().toString(36).slice(2, 9);
+const num = v => { const n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; };
+const fmtN = n => String(Math.round(n * 10) / 10);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+const PROPS = new Set(['value', 'checked', 'disabled', 'open', 'selected', 'hidden']);
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v === null || v === undefined || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+    else if (PROPS.has(k)) el[k] = v;
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat(Infinity)) {
+    if (kid === null || kid === undefined || kid === false) continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  }
+  return el;
+}
+function raw(html) { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; }
+
+/* ---------- Icons ---------- */
+function dotSvg(status, size = 22) {
+  const s = size;
+  if (status === 'confirmed') return `<svg width="${s}" height="${s}" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="var(--green)"/><path d="M6.2 11.4l3.2 3.2 6.4-6.8" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  if (status === 'broken') return `<svg width="${s}" height="${s}" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="var(--red)"/><path d="M7.4 7.4l7.2 7.2M14.6 7.4l-7.2 7.2" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+  return `<svg width="${s}" height="${s}" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="8.5" fill="none" stroke="var(--amber)" stroke-width="3"/></svg>`;
+}
+const warnSvg = '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5L18.5 17H1.5L10 2.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4.2M10 14.4v.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const okSvg = '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 10.2l2.7 2.7L14 7.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const TREND_SVG = {
+  up: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5M5.5 11.5L12 5l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  flat: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13.5 5.5L20 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  down: '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M5.5 12.5L12 19l6.5-6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  '': '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12h10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" opacity=".5"/></svg>',
+};
+
+/* ---------- State ---------- */
+function seed() {
+  const A = (id, text, riskiest = false) => ({ id, text, status: 'untested', riskiest, note: '', date: '' });
+  return {
+    v: 1,
+    updated: today(),
+    lastReview: '',
+    lastExport: '',
+    premise: DEFAULT_PREMISE,
+    bets: [
+      {
+        id: 'core', role: 'Core', name: 'Fund AI with Eric', share: 60, hours: 27, slot: 0, x: .17, y: .35,
+        hypothesis: 'Small hedge funds, PE firms and family offices will pay for AI built into their own workflows, with security and compliance handled.',
+        assumptions: [
+          A('core-1', 'Funds feel the gap and have budget for it'),
+          A('core-2', 'A fund will actually pay for a $2,500 two-week diagnostic, not just say it’s interesting', true),
+          A('core-3', 'Eric’s and my credibility is enough without a track record'),
+          A('core-4', 'The security worry can be solved by design (no client data in the diagnostic)'),
+        ],
+        test: '15 fund conversations; first paid diagnostic',
+        commit: '1 paid diagnostic by Oct 11; 3 by Nov 15',
+        kill: 'Zero paid after 15 real conversations',
+        gate: '2026-11-15', commitHit: false, killHit: false, revived: false, parkedNote: '',
+      },
+      {
+        id: 'thesis', role: 'Thesis', name: 'Neutral Ground for Agents', share: 30, hours: 13, slot: 1, x: .82, y: .78,
+        hypothesis: 'Outcome-priced deals between strangers’ agents need a neutral venue with typed moves, enforced mandates, escrow on verified delivery and fair arbitration. Whoever runs it becomes infrastructure.',
+        assumptions: [
+          A('thesis-1', 'Agent-to-agent B2B volume grows meaningfully by about 2028', true),
+          A('thesis-2', 'The big players (Visa, Stripe, Google, OKX) can’t credibly be neutral'),
+          A('thesis-3', 'Outcomes in real B2B deals can be verified (shipping, inspection)'),
+          A('thesis-4', 'A licensed escrow or payments partner route works in Japan'),
+        ],
+        test: 'Publish the white paper and 14-parts procurement demo; 10 conversations with agent-commerce and payments builders',
+        commit: 'A payments or escrow firm, or a builder, asks to partner or adopt',
+        kill: 'A big player ships trusted escrow and dispute handling for agents',
+        gate: '2026-12-31', commitHit: false, killHit: false, revived: false, parkedNote: '',
+      },
+      {
+        id: 'option', role: 'Option', name: 'Japan order desk, then agent-run acquirer', share: 10, hours: 4, slot: 2, x: .5, y: .62,
+        hypothesis: 'Japanese B2B suppliers will pay per order to stop handling phone and fax orders. The order flow becomes a data asset, and later the base for buying successor-less firms.',
+        assumptions: [
+          A('option-1', 'I stay based in Japan after March (vs moving to Europe)', true),
+          A('option-2', 'Owners will try a new vendor for order intake'),
+          A('option-3', 'The AI captures real orders accurately enough'),
+          A('option-4', 'Capital is available later for acquisitions'),
+        ],
+        test: '10 owner conversations in one vertical',
+        commit: '3 of 10 owners say they’d pay',
+        kill: 'Fewer than 3 of 10 would pay, or I move to Europe',
+        gate: '2026-12-31', commitHit: false, killHit: false, revived: false, parkedNote: '',
+      },
+    ],
+    parked: [
+      { id: 'p1', name: 'Kaiwa', note: 'autopilot and case study' },
+      { id: 'p2', name: 'Governed AI', note: 'merged into fund work' },
+      { id: 'p3', name: 'Signal Panel', note: 'folds into future data layer' },
+      { id: 'p4', name: 'Percy and Prelude', note: 'internal tools' },
+      { id: 'p5', name: 'Paid skill acquisition', note: 'parked' },
+      { id: 'p6', name: 'Tatami Key', note: 'closed' },
+    ],
+    hours: {},
+    history: [],
+    signals: [
+      { id: 's1', label: 'Agent-placed transaction volume (TRM Labs, Visa, Mastercard reports)', value: '', date: '', trend: '' },
+      { id: 's2', label: 'OKX agent payments: escrow and dispute features shipped?', value: '', date: '', trend: '' },
+      { id: 's3', label: 'Card-network (EMVCo) liability rules for agent purchases', value: '', date: '', trend: '' },
+      { id: 's4', label: 'Japan 収納代行 amendment effective date', value: '', date: '', trend: '' },
+      { id: 's5', label: 'Paid diagnostics to date', value: '', date: '', trend: '' },
+    ],
+  };
+}
+
+function normalise(s) {
+  if (!s || s.v !== 1 || !Array.isArray(s.bets)) throw new Error('This file is not a Bet Board export.');
+  const d = seed();
+  const out = Object.assign(d, s);
+  out.bets = s.bets.map(b => Object.assign({
+    id: uid(), role: 'Revived', name: 'Untitled', share: 0, hours: 0, slot: 0, x: .5, y: .5, hypothesis: '', test: '', commit: '', kill: '',
+    gate: '', commitHit: false, killHit: false, revived: false, parkedNote: '',
+  }, b, { assumptions: Array.isArray(b.assumptions) ? b.assumptions : [] }));
+  for (const key of ['parked', 'history', 'signals']) if (!Array.isArray(out[key])) out[key] = d[key];
+  if (!out.hours || typeof out.hours !== 'object') out.hours = {};
+  return out;
+}
+
+let storageOk = true;
+function load() {
+  let rawText = null;
+  try {
+    rawText = localStorage.getItem(KEY);
+    if (rawText) return normalise(JSON.parse(rawText));
+  } catch (e) {
+    if (rawText) { try { localStorage.setItem(KEY + '.backup', rawText); } catch (e2) {} }
+    if (!rawText) storageOk = false;
+  }
+  return seed();
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); storageOk = true; }
+  catch (e) { storageOk = false; }
+  updateSaveNote();
+}
+function touch() {
+  state.updated = today();
+  save();
+  const t = $('#updated');
+  if (t) t.textContent = fmtDate(state.updated);
+}
+
+let state = load();
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+
+/* ---------- Domain logic ---------- */
+function health(b) {
+  const a = b.assumptions;
+  if (!a.length) return 'amber';
+  if (a.some(x => x.riskiest && x.status === 'broken')) return 'red';
+  const c = a.filter(x => x.status === 'confirmed').length;
+  return c * 2 > a.length ? 'green' : 'amber';
+}
+const label = b => (b.role === 'Revived' ? b.name : b.role);
+const slotClass = s => 'slot-' + s;
+
+function setStatus(b, a, to, note) {
+  const from = a.status;
+  note = note || '';
+  if (from === to && !note) return false;
+  a.status = to;
+  if (note) a.note = note;
+  a.date = today();
+  state.history.push({ id: uid(), aId: a.id, bId: b.id, d: today(), t: Date.now(), from, to, note });
+  touch();
+  return true;
+}
+
+function freeSlot() {
+  const used = new Set(state.bets.map(b => b.slot));
+  return [0, 1, 2, 3].find(s => !used.has(s));
+}
+
+/* ---------- Editable field helpers ---------- */
+function fit(t) {
+  t.style.height = 'auto';
+  if (t.scrollHeight) t.style.height = t.scrollHeight + 'px';
+}
+function fitAll(root = document) { root.querySelectorAll('textarea.ed').forEach(fit); }
+function field(value, onCommit, o = {}) {
+  const t = h('textarea', { class: 'ed ' + (o.cls || ''), rows: 1, placeholder: o.placeholder || '', 'aria-label': o.label || '', spellcheck: 'false', 'data-fk': o.fk });
+  t.value = value || '';
+  t.addEventListener('input', () => fit(t));
+  t.addEventListener('change', () => onCommit(t.value.trim()));
+  t.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); t.blur(); } });
+  return t;
+}
+function numInput(value, onCommit, o = {}) {
+  const i = h('input', { class: 'nin', type: 'number', inputmode: 'decimal', min: 0, max: o.max, step: o.step || 1, 'aria-label': o.label || '' });
+  i.value = value ? fmtN(value) : '';
+  i.addEventListener('change', () => onCommit(num(i.value)));
+  return i;
+}
+function dateInput(value, onCommit, lbl) {
+  const i = h('input', { class: 'din', type: 'date', 'aria-label': lbl });
+  i.value = value || '';
+  i.addEventListener('change', () => onCommit(i.value));
+  return i;
+}
+
+let pendingFk = null;
+function keepFocus(fn) {
+  const ae = document.activeElement;
+  const fk = ae && ae.dataset && ae.dataset.fk;
+  fn();
+  const key = pendingFk || fk;
+  pendingFk = null;
+  if (key) {
+    const el = document.querySelector(`[data-fk="${CSS.escape(key)}"]`);
+    if (el) el.focus({ preventScroll: true });
+  }
+}
+
+/* ---------- Header ---------- */
+let theme = 'auto';
+try { theme = localStorage.getItem(THEME_KEY) || 'auto'; } catch (e) {}
+function applyTheme() {
+  if (theme === 'auto') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.dataset.theme = theme;
+}
+function cycleTheme(e) {
+  theme = { auto: 'light', light: 'dark', dark: 'auto' }[theme] || 'auto';
+  try { localStorage.setItem(THEME_KEY, theme); } catch (err) {}
+  applyTheme();
+  e.target.textContent = 'Theme: ' + theme[0].toUpperCase() + theme.slice(1);
+}
+function updateSaveNote() {
+  const n = $('#saveNote');
+  if (!n) return;
+  n.textContent = storageOk ? 'Saved in this browser' : 'Not saved: browser storage is blocked. Use Export.';
+  n.style.color = storageOk ? '' : 'var(--red-t)';
+}
+function renderHeader() {
+  $('#top').replaceChildren(
+    h('h1', {}, 'Bet Board'),
+    field(state.premise, v => { state.premise = v || DEFAULT_PREMISE; touch(); }, { cls: 'premise', label: 'Premise' }),
+    h('p', { class: 'meta' },
+      h('span', {}, 'Last update ', h('time', { id: 'updated' }, fmtDate(state.updated))),
+      h('span', { id: 'saveNote', role: 'status' })),
+    h('div', { class: 'actions' },
+      h('button', { class: 'btn primary', type: 'button', onclick: startReview }, 'Sunday review'),
+      h('button', { class: 'btn', type: 'button', onclick: cycleTheme }, 'Theme: ' + theme[0].toUpperCase() + theme.slice(1))));
+  updateSaveNote();
+}
+
+/* ---------- Portfolio map ---------- */
+let lastMapW = 0;
+function renderMap() {
+  const box = $('#mapBox');
+  const avail = box.clientWidth || 340;
+  const W = Math.round(clamp(avail, 280, 560));
+  lastMapW = W;
+  const H = Math.round(Math.min(W * 1.08, 600));
+  const L = 46, R = 10, T = 10, B = 54;
+  const pw = W - L - R, ph = H - T - B;
+  const k = 8.6 * clamp(W / 360, .85, 1.3);
+  const rOf = b => clamp(k * Math.sqrt(Math.max(0, b.hours)), 11, 70);
+  const px = b => L + b.x * pw;
+  const py = b => T + (1 - b.y) * ph;
+
+  const bubbles = state.bets.slice().sort((a, b) => rOf(b) - rOf(a)).map(b => {
+    const hl = health(b), r = rOf(b), gs = Math.min(r * .55, 14);
+    let glyph;
+    if (hl === 'green') glyph = `<path d="M${-gs * .55} ${gs * .05} L${-gs * .12} ${gs * .48} L${gs * .6} ${-gs * .42}" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+    else if (hl === 'red') glyph = `<path d="M${-gs * .42} ${-gs * .42} L${gs * .42} ${gs * .42} M${gs * .42} ${-gs * .42} L${-gs * .42} ${gs * .42}" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>`;
+    else glyph = `<circle r="${gs * .45}" fill="none" stroke="#fff" stroke-width="2.6"/>`;
+    const lbl = `${label(b)}: ${fmtN(b.hours)} planned hours a week. ${HEALTH_LABEL[hl]}. Drag or use arrow keys to move.`;
+    return `<g class="bub" data-id="${esc(b.id)}" tabindex="0" role="img" aria-label="${esc(lbl)}" transform="translate(${px(b)},${py(b)})">
+      <title>${esc(label(b))}: ${fmtN(b.hours)} hrs/week, ${esc(HEALTH_LABEL[hl])}</title>
+      <circle class="bc f-${hl}" r="${r}"/>${glyph}
+      <text class="bl" y="${r + 17}" text-anchor="middle">${esc(label(b))}</text>
+      <text class="bh" y="${r + 33}" text-anchor="middle">${esc(fmtN(b.hours))} hrs/week</text>
+    </g>`;
+  }).join('');
+
+  const yMid = T + ph / 2, xMid = L + pw / 2;
+  box.innerHTML = `<svg id="map" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="group" aria-label="Portfolio map. Horizontal: time to money. Vertical: size of the prize.">
+    <defs><pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="9" class="hatch-line" stroke-width="1.5"/></pattern></defs>
+    <rect class="plot" x="${L}" y="${T}" width="${pw}" height="${ph}"/>
+    <rect x="${xMid}" y="${yMid}" width="${pw / 2}" height="${ph / 2}" fill="url(#hatch)" opacity=".55"/>
+    <line class="mid" x1="${xMid}" y1="${T}" x2="${xMid}" y2="${T + ph}"/>
+    <line class="mid" x1="${L}" y1="${yMid}" x2="${L + pw}" y2="${yMid}"/>
+    <text class="q" x="${L + 8}" y="${T + 19}">Big and soon (rare)</text>
+    <text class="q" x="${L + pw - 8}" y="${T + 19}" text-anchor="end">Big bets</text>
+    <text class="q" x="${L + 8}" y="${T + ph - 10}">Cash engines</text>
+    <text class="q" x="${L + pw - 8}" y="${T + ph - 10}" text-anchor="end">Avoid</text>
+    <text class="ax" x="${L}" y="${T + ph + 22}">Paying now</text>
+    <text class="axt" x="${L + pw / 2}" y="${T + ph + 22}" text-anchor="middle">Time to money</text>
+    <text class="ax" x="${L + pw}" y="${T + ph + 22}" text-anchor="end">Years away</text>
+    <text class="ax" transform="translate(16 ${T + ph}) rotate(-90)">Modest</text>
+    <text class="axt" transform="translate(16 ${T + ph / 2}) rotate(-90)" text-anchor="middle">Size of the prize</text>
+    <text class="ax" transform="translate(16 ${T}) rotate(-90)" text-anchor="end">Very large</text>
+    ${bubbles}
+  </svg>`;
+
+  const svg = $('#map');
+  svg.querySelectorAll('.bub').forEach(g => {
+    const b = state.bets.find(x => x.id === g.dataset.id);
+    if (!b) return;
+    const place = () => g.setAttribute('transform', `translate(${px(b)},${py(b)})`);
+    let drag = null;
+    g.addEventListener('pointerdown', e => {
+      const rect = svg.getBoundingClientRect();
+      drag = { ox: e.clientX - rect.left - px(b), oy: e.clientY - rect.top - py(b) };
+      g.setPointerCapture(e.pointerId);
+      g.focus({ preventScroll: true });
+      e.preventDefault();
+    });
+    g.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const rect = svg.getBoundingClientRect();
+      b.x = clamp((e.clientX - rect.left - drag.ox - L) / pw, .03, .97);
+      b.y = clamp(1 - (e.clientY - rect.top - drag.oy - T) / ph, .03, .97);
+      place();
+    });
+    const end = () => { if (drag) { drag = null; touch(); } };
+    g.addEventListener('pointerup', end);
+    g.addEventListener('pointercancel', end);
+    g.addEventListener('keydown', e => {
+      const step = e.shiftKey ? .1 : .02;
+      const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] }[e.key];
+      if (!d) return;
+      e.preventDefault();
+      b.x = clamp(b.x + d[0], .03, .97);
+      b.y = clamp(b.y + d[1], .03, .97);
+      place();
+      touch();
+    });
+  });
+
+  $('#mapLegend').replaceChildren(
+    ...['green', 'amber', 'red'].map(hl => h('li', {}, raw(dotSvg(HEALTH_AS_STATUS[hl], 18)), HEALTH_LABEL[hl])));
+}
+
+/* ---------- Cards ---------- */
+const openSet = new Set();
+
+function healthPill(hl) {
+  const p = h('span', { class: 'pill ' + hl });
+  p.append(raw(dotSvg(HEALTH_AS_STATUS[hl], 18)), HEALTH_LABEL[hl]);
+  return p;
+}
+function banner(kind, text) {
+  const b = h('div', { class: 'banner ' + kind, role: 'status' });
+  b.append(raw(kind === 'kill' ? warnSvg : okSvg), h('span', {}, text));
+  return b;
+}
+function gateText(iso) {
+  if (!iso) return '';
+  const days = Math.round((parseISO(iso) - parseISO(today())) / 864e5);
+  if (days === 0) return 'Gate is today';
+  if (days > 0) return `In ${days} day${days === 1 ? '' : 's'}`;
+  const n = -days;
+  return `Passed ${n} day${n === 1 ? '' : 's'} ago: decide`;
+}
+function refreshHealth() {
+  keepFocus(() => { renderMap(); renderCards(); });
+}
+
+function rungEl(b, a) {
+  const li = h('li', { class: 'rung' });
+  const next = STATUSES[(STATUSES.indexOf(a.status) + 1) % 3];
+  const dot = h('button', {
+    class: 'dotbtn', type: 'button', 'data-fk': 'dot-' + a.id,
+    'aria-label': `Status: ${STATUS_LABEL[a.status]}. Press to change to ${STATUS_LABEL[next]}. Assumption: ${a.text}`,
+    title: `${STATUS_LABEL[a.status]}. Select to change to ${STATUS_LABEL[next].toLowerCase()}.`,
+    onclick: () => { setStatus(b, a, next, ''); refreshHealth(); },
+  });
+  dot.append(raw(dotSvg(a.status)));
+
+  const evid = h('p', { class: 'evid' });
+  const setEvid = () => {
+    evid.textContent = a.note ? `${a.date ? fmtDate(a.date, false) + ': ' : ''}${a.note}` : '';
+    evid.hidden = !a.note;
+  };
+  setEvid();
+
+  const open = openSet.has(a.id);
+  const toggle = h('button', {
+    class: 'linkbtn', type: 'button', 'aria-expanded': String(open), 'data-fk': 'det-' + a.id,
+    onclick: () => { open ? openSet.delete(a.id) : openSet.add(a.id); pendingFk = 'det-' + a.id; keepFocus(renderCards); },
+  }, open ? 'Hide details' : 'Details and history');
+
+  const meta = h('div', { class: 'rmeta' },
+    a.riskiest ? h('span', { class: 'tag' }, 'riskiest') : null,
+    h('span', { class: 'st st-' + a.status }, STATUS_LABEL[a.status]),
+    toggle);
+
+  const main = h('div', { class: 'rung-main' },
+    field(a.text, v => { a.text = v || a.text; touch(); }, { cls: 'rung-text', label: 'Assumption', fk: 'text-' + a.id }),
+    meta, evid);
+
+  if (open) {
+    const histBox = h('ul', { class: 'hist' });
+    const fillHist = () => {
+      const rows = state.history.filter(x => x.aId === a.id).slice().reverse();
+      histBox.replaceChildren(...(rows.length
+        ? rows.map(r => h('li', {}, h('span', {}, fmtDate(r.d, false)),
+            h('span', {}, h('b', {}, r.from === r.to ? 'Note' : `${STATUS_LABEL[r.from]} to ${STATUS_LABEL[r.to]}`), r.note ? ': ' + r.note : '')))
+        : [h('li', {}, h('span', {}, ''), h('span', {}, 'No changes yet.'))]));
+    };
+    fillHist();
+    const dateEl = dateInput(a.date, v => { a.date = v; touch(); setEvid(); }, 'Evidence date');
+    const note = field(a.note, v => {
+      if (v === a.note) return;
+      a.note = v;
+      if (v) {
+        a.date = today();
+        dateEl.value = a.date;
+        state.history.push({ id: uid(), aId: a.id, bId: b.id, d: today(), t: Date.now(), from: a.status, to: a.status, note: v });
+      }
+      touch(); setEvid(); fillHist();
+    }, { label: 'Evidence note', placeholder: 'What did you see, hear or read?' });
+    note.rows = 2;
+
+    main.append(h('div', { class: 'dpanel' },
+      h('div', {}, h('div', { class: 'lbl' }, 'Evidence note'), note),
+      h('div', {}, h('div', { class: 'lbl' }, 'Evidence date'), dateEl),
+      h('div', { class: 'drow' },
+        h('button', {
+          class: 'btn sm', type: 'button', 'aria-pressed': String(a.riskiest), 'data-fk': 'risk-' + a.id,
+          onclick: () => { const was = a.riskiest; b.assumptions.forEach(x => { x.riskiest = false; }); a.riskiest = !was; touch(); pendingFk = 'risk-' + a.id; refreshHealth(); },
+        }, a.riskiest ? 'Riskiest: remove tag' : 'Mark as riskiest'),
+        h('button', {
+          class: 'btn sm danger', type: 'button',
+          onclick: () => {
+            if (!confirm('Remove this assumption and its history?')) return;
+            b.assumptions = b.assumptions.filter(x => x !== a);
+            state.history = state.history.filter(x => x.aId !== a.id);
+            openSet.delete(a.id); touch(); refreshHealth();
+          },
+        }, 'Remove')),
+      h('div', {}, h('div', { class: 'lbl' }, 'History'), histBox)));
+  }
+  li.append(dot, main);
+  return li;
+}
+
+function cardEl(b) {
+  const hl = health(b);
+  const conf = b.assumptions.filter(a => a.status === 'confirmed').length;
+  const card = h('article', { class: 'card', 'data-bet': b.id, style: `--hc: var(--${hl})`, 'aria-label': b.name });
+
+  card.append(h('div', { class: 'card-top' }, h('span', { class: 'role' }, b.role), healthPill(hl)));
+  if (b.killHit) card.append(banner('kill', 'Kill signal hit: review this bet'));
+  if (b.commitHit) card.append(banner('commit', 'Commit signal hit'));
+
+  card.append(h('div', {},
+    field(b.name, v => { b.name = v || b.name; touch(); renderMap(); renderTime(); }, { cls: 'card-name', label: 'Bet name', fk: 'name-' + b.id }),
+    b.parkedNote ? h('p', { class: 'parknote' }, 'Was parked as: ' + b.parkedNote) : null));
+
+  card.append(h('div', { class: 'plan' },
+    h('label', {}, numInput(b.share, v => { b.share = v; touch(); renderTime(); }, { max: 100, label: `${b.name}: planned share of time in percent` }), '% of time'),
+    h('label', {}, numInput(b.hours, v => { b.hours = v; touch(); renderMap(); }, { step: .5, label: `${b.name}: planned hours per week` }), 'hrs/week')));
+
+  card.append(h('div', {}, h('div', { class: 'lbl' }, 'Hypothesis'),
+    field(b.hypothesis, v => { b.hypothesis = v; touch(); }, { cls: 'hyp', label: 'Hypothesis', placeholder: 'Write the hypothesis' })));
+
+  const ladder = h('ol', { class: 'ladder' }, b.assumptions.map(a => rungEl(b, a)));
+  card.append(h('div', {},
+    h('div', { class: 'lbl' }, `Assumptions: ${conf} of ${b.assumptions.length} confirmed`),
+    b.assumptions.length ? ladder : h('p', { class: 'small muted' }, 'No assumptions yet. Add the ones this bet depends on.'),
+    h('div', { class: 'addrow' }, h('button', {
+      class: 'btn sm', type: 'button',
+      onclick: () => {
+        const a = { id: uid(), text: 'New assumption', status: 'untested', riskiest: false, note: '', date: '' };
+        b.assumptions.push(a);
+        if (!b.assumptions.some(x => x.riskiest)) a.riskiest = false;
+        touch(); pendingFk = 'text-' + a.id; refreshHealth();
+        const t = document.querySelector(`[data-fk="text-${a.id}"]`); if (t) t.select();
+      },
+    }, 'Add assumption'))));
+
+  card.append(h('div', {}, h('div', { class: 'lbl' }, 'Test this quarter'),
+    field(b.test, v => { b.test = v; touch(); }, { label: 'Test this quarter', placeholder: 'What will you test?' })));
+
+  const sig = (kind, title) => h('div', { class: 'sigrow ' + kind },
+    h('div', { class: 'lbl' }, title),
+    field(b[kind], v => { b[kind] = v; touch(); }, { label: title, placeholder: 'Write the signal' }),
+    h('label', { class: 'chk' },
+      h('input', { type: 'checkbox', checked: b[kind + 'Hit'], 'data-fk': `hit-${kind}-${b.id}`, onchange: e => { b[kind + 'Hit'] = e.target.checked; touch(); refreshHealth(); } }),
+      'Signal hit'));
+  card.append(sig('commit', 'Commit signal'), sig('kill', 'Kill signal'));
+
+  const gnote = h('span', { class: 'gate-note' }, gateText(b.gate));
+  card.append(h('div', {}, h('div', { class: 'lbl' }, 'Next gate'),
+    h('div', { class: 'gate-row' }, dateInput(b.gate, v => { b.gate = v; touch(); gnote.textContent = gateText(v); }, `${b.name}: next gate date`), gnote)));
+
+  if (b.revived) {
+    card.append(h('div', {}, h('button', {
+      class: 'btn sm', type: 'button',
+      onclick: () => {
+        if (!confirm('Move this bet back to the parked list?')) return;
+        state.parked.push({ id: uid(), name: b.name, note: b.parkedNote || 'parked' });
+        state.bets = state.bets.filter(x => x !== b);
+        touch(); renderAll();
+      },
+    }, 'Move back to parked')));
+  }
+  return card;
+}
+
+function renderCards() {
+  const root = $('#cards');
+  root.replaceChildren(...state.bets.map(cardEl));
+  fitAll(root);
+}
+
+/* ---------- Time ---------- */
+function weekStart(d) {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return isoDate(x);
+}
+function weeksList() {
+  const base = parseISO(weekStart(new Date()));
+  return Array.from({ length: 8 }, (_, i) => { const x = new Date(base); x.setDate(x.getDate() - 7 * i); return isoDate(x); });
+}
+let selWeek = weekStart(new Date());
+const series = () => [
+  ...state.bets.map(b => ({ id: b.id, name: label(b), slot: b.slot, plan: b.share })),
+  { id: 'other', name: 'Other (parked work)', slot: 'other', plan: 0 },
+];
+const weekHours = k => state.hours[k] || {};
+const weekTotal = k => series().reduce((t, s) => t + num(weekHours(k)[s.id]), 0);
+
+function barEl(items, ticks) {
+  const bar = h('div', { class: 'bar' });
+  items.forEach(it => {
+    if (!(it.v > 0)) return;
+    bar.append(h('span', { class: 'seg ' + slotClass(it.slot), style: `flex-grow:${it.v}`, title: it.title }, it.share >= 12 ? it.text : ''));
+  });
+  if (!bar.children.length) bar.append(h('span', { class: 'bar-empty' }, 'Not logged'));
+  else (ticks || []).forEach(p => bar.append(h('span', { class: 'tick', style: `left:${p}%` })));
+  return bar;
+}
+
+function renderTimeBars() {
+  const box = $('#timeBars');
+  const S = series();
+  const planTotal = S.reduce((t, s) => t + s.plan, 0);
+  const ticks = [];
+  let cum = 0;
+  S.filter(s => s.id !== 'other').forEach((s, i, arr) => { cum += planTotal ? s.plan / planTotal * 100 : 0; if (i < arr.length - 1 && cum > 0 && cum < 100) ticks.push(cum); });
+
+  const planRow = h('div', { class: 'wk ref' },
+    h('span', { class: 'wk-l' }, 'Plan'),
+    barEl(S.map(s => ({ slot: s.slot, v: s.plan, share: planTotal ? s.plan / planTotal * 100 : 0, text: s.plan + '%', title: `${s.name}: plan ${s.plan}%` }))),
+    h('span', { class: 'wk-t' }, ''));
+
+  const rows = weeksList().map((k, i) => {
+    const hrs = weekHours(k), total = weekTotal(k);
+    const sel = k === selWeek;
+    return h('button', {
+      class: 'wk' + (sel ? ' sel' : ''), type: 'button', 'aria-pressed': String(sel), 'data-fk': 'wk-' + k,
+      'aria-label': `Week of ${fmtDate(k)}: ${total ? fmtN(total) + ' hours logged' : 'not logged'}. Select to log hours.`,
+      onclick: () => { selWeek = k; keepFocus(() => { renderTimeBars(); renderTimeDetail(); }); },
+    },
+      h('span', { class: 'wk-l' }, i === 0 ? 'This week' : fmtDate(k, false)),
+      barEl(S.map(s => { const v = num(hrs[s.id]); return { slot: s.slot, v, share: total ? v / total * 100 : 0, text: fmtN(v), title: `${s.name}: ${fmtN(v)} h` }; }), ticks),
+      h('span', { class: 'wk-t' }, total ? fmtN(total) + ' h' : ''));
+  });
+
+  box.replaceChildren(
+    h('ul', { class: 'legend' }, S.map(s => h('li', {}, h('span', { class: 'sw ' + slotClass(s.slot) }), s.name))),
+    h('div', { class: 'weeks' }, planRow, ...rows),
+    h('p', { class: 'ticknote' }, 'Bars show each week as a share of the hours logged. Numbers inside bars are hours.'));
+}
+
+function statTexts() {
+  const S = series(), hrs = weekHours(selWeek), total = weekTotal(selWeek);
+  const planTotal = S.reduce((t, s) => t + s.plan, 0);
+  const out = {};
+  let worst = null;
+  S.forEach(s => {
+    const planPct = planTotal ? s.plan / planTotal * 100 : 0;
+    if (!total) { out[s.id] = `Plan ${Math.round(planPct)}%. Nothing logged yet.`; return; }
+    const actPct = num(hrs[s.id]) / total * 100;
+    const d = Math.round(actPct - planPct);
+    out[s.id] = `Plan ${Math.round(planPct)}%, logged ${Math.round(actPct)}%: ` + (d === 0 ? 'on plan' : `${Math.abs(d)} point${Math.abs(d) === 1 ? '' : 's'} ${d > 0 ? 'over' : 'under'}`);
+    if (!worst || Math.abs(d) > Math.abs(worst.d)) worst = { s, d };
+  });
+  let summary = '';
+  if (total) summary = worst && Math.abs(worst.d) >= 5
+    ? `Largest drift: ${worst.s.name}, ${Math.abs(worst.d)} points ${worst.d > 0 ? 'over' : 'under'} plan.`
+    : 'Within 5 points of plan on every line.';
+  return { out, summary, total };
+}
+function updateStats() {
+  const { out, summary, total } = statTexts();
+  Object.entries(out).forEach(([id, t]) => { const el = document.querySelector(`[data-stat="${CSS.escape(id)}"]`); if (el) el.textContent = t; });
+  const dn = $('#driftNote'); if (dn) dn.textContent = summary;
+  const tt = $('#totalNote'); if (tt) tt.textContent = total ? `Total logged: ${fmtN(total)} h` : 'Total logged: 0 h';
+}
+function renderTimeDetail() {
+  const box = $('#timeDetail');
+  const S = series();
+  const isNow = selWeek === weekStart(new Date());
+  box.replaceChildren(
+    h('h3', {}, `Log hours: week of ${fmtDate(selWeek)}${isNow ? ' (this week)' : ''}`),
+    ...S.map(s => {
+      const i = h('input', { class: 'nin', type: 'number', inputmode: 'decimal', min: 0, step: .5, 'aria-label': `${s.name}: hours this week` });
+      const cur = weekHours(selWeek)[s.id];
+      i.value = cur ? fmtN(cur) : '';
+      i.addEventListener('input', () => {
+        const wk = state.hours[selWeek] || (state.hours[selWeek] = {});
+        const v = num(i.value);
+        if (v) wk[s.id] = v; else delete wk[s.id];
+        if (!Object.keys(wk).length) delete state.hours[selWeek];
+        touch(); renderTimeBars(); updateStats();
+      });
+      return h('div', { class: 'logrow' },
+        h('label', { class: 'nm' }, h('span', { class: 'sw ' + slotClass(s.slot) }), s.name),
+        h('span', { class: 'unit' }, i, 'hrs'),
+        h('span', { class: 'stat', 'data-stat': s.id }));
+    }),
+    h('p', { class: 'small muted', id: 'totalNote', style: 'margin:12px 0 0' }),
+    h('p', { class: 'driftnote', id: 'driftNote', role: 'status' }));
+  updateStats();
+}
+function renderTime() {
+  const box = $('#timeBox');
+  const ae = document.activeElement;
+  const inTime = ae && box.contains(ae);
+  if (inTime && box.querySelector('#timeBars')) {
+    // Keep the log inputs alive while typing. Only the bars and the labels need a refresh.
+    renderTimeBars(); updateStats();
+    if (!$('#timeDetail').querySelector('.logrow')) renderTimeDetail();
+    return;
+  }
+  box.replaceChildren(h('div', { id: 'timeBars' }), h('div', { class: 'logbox', id: 'timeDetail' }));
+  renderTimeBars(); renderTimeDetail();
+}
+
+/* ---------- Parked ---------- */
+let parkedOpen = false;
+function revive(p) {
+  const slot = freeSlot();
+  if (slot === undefined) return;
+  const id = uid();
+  state.parked = state.parked.filter(x => x !== p);
+  state.bets.push({
+    id, role: 'Revived', name: p.name, share: 0, hours: 0, slot, x: .3, y: .15,
+    hypothesis: '', test: '', commit: '', kill: '', gate: '', commitHit: false, killHit: false,
+    revived: true, parkedNote: p.note, assumptions: [],
+  });
+  touch(); renderAll();
+  const c = document.querySelector(`[data-bet="${id}"]`);
+  if (c) { c.scrollIntoView({ block: 'start' }); const n = c.querySelector('textarea.card-name'); if (n) n.focus({ preventScroll: true }); }
+}
+function renderParked() {
+  const full = freeSlot() === undefined;
+  const d = h('details', { class: 'parked', open: parkedOpen },
+    h('summary', {}, 'Parked', h('span', { class: 'count' }, `${state.parked.length} item${state.parked.length === 1 ? '' : 's'}`)),
+    state.parked.length
+      ? h('ul', { class: 'plist' }, state.parked.map(p => h('li', {},
+          h('div', { class: 'pn' }, h('strong', {}, p.name), h('span', {}, p.note)),
+          h('button', {
+            class: 'btn sm', type: 'button', disabled: full, title: full ? 'Four bets are active. Park one first.' : '',
+            'aria-label': `Revive ${p.name}`, onclick: () => revive(p),
+          }, 'Revive'))))
+      : h('p', { class: 'small muted' }, 'Nothing parked.'),
+    full ? h('p', { class: 'small muted' }, 'Four bets are active, which is the maximum. Move one back to parked to revive another.') : null);
+  d.addEventListener('toggle', () => { parkedOpen = d.open; });
+  $('#parkedBox').replaceChildren(d);
+}
+
+/* ---------- Signals ---------- */
+const TREND_NEXT = { '': 'up', up: 'flat', flat: 'down', down: '' };
+const TREND_WORD = { '': 'none', up: 'up', flat: 'flat', down: 'down' };
+function renderSignals() {
+  const tbody = h('tbody', {}, state.signals.map(s => {
+    const tb = h('button', {
+      class: 'trend', type: 'button', 'data-fk': 'trend-' + s.id,
+      'aria-label': `Trend for ${s.label}: ${TREND_WORD[s.trend]}. Press to change.`, title: `Trend: ${TREND_WORD[s.trend]}`,
+      onclick: () => { s.trend = TREND_NEXT[s.trend || '']; touch(); keepFocus(renderSignals); },
+    });
+    tb.append(raw(TREND_SVG[s.trend || '']));
+    return h('tr', {},
+      h('td', {}, field(s.label, v => { s.label = v || s.label; touch(); }, { label: 'Signal name' })),
+      h('td', {}, field(s.value, v => { s.value = v; if (v && !s.date) { s.date = today(); } touch(); keepFocus(renderSignals); }, { label: `${s.label}: last value`, placeholder: 'Add value' })),
+      h('td', {}, dateInput(s.date, v => { s.date = v; touch(); }, `${s.label}: date`)),
+      h('td', {}, tb));
+  }));
+  $('#sigBox').replaceChildren(h('table', { class: 'sig' },
+    h('thead', {}, h('tr', {}, h('th', { scope: 'col' }, 'Signal'), h('th', { scope: 'col' }, 'Last value'), h('th', { scope: 'col' }, 'Date'), h('th', { scope: 'col' }, 'Trend'))),
+    tbody));
+  fitAll($('#sigBox'));
+}
+
+/* ---------- Data tools ---------- */
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = h('a', { href: url, download: `bet-board-${today()}.json` });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+  state.lastExport = today(); save(); renderData();
+}
+async function importJSON(file) {
+  try {
+    const next = normalise(JSON.parse(await file.text()));
+    if (!confirm('Replace the current board with this file? Export first if you want a copy of the current board.')) return;
+    state = next; save(); renderAll();
+  } catch (e) {
+    alert('Import failed. ' + (e && e.message ? e.message : 'The file could not be read.'));
+  }
+}
+function renderData() {
+  const fileIn = h('input', { type: 'file', accept: 'application/json,.json', hidden: true, onchange: e => { const f = e.target.files[0]; if (f) importJSON(f); e.target.value = ''; } });
+  $('#dataBox').replaceChildren(
+    h('p', { class: 'datanote' }, 'The board is saved in this browser only. Export a copy after each Sunday review, because browsers can clear stored data.'),
+    h('p', { class: 'datanote' }, state.lastExport ? `Last export: ${fmtDate(state.lastExport)}` : 'Last export: never'),
+    h('div', { class: 'datarow' },
+      h('button', { class: 'btn', type: 'button', onclick: exportJSON }, 'Export JSON'),
+      h('button', { class: 'btn', type: 'button', onclick: () => fileIn.click() }, 'Import JSON'),
+      h('button', { class: 'btn danger', type: 'button', onclick: () => { if (confirm('Replace everything with the starting data? This cannot be undone. Export first if you need a copy.')) { state = seed(); save(); renderAll(); } } }, 'Reset to starting data')),
+    fileIn);
+}
+
+/* ---------- Sunday review ---------- */
+const dlg = $('#dlg');
+let rv = null;
+function startReview() {
+  const steps = [];
+  state.bets.forEach(b => b.assumptions.forEach(a => steps.push({ t: 'a', b: b.id, a: a.id })));
+  steps.push({ t: 'sig' });
+  rv = { steps, i: 0, changes: [] };
+  renderReview();
+  dlg.showModal();
+}
+function rvAnswer(b, a, status, note) {
+  const from = a.status;
+  if (setStatus(b, a, status, note)) rv.changes.push({ bet: label(b), text: a.text, from, to: status, note });
+  rv.i++;
+  keepFocus(() => { renderMap(); renderCards(); });
+  renderReview();
+}
+function renderReview() {
+  const total = rv.steps.length;
+  const done = rv.i >= total;
+  const pct = Math.round(Math.min(rv.i, total) / total * 100);
+  const head = h('div', { class: 'dlg-head' },
+    h('h2', { id: 'dlgTitle', tabindex: '-1' }, done ? 'Review summary' : 'Sunday review'),
+    h('button', { class: 'btn sm', type: 'button', onclick: () => dlg.close() }, done ? 'Done' : 'Close'));
+  const prog = h('div', { class: 'prog', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': String(total), 'aria-valuenow': String(Math.min(rv.i, total)), 'aria-label': 'Review progress' }, h('span', { style: `width:${pct}%` }));
+  let body, foot;
+
+  if (done) {
+    body = summaryEl();
+    foot = h('div', { class: 'dlg-foot' }, h('span', {}), h('button', { class: 'btn primary', type: 'button', onclick: () => dlg.close() }, 'Close review'));
+  } else {
+    const st = rv.steps[rv.i];
+    const count = h('p', { class: 'dlg-count' }, `Step ${rv.i + 1} of ${total}`);
+    if (st.t === 'a') {
+      const b = state.bets.find(x => x.id === st.b), a = b && b.assumptions.find(x => x.id === st.a);
+      if (!a) { rv.i++; return renderReview(); }
+      const note = h('textarea', { class: 'note', id: 'rvNote', 'aria-label': 'Any new evidence?', placeholder: 'What did you see, hear or read this week?' });
+      const answer = (status, text) => {
+        const btn = h('button', { class: 'ans ' + status, type: 'button', onclick: () => rvAnswer(b, a, status, note.value.trim()) });
+        btn.append(raw(dotSvg(status, 20)), text);
+        return btn;
+      };
+      const cur = h('div', { class: 'cur' }, raw(dotSvg(a.status, 20)),
+        h('span', {}, `Currently ${STATUS_LABEL[a.status].toLowerCase()}.`, a.note ? ` Last evidence${a.date ? ' (' + fmtDate(a.date, false) + ')' : ''}: ${a.note}` : ''));
+      body = h('div', { class: 'dlg-body' },
+        count,
+        h('p', { class: 'dlg-bet' }, `${label(b)}: ${b.name}`),
+        h('h3', { class: 'dlg-q' }, a.text),
+        a.riskiest ? h('div', {}, h('span', { class: 'tag' }, 'riskiest')) : null,
+        cur,
+        h('label', { class: 'lbl', for: 'rvNote', style: 'margin:0' }, 'Any new evidence?'),
+        note,
+        h('div', { class: 'answers' }, answer('confirmed', 'Confirmed'), answer('broken', 'Broken'), answer('untested', 'Still untested')));
+      foot = h('div', { class: 'dlg-foot' },
+        h('button', { class: 'btn', type: 'button', disabled: rv.i === 0, onclick: () => { rv.i--; renderReview(); } }, 'Back'),
+        h('button', { class: 'btn', type: 'button', onclick: () => { rv.i++; renderReview(); } }, 'Skip without change'));
+    } else {
+      body = h('div', { class: 'dlg-body' },
+        count,
+        h('h3', { class: 'dlg-q' }, 'Check the signals'),
+        h('div', { class: 'sigstep' }, state.bets.map(b => h('fieldset', {},
+          h('legend', {}, `${label(b)}: ${b.name}`),
+          h('p', {}, 'Commit: ' + (b.commit || 'not set')),
+          h('label', { class: 'chk' }, h('input', { type: 'checkbox', checked: b.commitHit, onchange: e => { b.commitHit = e.target.checked; touch(); keepFocus(() => { renderCards(); }); } }), 'Commit signal hit'),
+          h('p', {}, 'Kill: ' + (b.kill || 'not set')),
+          h('label', { class: 'chk' }, h('input', { type: 'checkbox', checked: b.killHit, onchange: e => { b.killHit = e.target.checked; touch(); keepFocus(() => { renderCards(); }); } }), 'Kill signal hit')))));
+      foot = h('div', { class: 'dlg-foot' },
+        h('button', { class: 'btn', type: 'button', onclick: () => { rv.i--; renderReview(); } }, 'Back'),
+        h('button', { class: 'btn primary', type: 'button', onclick: () => { state.lastReview = today(); touch(); rv.i = total; renderReview(); } }, 'Finish review'));
+    }
+  }
+  dlg.replaceChildren(head, prog, body, foot);
+  const t = $('#dlgTitle'); if (t) t.focus({ preventScroll: true });
+}
+function summaryEl() {
+  const rank = { green: 2, amber: 1, red: 0 };
+  const ratio = b => (b.assumptions.length ? b.assumptions.filter(a => a.status === 'confirmed').length / b.assumptions.length : 0);
+  const ordered = state.bets.slice().sort((a, b) => rank[health(b)] - rank[health(a)] || ratio(b) - ratio(a));
+  const best = ordered[0];
+  const kills = state.bets.filter(b => b.killHit);
+
+  const changed = rv.changes.length
+    ? h('ul', {}, rv.changes.map(c => h('li', {},
+        h('strong', {}, c.bet), ': ', c.text, h('br'),
+        c.from === c.to ? 'Note added.' : `${STATUS_LABEL[c.from]} to ${STATUS_LABEL[c.to]}.`, c.note ? ' ' + c.note : '')))
+    : h('p', {}, 'No changes this week.');
+
+  let healthiest;
+  if (!best) healthiest = h('p', {}, 'No bets.');
+  else if (rank[health(best)] === 1 && ratio(best) === 0) healthiest = h('p', {}, 'No bet is ahead yet. The leading bet has no confirmed assumption.');
+  else {
+    const c = best.assumptions.filter(a => a.status === 'confirmed').length;
+    healthiest = h('p', {}, h('strong', {}, `${label(best)}: ${best.name}`), `. ${HEALTH_LABEL[health(best)]}, ${c} of ${best.assumptions.length} assumptions confirmed.`);
+  }
+
+  return h('div', { class: 'dlg-body sum' },
+    h('div', {}, h('h3', {}, 'What changed'), changed),
+    h('div', {}, h('h3', {}, 'Healthiest bet'), healthiest),
+    h('div', {}, h('h3', {}, 'Kill signals'),
+      kills.length
+        ? h('ul', {}, kills.map(b => h('li', {}, h('strong', { style: 'color:var(--red-t)' }, 'Kill signal hit: '), `${label(b)}, ${b.name}. Review this bet.`)))
+        : h('p', {}, 'No kill signal hit.')),
+    h('div', {}, h('h3', {}, 'Health now'),
+      ordered.map(b => h('p', { class: 'hl' }, raw(dotSvg(HEALTH_AS_STATUS[health(b)], 18)), `${label(b)}: ${HEALTH_LABEL[health(b)]}`))));
+}
+dlg.addEventListener('close', () => { rv = null; renderAll(); });
+
+/* ---------- Boot ---------- */
+function renderAll() {
+  keepFocus(() => {
+    renderHeader(); renderMap(); renderCards(); renderTime(); renderParked(); renderSignals(); renderData();
+    fitAll();
+  });
+}
+applyTheme();
+renderAll();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitAll());
+window.addEventListener('resize', () => fitAll());
+if ('ResizeObserver' in window) {
+  new ResizeObserver(() => {
+    const w = Math.round(clamp($('#mapBox').clientWidth || 340, 280, 560));
+    if (Math.abs(w - lastMapW) > 1) renderMap();
+  }).observe($('#mapBox'));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-01",
+  "linkedin": [
+    {
+      "name": "Justin K. Chock",
+      "action": "connection_request_sent",
+      "note": false,
+      "evidence": "Profile shows Pending, click to withdraw invitation sent to Justin K. Chock"
+    },
+    {
+      "name": "Kaitlyn Emiko Chu",
+      "action": "connection_request_sent",
+      "note": false,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Yuki Hayashi",
+      "action": "connection_request_sent",
+      "note": false,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Jona Higa",
+      "action": "connection_request_sent",
+      "note": true,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Raymond Hunt",
+      "action": "connection_request_sent",
+      "note": false,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Riley Masunaga",
+      "action": "connection_request_sent",
+      "note": true,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Makoto Messersmith",
+      "action": "connection_request_sent",
+      "note": false,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Frank Minamino",
+      "action": "connection_request_sent",
+      "note": false,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Nina Sugaya",
+      "action": "connection_request_sent",
+      "note": true,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Ema Takahashi",
+      "action": "connection_request_sent",
+      "note": false,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Sydney Teranishi Dake",
+      "action": "connection_request_sent",
+      "note": false,
+      "evidence": "Profile shows Pending"
+    },
+    {
+      "name": "Anli Valdez",
+      "action": "welcome_message_sent",
+      "already_connected": true,
+      "note": false,
+      "evidence": "Conversation shows hiro kuwana sent the following messages at 2:58 PM; full welcome and phone visible"
+    }
+  ],
+  "wendy": {
+    "recipient": "wabe@usjapancouncil.org",
+    "sender": "hiro@trykaiwa.com",
+    "subject": "Welcoming the ELP 2026 cohort before the conference",
+    "message_id": "1a0f60206c477eda",
+    "status": "sent",
+    "verified_sent_label": true
+  }
+}
