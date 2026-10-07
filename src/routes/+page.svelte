@@ -3,7 +3,6 @@
 	import { page } from '$app/stores';
 	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS, KAIWA_METRICS } from '$data/constants';
 	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
-	import HomeMotion from '$lib/components/home/HomeMotion.svelte';
 	import Windmill from '$lib/components/home/Windmill.svelte';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
@@ -720,7 +719,15 @@
 	<div class="vert-mark">{t('hero.vert')}</div>
 
 	<div class="hero-content">
-		<p class="hero-name" data-split>{t('hero.name')}<span class="hero-name-alt">{t('hero.nameAlt')}</span></p>
+		<p class="hero-name">
+			<span class="sr-only">{t('hero.name')}</span>
+			{#key lang}
+				<span class="hero-name-main" aria-hidden="true">
+					{#each [...t('hero.name')] as ch, i}<span class="ch" style={`animation-delay: ${i * 25}ms`}>{ch}</span>{/each}
+				</span>
+			{/key}
+			<span class="hero-name-alt">{t('hero.nameAlt')}</span>
+		</p>
 		{#if lang === 'ja'}
 			<h1 class="h1-ja">
 				{t('hero.title.l1')}<span class="ital">{t('hero.title.tools')}</span><br />
@@ -778,7 +785,7 @@
 	<CraftDesk {lang} />
 </section>
 <div class="asanoha-break" aria-hidden="true"></div>
-<HomeMotion />
+
 
 <div class="reveal">
 	<section class="section" id="work" data-screen-label="02 Projects">

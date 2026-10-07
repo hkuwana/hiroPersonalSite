@@ -2367,6 +2367,11 @@ html[data-theme-transition]::view-transition { pointer-events: none; }
 .hero-name .ch {
 	animation: ch-in 0.6s var(--ease-out-quart) both;
 }
+@media (prefers-reduced-motion: reduce) {
+	.hero-name .ch {
+		animation: none;
+	}
+}
 @keyframes ch-in {
 	from {
 		opacity: 0;

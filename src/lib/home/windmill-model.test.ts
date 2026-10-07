@@ -13,7 +13,8 @@ import {
 	stepSunPhase,
 	stepWindDir,
 	sunPosition,
-	topIndex
+	topIndex,
+	onSail
 } from '$lib/home/windmill-model';
 
 describe('sail index', () => {
@@ -91,4 +92,17 @@ describe('gusts', () => {
 		expect(shouldGust({ ...base, reduceMotion: true })).toBe(false));
 	test('no gust before the interval', () =>
 		expect(shouldGust({ ...base, lastGust: 9000 })).toBe(false));
+});
+
+describe('onSail hit test', () => {
+	const { HUB, BLADE_OFF, BLADE_LEN } = MILL;
+	const midTop = { x: HUB.x, y: HUB.y - BLADE_OFF - BLADE_LEN / 2 };
+	test('a point on the top sail hits at angle 0', () => expect(onSail(midTop, 0)).toBe(true));
+	test('the gap between sails is not a hit', () =>
+		expect(onSail({ x: HUB.x + 90, y: HUB.y - 90 }, 0)).toBe(false));
+	test('after a quarter turn the top position is empty and the right position hits', () => {
+		expect(onSail({ x: HUB.x + BLADE_OFF + BLADE_LEN / 2, y: HUB.y }, QUARTER)).toBe(true);
+		expect(onSail(midTop, QUARTER / 2)).toBe(false);
+	});
+	test('the hub hits', () => expect(onSail(HUB, 1.2)).toBe(true));
 });

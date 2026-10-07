@@ -72,3 +72,23 @@ export function shouldGust(s: {
 }
 
 export const clampDelta = (ms: number) => Math.min(ms, 1000 / 30);
+
+// True when p lies on a sail (or the hub) for the current rotor angle. Used so
+// a touch on empty sky still scrolls the page.
+export function onSail(p: { x: number; y: number }, angle: number): boolean {
+	const dx = p.x - MILL.HUB.x;
+	const dy = p.y - MILL.HUB.y;
+	if (Math.hypot(dx, dy) <= 18) return true;
+	for (let i = 0; i < SAIL_COUNT; i++) {
+		const a = -(angle + i * QUARTER);
+		const x = dx * Math.cos(a) - dy * Math.sin(a);
+		const y = dx * Math.sin(a) + dy * Math.cos(a);
+		if (
+			Math.abs(x) <= MILL.BLADE_W / 2 &&
+			y <= -MILL.BLADE_OFF &&
+			y >= -(MILL.BLADE_OFF + MILL.BLADE_LEN)
+		)
+			return true;
+	}
+	return false;
+}

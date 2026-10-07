@@ -3,6 +3,7 @@
 	// grouped list of every item (keyboard + screen readers + no JS).
 	import { onMount } from 'svelte';
 	import { whenVisible } from '$lib/home/when-visible';
+	import { createTweenSet } from '$lib/home/tween-set';
 	import { COPY_DESK, type Locale } from '$lib/home/copy';
 	import { DESK_ITEMS, SHELVES, type DeskItem } from '$lib/home/desk-items';
 	import {
@@ -53,11 +54,8 @@
 			const dpr = window.devicePixelRatio || 1;
 			canvasEl.width = DESK.W * dpr;
 			canvasEl.height = DESK.H * dpr;
-			canvasEl.setAttribute('data-pixel-ratio', String(dpr));
 			const ctx = canvasEl.getContext('2d')!;
 			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-			let palette: Palette = readPalette();
-			const stopTheme = onThemeChange(() => (palette = readPalette()));
 			animateCard = () => {
 				if (!reduce && cardEl)
 					gsap.fromTo(
@@ -88,6 +86,18 @@
 			canvasEl.removeEventListener('wheel', m.mousewheel);
 			canvasEl.removeEventListener('mousewheel', m.mousewheel);
 			canvasEl.removeEventListener('DOMMouseScroll', m.mousewheel);
+			// canvas is W*dpr wide; matter's raw position is in canvas pixels
+			Mouse.setScale(mouse, { x: 1 / dpr, y: 1 / dpr });
+			// matter blocks every touch (non-passive preventDefault), which stops page
+			// scrolling. Route touches to matter only when they start on a tag.
+			const mt = mouse as unknown as {
+				mousedown: (e: Event) => void;
+				mousemove: (e: Event) => void;
+				mouseup: (e: Event) => void;
+			};
+			canvasEl.removeEventListener('touchstart', mt.mousedown);
+			canvasEl.removeEventListener('touchmove', mt.mousemove);
+			canvasEl.removeEventListener('touchend', mt.mouseup);
 			Composite.add(
 				engine.world,
 				MouseConstraint.create(engine, {
@@ -98,6 +108,9 @@
 
 			// measure tags once fonts are ready
 			await document.fonts.ready;
+			if (stopped) return;
+			let palette: Palette = readPalette();
+			const stopTheme = onThemeChange(() => (palette = readPalette()));
 			// eslint-disable-next-line svelte/prefer-svelte-reactivity -- local cache, not reactive state
 			const sizes = new Map<string, { w: number; h: number }>();
 			for (const i of DESK_ITEMS) {
@@ -128,31 +141,44 @@
 						});
 			};
 
+			const tweens = createTweenSet();
 			const organize = () => {
 				mode = 'organized';
+				tweens.killAll();
+				// tags still waiting to drop go straight to their shelf
+				timers.splice(0).forEach(clearTimeout);
+				for (const item of DESK_ITEMS) {
+					if (bodies.some((b) => b.item.id === item.id)) continue;
+					const to = shelfPos.get(item.id)!;
+					const body = makeBody(item, to.x, to.y);
+					Body.setAngle(body, 0);
+					bodies.push({ item, body });
+					Composite.add(engine.world, body);
+				}
 				bodies.forEach(({ item, body }, k) => {
-					gsap.killTweensOf(body);
 					Body.setStatic(body, true);
 					const to = shelfPos.get(item.id)!;
 					const proxy = { x: body.position.x, y: body.position.y, a: body.angle };
-					gsap.to(proxy, {
-						x: to.x,
-						y: to.y,
-						a: Math.round(body.angle / (2 * Math.PI)) * 2 * Math.PI,
-						duration: reduce ? 0 : 0.8,
-						delay: reduce ? 0 : k * 0.03,
-						ease: 'power3.inOut',
-						onUpdate: () => {
-							Body.setPosition(body, { x: proxy.x, y: proxy.y });
-							Body.setAngle(body, proxy.a);
-						}
-					});
+					tweens.add(
+						gsap.to(proxy, {
+							x: to.x,
+							y: to.y,
+							a: Math.round(body.angle / (2 * Math.PI)) * 2 * Math.PI,
+							duration: reduce ? 0 : 0.8,
+							delay: reduce ? 0 : k * 0.03,
+							ease: 'power3.inOut',
+							onUpdate: () => {
+								Body.setPosition(body, { x: proxy.x, y: proxy.y });
+								Body.setAngle(body, proxy.a);
+							}
+						})
+					);
 				});
 			};
 			const scatter = () => {
 				mode = 'loose';
+				tweens.killAll();
 				for (const { body } of bodies) {
-					gsap.killTweensOf(body);
 					Body.setStatic(body, false);
 					Body.setVelocity(body, { x: (Math.random() - 0.5) * 14, y: -6 - Math.random() * 8 });
 					Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.3);
@@ -160,6 +186,7 @@
 			};
 			toggle = () => (nextDeskMode(mode) === 'organized' ? organize() : scatter());
 			drop = () => {
+				tweens.killAll();
 				timers.splice(0).forEach(clearTimeout);
 				for (const { body } of bodies) Composite.remove(engine.world, body);
 				bodies = [];
@@ -206,6 +233,32 @@
 				canvasEl.style.cursor = hit(local(e)) ? 'pointer' : 'default';
 			};
 			canvasEl.addEventListener('pointerdown', onDown);
+			// touches reach matter only when they start on a tag; elsewhere the page scrolls
+			let touchDrag = false;
+			const touchPoint = (e: TouchEvent) => {
+				const t = e.changedTouches[0];
+				const r = canvasEl.getBoundingClientRect();
+				return {
+					x: ((t.clientX - r.left) / r.width) * DESK.W,
+					y: ((t.clientY - r.top) / r.height) * DESK.H
+				};
+			};
+			const onTouchStart = (e: TouchEvent) => {
+				if (!hit(touchPoint(e))) return;
+				touchDrag = true;
+				mt.mousedown(e);
+			};
+			const onTouchMove = (e: TouchEvent) => {
+				if (touchDrag) mt.mousemove(e);
+			};
+			const onTouchEnd = (e: TouchEvent) => {
+				if (!touchDrag) return;
+				touchDrag = false;
+				mt.mouseup(e);
+			};
+			canvasEl.addEventListener('touchstart', onTouchStart, { passive: false });
+			canvasEl.addEventListener('touchmove', onTouchMove, { passive: false });
+			canvasEl.addEventListener('touchend', onTouchEnd);
 			canvasEl.addEventListener('pointerup', onUp);
 			canvasEl.addEventListener('pointermove', onMove);
 
@@ -266,6 +319,10 @@
 				timers.forEach(clearTimeout);
 				document.removeEventListener('visibilitychange', onVis);
 				canvasEl.removeEventListener('pointerdown', onDown);
+				canvasEl.removeEventListener('touchstart', onTouchStart);
+				canvasEl.removeEventListener('touchmove', onTouchMove);
+				canvasEl.removeEventListener('touchend', onTouchEnd);
+				tweens.killAll();
 				canvasEl.removeEventListener('pointerup', onUp);
 				canvasEl.removeEventListener('pointermove', onMove);
 				Engine.clear(engine);

@@ -92,7 +92,9 @@
 				downX = 0;
 			const onDown = (e: PointerEvent) => {
 				const p = local(e);
-				if (!M.onRotor(p)) return;
+				// touch must start on a sail so a swipe on empty sky scrolls the page
+				const grab = e.pointerType === 'touch' ? M.onSail(p, rotor.angle) : M.onRotor(p);
+				if (!grab) return;
 				e.preventDefault();
 				takeOver();
 				grabbing = true;
@@ -144,6 +146,17 @@
 			};
 			const pause = () => (paused = true);
 			const resume = () => (paused = false);
+			// a touch that starts on a sail spins it; anywhere else the page scrolls
+			const onTouchStart = (e: TouchEvent) => {
+				const t = e.changedTouches[0];
+				const r = canvasEl.getBoundingClientRect();
+				const p = {
+					x: ((t.clientX - r.left) / r.width) * M.MILL.W,
+					y: ((t.clientY - r.top) / r.height) * M.MILL.H
+				};
+				if (M.onSail(p, rotor.angle)) e.preventDefault();
+			};
+			canvasEl.addEventListener('touchstart', onTouchStart, { passive: false });
 			canvasEl.addEventListener('pointerdown', onDown);
 			canvasEl.addEventListener('pointermove', onMove);
 			canvasEl.addEventListener('pointerup', onUp);
@@ -216,6 +229,7 @@
 				stopTheme();
 				document.removeEventListener('visibilitychange', onVis);
 				canvasEl.removeEventListener('pointerdown', onDown);
+				canvasEl.removeEventListener('touchstart', onTouchStart);
 				canvasEl.removeEventListener('pointermove', onMove);
 				canvasEl.removeEventListener('pointerup', onUp);
 				canvasEl.removeEventListener('pointercancel', onUp);
