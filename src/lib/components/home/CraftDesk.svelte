@@ -41,7 +41,7 @@
 			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 			let palette: Palette = readPalette();
 			const stopTheme = onThemeChange(() => (palette = readPalette()));
-			animateCard = () => { if (!reduce && cardEl) gsap.from(cardEl.children, { y: 8, opacity: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out' }); };
+			animateCard = () => { if (!reduce && cardEl) gsap.fromTo(cardEl.children, { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: 'power2.out', overwrite: true }); };
 
 			const logos = new Map<string, HTMLImageElement>();
 			for (const i of DESK_ITEMS) if (i.logo) { const img = new Image(); img.src = i.logo; logos.set(i.logo, img); }

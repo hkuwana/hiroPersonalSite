@@ -2,7 +2,9 @@
 	import { asset } from '$app/paths';
 	import { page } from '$app/stores';
 	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS, KAIWA_METRICS } from '$data/constants';
-	import HeroCanvas from '$lib/components/HeroCanvas.svelte';
+	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
+	import HomeMotion from '$lib/components/home/HomeMotion.svelte';
+	import Windmill from '$lib/components/home/Windmill.svelte';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { onMount } from 'svelte';
@@ -50,8 +52,10 @@
 			'hero.title.tools': 'company',
 			'hero.title.l2': 'with AI, while',
 			'hero.title.l3': 'keeping judgment human',
+			'hero.name': 'Hiroyuki (Hiro) Kuwana',
+			'hero.nameAlt': '桑名浩行',
 			'hero.tagline':
-				"I'm Hiro Kuwana (桑名浩行). I build Kaiwa full-time and write down the product calls, systems, mistakes, and small wins along the way.",
+				"I'm Hiroyuki (Hiro) Kuwana. I build Kaiwa full-time and write down the product calls, systems, mistakes, and small wins along the way.",
 			'hero.now': 'Now · Kaiwa, full-time',
 			'hero.about1.a':
 				'Kaiwa is where I do the real work: product, code, growth, support, and the messy decisions in between. It is a language-learning platform where learners practice with AI and coaches shape the journey. I use AI wherever it helps, but',
@@ -151,8 +155,10 @@
 			'hero.title.tools': '会社をつくる',
 			'hero.title.l2': '',
 			'hero.title.l3': '判断は、人のままで',
+			'hero.name': '桑名浩行',
+			'hero.nameAlt': 'Hiroyuki (Hiro) Kuwana',
 			'hero.tagline':
-				'桑名浩行 (Hiro Kuwana) です。いまは Kaiwa をフルタイムでつくりながら、プロダクトの判断や仕組み、失敗、小さな前進を書き留めています。',
+				'桑名浩行 (Hiroyuki Kuwana) です。いまは Kaiwa をフルタイムでつくりながら、プロダクトの判断や仕組み、失敗、小さな前進を書き留めています。',
 			'hero.now': 'いま · Kaiwa をフルタイムで',
 			'hero.about1.a':
 				'Kaiwa は、プロダクト、開発、成長、サポート、その間にある面倒な判断まで、すべてを実地で試す場所です。学習者が AI と会話し、コーチが一人ひとりの学びを設計する語学学習のプラットフォームです。AI は役立つところで使います。でも、',
@@ -286,7 +292,7 @@
 			roleJa: 'デザイン + 開発',
 			summary: 'A small, practical alumni site I built on a subway ride home. Focused on photos and community building',
 			summaryJa: '帰りの電車の中で作った、小さくて実用的な同窓会サイト。写真と、人のつながりに集中。',
-			logo: asset('/icon-512x512.png'),
+			logo: asset('/logos/exonians-e.svg'),
 			pos: { left: '52%', top: '4%', width: '38%', rotate: 0 }
 		},
 		{
@@ -679,8 +685,8 @@
 	{@html `<script type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'Person',
-		name: 'Hiro Kuwana',
-		alternateName: ['桑名浩行', 'Hiroyuki Kuwana'],
+		name: 'Hiroyuki (Hiro) Kuwana',
+		alternateName: ['Hiro Kuwana', 'Hiroyuki Kuwana', '桑名浩行'],
 		url: SITE.url,
 		image: SITE.image,
 		jobTitle: 'Founder & Product Designer',
@@ -706,7 +712,6 @@
 </svelte:head>
 
 <section class="hero" data-screen-label="01 Landing">
-	<HeroCanvas />
 
 	<div class="season-mark mb-2">
 		<span class="stamp">浩</span>
@@ -715,6 +720,7 @@
 	<div class="vert-mark">{t('hero.vert')}</div>
 
 	<div class="hero-content">
+		<p class="hero-name" data-split>{t('hero.name')}<span class="hero-name-alt">{t('hero.nameAlt')}</span></p>
 		{#if lang === 'ja'}
 			<h1 class="h1-ja">
 				{t('hero.title.l1')}<span class="ital">{t('hero.title.tools')}</span><br />
@@ -759,11 +765,20 @@
 		</dl>
 	</aside>
 
+	<div class="hero-mill"><Windmill {lang} /></div>
+
 	<a class="scroll-cue" href="#work" aria-label={lang === 'ja' ? 'プロジェクトへスクロール' : 'Scroll to projects'}>
 		<span>{t('hero.scroll')}</span>
 		<span class="line" aria-hidden="true"></span>
 	</a>
 </section>
+
+<div class="asanoha-break" aria-hidden="true"></div>
+<section class="section desk-sec" id="desk" data-screen-label="01b Desk">
+	<CraftDesk {lang} />
+</section>
+<div class="asanoha-break" aria-hidden="true"></div>
+<HomeMotion />
 
 <div class="reveal">
 	<section class="section" id="work" data-screen-label="02 Projects">

@@ -54,7 +54,7 @@
 				if (reduce) { Body.setAngle(rotor, target); Body.setAngularVelocity(rotor, 0); }
 			};
 			animatePanel = () => {
-				if (!reduce && panelEl) gsap.from(panelEl.children, { y: 10, opacity: 0, duration: 0.45, stagger: 0.05, ease: 'power2.out' });
+				if (!reduce && panelEl) gsap.fromTo(panelEl.children, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.05, ease: 'power2.out', overwrite: true });
 			};
 
 			// pointer: drag, flick, click to spin
