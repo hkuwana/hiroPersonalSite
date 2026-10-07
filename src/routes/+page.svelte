@@ -2,7 +2,8 @@
 	import { asset } from '$app/paths';
 	import { page } from '$app/stores';
 	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS, KAIWA_METRICS } from '$data/constants';
-	import HeroCanvas from '$lib/components/HeroCanvas.svelte';
+	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
+	import Windmill from '$lib/components/home/Windmill.svelte';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { onMount } from 'svelte';
@@ -50,8 +51,10 @@
 			'hero.title.tools': 'company',
 			'hero.title.l2': 'with AI, while',
 			'hero.title.l3': 'keeping judgment human',
+			'hero.name': 'Hiroyuki (Hiro) Kuwana',
+			'hero.nameAlt': '桑名浩行',
 			'hero.tagline':
-				"I'm Hiro Kuwana (桑名浩行). I build Kaiwa full-time and write down the product calls, systems, mistakes, and small wins along the way.",
+				"I'm Hiroyuki (Hiro) Kuwana. I build Kaiwa full-time and write down the product calls, systems, mistakes, and small wins along the way.",
 			'hero.now': 'Now · Kaiwa, full-time',
 			'hero.about1.a':
 				'Kaiwa is where I do the real work: product, code, growth, support, and the messy decisions in between. It is a language-learning platform where learners practice with AI and coaches shape the journey. I use AI wherever it helps, but',
@@ -151,8 +154,10 @@
 			'hero.title.tools': '会社をつくる',
 			'hero.title.l2': '',
 			'hero.title.l3': '判断は、人のままで',
+			'hero.name': '桑名浩行',
+			'hero.nameAlt': 'Hiroyuki (Hiro) Kuwana',
 			'hero.tagline':
-				'桑名浩行 (Hiro Kuwana) です。いまは Kaiwa をフルタイムでつくりながら、プロダクトの判断や仕組み、失敗、小さな前進を書き留めています。',
+				'桑名浩行 (Hiroyuki Kuwana) です。いまは Kaiwa をフルタイムでつくりながら、プロダクトの判断や仕組み、失敗、小さな前進を書き留めています。',
 			'hero.now': 'いま · Kaiwa をフルタイムで',
 			'hero.about1.a':
 				'Kaiwa は、プロダクト、開発、成長、サポート、その間にある面倒な判断まで、すべてを実地で試す場所です。学習者が AI と会話し、コーチが一人ひとりの学びを設計する語学学習のプラットフォームです。AI は役立つところで使います。でも、',
@@ -270,7 +275,7 @@
 			stats: `${KAIWA_METRICS.monthlyOrganicVisitorsShort} organic visitors / mo · ${KAIWA_METRICS.signups} signups`,
 			statsJa: `自然検索 ${KAIWA_METRICS.monthlyOrganicVisitorsShort} / 月 · 登録者 ${KAIWA_METRICS.signups}`,
 			logo: asset('/kaiwa_logo.png'),
-			pos: { left: '0%', top: '0%', width: '38%', rotate: -2 }
+			pos: { left: '0%', top: '0%', width: '38%', rotate: 0 }
 		},
 		{
 			id: 'exonians',
@@ -286,8 +291,8 @@
 			roleJa: 'デザイン + 開発',
 			summary: 'A small, practical alumni site I built on a subway ride home. Focused on photos and community building',
 			summaryJa: '帰りの電車の中で作った、小さくて実用的な同窓会サイト。写真と、人のつながりに集中。',
-			logo: asset('/icon-512x512.png'),
-			pos: { left: '52%', top: '4%', width: '38%', rotate: 1.5 }
+			logo: asset('/logos/exonians-e.svg'),
+			pos: { left: '52%', top: '4%', width: '38%', rotate: 0 }
 		},
 		{
 			id: 'reddit-scout',
@@ -304,7 +309,7 @@
 			summary: 'A local workflow that connects Reddit, Drive, and Gemini to find language learners with real intent.',
 			summaryJa: 'Reddit、Drive、Gemini をつないで、本気で学びたい人を見つけるローカルのワークフロー。',
 			logo: asset('/kaiwa_logo.png'),
-			pos: { left: '8%', top: '38%', width: '36%', rotate: -1 }
+			pos: { left: '8%', top: '38%', width: '36%', rotate: 0 }
 		},
 		{
 			id: 'flybyrd',
@@ -320,7 +325,7 @@
 			summary: 'Organizing scattered feedback for product managers. A practical, private dashboard for the signals that matter.',
 			summaryJa: 'PM のためにバラバラのフィードバックを整理する、実用的で非公開のダッシュボード。大事なシグナルだけを残す。',
 			logo: asset('/flybyrd_logo.png'),
-			pos: { left: '54%', top: '46%', width: '40%', rotate: 1 }
+			pos: { left: '54%', top: '46%', width: '40%', rotate: 0 }
 		},
 		{
 			id: 'pebblr',
@@ -336,7 +341,7 @@
 			summary: 'A nonprofit donor experiment that taught me where human trust matters more than platform mechanics.',
 			summaryJa: 'NPO の寄付者向けの実験。プラットフォームの仕組みより、人と人の信頼の方がずっと大事だと教えてくれた。',
 			logo: asset('/icon-512x512.png'),
-			pos: { left: '22%', top: '78%', width: '42%', rotate: -1.5 }
+			pos: { left: '22%', top: '78%', width: '42%', rotate: 0 }
 		}
 	];
 
@@ -679,8 +684,8 @@
 	{@html `<script type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'Person',
-		name: 'Hiro Kuwana',
-		alternateName: ['桑名浩行', 'Hiroyuki Kuwana'],
+		name: 'Hiroyuki (Hiro) Kuwana',
+		alternateName: ['Hiro Kuwana', 'Hiroyuki Kuwana', '桑名浩行'],
 		url: SITE.url,
 		image: SITE.image,
 		jobTitle: 'Founder & Product Designer',
@@ -706,7 +711,6 @@
 </svelte:head>
 
 <section class="hero" data-screen-label="01 Landing">
-	<HeroCanvas />
 
 	<div class="season-mark mb-2">
 		<span class="stamp">浩</span>
@@ -715,6 +719,15 @@
 	<div class="vert-mark">{t('hero.vert')}</div>
 
 	<div class="hero-content">
+		<p class="hero-name">
+			<span class="sr-only">{t('hero.name')}</span>
+			{#key lang}
+				<span class="hero-name-main" aria-hidden="true">
+					{#each [...t('hero.name')] as ch, i}<span class="ch" style={`animation-delay: ${i * 25}ms`}>{ch}</span>{/each}
+				</span>
+			{/key}
+			<span class="hero-name-alt">{t('hero.nameAlt')}</span>
+		</p>
 		{#if lang === 'ja'}
 			<h1 class="h1-ja">
 				{t('hero.title.l1')}<span class="ital">{t('hero.title.tools')}</span><br />
@@ -759,11 +772,20 @@
 		</dl>
 	</aside>
 
+	<div class="hero-mill"><Windmill {lang} /></div>
+
 	<a class="scroll-cue" href="#work" aria-label={lang === 'ja' ? 'プロジェクトへスクロール' : 'Scroll to projects'}>
 		<span>{t('hero.scroll')}</span>
 		<span class="line" aria-hidden="true"></span>
 	</a>
 </section>
+
+<div class="asanoha-break" aria-hidden="true"></div>
+<section class="section desk-sec" id="desk" data-screen-label="01b Desk">
+	<CraftDesk {lang} />
+</section>
+<div class="asanoha-break" aria-hidden="true"></div>
+
 
 <div class="reveal">
 	<section class="section" id="work" data-screen-label="02 Projects">
@@ -797,7 +819,7 @@
 					target={piece.external ? '_blank' : undefined}
 					rel={piece.external ? 'noopener' : undefined}
 				>
-					<div class="frame">
+					<div class="frame frame-deco">
 						<div class="thumb">
 							<span class={`status-pill status-${piece.status}`}>
 								<span class="dot"></span>
@@ -867,6 +889,7 @@
 	</div>
 {/if}
 
+<div class="asanoha-break" aria-hidden="true"></div>
 <div class="reveal">
 	<section data-screen-label="03 Writing" id="writing" data-philo="journal">
 		<div class="section writing-head">
@@ -917,6 +940,7 @@
 	</section>
 </div>
 
+<div class="asanoha-break" aria-hidden="true"></div>
 <div class="reveal">
 	<section class="section contact-sec" id="contact" data-screen-label="04 Contact">
 		<div class="sec-head">
@@ -971,7 +995,7 @@
 				</div>
 			</aside>
 
-			<div class="contact-stack">
+			<div class="contact-stack frame-deco">
 				<div class="contact-tabs" role="tablist" aria-label="Contact options">
 					<button
 						type="button"

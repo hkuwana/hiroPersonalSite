@@ -207,7 +207,6 @@
 	.tool-card:hover {
 		transform: translateY(-2px);
 		border-color: var(--color-accent);
-		box-shadow: var(--shadow-md);
 	}
 
 	.tool-card-head {

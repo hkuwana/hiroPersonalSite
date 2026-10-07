@@ -31,7 +31,7 @@ export const SOCIAL_LINKS = {
 // Site Metadata
 export const SITE = {
 	name: 'Hiro Kuwana',
-	title: 'Hiro Kuwana — Building Kaiwa with AI',
+	title: 'Hiroyuki (Hiro) Kuwana — Building Kaiwa with AI',
 	description:
 		'Hiro Kuwana is a solo founder building Kaiwa full-time. Field notes on product decisions, practical AI workflows, mistakes, and keeping human judgment in the loop.',
 	url: 'https://hirokuwana.com',
