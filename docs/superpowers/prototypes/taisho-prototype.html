@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PROTOTYPE · 風車 vs craftsman's desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<style>
+	:root {
+		--paper: #eeebdd;
+		--paper-2: #e4dfcb;
+		--ink: #1e1a16;
+		--ink-mute: #6f6a5c;
+		--moss: #5e6b45;
+		--moss-light: #a3ad86;
+		--ebicha: #6e2f2a;
+		--kon: #233a5e;
+		--gold: #a8894a;
+		--wood: #8a6a45;
+	}
+	* { box-sizing: border-box; }
+	body {
+		margin: 0;
+		background: var(--paper);
+		color: var(--ink);
+		font-family: 'Newsreader', Georgia, serif;
+		font-size: 18px;
+		line-height: 1.6;
+	}
+	/* faint print grain: flat colors, no shadows */
+	body::before {
+		content: '';
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.1;
+		mix-blend-mode: multiply;
+		background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.16 0 0 0 0 0.1 0 0 0 0.12 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+	}
+	.banner {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 12px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		text-align: center;
+		padding: 0.5rem;
+		background: var(--ebicha);
+		color: var(--paper);
+	}
+	header.page {
+		max-width: 1200px;
+		margin: 2.5rem auto 1rem;
+		padding: 0 2rem;
+	}
+	header.page h1 {
+		font-family: 'Shippori Mincho', serif;
+		font-weight: 600;
+		font-size: 2.4rem;
+		margin: 0;
+	}
+	header.page p { margin: 0.25rem 0 0; color: var(--ink-mute); }
+	.option {
+		max-width: 1200px;
+		margin: 2rem auto 4rem;
+		padding: 0 2rem;
+	}
+	.frame-deco {
+		position: relative;
+		border: 1px solid var(--gold);
+		outline: 1px solid var(--gold);
+		outline-offset: 4px;
+		padding: 2.5rem;
+		margin: 5px;
+	}
+	.frame-deco::before,
+	.frame-deco::after {
+		content: '';
+		position: absolute;
+		width: 18px;
+		height: 18px;
+		border: 1px solid var(--gold);
+	}
+	.frame-deco::before { top: 8px; left: 8px; border-right: 0; border-bottom: 0; }
+	.frame-deco::after { bottom: 8px; right: 8px; border-left: 0; border-top: 0; }
+	.label {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 12px;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--gold);
+	}
+	.option h2 {
+		font-family: 'Shippori Mincho', serif;
+		font-weight: 600;
+		font-size: 1.9rem;
+		margin: 0.25rem 0 1.5rem;
+	}
+	.option h2 em { font-family: 'Newsreader', serif; font-weight: 400; color: var(--ink-mute); }
+	.grid {
+		display: grid;
+		grid-template-columns: minmax(0, 840px) minmax(300px, 1fr);
+		gap: 3rem;
+		align-items: center;
+	}
+	canvas { display: block; width: 100%; touch-action: none; cursor: grab; }
+	canvas:active { cursor: grabbing; }
+
+	/* windmill side panel */
+	.facet-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+	.facet-tabs button {
+		font: inherit;
+		font-size: 0.95rem;
+		border: 1px solid var(--ink);
+		background: transparent;
+		padding: 0.3rem 0.9rem;
+		cursor: pointer;
+	}
+	.facet-tabs button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+	.facet {
+		border-left: 3px solid var(--ebicha);
+		padding-left: 1.25rem;
+		min-height: 13rem;
+	}
+	.facet .kanji {
+		font-family: 'Shippori Mincho', serif;
+		font-size: 4rem;
+		line-height: 1;
+		color: var(--ebicha);
+	}
+	.facet h3 { font-family: 'Shippori Mincho', serif; font-size: 1.5rem; margin: 0.5rem 0 0.25rem; }
+	.facet p { margin: 0 0 0.75rem; max-width: 34ch; }
+	.facet a { color: var(--kon); border-bottom: 1px solid var(--kon); text-decoration: none; }
+	.hint { font-size: 0.9rem; color: var(--ink-mute); font-style: italic; }
+
+	/* desk side */
+	.desk-copy h3 { font-family: 'Shippori Mincho', serif; font-size: 2rem; line-height: 1.2; margin: 0 0 1rem; }
+	.desk-copy p { max-width: 36ch; }
+	.btn {
+		font: inherit;
+		border: 1px solid var(--ebicha);
+		background: var(--ebicha);
+		color: var(--paper);
+		padding: 0.45rem 1.1rem;
+		cursor: pointer;
+	}
+	.btn.ghost { background: transparent; color: var(--ebicha); }
+	.desk-actions { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; }
+	.desk-card { border-left: 3px solid var(--kon); padding-left: 1.25rem; min-height: 16rem; }
+	.desk-card h3 { font-family: 'Shippori Mincho', serif; font-size: 1.6rem; margin: 0.3rem 0 0.4rem; }
+	.desk-card p { max-width: 38ch; margin: 0 0 0.8rem; }
+	.desk-card .hint { margin: 0; }
+	.card-link { color: var(--kon); border-bottom: 1px solid var(--kon); text-decoration: none; }
+	.portrait-row { display: flex; gap: 1rem; align-items: center; margin: 0.4rem 0 0.8rem; }
+	.portrait-row h3 { margin: 0; }
+	/* woodblock-print portrait: sepia duotone in a gold ring */
+	.portrait { width: 84px; height: 84px; object-fit: cover; object-position: top; border-radius: 50%; border: 1px solid var(--gold); outline: 1px solid var(--gold); outline-offset: 3px; filter: grayscale(1) sepia(0.55) contrast(1.1); }
+	.portrait.self { filter: none; }
+	.take { font-size: 1.05rem; border-top: 1px solid var(--gold); padding-top: 0.5rem; margin-top: 0.25rem; }
+	.logo-badge { width: 64px; height: 64px; object-fit: contain; padding: 8px; background: #fff; border-radius: 50%; border: 1px solid var(--gold); outline: 1px solid var(--gold); outline-offset: 3px; }
+	@media (max-width: 1040px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+	<div class="banner">Prototype · throwaway · not site code · labels are placeholders</div>
+
+	<header class="page">
+		<h1>Pick one: 風車 or the craftsman's desk</h1>
+		<p>Both use matter.js physics in the flat woodblock style. Drag and flick the objects.</p>
+	</header>
+
+	<section class="option">
+		<div class="frame-deco">
+			<span class="label">Option A · 風車 fūsha / kazaguruma</span>
+			<h2>The windmill <em>— each sail is one part of me</em></h2>
+			<div class="grid">
+				<canvas id="mill" aria-label="Windmill. Use the buttons to select a sail."></canvas>
+				<div>
+					<div class="facet-tabs" id="facet-tabs"></div>
+					<div class="facet" id="facet" aria-live="polite"></div>
+					<p class="hint">Click the windmill to spin it, or drag and flick a sail. The sail that stops at the top chooses the panel.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="option">
+		<div class="frame-deco">
+			<span class="label">Option B · 職人の机 craftsman's desk</span>
+			<h2>The desk <em>— the things I work with</em></h2>
+			<div class="grid">
+				<canvas id="desk" aria-label="Paper tags on a wooden ledge. Pick them up and toss them."></canvas>
+				<div class="desk-copy">
+					<div class="desk-actions">
+						<button class="btn" id="organize">Organize ☰</button>
+						<button class="btn ghost" id="drop">Drop again ↻</button>
+					</div>
+					<div class="desk-card" id="desk-card" aria-live="polite">
+						<h3>The things I work with.</h3>
+						<p>Pick up a tag and toss it, or click one to see what it is. <em>Organize</em> puts everything on its shelf.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+<script>
+const { Engine, Runner, Bodies, Body, Composite, Constraint, Mouse, MouseConstraint, Events } = Matter;
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const C = {
+	paper: css('--paper'), paper2: css('--paper-2'), ink: css('--ink'), moss: css('--moss'),
+	mossLight: css('--moss-light'), ebicha: css('--ebicha'), kon: css('--kon'), gold: css('--gold'), wood: css('--wood')
+};
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function setupCanvas(canvas, w, h) {
+	const dpr = window.devicePixelRatio || 1;
+	canvas.width = w * dpr;
+	canvas.height = h * dpr;
+	canvas.style.aspectRatio = `${w} / ${h}`;
+	canvas.setAttribute('data-pixel-ratio', dpr);
+	const ctx = canvas.getContext('2d');
+	ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+	return ctx;
+}
+
+function makeMouse(canvas, engine) {
+	const mouse = Mouse.create(canvas);
+	mouse.pixelRatio = window.devicePixelRatio || 1;
+	// let the page scroll over the canvas
+	mouse.element.removeEventListener('mousewheel', mouse.mousewheel);
+	mouse.element.removeEventListener('DOMMouseScroll', mouse.mousewheel);
+	mouse.element.removeEventListener('wheel', mouse.mousewheel);
+	const mc = MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.15, render: { visible: false } } });
+	Composite.add(engine.world, mc);
+	return mc;
+}
+
+/* ───────────── Option A: windmill ───────────── */
+(function windmill() {
+	const W = 560, H = 540;
+	const canvas = document.getElementById('mill');
+	canvas.tabIndex = 0;
+	const ctx = setupCanvas(canvas, W, H);
+	const engine = Engine.create({ gravity: { x: 0, y: 0 } });
+	const hub = { x: W / 2, y: 210 };
+	const BLADE_LEN = 170, BLADE_W = 54, BLADE_OFF = 30, REACH = BLADE_OFF + BLADE_LEN + 12;
+	const QUARTER = Math.PI / 2;
+
+	const FACETS = [
+		{ kanji: '作', en: 'Builder', color: C.ebicha, line: 'I build AI tools that feel like tools, not like chatbots.', link: 'See the projects →' },
+		{ kanji: '書', en: 'Writer', color: C.kon, line: 'Slow essays and practical AI notes, one notebook each.', link: 'Read the essays →' },
+		{ kanji: '橋', en: 'Bridge', color: C.gold, line: 'Tokyo and New York. Japanese and American. I build between languages.', link: 'About Kaiwa →' },
+		{ kanji: '然', en: 'Nature', color: C.moss, line: 'Placeholder: what nature means in your work. You will tell me.', link: 'About me →' }
+	];
+
+	// matter.js owns momentum + air friction; the rotor stays fixed on the hub
+	const rotor = Bodies.circle(hub.x, hub.y, REACH, { frictionAir: 0.016, collisionFilter: { mask: 0 } });
+	window.__rotor = rotor;
+	window.__wind = () => ({ windDir, xs: gusts.slice(-3).map((g) => Math.round(g.x)) });
+	Composite.add(engine.world, rotor);
+
+	let target = null;
+	let grabbing = false;
+	let userTookOver = false;
+	let paused = false; // pointer over panel or windmill
+	let lastGust = performance.now();
+
+	const topIndex = () => ((Math.round(-rotor.angle / QUARTER) % 4) + 4) % 4;
+	const nearestSnap = () => Math.round(rotor.angle / QUARTER) * QUARTER;
+	const angleFor = (i) => {
+		const base = -i * QUARTER;
+		const k = Math.round((rotor.angle - base) / (2 * Math.PI));
+		return base + k * 2 * Math.PI;
+	};
+
+	Events.on(engine, 'beforeUpdate', () => {
+		Body.setPosition(rotor, hub);
+		Body.setVelocity(rotor, { x: 0, y: 0 });
+		if (grabbing) return;
+		const now = performance.now();
+		if (!userTookOver && !paused && !reduceMotion && now - lastGust > 6500) {
+			target = nearestSnap() + QUARTER; // a gust: one quarter turn clockwise
+			lastGust = now;
+		}
+		if (target === null && Math.abs(rotor.angularVelocity) < 0.012) target = nearestSnap();
+		if (target !== null) {
+			Body.setAngularVelocity(rotor, rotor.angularVelocity * 0.88 + (target - rotor.angle) * 0.012);
+		}
+	});
+
+	// pointer: drag, flick, or click to spin
+	let lastA = 0, lastT = 0, moved = 0, vel = 0, downX = 0;
+	const local = (e) => {
+		const r = canvas.getBoundingClientRect();
+		return { x: ((e.clientX - r.left) / r.width) * W, y: ((e.clientY - r.top) / r.height) * H };
+	};
+	const onRotor = (p) => Math.hypot(p.x - hub.x, p.y - hub.y) < REACH;
+	const takeOver = () => { userTookOver = true; target = null; };
+
+	canvas.addEventListener('pointerdown', (e) => {
+		const p = local(e);
+		if (!onRotor(p)) return;
+		takeOver();
+		grabbing = true;
+		canvas.setPointerCapture(e.pointerId);
+		lastA = Math.atan2(p.y - hub.y, p.x - hub.x);
+		lastT = performance.now();
+		moved = 0; vel = 0; downX = p.x;
+		Body.setAngularVelocity(rotor, 0);
+	});
+	canvas.addEventListener('pointermove', (e) => {
+		const p = local(e);
+		canvas.style.cursor = grabbing ? 'grabbing' : onRotor(p) ? 'grab' : 'default';
+		if (!grabbing) return;
+		const a = Math.atan2(p.y - hub.y, p.x - hub.x);
+		let d = a - lastA;
+		if (d > Math.PI) d -= 2 * Math.PI;
+		if (d < -Math.PI) d += 2 * Math.PI;
+		const now = performance.now();
+		const dt = Math.max(1, now - lastT) / (1000 / 60);
+		vel = vel * 0.5 + (d / dt) * 0.5;
+		Body.setAngle(rotor, rotor.angle + d);
+		moved += Math.abs(d);
+		lastA = a; lastT = now;
+	});
+	const release = () => {
+		if (!grabbing) return;
+		grabbing = false;
+		if (moved < 0.04) {
+			// a click: push the sails, right side clockwise, left side counterclockwise
+			Body.setAngularVelocity(rotor, (downX >= hub.x ? 1 : -1) * 0.32);
+		} else {
+			Body.setAngularVelocity(rotor, Math.max(-0.7, Math.min(0.7, vel)));
+		}
+	};
+	canvas.addEventListener('pointerup', release);
+	canvas.addEventListener('pointercancel', release);
+	canvas.addEventListener('pointerenter', () => (paused = true));
+	canvas.addEventListener('pointerleave', () => (paused = false));
+	canvas.addEventListener('keydown', (e) => {
+		if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); takeOver(); Body.setAngularVelocity(rotor, 0.32); }
+		if (e.key === 'ArrowRight') { e.preventDefault(); takeOver(); target = angleFor((topIndex() + 3) % 4); }
+		if (e.key === 'ArrowLeft') { e.preventDefault(); takeOver(); target = angleFor((topIndex() + 1) % 4); }
+	});
+
+	// side panel
+	const tabs = document.getElementById('facet-tabs');
+	const panel = document.getElementById('facet');
+	const panelWrap = panel.parentElement;
+	panelWrap.addEventListener('pointerenter', () => (paused = true));
+	panelWrap.addEventListener('pointerleave', () => (paused = false));
+	let shown = -1;
+	FACETS.forEach((f, i) => {
+		const b = document.createElement('button');
+		b.textContent = `${f.kanji} ${f.en}`;
+		b.onclick = () => {
+			takeOver();
+			target = angleFor(i);
+			if (reduceMotion) { Body.setAngle(rotor, target); Body.setAngularVelocity(rotor, 0); }
+		};
+		tabs.appendChild(b);
+	});
+	function show(i) {
+		if (i === shown) return;
+		shown = i;
+		const f = FACETS[i];
+		[...tabs.children].forEach((b, j) => b.setAttribute('aria-pressed', j === i));
+		panel.innerHTML = `<div class="kanji">${f.kanji}</div><h3>${f.en}</h3><p>${f.line}</p><a href="#">${f.link}</a>`;
+		if (!reduceMotion) gsap.from(panel.children, { y: 10, opacity: 0, duration: 0.45, stagger: 0.05, ease: 'power2.out' });
+	}
+
+	// sun: travels an arc as the windmill turns, sets behind the hills
+	let sunPhase = 0.78; // 0 = left horizon, 1 = right horizon
+	const mix = (a, b, t) => {
+		const pa = a.match(/\w\w/g).map((h) => parseInt(h, 16));
+		const pb = b.match(/\w\w/g).map((h) => parseInt(h, 16));
+		return `rgb(${pa.map((v, k) => Math.round(v + (pb[k] - v) * t)).join(',')})`;
+	};
+	function drawSun() {
+		const th = Math.PI + sunPhase * Math.PI;
+		const sx = W / 2 + Math.cos(th) * 300;
+		const sy = 500 + Math.sin(th) * 400;
+		const low = Math.max(0, Math.min(1, (sy - 140) / 300)); // 0 high, 1 at horizon
+		ctx.fillStyle = mix('#e4dfcb', '#d9a77f', low);
+		ctx.beginPath(); ctx.arc(sx, sy, 56, 0, Math.PI * 2); ctx.fill();
+		// flat rays turn with the sails
+		ctx.strokeStyle = mix('#d6ccaa', '#c48a63', low);
+		ctx.lineWidth = 2;
+		for (let k = 0; k < 12; k++) {
+			const a = rotor.angle * 0.5 + (k * Math.PI) / 6;
+			ctx.beginPath();
+			ctx.moveTo(sx + Math.cos(a) * 66, sy + Math.sin(a) * 66);
+			ctx.lineTo(sx + Math.cos(a) * 80, sy + Math.sin(a) * 80);
+			ctx.stroke();
+		}
+	}
+
+	// wind: flat curling streaks + a few leaves; direction follows the spin
+	// (clockwise = left to right, counterclockwise = right to left)
+	const gusts = [];
+	let windDir = 1; // eases between -1 and 1
+	const edge = () => (windDir >= 0 ? -120 : W + 120);
+	const spawnStreak = () => gusts.push({ kind: 'streak', x: edge(), y: 60 + Math.random() * 360, len: 70 + Math.random() * 90, curl: Math.random() < 0.6, life: 0 });
+	const spawnLeaf = () => gusts.push({ kind: 'leaf', x: edge(), y: 80 + Math.random() * 320, rot: Math.random() * 6, life: 0, c: Math.random() < 0.5 ? C.moss : C.gold });
+	let spawnAcc = 0;
+	function drawWind(speed, turn) {
+		if (Math.abs(turn) > 0.03) windDir += (Math.sign(turn) - windDir) * 0.08; // ignore the small settle motion
+		spawnAcc += 0.012 + speed * 0.6;
+		while (spawnAcc > 1) { spawnAcc -= 1; Math.random() < 0.8 ? spawnStreak() : spawnLeaf(); }
+		const v = (1.4 + speed * 60) * windDir;
+		const dir = windDir >= 0 ? 1 : -1;
+		for (let i = gusts.length - 1; i >= 0; i--) {
+			const g = gusts[i];
+			g.x += v * (g.kind === 'leaf' ? 0.8 : 1);
+			g.life += 1;
+			if (g.x > W + 160 || g.x < -160) { gusts.splice(i, 1); continue; }
+			const fade = Math.min(1, g.life / 30);
+			if (g.kind === 'streak') {
+				// the streak trails behind its head; the curl sits at the head
+				const head = g.x + dir * g.len;
+				ctx.strokeStyle = C.ink;
+				ctx.globalAlpha = 0.28 * fade;
+				ctx.lineWidth = 1.2;
+				ctx.beginPath();
+				ctx.moveTo(g.x, g.y);
+				ctx.bezierCurveTo(g.x + dir * g.len * 0.3, g.y - 6, g.x + dir * g.len * 0.6, g.y + 6, head, g.y);
+				if (g.curl) {
+					if (dir > 0) ctx.arc(head, g.y - 9, 9, Math.PI / 2, -Math.PI * 0.9, true);
+					else ctx.arc(head, g.y - 9, 9, Math.PI / 2, -Math.PI * 0.1, false);
+				}
+				ctx.stroke();
+			} else {
+				g.rot += (0.05 + speed) * dir;
+				g.y += Math.sin(g.life / 14) * 0.6;
+				ctx.save();
+				ctx.translate(g.x, g.y);
+				ctx.rotate(g.rot);
+				ctx.globalAlpha = 0.85 * fade;
+				ctx.fillStyle = g.c;
+				ctx.beginPath(); ctx.ellipse(0, 0, 7, 3.5, 0, 0, Math.PI * 2); ctx.fill();
+				ctx.restore();
+			}
+			ctx.globalAlpha = 1;
+		}
+	}
+
+	function drawScene(speed, turn) {
+		ctx.clearRect(0, 0, W, H);
+		drawSun();
+		drawWind(speed, turn);
+		ctx.fillStyle = C.mossLight;
+		ctx.beginPath(); ctx.moveTo(0, 450); ctx.quadraticCurveTo(W * 0.3, 380, W * 0.65, 440); ctx.quadraticCurveTo(W * 0.85, 470, W, 420); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
+		ctx.fillStyle = C.moss;
+		ctx.beginPath(); ctx.moveTo(0, 490); ctx.quadraticCurveTo(W * 0.5, 440, W, 500); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
+		ctx.fillStyle = C.paper; ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
+		ctx.beginPath(); ctx.moveTo(hub.x - 34, 240); ctx.lineTo(hub.x + 34, 240); ctx.lineTo(hub.x + 62, 470); ctx.lineTo(hub.x - 62, 470); ctx.closePath(); ctx.fill(); ctx.stroke();
+		for (let y = 270; y < 470; y += 28) {
+			const t = (y - 240) / 230, half = 34 + 28 * t;
+			ctx.beginPath(); ctx.moveTo(hub.x - half, y); ctx.lineTo(hub.x + half, y); ctx.stroke();
+		}
+		ctx.fillStyle = C.ebicha;
+		ctx.beginPath(); ctx.moveTo(hub.x - 44, 244); ctx.quadraticCurveTo(hub.x, 168, hub.x + 44, 244); ctx.closePath(); ctx.fill(); ctx.stroke();
+		ctx.fillStyle = C.kon;
+		ctx.beginPath(); ctx.moveTo(hub.x - 14, 470); ctx.lineTo(hub.x - 14, 430); ctx.arc(hub.x, 430, 14, Math.PI, 0); ctx.lineTo(hub.x + 14, 470); ctx.fill();
+	}
+
+	function drawBlade(f, isTop, i) {
+		const x0 = -BLADE_W / 2, y0 = -(BLADE_OFF + BLADE_LEN);
+		ctx.strokeStyle = C.ink; ctx.lineWidth = 3;
+		ctx.beginPath(); ctx.moveTo(0, -8); ctx.lineTo(0, y0 - 6); ctx.stroke();
+		ctx.fillStyle = f.color;
+		ctx.beginPath(); ctx.moveTo(0, -BLADE_OFF); ctx.lineTo(x0, y0); ctx.lineTo(0, y0); ctx.closePath(); ctx.fill();
+		ctx.globalAlpha = 0.72;
+		ctx.beginPath(); ctx.moveTo(0, -BLADE_OFF); ctx.lineTo(0, y0); ctx.lineTo(-x0, y0 + 26); ctx.closePath(); ctx.fill();
+		ctx.globalAlpha = 1;
+		ctx.strokeStyle = C.ink; ctx.lineWidth = 1;
+		ctx.strokeRect(x0, y0, BLADE_W, BLADE_LEN);
+		for (let y = y0 + 22; y < -BLADE_OFF; y += 22) { ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(-x0, y); ctx.stroke(); }
+		ctx.save();
+		ctx.translate(0, y0 + 40);
+		ctx.rotate(-(rotor.angle + i * QUARTER)); // keep the kanji upright while the sail turns
+		ctx.fillStyle = C.paper;
+		ctx.beginPath(); ctx.arc(0, 0, 17, 0, Math.PI * 2); ctx.fill();
+		ctx.strokeStyle = isTop ? C.ebicha : C.ink; ctx.lineWidth = isTop ? 2 : 1; ctx.stroke();
+		ctx.fillStyle = C.ink;
+		ctx.font = '600 20px "Shippori Mincho", serif';
+		ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+		ctx.fillText(f.kanji, 0, 1);
+		ctx.restore();
+	}
+
+	let prevAngle = rotor.angle;
+	function frame() {
+		const turn = rotor.angle - prevAngle;
+		prevAngle = rotor.angle;
+		sunPhase = (((sunPhase + turn * 0.03) % 1) + 1) % 1;
+		const speed = Math.min(0.5, Math.abs(turn));
+		drawScene(speed, turn);
+		const top = topIndex();
+		ctx.save();
+		ctx.translate(hub.x, hub.y);
+		ctx.rotate(rotor.angle);
+		FACETS.forEach((f, i) => {
+			ctx.save();
+			ctx.rotate(i * QUARTER);
+			drawBlade(f, i === top, i);
+			ctx.restore();
+		});
+		ctx.restore();
+		ctx.fillStyle = C.gold; ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
+		ctx.beginPath(); ctx.arc(hub.x, hub.y, 13, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+		show(top);
+		requestAnimationFrame(frame);
+	}
+
+	Runner.run(Runner.create(), engine);
+	if (!reduceMotion) Body.setAngularVelocity(rotor, 0.12);
+	frame();
+})();
+
+/* ───────────── Option B: craftsman's desk ───────────── */
+(function desk() {
+	const W = 840, H = 440;
+	const canvas = document.getElementById('desk');
+	const ctx = setupCanvas(canvas, W, H);
+	const engine = Engine.create();
+	const LEDGE_Y = 400;
+	Composite.add(engine.world, [
+		Bodies.rectangle(W / 2, LEDGE_Y + 20, W + 40, 40, { isStatic: true }),
+		Bodies.rectangle(-20, H / 2, 40, H * 2, { isStatic: true }),
+		Bodies.rectangle(W + 20, H / 2, 40, H * 2, { isStatic: true })
+	]);
+	makeMouse(canvas, engine);
+
+	const SHELVES = [
+		{ id: 'work', label: '作品 Projects' },
+		{ id: 'reading', label: '本 Humanities' },
+		{ id: 'lang', label: '言葉 Languages' },
+		{ id: 'learn', label: '学ぶ Learning' },
+		{ id: 'tools', label: '道具 Tools' },
+		{ id: 'places', label: '場所 Places' }
+	];
+	// one color per category, so no tag is ever uncolored
+	const COLOR = { work: C.ebicha, reading: C.kon, lang: C.moss, learn: C.mossLight, tools: C.ink, places: C.gold };
+	const TAGS = [
+		{ t: 'Kaiwa', cat: 'work', logo: 'kaiwa_logo.png', url: 'https://www.trykaiwa.com/', cta: 'Visit trykaiwa.com', desc: 'A platform where language learners speak daily with AI, and coaches shape each learner journey.' },
+		{ t: 'Exonians', cat: 'work', logo: 'exonians-favicon.svg', url: 'https://exoniansjapan.com/', cta: 'Visit exoniansjapan.com', desc: 'A small, practical alumni site I built on a subway ride home.' },
+		{ t: 'Reddit Scout', cat: 'work', logo: 'reddit.svg', url: 'https://github.com/hkuwana/Kaiwa-reddit-scout', cta: 'View on GitHub', desc: 'Sunset. A local workflow that connected Reddit, Drive, and Gemini to find learners with real intent.' },
+		{ t: 'Flybyrd', cat: 'work', logo: 'flybyrd.png', url: 'https://github.com/hkuwana/flybyrd', cta: 'View on GitHub', desc: 'Sunset. AI that organized scattered feedback for product managers.' },
+		{ t: 'Mishima', cat: 'reading', wiki: 'Yukio_Mishima', take: "Literature in small moments: sentences that become poetry. I really enjoy the structure of his essays and his descriptions of nature." },
+		{ t: 'Bulgakov', cat: 'reading', wiki: 'Mikhail_Bulgakov', take: "My introduction to Bolshevism: how its views shaped society, and the implications underneath. Bulgakov shows all of it through satire." },
+		{ t: 'Dostoevsky', cat: 'reading', wiki: 'Fyodor_Dostoevsky', take: "The Russian author I return to most. I sincerely recommend <em>The Brothers Karamazov</em> to everyone. It gave me умиление (<em>umilenie</em>): what it means to choose to be kind, to choose to be human, and to choose what is right, even when the world does not make it easy." },
+		{ t: 'Chekhov', cat: 'reading', wiki: 'Anton_Chekhov', take: "Chekhov's gun: everything in a story should have a purpose, or at least be relevant to it. When I share a story, I try to keep only what earns its place." },
+		{ t: 'Hemingway', cat: 'reading', wiki: 'Ernest_Hemingway', take: "I love the iceberg theory: what is left unsaid often evokes more than what is said. The reader's imagination does the work, and not everything has to be explicit." },
+		{ t: '言葉', sub: 'words', cat: 'lang', desc: '言葉 (kotoba): words. The 葉 means leaf. The Kokinshū preface calls poems the leaves of words that grow from the human heart.' },
+		{ t: '日本語', sub: 'Japanese', cat: 'lang', desc: 'A language I speak.' },
+		{ t: 'English', cat: 'lang', desc: 'A language I speak.' },
+		{ t: '中文', sub: 'Mandarin', cat: 'lang', desc: 'A language I speak.' },
+		{ t: 'Español', sub: 'Spanish', cat: 'learn', desc: 'A language I am learning.' },
+		{ t: 'Nederlands', sub: 'Dutch', cat: 'learn', desc: 'A language I am learning.' },
+		{ t: 'LLMs', cat: 'tools', url: '/ai-guides', cta: 'Read ./ai-guides', desc: 'My daily material. Prompts, workflows, and notes.' },
+		{ t: 'TypeScript', cat: 'tools', url: 'https://www.typescriptlang.org/', cta: 'typescriptlang.org', desc: 'The language most of my tools are written in.' },
+		{ t: 'Svelte', cat: 'tools', url: 'https://svelte.dev/', cta: 'svelte.dev', desc: 'The framework this site is built with.' },
+		{ t: 'Tokyo · NY', cat: 'places', desc: 'Two home cities, two ways of seeing.' },
+		{ kind: 'seal', cat: 'places', t: '浩', name: 'Hiroyuki (Hiro) Kuwana', nameJa: '桑名浩行', avatar: 'hiro.png', desc: 'Yep, that’s me.', url: '/about', cta: 'About me' }
+	];
+	const LOGOS = {};
+	TAGS.filter((t) => t.logo).forEach((t) => { const img = new Image(); img.src = t.logo; LOGOS[t.logo] = img; });
+	let items = [];
+	let organized = false;
+
+	function drop() {
+		organized = false;
+		orgBtn.textContent = 'Organize ☰';
+		items.forEach((it) => Composite.remove(engine.world, it.body));
+		items = [];
+		TAGS.forEach((tag, i) => {
+			setTimeout(() => {
+				const it = { kind: 'tag', ...tag };
+				const x = 70 + Math.random() * (W - 140);
+				if (it.kind === 'seal') {
+					it.h = 60; it.w = 60;
+					it.body = Bodies.circle(x, -40, 30, { restitution: 0.25, friction: 0.6 });
+				} else {
+					ctx.font = '18px "Newsreader", serif';
+					const main = ctx.measureText(it.t).width;
+					ctx.font = 'italic 13px "Newsreader", serif';
+					const sub = it.sub ? ctx.measureText(it.sub).width : 0;
+					it.w = Math.max(64, Math.max(main, sub) + 44 + (it.logo ? 26 : 0));
+					it.h = it.sub ? 52 : 38;
+					it.body = Bodies.rectangle(x, -40, it.w, it.h, { chamfer: { radius: 4 }, restitution: 0.15, friction: 0.7, angle: (Math.random() - 0.5) * 0.8 });
+				}
+				items.push(it);
+				Composite.add(engine.world, it.body);
+			}, reduceMotion ? 0 : i * 130);
+		});
+	}
+
+	// organize: lift every tag out of the physics and set it on its shelf
+	const LABEL_W = 138, ROW0 = 80, ROW_H = 64;
+	const plankY = (r) => ROW0 + r * ROW_H;
+	function organize() {
+		organized = true;
+		orgBtn.textContent = 'Scatter ↻';
+		SHELVES.forEach((shelf, row) => {
+			let x = LABEL_W;
+			items.filter((it) => it.cat === shelf.id).forEach((it, k) => {
+				const b = it.body;
+				Body.setStatic(b, true);
+				const proxy = { x: b.position.x, y: b.position.y, a: b.angle };
+				gsap.to(proxy, {
+					x: x + it.w / 2,
+					y: plankY(row) - it.h / 2 - 1,
+					a: Math.round(b.angle / (2 * Math.PI)) * 2 * Math.PI,
+					duration: reduceMotion ? 0 : 0.8,
+					delay: reduceMotion ? 0 : row * 0.06 + k * 0.05,
+					ease: 'power3.inOut',
+					onUpdate: () => { Body.setPosition(b, { x: proxy.x, y: proxy.y }); Body.setAngle(b, proxy.a); }
+				});
+				x += it.w + 8;
+			});
+		});
+	}
+	function scatter() {
+		organized = false;
+		orgBtn.textContent = 'Organize ☰';
+		items.forEach((it) => {
+			gsap.killTweensOf(it.body);
+			Body.setStatic(it.body, false);
+			Body.setVelocity(it.body, { x: (Math.random() - 0.5) * 14, y: -6 - Math.random() * 8 });
+			Body.setAngularVelocity(it.body, (Math.random() - 0.5) * 0.3);
+		});
+	}
+
+	// click (not drag) on a tag opens its card
+	const card = document.getElementById('desk-card');
+	const local = (e) => {
+		const r = canvas.getBoundingClientRect();
+		return { x: ((e.clientX - r.left) / r.width) * W, y: ((e.clientY - r.top) / r.height) * H };
+	};
+	let down = null;
+	canvas.addEventListener('pointerdown', (e) => { down = { ...local(e), t: performance.now() }; });
+	canvas.addEventListener('pointerup', (e) => {
+		if (!down) return;
+		const p = local(e);
+		const isClick = Math.hypot(p.x - down.x, p.y - down.y) < 6 && performance.now() - down.t < 350;
+		down = null;
+		if (!isClick) return;
+		const hit = Matter.Query.point(items.map((it) => it.body), p)[0];
+		const it = hit && items.find((x) => x.body === hit);
+		if (it) openCard(it);
+	});
+	canvas.addEventListener('pointermove', (e) => {
+		const p = local(e);
+		canvas.style.cursor = Matter.Query.point(items.map((it) => it.body), p).length ? 'pointer' : 'default';
+	});
+
+	const wikiCache = {};
+	async function openCard(it) {
+		const shelf = SHELVES.find((s) => s.id === it.cat).label;
+		if (it.wiki) {
+			card.innerHTML = `<span class="label">${shelf}</span><h3>${it.t}</h3><p class="hint">Loading…</p>`;
+			try {
+				wikiCache[it.wiki] ??= await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${it.wiki}`).then((r) => r.json());
+				const w = wikiCache[it.wiki];
+				const extract = (w.extract || '').split('. ').slice(0, 2).join('. ').replace(/\.?$/, '.');
+				card.innerHTML = `<span class="label">${shelf}</span>
+					<div class="portrait-row">
+						${w.thumbnail ? `<img class="portrait" src="${w.thumbnail.source}" alt="Portrait of ${w.title}" />` : ''}
+						<div><h3>${w.title}</h3><p class="hint">${w.description || ''}</p></div>
+					</div>
+					<span class="label">My take</span>
+					<p class="take">${it.take || extract}</p>
+					${it.rec ? `<p class="hint">Start with: <em>${it.rec}</em></p>` : ''}
+					<a class="card-link" href="${w.content_urls.desktop.page}" target="_blank" rel="noopener">Read on Wikipedia ↗</a>`;
+			} catch {
+				card.innerHTML = `<span class="label">${shelf}</span><h3>${it.t}</h3><p>Could not load the portrait.</p>`;
+			}
+		} else if (it.avatar) {
+			card.innerHTML = `<span class="label">${shelf}</span>
+				<div class="portrait-row">
+					<img class="portrait self" src="${it.avatar}" alt="${it.name}" />
+					<div><h3>${it.name}</h3><p class="hint">${it.nameJa}</p></div>
+				</div>
+				<p class="take">${it.desc}</p>
+				<a class="card-link" href="${it.url}">${it.cta} →</a>`;
+		} else {
+			card.innerHTML = `<span class="label">${shelf}</span>${it.logo ? `<div class="portrait-row"><img class="logo-badge" src="${it.logo}" alt="${it.t} logo" /><h3>${it.t}</h3></div>` : `<h3>${it.t}</h3>`}<p>${it.desc}</p>${it.url ? `<a class="card-link" href="${it.url}" target="_blank" rel="noopener">${it.cta} ↗</a>` : ''}`;
+		}
+		if (!reduceMotion) gsap.from(card.children, { y: 8, opacity: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out' });
+	}
+
+	function drawItem(it) {
+		const b = it.body;
+		ctx.save();
+		ctx.translate(b.position.x, b.position.y);
+		ctx.rotate(b.angle);
+		ctx.strokeStyle = C.ink; ctx.lineWidth = 1.2;
+		if (it.kind === 'seal') {
+			ctx.fillStyle = C.gold;
+			ctx.beginPath(); ctx.arc(0, 0, 30, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+			ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
+			ctx.beginPath(); ctx.arc(0, 0, 24, 0, Math.PI * 2); ctx.stroke();
+			ctx.fillStyle = C.ink;
+			ctx.font = '600 28px "Shippori Mincho", serif';
+			ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+			ctx.fillText('浩', 0, 2);
+		} else {
+			const w = it.w, h = it.h;
+			const fill = COLOR[it.cat];
+			ctx.fillStyle = fill;
+			ctx.beginPath();
+			ctx.moveTo(-w / 2 + 12, -h / 2); ctx.lineTo(w / 2, -h / 2); ctx.lineTo(w / 2, h / 2); ctx.lineTo(-w / 2 + 12, h / 2); ctx.lineTo(-w / 2, 0); ctx.closePath();
+			ctx.fill(); ctx.stroke();
+			const img = it.logo && LOGOS[it.logo];
+			let tx = 8;
+			if (img) {
+				// round paper badge holds the project logo
+				const bx = -w / 2 + 28;
+				ctx.fillStyle = C.paper;
+				ctx.beginPath(); ctx.arc(bx, 0, 13, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+				if (img.complete && img.naturalWidth) {
+					const k = 18 / Math.max(img.naturalWidth, img.naturalHeight);
+					const iw = img.naturalWidth * k, ih = img.naturalHeight * k;
+					ctx.save(); ctx.beginPath(); ctx.arc(bx, 0, 12, 0, Math.PI * 2); ctx.clip();
+					ctx.drawImage(img, bx - iw / 2, -ih / 2, iw, ih);
+					ctx.restore();
+				}
+				tx = 21;
+			} else {
+				ctx.fillStyle = C.paper;
+				ctx.beginPath(); ctx.arc(-w / 2 + 14, 0, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+			}
+			ctx.fillStyle = fill === C.gold || fill === C.mossLight ? C.ink : C.paper;
+			ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+			ctx.font = '18px "Newsreader", serif';
+			ctx.fillText(it.t, tx, it.sub ? -8 : 1);
+			if (it.sub) {
+				ctx.font = 'italic 13px "Newsreader", serif';
+				ctx.globalAlpha = 0.85;
+				ctx.fillText(it.sub, tx, 13);
+				ctx.globalAlpha = 1;
+			}
+		}
+		ctx.restore();
+	}
+
+	function frame() {
+		ctx.clearRect(0, 0, W, H);
+		ctx.fillStyle = C.wood;
+		ctx.fillRect(0, LEDGE_Y, W, H - LEDGE_Y);
+		ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
+		ctx.beginPath(); ctx.moveTo(0, LEDGE_Y); ctx.lineTo(W, LEDGE_Y); ctx.stroke();
+		ctx.globalAlpha = 0.35; ctx.lineWidth = 1;
+		for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(0, LEDGE_Y + 9 + i * 8); ctx.bezierCurveTo(W * 0.3, LEDGE_Y + 5 + i * 8, W * 0.6, LEDGE_Y + 14 + i * 8, W, LEDGE_Y + 8 + i * 8); ctx.stroke(); }
+		ctx.globalAlpha = 1;
+		if (organized) {
+			SHELVES.forEach((shelf, r) => {
+				const y = plankY(r);
+				if (y < LEDGE_Y) { ctx.fillStyle = C.wood; ctx.fillRect(LABEL_W - 12, y, W - LABEL_W + 4, 7); ctx.strokeStyle = C.ink; ctx.lineWidth = 1; ctx.strokeRect(LABEL_W - 12, y, W - LABEL_W + 4, 7); }
+				ctx.fillStyle = COLOR[shelf.id];
+				ctx.fillRect(0, y - 26, 5, 24);
+				ctx.fillStyle = C.ink;
+				ctx.font = '600 14px "Shippori Mincho", serif';
+				ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+				ctx.fillText(shelf.label, 12, y - 14);
+			});
+		}
+		items.forEach(drawItem);
+		requestAnimationFrame(frame);
+	}
+
+	const orgBtn = document.getElementById('organize');
+	orgBtn.onclick = () => (organized ? scatter() : organize());
+	document.getElementById('drop').onclick = drop;
+	Runner.run(Runner.create(), engine);
+	frame();
+	new IntersectionObserver((entries, obs) => {
+		if (entries[0].isIntersecting) { drop(); obs.disconnect(); }
+	}, { threshold: 0.4 }).observe(canvas);
+})();
+</script>
+
+</body>
+</html>
