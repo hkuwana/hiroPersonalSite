@@ -90,7 +90,7 @@
 	{@html `<` + `script type="application/ld+json">${JSON.stringify(aboutJsonLd)}</` + `script>`}
 </svelte:head>
 
-<article class="about-page">
+<article class="about-page frame-deco">
 	<header class="about-head">
 		<div class="about-intro">
 			<span class="eyebrow">{copy.eyebrow}</span>

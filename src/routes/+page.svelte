@@ -812,7 +812,7 @@
 					target={piece.external ? '_blank' : undefined}
 					rel={piece.external ? 'noopener' : undefined}
 				>
-					<div class="frame">
+					<div class="frame frame-deco">
 						<div class="thumb">
 							<span class={`status-pill status-${piece.status}`}>
 								<span class="dot"></span>
@@ -882,6 +882,7 @@
 	</div>
 {/if}
 
+<div class="asanoha-break" aria-hidden="true"></div>
 <div class="reveal">
 	<section data-screen-label="03 Writing" id="writing" data-philo="journal">
 		<div class="section writing-head">
@@ -932,6 +933,7 @@
 	</section>
 </div>
 
+<div class="asanoha-break" aria-hidden="true"></div>
 <div class="reveal">
 	<section class="section contact-sec" id="contact" data-screen-label="04 Contact">
 		<div class="sec-head">
@@ -986,7 +988,7 @@
 				</div>
 			</aside>
 
-			<div class="contact-stack">
+			<div class="contact-stack frame-deco">
 				<div class="contact-tabs" role="tablist" aria-label="Contact options">
 					<button
 						type="button"

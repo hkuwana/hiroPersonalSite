@@ -2,6 +2,7 @@
 	// 風車 hero island. SSR renders the buttons and the first panel (works with
 	// no JS). On mount, matter-js integrates the rotor and gsap animates the panel.
 	import { onMount } from 'svelte';
+	import { whenVisible } from '$lib/home/when-visible';
 	import { COPY_MILL, type Locale } from '$lib/home/copy';
 	import { FACETS } from '$lib/home/facets';
 	import { onThemeChange, readPalette, type Palette } from '$lib/home/palette';
@@ -26,6 +27,8 @@
 		let stopped = false;
 		let cleanup = () => {};
 		(async () => {
+			await whenVisible(canvasEl, '0px');
+			if (stopped) return;
 			const [{ default: Matter }, { gsap }] = await Promise.all([import('matter-js'), import('gsap')]);
 			if (stopped) return;
 			const { Engine, Bodies, Body, Composite } = Matter;

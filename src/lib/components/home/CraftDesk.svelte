@@ -2,6 +2,7 @@
 	// Craftsman's desk island. SSR renders the buttons, the intro card, and a
 	// grouped list of every item (keyboard + screen readers + no JS).
 	import { onMount } from 'svelte';
+	import { whenVisible } from '$lib/home/when-visible';
 	import { COPY_DESK, type Locale } from '$lib/home/copy';
 	import { DESK_ITEMS, SHELVES, type DeskItem } from '$lib/home/desk-items';
 	import { DESK, isClick, layoutShelves, nextDeskMode, tagWidth, type DeskMode } from '$lib/home/desk-layout';
@@ -29,6 +30,8 @@
 		let stopped = false;
 		let cleanup = () => {};
 		(async () => {
+			await whenVisible(canvasEl, '0px');
+			if (stopped) return;
 			const [{ default: Matter }, { gsap }] = await Promise.all([import('matter-js'), import('gsap')]);
 			if (stopped) return;
 			const { Engine, Bodies, Body, Composite, Mouse, MouseConstraint, Query } = Matter;

@@ -36,3 +36,11 @@ test('flat: component styles have no box-shadow and no gradient fills', () => {
 test('frame and helpers exist', () => {
 	for (const sel of ['.frame-deco', '.asanoha-break', '.sr-only', '.ink-link']) expect(css).toContain(sel);
 });
+
+test('Taishō ornament is used across pages', () => {
+	const home = readFileSync('src/routes/+page.svelte', 'utf8');
+	expect(home.match(/class="asanoha-break"/g)?.length ?? 0).toBeGreaterThanOrEqual(4);
+	expect(home).toMatch(/class="contact-stack[^"]*frame-deco/);
+	expect(home).toMatch(/class="frame[^"]*frame-deco/);
+	expect(readFileSync('src/routes/about/+page.svelte', 'utf8')).toContain('frame-deco');
+});
