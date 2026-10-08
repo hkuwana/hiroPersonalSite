@@ -194,17 +194,6 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	},
 
-	{
-		id: 'kotoba',
-		kind: 'tag',
-		cat: 'lang',
-		label: '言葉',
-		sub: 'words',
-		desc: {
-			en: '言葉 (kotoba): words. The 葉 means leaf. The Kokinshū preface calls poems the leaves of words that grow from the human heart.',
-			ja: '言葉の「葉」は木の葉。古今集の仮名序は、歌を「人の心を種として、よろづの言の葉とぞなれりける」と書いています。'
-		}
-	},
 	{ id: 'japanese', kind: 'tag', cat: 'lang', label: '日本語', sub: 'Japanese', desc: SPEAK },
 	{ id: 'english', kind: 'tag', cat: 'lang', label: 'English', desc: SPEAK },
 	{ id: 'mandarin', kind: 'tag', cat: 'lang', label: '中文', sub: 'Mandarin', desc: SPEAK },
