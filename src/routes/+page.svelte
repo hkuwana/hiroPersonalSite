@@ -3,11 +3,11 @@
 	import { page } from '$app/stores';
 	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS, KAIWA_METRICS } from '$data/constants';
 	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
+	import EmailStamp from '$lib/components/home/EmailStamp.svelte';
 	import Windmill from '$lib/components/home/Windmill.svelte';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { onMount } from 'svelte';
-	import { track } from '$lib/analytics';
 
 	type Locale = 'en' | 'ja';
 	type Status = 'active' | 'shipped' | 'sunset';
@@ -33,7 +33,6 @@
 		lesson?: string;
 		lessonJa?: string;
 		logo: string;
-		pos: { left: string; top: string; width: string; rotate: number };
 	};
 
 	// Latest owner-reported milestone snapshot; source and date live in KAIWA_METRICS.
@@ -97,9 +96,8 @@
 			'writing.dateAi': '04 · 2026',
 			'contact.num': '04',
 			'contact.title': 'Stay in touch',
-			'contact.titleEm': 'write me, or follow the build.',
-			'contact.tab.write': 'Write to me · お便り',
-			'contact.tab.follow': 'Follow the build · 購読',
+			'contact.titleEm': 'write me.',
+			'contact.stamp.title': 'Write to me · お便り',
 			'contact.aside.lead':
 				"I'm always interested in how other people are building with AI—especially the places where it creates more work instead of less. I'm not taking on outside projects, but thoughtful notes are welcome.",
 			'contact.aside.hi':
@@ -111,41 +109,6 @@
 			'contact.tools.vcf.desc': 'A simple contact card without a public email address.',
 			'contact.tools.ics.label': 'Tea on the calendar',
 			'contact.tools.ics.desc': 'A 25-minute placeholder with the booking link tucked inside.',
-			'contact.email.copy': 'copy address',
-			'contact.email.copied': 'copied · ありがとう',
-			'contact.email.revealed': 'copy unavailable · address revealed',
-			'contact.write.lead':
-				'What are you building? What have you tried? Where is AI helping—or getting in the way? A few honest sentences are plenty.',
-			'contact.field.name': 'お名前 · Name',
-			'contact.field.email': '電子メール · Email',
-			'contact.field.msg': 'ご用件 · Message',
-			'contact.field.namePh': 'Your name',
-			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': 'What you are building, what you have tried, and where you are stuck.',
-			'contact.note.write': 'Your name, email, and message are sent to Hiro through Resend.',
-			'contact.btn.send': 'Send · 送る →',
-			'contact.btn.sending': 'Sending...',
-			'contact.error': 'We couldn’t confirm your message was sent. Your note is still here—please try again, or copy my email address to contact me directly.',
-			'contact.thanks.title': 'Message sent',
-			'contact.thanks.titleEm': 'thank you.',
-			'contact.thanks.note': 'I usually reply within a few days.',
-			'contact.thanks.again': 'Send another',
-			'sub.lead':
-				"I send a note when I have something worth sharing: a product decision, a workflow that held up, a mistake I don't want to repeat, or a longer essay.",
-			'sub.field.email': '電子メール · Email',
-			'sub.field.emailPh': 'you@somewhere.com',
-			'sub.choose': 'Send me:',
-			'sub.opt.both': 'Everything',
-			'sub.opt.philo': 'Essays',
-			'sub.opt.guides': 'Build notes',
-			'sub.cadence': 'Usually twice a month. Plain text, no noise. Unsubscribe in one click.',
-			'sub.btn.go': 'Follow the build · 購読 →',
-			'sub.btn.going': 'Subscribing...',
-			'sub.thanks.title': 'Subscribed',
-			'sub.thanks.titleEm': 'よろしく.',
-			'sub.thanks.note': "You'll hear from me when the next useful note is ready.",
-			'sub.thanks.again': 'Use a different email',
-			'sub.error': "That didn't go through. Try again in a moment, or use the contact form."
 		},
 		ja: {
 			'hero.season': '夏 · summer · 2026',
@@ -200,9 +163,8 @@
 			'writing.dateAi': '2026 · 04',
 			'contact.num': '04',
 			'contact.title': 'これからも',
-			'contact.titleEm': 'お便りでも、つづきを読むでも。',
-			'contact.tab.write': 'お便りを書く · Write',
-			'contact.tab.follow': 'つづきを読む · Follow',
+			'contact.titleEm': 'お便りをどうぞ。',
+			'contact.stamp.title': 'お便りを書く · Write',
 			'contact.aside.lead':
 				'ほかの人が AI をどう使ってものをつくっているのか、いつも気になります。とくに、仕事が減るはずの AI で、かえって仕事が増えてしまうところ。外部の仕事は受けていませんが、考えのあるお便りは歓迎です。',
 			'contact.aside.hi': 'いま何をつくっているか、何を試したか、どこで行き詰まったか。届いたメッセージはすべて自分で読み、たいてい数日以内に返事します。',
@@ -213,40 +175,6 @@
 			'contact.tools.vcf.desc': 'メールアドレスを公開しない、シンプルな連絡先カード。',
 			'contact.tools.ics.label': '予定にお茶を入れる',
 			'contact.tools.ics.desc': '予約リンクを入れた、25分のお茶の予定。',
-			'contact.email.copy': 'アドレスをコピー',
-			'contact.email.copied': 'コピーしました · copied',
-			'contact.email.revealed': 'コピーできません · アドレスを表示',
-			'contact.write.lead':
-				'何をつくっていますか。何を試しましたか。AI はどこで役立ち、どこで邪魔になっていますか。飾らない数行で十分です。',
-			'contact.field.name': '名前 · Name',
-			'contact.field.email': 'メール · Email',
-			'contact.field.msg': '用件 · Message',
-			'contact.field.namePh': '名前',
-			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': '何をつくっているか、何を試したか、どこで行き詰まっているか。',
-			'contact.note.write': 'お名前、メールアドレス、メッセージを Resend 経由で浩に送ります。',
-			'contact.btn.send': '送る · Send →',
-			'contact.btn.sending': '送信中...',
-			'contact.error': '送信を確認できませんでした。入力内容は残っています。もう一度試すか、メールアドレスをコピーして直接ご連絡ください。',
-			'contact.thanks.title': '送信しました',
-			'contact.thanks.titleEm': 'ありがとうございます。',
-			'contact.thanks.note': '通常、数日以内にお返事します。',
-			'contact.thanks.again': 'もう一通',
-			'sub.lead': '共有する価値があると思えたときだけ送ります。プロダクトの判断、実際に使えたワークフロー、繰り返したくない失敗、ときどき長い文章。',
-			'sub.field.email': 'メール · Email',
-			'sub.field.emailPh': 'you@somewhere.com',
-			'sub.choose': '読みたいもの:',
-			'sub.opt.both': 'すべて',
-			'sub.opt.philo': '作文',
-			'sub.opt.guides': '開発メモ',
-			'sub.cadence': 'だいたい月に二回。プレーンテキストで、余計なものはなし。解除はワンクリック。',
-			'sub.btn.go': 'つづきを読む · Follow →',
-			'sub.btn.going': '登録中...',
-			'sub.thanks.title': '登録しました',
-			'sub.thanks.titleEm': 'よろしく。',
-			'sub.thanks.note': '次に役立つメモができたら、短いメールを送ります。',
-			'sub.thanks.again': '別のメールで登録',
-			'sub.error': '送信がうまくいきませんでした。少し待ってもう一度試すか、お便りフォームを使ってください。'
 		}
 	};
 
@@ -257,6 +185,7 @@
 		{ value: 'sunset', key: 'work.filter.sunset' }
 	];
 
+	// Order matters: in hand, then shipped, then sunset. Newest first in each group.
 	const PIECES: Piece[] = [
 		{
 			id: 'kaiwa',
@@ -275,24 +204,6 @@
 			stats: `${KAIWA_METRICS.monthlyOrganicVisitorsShort} organic visitors / mo · ${KAIWA_METRICS.signups} signups`,
 			statsJa: `自然検索 ${KAIWA_METRICS.monthlyOrganicVisitorsShort} / 月 · 登録者 ${KAIWA_METRICS.signups}`,
 			logo: asset('/kaiwa_logo.png'),
-			pos: { left: '0%', top: '0%', width: '38%', rotate: 0 }
-		},
-		{
-			id: 'exonians',
-			status: 'shipped',
-			year: '2026',
-			href: 'https://exoniansjapan.com/',
-			external: true,
-			title: 'Exonians in Japan',
-			titleJa: 'Exonians in Japan',
-			subtitle: 'a fast community platform',
-			subtitleJa: '素早く立ち上げた同窓会サイト',
-			role: 'Design + Build',
-			roleJa: 'デザイン + 開発',
-			summary: 'A small, practical alumni site I built on a subway ride home. Focused on photos and community building',
-			summaryJa: '帰りの電車の中で作った、小さくて実用的な同窓会サイト。写真と、人のつながりに集中。',
-			logo: asset('/logos/exonians-e.svg'),
-			pos: { left: '52%', top: '4%', width: '38%', rotate: 0 }
 		},
 		{
 			id: 'reddit-scout',
@@ -309,7 +220,22 @@
 			summary: 'A local workflow that connects Reddit, Drive, and Gemini to find language learners with real intent.',
 			summaryJa: 'Reddit、Drive、Gemini をつないで、本気で学びたい人を見つけるローカルのワークフロー。',
 			logo: asset('/kaiwa_logo.png'),
-			pos: { left: '8%', top: '38%', width: '36%', rotate: 0 }
+		},
+		{
+			id: 'exonians',
+			status: 'shipped',
+			year: '2026',
+			href: 'https://exoniansjapan.com/',
+			external: true,
+			title: 'Exonians in Japan',
+			titleJa: 'Exonians in Japan',
+			subtitle: 'a fast community platform',
+			subtitleJa: '素早く立ち上げた同窓会サイト',
+			role: 'Design + Build',
+			roleJa: 'デザイン + 開発',
+			summary: 'A small, practical alumni site I built on a subway ride home. Focused on photos and community building',
+			summaryJa: '帰りの電車の中で作った、小さくて実用的な同窓会サイト。写真と、人のつながりに集中。',
+			logo: asset('/logos/exonians-e.svg'),
 		},
 		{
 			id: 'flybyrd',
@@ -325,7 +251,6 @@
 			summary: 'Organizing scattered feedback for product managers. A practical, private dashboard for the signals that matter.',
 			summaryJa: 'PM のためにバラバラのフィードバックを整理する、実用的で非公開のダッシュボード。大事なシグナルだけを残す。',
 			logo: asset('/flybyrd_logo.png'),
-			pos: { left: '54%', top: '46%', width: '40%', rotate: 0 }
 		},
 		{
 			id: 'pebblr',
@@ -341,7 +266,6 @@
 			summary: 'A nonprofit donor experiment that taught me where human trust matters more than platform mechanics.',
 			summaryJa: 'NPO の寄付者向けの実験。プラットフォームの仕組みより、人と人の信頼の方がずっと大事だと教えてくれた。',
 			logo: asset('/icon-512x512.png'),
-			pos: { left: '22%', top: '78%', width: '42%', rotate: 0 }
 		}
 	];
 
@@ -518,19 +442,6 @@
 
 	let lang = getLocale() as Locale;
 	let filter: Filter = 'all';
-	let contactMode: 'write' | 'follow' = 'write';
-	let contactName = '';
-	let contactEmail = '';
-	let contactMessage = '';
-	let contactStatus: 'idle' | 'sending' | 'sent' | 'error' = 'idle';
-	let contactWebsite = '';
-	let contactReply = '';
-	let subscribeEmail = '';
-	let subscribeChoice = 'both';
-	let subscribeStatus: 'idle' | 'sending' | 'sent' | 'error' = 'idle';
-	let emailCopyStatus: 'idle' | 'copied' | 'revealed' = 'idle';
-	let revealedEmail = '';
-	let emailStatusTimer: number | undefined;
 	let visiblePieces = PIECES;
 	let t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	let statusLabel = (status: Status) => t(`work.status.${status}`);
@@ -546,8 +457,8 @@
 	};
 
 	const countFor = (status: Filter) => (status === 'all' ? PIECES.length : PIECES.filter((piece) => piece.status === status).length);
-	const scrapStyle = (piece: Piece, index: number) =>
-		`left:${piece.pos.left};top:${piece.pos.top};width:${piece.pos.width};transform:rotate(${piece.pos.rotate}deg);z-index:${8 - index}`;
+	// Stable numbers, so a card keeps its number when a filter hides others.
+	const pieceNumber = (piece: Piece) => String(PIECES.indexOf(piece) + 1).padStart(2, '0');
 
 	onMount(() => {
 		const elements = document.querySelectorAll<HTMLElement>('.reveal');
@@ -573,85 +484,10 @@
 
 		return () => {
 			window.clearTimeout(fallback);
-			if (emailStatusTimer) window.clearTimeout(emailStatusTimer);
 			observer.disconnect();
 		};
 	});
 
-	async function copyContactEmail() {
-		const email = getContactEmail();
-
-		try {
-			await navigator.clipboard.writeText(email);
-			emailCopyStatus = 'copied';
-			track('contact_email_copied', { locale: lang });
-			if (emailStatusTimer) window.clearTimeout(emailStatusTimer);
-			emailStatusTimer = window.setTimeout(() => {
-				emailCopyStatus = 'idle';
-			}, 3200);
-		} catch {
-			revealedEmail = email;
-			emailCopyStatus = 'revealed';
-		}
-	}
-
-	async function sendContact(event: SubmitEvent) {
-		event.preventDefault();
-		if (contactStatus === 'sending' || !contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) return;
-		contactStatus = 'sending';
-		track('contact_submit_started', { locale: lang });
-		try {
-			const response = await fetch('/api/contact', {
-				method: 'POST',
-				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({ name: contactName, email: contactEmail, message: contactMessage, website: contactWebsite }),
-				signal: AbortSignal.timeout(15_000)
-			});
-			if (!response.ok || (await response.json()).ok !== true) throw new Error('contact failed');
-			contactReply = lang === 'ja' ? `${contactName}さん、メッセージをありがとうございます。` : `Thanks for writing, ${contactName}.`;
-			contactStatus = 'sent';
-			track('contact_submit_succeeded', { locale: lang });
-		} catch {
-			contactStatus = 'error';
-			track('contact_submit_failed', { locale: lang });
-		}
-	}
-
-	function resetContact() {
-		contactName = '';
-		contactEmail = '';
-		contactMessage = '';
-		contactReply = '';
-		contactWebsite = '';
-		contactStatus = 'idle';
-	}
-
-	async function subscribe(event: SubmitEvent) {
-		event.preventDefault();
-		if (!subscribeEmail || subscribeStatus === 'sending') return;
-
-		subscribeStatus = 'sending';
-		track('newsletter_submit_started', { locale: lang, choice: subscribeChoice });
-		try {
-			const res = await fetch('/api/subscribe', {
-				method: 'POST',
-				headers: { 'content-type': 'application/json' },
-				body: JSON.stringify({ email: subscribeEmail, choice: subscribeChoice })
-			});
-			if (!res.ok) throw new Error(`subscribe failed: ${res.status}`);
-
-			subscribeStatus = 'sent';
-			track('newsletter_submit_succeeded', { locale: lang, choice: subscribeChoice });
-		} catch {
-			subscribeStatus = 'error';
-			track('newsletter_submit_failed', { locale: lang, choice: subscribeChoice });
-		}
-	}
-
-	function resetSubscribe() {
-		subscribeEmail = '';
-		subscribeStatus = 'idle';
-	}
 </script>
 
 <svelte:head>
@@ -810,12 +646,12 @@
 			{/each}
 		</div>
 
-		<div class="scrap layout-scrapbook">
-			{#each visiblePieces as piece, i}
+		<ol class="scrap">
+			{#each visiblePieces as piece (piece.id)}
+				<li>
 				<a
 					href={piece.href}
 					class={`scrap-piece status-${piece.status}`}
-					style={scrapStyle(piece, i)}
 					target={piece.external ? '_blank' : undefined}
 					rel={piece.external ? 'noopener' : undefined}
 				>
@@ -826,7 +662,7 @@
 								{statusLabel(piece.status)}
 							</span>
 							<img src={piece.logo} alt="{piece.title} logo" class="project-logo" loading="lazy" />
-							<span class="thumb-label">fig. {i + 1} · {piece.title.toLowerCase()}</span>
+							<span class="thumb-label">No. {pieceNumber(piece)} · {piece.year}</span>
 						</div>
 						<h3>{lang === 'ja' ? piece.titleJa : piece.title} <em>{lang === 'ja' ? piece.subtitleJa : piece.subtitle}</em></h3>
 						<p class="summary">{lang === 'ja' ? piece.summaryJa : piece.summary}</p>
@@ -843,8 +679,9 @@
 						<span class="read-more">{t('work.readMore')}</span>
 					</div>
 				</a>
+				</li>
 			{/each}
-		</div>
+		</ol>
 	</section>
 </div>
 
@@ -952,24 +789,6 @@
 			<aside class="contact-aside">
 				<p>{t('contact.aside.lead')}</p>
 				<p>{t('contact.aside.hi')}</p>
-				<button
-					type="button"
-					class:copied={emailCopyStatus === 'copied'}
-					class="contact-email"
-					onclick={copyContactEmail}
-					aria-label={lang === 'ja' ? 'Hiro のメールアドレスをコピー' : "Copy Hiro's email address"}
-				>
-					<span class="contact-email-address">
-						{emailCopyStatus === 'revealed' ? revealedEmail : CONTACT.emailLabel}
-					</span>
-					<span class="contact-email-action" aria-live="polite">
-						{emailCopyStatus === 'copied'
-							? t('contact.email.copied')
-							: emailCopyStatus === 'revealed'
-								? t('contact.email.revealed')
-								: t('contact.email.copy')}
-					</span>
-				</button>
 				<div class="contact-links">
 					<a href={SOCIAL_LINKS.github} target="_blank" rel="noopener">GitHub</a>
 					<a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener">LinkedIn</a>
@@ -996,108 +815,8 @@
 			</aside>
 
 			<div class="contact-stack frame-deco">
-				<div class="contact-tabs" role="tablist" aria-label="Contact options">
-					<button
-						type="button"
-						role="tab"
-						aria-selected={contactMode === 'write'}
-						class={`contact-tab ${contactMode === 'write' ? 'is-active' : ''}`}
-						onclick={() => (contactMode = 'write')}
-					>
-						<span class="tab-num">01</span>
-						<span class="tab-label">{t('contact.tab.write')}</span>
-					</button>
-					<button
-						type="button"
-						role="tab"
-						aria-selected={contactMode === 'follow'}
-						class={`contact-tab ${contactMode === 'follow' ? 'is-active' : ''}`}
-						onclick={() => (contactMode = 'follow')}
-					>
-						<span class="tab-num">02</span>
-						<span class="tab-label">{t('contact.tab.follow')}</span>
-					</button>
-				</div>
-
-				{#if contactMode === 'write'}
-					{#if contactStatus === 'sent'}
-						<div class="contact-thanks" role="status">
-							<div class="thanks-stamp">浩</div>
-							<h3>{t('contact.thanks.title')} <em>{t('contact.thanks.titleEm')}</em></h3>
-							<p class="ack">{contactReply}</p>
-							<p class="ack-note">{t('contact.thanks.note')}</p>
-							<button type="button" class="contact-btn ghost" onclick={resetContact}>
-								{t('contact.thanks.again')}
-							</button>
-						</div>
-					{:else}
-						<form class="contact-form ph-no-capture" onsubmit={sendContact} aria-busy={contactStatus === 'sending'}>
-							<label hidden aria-hidden="true">Website<input tabindex="-1" autocomplete="off" bind:value={contactWebsite} /></label>
-							<p class="contact-lead">{t('contact.write.lead')}</p>
-							<label class="field">
-								<span class="field-label">{t('contact.field.name')}</span>
-								<input type="text" autocomplete="name" maxlength="120" required bind:value={contactName} placeholder={t('contact.field.namePh')} />
-							</label>
-							<label class="field">
-								<span class="field-label">{t('contact.field.email')}</span>
-								<input type="email" autocomplete="email" maxlength="254" required bind:value={contactEmail} placeholder={t('contact.field.emailPh')} />
-							</label>
-							<label class="field">
-								<span class="field-label">{t('contact.field.msg')}</span>
-								<textarea required maxlength="10000" rows="6" bind:value={contactMessage} placeholder={t('contact.field.msgPh')}></textarea>
-							</label>
-							{#if contactStatus === 'error'}
-								<p class="sub-error" role="alert">{t('contact.error')}</p>
-							{/if}
-							<div class="contact-row">
-								<span class="contact-note">{t('contact.note.write')}</span>
-								<button type="submit" class="contact-btn" disabled={contactStatus === 'sending'}>
-									{contactStatus === 'sending' ? t('contact.btn.sending') : t('contact.btn.send')}
-								</button>
-							</div>
-						</form>
-					{/if}
-				{:else if subscribeStatus === 'sent'}
-					<div class="contact-thanks subscribe-thanks">
-						<div class="thanks-stamp">購</div>
-						<h3>{t('sub.thanks.title')} <em>{t('sub.thanks.titleEm')}</em></h3>
-						<p class="ack">{t('sub.thanks.note')}</p>
-						<button type="button" class="contact-btn ghost" onclick={resetSubscribe}>
-							{t('sub.thanks.again')}
-						</button>
-					</div>
-				{:else}
-					<form class="contact-form sub-form" onsubmit={subscribe}>
-						<p class="contact-lead">{t('sub.lead')}</p>
-						<label class="field">
-							<span class="field-label">{t('sub.field.email')}</span>
-							<input type="email" required bind:value={subscribeEmail} placeholder={t('sub.field.emailPh')} />
-						</label>
-
-						<fieldset class="sub-choice">
-							<legend class="field-label">{t('sub.choose')}</legend>
-							<div class="sub-choice-row">
-								{#each ['both', 'philo', 'guides'] as choice}
-									<label class={`sub-chip ${subscribeChoice === choice ? 'is-on' : ''}`}>
-										<input type="radio" name="sub-choice" value={choice} bind:group={subscribeChoice} />
-										<span>{t(`sub.opt.${choice}`)}</span>
-									</label>
-								{/each}
-							</div>
-						</fieldset>
-
-						{#if subscribeStatus === 'error'}
-							<p class="sub-error" role="alert">{t('sub.error')}</p>
-						{/if}
-
-						<div class="contact-row">
-							<span class="contact-note">{t('sub.cadence')}</span>
-							<button type="submit" class="contact-btn" disabled={subscribeStatus === 'sending'}>
-								{subscribeStatus === 'sending' ? t('sub.btn.going') : t('sub.btn.go')}
-							</button>
-						</div>
-					</form>
-				{/if}
+				<p class="contact-stack-title">{t('contact.stamp.title')}</p>
+				<EmailStamp {lang} getEmail={getContactEmail} />
 			</div>
 		</div>
 	</section>

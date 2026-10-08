@@ -249,6 +249,42 @@ export const DESK_ITEMS: DeskItem[] = [
 			ja: '動く部分をつくるフレームワーク。'
 		}
 	},
+	{
+		id: 'python',
+		kind: 'tag',
+		cat: 'tools',
+		label: 'Python',
+		href: 'https://www.python.org/',
+		external: true,
+		cta: { en: 'python.org', ja: 'python.org' },
+		desc: {
+			en: 'For scripts, data work, and automation pipelines.',
+			ja: 'スクリプト、データ処理、自動化のパイプラインに。'
+		}
+	},
+	{
+		id: 'claude',
+		kind: 'tag',
+		cat: 'tools',
+		label: 'Claude',
+		href: 'https://www.anthropic.com/claude',
+		external: true,
+		cta: { en: 'anthropic.com/claude', ja: 'anthropic.com/claude' },
+		desc: {
+			en: 'The model I write and build with most days.',
+			ja: 'ほぼ毎日、書くときもつくるときも使うモデル。'
+		}
+	},
+	{
+		id: 'vps',
+		kind: 'tag',
+		cat: 'tools',
+		label: 'VPS',
+		desc: {
+			en: 'A small server of my own, for jobs that run all day.',
+			ja: '一日中動かす仕事のための、自分の小さなサーバー。'
+		}
+	},
 
 	{
 		id: 'tokyo-ny',

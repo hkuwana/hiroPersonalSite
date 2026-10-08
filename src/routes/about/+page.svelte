@@ -132,7 +132,7 @@
 	.about-page {
 		max-width: 760px;
 		margin: 0 auto;
-		padding: 5rem 1.75rem 6rem;
+		padding: calc(var(--nav-h) + 2.5rem) 1.75rem 6rem;
 		font-family: var(--font-serif, 'Newsreader', Georgia, serif);
 		color: var(--color-text);
 	}
@@ -328,7 +328,7 @@
 
 	@media (max-width: 640px) {
 		.about-page {
-			padding: 3.5rem 1.25rem 4rem;
+			padding: calc(var(--nav-h) + 1.5rem) 1.25rem 4rem;
 		}
 
 		.about-head {

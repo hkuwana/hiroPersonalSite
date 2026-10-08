@@ -1,12 +1,4 @@
-type Event =
-	| 'contact_submit_started'
-	| 'contact_submit_succeeded'
-	| 'contact_submit_failed'
-	| 'newsletter_submit_started'
-	| 'newsletter_submit_succeeded'
-	| 'newsletter_submit_failed'
-	| 'outbound_link_clicked'
-	| 'contact_email_copied';
+type Event = 'outbound_link_clicked' | 'contact_email_copied' | 'contact_email_revealed';
 
 type Properties = { locale?: string; choice?: string; destination?: string };
 
