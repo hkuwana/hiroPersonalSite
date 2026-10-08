@@ -68,7 +68,7 @@
 	.essays-page {
 		max-width: 720px;
 		margin: 0 auto;
-		padding: 4rem 2rem 6rem;
+		padding: calc(var(--nav-h) + 2.5rem) 2rem 6rem;
 		opacity: 0;
 		transform: translateY(20px);
 		transition: all 0.6s var(--ease-out-expo);
@@ -191,7 +191,7 @@
 	/* Responsive */
 	@media (max-width: 640px) {
 		.essays-page {
-			padding: 3rem 1.5rem 4rem;
+			padding: calc(var(--nav-h) + 1.5rem) 1.5rem 4rem;
 		}
 
 		.page-title {

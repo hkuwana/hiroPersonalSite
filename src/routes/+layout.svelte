@@ -8,7 +8,20 @@
 
 	onMount(() => {
 		document.addEventListener('click', trackOutboundClick);
-		return () => document.removeEventListener('click', trackOutboundClick);
+
+		// Keep --nav-h equal to the real height of the fixed nav, so pages never start under it.
+		// The values in style.css are the fallback before this runs.
+		const nav = document.querySelector<HTMLElement>('.nav');
+		const root = document.documentElement;
+		const navObserver = new ResizeObserver(() => {
+			if (nav) root.style.setProperty('--nav-h', `${nav.offsetHeight}px`);
+		});
+		if (nav) navObserver.observe(nav);
+
+		return () => {
+			document.removeEventListener('click', trackOutboundClick);
+			navObserver.disconnect();
+		};
 	});
 
 	let { children, data } = $props();

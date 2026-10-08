@@ -538,7 +538,7 @@ END:VCARD`;
 	.tool-page {
 		max-width: 880px;
 		margin: 0 auto;
-		padding: 5rem 1.75rem 6rem;
+		padding: calc(var(--nav-h) + 2.5rem) 1.75rem 6rem;
 		font-family: var(--f-body);
 		color: var(--color-text);
 	}
@@ -884,7 +884,7 @@ END:VCARD`;
 
 	@media (max-width: 640px) {
 		.tool-page {
-			padding: 3.5rem 1.25rem 4rem;
+			padding: calc(var(--nav-h) + 1.5rem) 1.25rem 4rem;
 		}
 		.contact {
 			grid-template-columns: 1fr;
