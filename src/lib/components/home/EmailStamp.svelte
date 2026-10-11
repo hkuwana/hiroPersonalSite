@@ -354,7 +354,7 @@
 		left: 0.875rem;
 		right: 0.875rem;
 		font-family: var(--f-mono);
-		font-size: 0.625rem;
+		font-size: 0.6875rem;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
 		color: var(--ink-mute);

@@ -355,7 +355,8 @@
 
 	.letter.active {
 		background: var(--paper);
-		border-left: 3px solid var(--shu);
+		outline: 1px solid var(--shu);
+		outline-offset: -1px;
 	}
 
 	.letter-kicker,
@@ -407,7 +408,7 @@
 		max-width: 42ch;
 		margin-top: 0.75rem;
 		padding: 0.75rem 0.875rem;
-		border-left: 2px solid var(--shu);
+		border: 1px solid color-mix(in oklch, var(--shu) 35%, var(--rule));
 		background: color-mix(in oklch, var(--paper) 58%, transparent);
 		line-height: 1.45;
 	}
@@ -487,13 +488,22 @@
 
 	.case-body blockquote {
 		margin: 2rem 0;
-		padding: 0.5rem 0 0.5rem 1.75rem;
-		border-left: 3px solid var(--shu);
+		padding: 0;
+		max-width: 32ch;
 		font-family: var(--f-body);
 		font-size: 1.375rem;
 		font-style: italic;
 		line-height: 1.45;
 		color: var(--ink);
+	}
+
+	.case-body blockquote::before {
+		content: '';
+		display: block;
+		width: 2rem;
+		height: 1px;
+		margin-bottom: 1rem;
+		background: var(--shu);
 	}
 
 	.case-body ul {
@@ -563,7 +573,7 @@
 
 	@media (max-width: 760px) {
 		.case-hero {
-			padding-top: 10.5rem;
+			padding-top: calc(var(--nav-h) + 2rem);
 		}
 
 		.case-hero h1 {
@@ -572,7 +582,17 @@
 
 		.case-meta {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
-			gap: 1.25rem;
+			gap: 1.25rem 1rem;
+			margin-top: 2rem;
+			padding: 1.25rem 0;
+		}
+
+		.cell .k {
+			font-size: 0.6875rem;
+		}
+
+		.cell .v {
+			font-size: 1rem;
 		}
 
 		.case-body {
@@ -603,10 +623,6 @@
 	}
 
 	@media (max-width: 520px) {
-		.case-meta {
-			grid-template-columns: 1fr;
-		}
-
 		.case-hero h1 {
 			font-size: 2.625rem;
 		}

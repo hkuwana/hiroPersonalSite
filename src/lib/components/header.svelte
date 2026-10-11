@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { afterNavigate, goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { SOCIAL_LINKS } from '$data/constants';
 	import { optimisticLocale, type SiteLocale } from '$lib/locale-state';
@@ -16,9 +16,27 @@
 	const jaHref = $derived(localizeHref(baseHref, { locale: 'ja' }));
 	const copy = $derived(
 		lang === 'ja'
-			? { writing: '読みもの', tools: '道具', about: '自己紹介', contact: 'お問い合わせ', langTitle: '言語を切り替え' }
-			: { writing: 'Writing', tools: 'Tools', about: 'About', contact: 'Contact', langTitle: 'Switch language' }
+			? {
+					writing: '読みもの',
+					tools: '道具',
+					about: '自己紹介',
+					contact: 'お問い合わせ',
+					langTitle: '言語を切り替え',
+					menu: 'メニュー'
+				}
+			: {
+					writing: 'Writing',
+					tools: 'Tools',
+					about: 'About',
+					contact: 'Contact',
+					langTitle: 'Switch language',
+					menu: 'Menu'
+				}
 	);
+
+	// The section links fold into this menu on narrow screens (see .menu-toggle in style.css).
+	let menuOpen = $state(false);
+	afterNavigate(() => (menuOpen = false));
 
 	function switchLocale(event: MouseEvent, locale: SiteLocale, href: string) {
 		if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
@@ -35,7 +53,9 @@
 	}
 </script>
 
-<header class="nav">
+<svelte:window onkeydown={(event) => event.key === 'Escape' && (menuOpen = false)} />
+
+<header class="nav" class:menu-open={menuOpen}>
 	<a href={localizeHref('/', { locale: lang })} class="wordmark" aria-label="Hiro Kuwana home">
 		<span class="kanji">浩</span>
 		<span class="name">Hiro</span>
@@ -43,10 +63,12 @@
 	</a>
 
 	<div class="nav-right">
-		<a class="nav-section-link" href={localizeHref('/#writing', { locale: lang })}>{copy.writing}</a>
-		<a class="nav-section-link" href={localizeHref('/tools', { locale: lang })}>{copy.tools}</a>
-		<a class="nav-section-link" href={localizeHref('/about', { locale: lang })}>{copy.about}</a>
-		<a class="nav-section-link" href={localizeHref('/#contact', { locale: lang })}>{copy.contact}</a>
+		<nav class="nav-links" id="site-menu" aria-label={copy.menu}>
+			<a href={localizeHref('/#writing', { locale: lang })} onclick={() => (menuOpen = false)}>{copy.writing}</a>
+			<a href={localizeHref('/tools', { locale: lang })} onclick={() => (menuOpen = false)}>{copy.tools}</a>
+			<a href={localizeHref('/about', { locale: lang })} onclick={() => (menuOpen = false)}>{copy.about}</a>
+			<a href={localizeHref('/#contact', { locale: lang })} onclick={() => (menuOpen = false)}>{copy.contact}</a>
+		</nav>
 
 		<div class="lang-toggle" role="group" aria-label={copy.langTitle}>
 			<a
@@ -79,5 +101,16 @@
 		</a>
 
 		<ThemeToggle />
+
+		<button
+			type="button"
+			class="menu-toggle"
+			aria-expanded={menuOpen}
+			aria-controls="site-menu"
+			onclick={() => (menuOpen = !menuOpen)}
+		>
+			{copy.menu}
+			<span class="menu-glyph" aria-hidden="true">{menuOpen ? '×' : '≡'}</span>
+		</button>
 	</div>
 </header>

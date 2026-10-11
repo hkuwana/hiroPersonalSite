@@ -106,7 +106,7 @@
 
 	<section class="faq-list" aria-label="Frequently asked questions">
 		{#each visibleFaqs as faq, i}
-			<details class="faq-item" open={i < 2}>
+			<details class="faq-item">
 				<summary>
 					<span class="q-num">{String(i + 1).padStart(2, '0')}</span>
 					<span class="q-text">{faq.question}</span>
@@ -329,6 +329,18 @@
 	@media (max-width: 640px) {
 		.about-page {
 			padding: calc(var(--nav-h) + 1.5rem) 1.25rem 4rem;
+		}
+
+		/* The page-wide frame sits on the screen edge on phones. */
+		.about-page.frame-deco {
+			margin: 0;
+			border: 0;
+			outline: 0;
+		}
+
+		.about-page.frame-deco::before,
+		.about-page.frame-deco::after {
+			display: none;
 		}
 
 		.about-head {

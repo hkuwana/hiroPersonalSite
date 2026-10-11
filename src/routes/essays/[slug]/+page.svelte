@@ -183,10 +183,10 @@
 
 	.essay-content :global(blockquote) {
 		margin: 2rem 0;
-		padding: 1.5rem 1.5rem 1.5rem 2rem;
+		padding: 1.5rem;
 		background: var(--color-bg-muted);
-		border-left: 3px solid var(--color-accent);
-		border-radius: 0 var(--radius-md) var(--radius-md) 0;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
 		color: var(--color-text);
 		font-style: italic;
 	}
