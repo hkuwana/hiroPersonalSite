@@ -397,51 +397,39 @@
 		]
 	};
 
-	const PHILO = {
-		en: [
-			{
-				date: 'February 2026',
-				title: 'Your Funnel Is a Lie',
-				desc: 'Why Markov chains are a better mental model for SaaS growth than the traditional sales funnel.',
-				href: '/essays/your-funnel-is-a-lie'
-			},
-			{
-				date: 'December 2025',
-				title: 'On Building for Decades',
-				desc: 'Why simplicity wins in the long run when building personal infrastructure.',
-				href: '/essays/on-building-for-decades'
-			},
-			{
-				date: 'Now',
-				title: 'What I mean when I say augment',
-				desc: 'A working definition with edges. The word does a lot of heavy lifting in my work.',
-				href: '/essays'
-			}
-		],
-		ja: [
-			{
-				date: '2026年2月',
-				title: 'ファネルという嘘',
-				desc: 'SaaS の成長を、直線ではなく遷移として見るためのメモ。',
-				href: '/essays/your-funnel-is-a-lie'
-			},
-			{
-				date: '2025年12月',
-				title: '十年単位でつくる',
-				desc: '個人のインフラを長く残すなら、なぜ単純さが勝つのか。',
-				href: '/essays/on-building-for-decades'
-			},
-			{
-				date: '今',
-				title: '「拡張」と言うとき',
-				desc: '仕事の中でずいぶん働かせている言葉に、少し輪郭を与える。',
-				href: '/essays'
-			}
-		]
+	// Essays come from src/content/essays, newest first, so a new essay shows up here by itself.
+	// Files that start with _ are templates or drafts. Only the metadata export is imported.
+	type EssayMeta = { title: string; date: string; description: string };
+	const ESSAY_META = import.meta.glob<EssayMeta>(['/src/content/essays/*.md', '!/src/content/essays/_*.md'], {
+		eager: true,
+		import: 'metadata'
+	});
+	// Japanese titles for essays that have them. Essays without an entry show their English title.
+	const ESSAY_JA: Record<string, { title: string; desc: string }> = {
+		'your-funnel-is-a-lie': {
+			title: 'ファネルという嘘',
+			desc: 'SaaS の成長を、直線ではなく遷移として見るためのメモ。'
+		},
+		'on-building-for-decades': {
+			title: '十年単位でつくる',
+			desc: '個人のインフラを長く残すなら、なぜ単純さが勝つのか。'
+		}
 	};
+	const ESSAYS = Object.entries(ESSAY_META)
+		.map(([path, meta]) => ({ slug: path.split('/').pop()!.replace('.md', ''), ...meta }))
+		.filter((essay) => essay.title && essay.date)
+		.sort((a, b) => b.date.localeCompare(a.date))
+		.slice(0, 3);
+	const essayDate = (date: string, locale: Locale) =>
+		new Date(`${date}T00:00:00`).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
+			year: 'numeric',
+			month: 'long'
+		});
 
 	let lang = getLocale() as Locale;
 	let filter: Filter = 'all';
+	// On phones, sunset projects stay folded under "All" until asked for (see .collapse-sunset).
+	let showSunset = false;
 	let visiblePieces = PIECES;
 	let t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	let statusLabel = (status: Status) => t(`work.status.${status}`);
@@ -646,9 +634,9 @@
 			{/each}
 		</div>
 
-		<ol class="scrap">
+		<ol class="scrap" class:collapse-sunset={filter === 'all' && !showSunset}>
 			{#each visiblePieces as piece (piece.id)}
-				<li>
+				<li class:is-sunset={piece.status === 'sunset'}>
 				<a
 					href={piece.href}
 					class={`scrap-piece status-${piece.status}`}
@@ -682,6 +670,13 @@
 				</li>
 			{/each}
 		</ol>
+		{#if filter === 'all' && !showSunset}
+			<button type="button" class="sunset-toggle" onclick={() => (showSunset = true)}>
+				{lang === 'ja'
+					? `終了したプロジェクトを表示（${countFor('sunset')}）`
+					: `Show ${countFor('sunset')} sunset projects`}
+			</button>
+		{/if}
 	</section>
 </div>
 
@@ -764,13 +759,18 @@
 					<span class="col-jp">{t('writing.philoJP')}</span>
 				</div>
 				<div class="post-list">
-					{#each PHILO[lang] as post}
-						<a class="post" href={localizeHref(post.href, { locale: lang })}>
-							<div class="post-meta">{post.date}</div>
-							<h4>{post.title}</h4>
-							<p>{post.desc}</p>
+					{#each ESSAYS as essay (essay.slug)}
+						{@const ja = lang === 'ja' ? ESSAY_JA[essay.slug] : undefined}
+						<a class="post" href={localizeHref(`/essays/${essay.slug}`, { locale: lang })}>
+							<div class="post-meta">{essayDate(essay.date, lang)}</div>
+							<h4>{ja?.title ?? essay.title}</h4>
+							<p>{ja?.desc ?? essay.description}</p>
 						</a>
 					{/each}
+				</div>
+				<div class="more-links">
+					<a href={localizeHref('/essays', { locale: lang })}>{lang === 'ja' ? 'すべてのエッセイ →' : 'All essays →'}</a>
+					<a class="guides-link" href={localizeHref('/ai-guides', { locale: lang })}>./ai-guides →</a>
 				</div>
 			</div>
 		</div>
@@ -788,7 +788,7 @@
 		<div class="contact-grid">
 			<aside class="contact-aside">
 				<p>{t('contact.aside.lead')}</p>
-				<p>{t('contact.aside.hi')}</p>
+				<p class="contact-hi">{t('contact.aside.hi')}</p>
 				<div class="contact-links">
 					<a href={SOCIAL_LINKS.github} target="_blank" rel="noopener">GitHub</a>
 					<a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener">LinkedIn</a>
