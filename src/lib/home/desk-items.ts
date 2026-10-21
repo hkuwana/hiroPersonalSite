@@ -14,7 +14,15 @@ export type PaletteKey =
 	| 'kon'
 	| 'gold'
 	| 'wood';
-export type ShelfId = 'work' | 'reading' | 'lang' | 'learn' | 'tools' | 'places';
+export type ShelfId =
+	| 'work'
+	| 'reading'
+	| 'lang'
+	| 'learn'
+	| 'tools'
+	| 'gamesJp'
+	| 'gamesWest'
+	| 'places';
 
 export type DeskItem = {
 	id: string;
@@ -40,6 +48,9 @@ export const SHELVES: { id: ShelfId; label: L10n; color: PaletteKey }[] = [
 	{ id: 'lang', label: { en: '言葉 Languages', ja: '言葉' }, color: 'moss' },
 	{ id: 'learn', label: { en: '学ぶ Learning', ja: '学ぶ' }, color: 'mossLight' },
 	{ id: 'tools', label: { en: '道具 Tools', ja: '道具' }, color: 'ink' },
+	// Games Hiro loves, split by where they were made (和 Japan, 洋 the West).
+	{ id: 'gamesJp', label: { en: '遊 Games · 和', ja: '遊び · 和' }, color: 'ebicha' },
+	{ id: 'gamesWest', label: { en: '遊 Games · 洋', ja: '遊び · 洋' }, color: 'kon' },
 	{ id: 'places', label: { en: '場所 Places', ja: '場所' }, color: 'gold' }
 ];
 
@@ -47,6 +58,25 @@ const SPEAK: L10n = { en: 'A language I speak.', ja: '話せる言語。' };
 const LEARN: L10n = { en: 'A language I am learning.', ja: 'いま学んでいる言語。' };
 const GITHUB: L10n = { en: 'View on GitHub', ja: 'GitHub で見る' };
 const wiki = (title: string) => `https://en.wikipedia.org/wiki/${title}`;
+const WIKI: L10n = { en: 'Read on Wikipedia', ja: 'Wikipedia で読む' };
+
+// A game tag: facts only (title, studio, year). Hiro's own take can go in `take` later.
+const game = (
+	id: string,
+	cat: 'gamesJp' | 'gamesWest',
+	label: string,
+	page: string,
+	desc: L10n
+): DeskItem => ({
+	id,
+	kind: 'tag',
+	cat,
+	label,
+	href: wiki(page),
+	external: true,
+	cta: WIKI,
+	desc
+});
 
 export const DESK_ITEMS: DeskItem[] = [
 	{
@@ -275,6 +305,38 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	},
 
+	game('okami', 'gamesJp', 'Ōkami', '%C5%8Ckami', {
+		en: 'Ōkami · Clover Studio, 2006. The ink village at the top of this page is inspired by it.',
+		ja: '大神 · クローバースタジオ、2006年。このページ上部の墨の村は、このゲームに着想を得ています。'
+	}),
+	game('silent-hill-2', 'gamesJp', 'Silent Hill 2', 'Silent_Hill_2', {
+		en: 'Silent Hill 2 · Konami, 2001.',
+		ja: 'サイレントヒル2 · コナミ、2001年。'
+	}),
+	game('mario-galaxy', 'gamesJp', 'Mario Galaxy', 'Super_Mario_Galaxy', {
+		en: 'Super Mario Galaxy · Nintendo, 2007.',
+		ja: 'スーパーマリオギャラクシー · 任天堂、2007年。'
+	}),
+	game('resident-evil-2', 'gamesJp', 'Resident Evil 2', 'Resident_Evil_2', {
+		en: 'Resident Evil 2 · Capcom, 1998 (remade in 2019).',
+		ja: 'バイオハザード2 · カプコン、1998年（2019年にリメイク）。'
+	}),
+	game('shogun-2', 'gamesWest', 'Shogun 2', 'Total_War:_Shogun_2', {
+		en: 'Total War: Shogun 2 · Creative Assembly, 2011.',
+		ja: 'Total War: SHOGUN 2 · Creative Assembly、2011年。'
+	}),
+	game('clair-obscur', 'gamesWest', 'Clair Obscur', 'Clair_Obscur:_Expedition_33', {
+		en: 'Clair Obscur: Expedition 33 · Sandfall Interactive, 2025.',
+		ja: 'Clair Obscur: Expedition 33 · Sandfall Interactive、2025年。'
+	}),
+	game('outer-wilds', 'gamesWest', 'Outer Wilds', 'Outer_Wilds', {
+		en: 'Outer Wilds · Mobius Digital, 2019.',
+		ja: 'Outer Wilds · Mobius Digital、2019年。'
+	}),
+	game('civ-v', 'gamesWest', 'Civilization V', 'Civilization_V', {
+		en: "Sid Meier's Civilization V · Firaxis Games, 2010.",
+		ja: 'シヴィライゼーション V · Firaxis Games、2010年。'
+	}),
 	{
 		id: 'tokyo-ny',
 		kind: 'tag',

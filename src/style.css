@@ -2018,7 +2018,7 @@ html[data-theme-transition]::view-transition { pointer-events: none; }
 .desk-head h2 { font-family: var(--f-display); font-weight: 600; margin: 0 0 1.5rem; }
 .desk-head em { font-family: var(--f-body); font-weight: 400; color: var(--ink-mute); }
 .desk-grid { display: grid; grid-template-columns: minmax(0, 840px) minmax(280px, 1fr); gap: 2.5rem; align-items: start; }
-.desk-canvas { width: 100%; aspect-ratio: 840 / 440; touch-action: pan-y; }
+.desk-canvas { width: 100%; aspect-ratio: 840 / 568; touch-action: pan-y; }
 .desk-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.5rem; }
 .desk-actions button { white-space: nowrap; }
 .contact-btn.ghost { background: transparent; color: var(--ebicha); }

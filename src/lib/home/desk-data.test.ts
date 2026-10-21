@@ -38,6 +38,11 @@ describe('desk items', () => {
 		]);
 		for (const a of authors) expect(both(a.take) && both(a.author?.descriptor)).toBe(true);
 	});
+	test("Hiro's games sit on two shelves, Japan and the West", () => {
+		const on = (cat: string) => DESK_ITEMS.filter((i) => i.cat === cat).map((i) => i.label);
+		expect(on('gamesJp')).toEqual(['Ōkami', 'Silent Hill 2', 'Mario Galaxy', 'Resident Evil 2']);
+		expect(on('gamesWest')).toEqual(['Shogun 2', 'Clair Obscur', 'Outer Wilds', 'Civilization V']);
+	});
 	test('learning languages are Spanish and Dutch', () => {
 		expect(DESK_ITEMS.filter((i) => i.cat === 'learn').map((i) => i.sub)).toEqual([
 			'Spanish',

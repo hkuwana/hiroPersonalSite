@@ -2,8 +2,8 @@ import { SHELVES, type ShelfId } from './desk-items';
 
 export const DESK = {
 	W: 840,
-	H: 440,
-	LEDGE_Y: 400,
+	H: 568,
+	LEDGE_Y: 528,
 	LABEL_W: 138,
 	ROW0: 80,
 	ROW_H: 64,
