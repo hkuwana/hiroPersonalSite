@@ -2018,7 +2018,7 @@ html[data-theme-transition]::view-transition { pointer-events: none; }
 .desk-head h2 { font-family: var(--f-display); font-weight: 600; margin: 0 0 1.5rem; }
 .desk-head em { font-family: var(--f-body); font-weight: 400; color: var(--ink-mute); }
 .desk-grid { display: grid; grid-template-columns: minmax(0, 840px) minmax(280px, 1fr); gap: 2.5rem; align-items: start; }
-.desk-canvas { width: 100%; aspect-ratio: 840 / 568; touch-action: pan-y; }
+.desk-canvas { width: 100%; aspect-ratio: 840 / 504; touch-action: pan-y; }
 .desk-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.5rem; }
 .desk-actions button { white-space: nowrap; }
 .contact-btn.ghost { background: transparent; color: var(--ebicha); }
@@ -2031,6 +2031,8 @@ html[data-theme-transition]::view-transition { pointer-events: none; }
 .desk-portrait { width: 84px; height: 84px; object-fit: cover; object-position: top; border-radius: 50%; border: 1px solid var(--gold); outline: 1px solid var(--gold); outline-offset: 3px; filter: grayscale(1) sepia(0.55) contrast(1.1); }
 .desk-portrait.self { filter: none; }
 .desk-portrait.monogram { display: grid; place-items: center; font-family: var(--f-display); font-size: 2rem; color: var(--paper); background: var(--kon); filter: none; }
+.desk-cover { width: 84px; height: 112px; flex: none; object-fit: cover; border: 1px solid var(--gold); outline: 1px solid var(--gold); outline-offset: 3px; }
+.desk-credit { margin: 0.75rem 0 0; font-size: 0.75rem; color: var(--ink-mute); }
 .desk-logo { width: 64px; height: 64px; object-fit: contain; padding: 8px; background: #fff; border-radius: 50%; border: 1px solid var(--gold); }
 @media (max-width: 1040px) { .desk-grid { grid-template-columns: 1fr; } }
 

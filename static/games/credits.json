@@ -1,0 +1,58 @@
+{
+	"okami": {
+		"file": "OkamiNTSCcoverFinal.jpg",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Capcom",
+		"source": "https://en.wikipedia.org/wiki/File:OkamiNTSCcoverFinal.jpg"
+	},
+	"silent-hill-2": {
+		"file": "Silent Hill 2.jpg",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Konami",
+		"source": "https://en.wikipedia.org/wiki/File:Silent_Hill_2.jpg"
+	},
+	"mario-galaxy": {
+		"file": "SuperMarioGalaxy.jpg",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Nintendo",
+		"source": "https://en.wikipedia.org/wiki/File:SuperMarioGalaxy.jpg"
+	},
+	"resident-evil-2": {
+		"file": "NTSC Resident Evil 2 Cover.png",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Capcom",
+		"source": "https://en.wikipedia.org/wiki/File:NTSC_Resident_Evil_2_Cover.png"
+	},
+	"shogun-2": {
+		"file": "Shogun 2 Total War box art.jpg",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Sega / Creative Assembly",
+		"source": "https://en.wikipedia.org/wiki/File:Shogun_2_Total_War_box_art.jpg"
+	},
+	"clair-obscur": {
+		"file": "Clair Obscur, Expedition 33 Cover 1.webp",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Kepler Interactive / Sandfall Interactive",
+		"source": "https://en.wikipedia.org/wiki/File:Clair_Obscur,_Expedition_33_Cover_1.webp"
+	},
+	"outer-wilds": {
+		"file": "Outer Wilds Steam artwork.jpg",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Annapurna Interactive / Mobius Digital",
+		"source": "https://en.wikipedia.org/wiki/File:Outer_Wilds_Steam_artwork.jpg"
+	},
+	"civ-v": {
+		"file": "CIVILIZATION-V-FRONT-OF-BOX.jpg",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "2K / Firaxis Games",
+		"source": "https://en.wikipedia.org/wiki/File:CIVILIZATION-V-FRONT-OF-BOX.jpg"
+	}
+}

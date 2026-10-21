@@ -35,8 +35,8 @@ function drawSeal(ctx: CanvasRenderingContext2D, p: Palette) {
 
 function drawTag(ctx: CanvasRenderingContext2D, p: Palette, d: DrawnItem, logo?: HTMLImageElement) {
 	const { w, h, item } = d;
-	const shelf = SHELVES.find((s) => s.id === item.cat)!;
-	const fill = p[shelf.color];
+	const color = item.color ?? SHELVES.find((s) => s.id === item.cat)!.color;
+	const fill = p[color];
 	ctx.fillStyle = fill;
 	ctx.strokeStyle = p.ink;
 	ctx.lineWidth = 1.2;
@@ -80,7 +80,7 @@ function drawTag(ctx: CanvasRenderingContext2D, p: Palette, d: DrawnItem, logo?:
 		ctx.fill();
 		ctx.stroke();
 	}
-	ctx.fillStyle = DARK_TEXT.has(shelf.color) ? p.ink : p.paper;
+	ctx.fillStyle = DARK_TEXT.has(color) ? p.ink : p.paper;
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'middle';
 	ctx.font = '18px "Newsreader", serif';

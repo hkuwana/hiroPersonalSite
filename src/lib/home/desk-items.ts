@@ -14,15 +14,7 @@ export type PaletteKey =
 	| 'kon'
 	| 'gold'
 	| 'wood';
-export type ShelfId =
-	| 'work'
-	| 'reading'
-	| 'lang'
-	| 'learn'
-	| 'tools'
-	| 'gamesJp'
-	| 'gamesWest'
-	| 'places';
+export type ShelfId = 'work' | 'reading' | 'lang' | 'tools' | 'gamesJp' | 'gamesWest' | 'places';
 
 export type DeskItem = {
 	id: string;
@@ -31,6 +23,10 @@ export type DeskItem = {
 	label: string;
 	sub?: string;
 	logo?: string;
+	// Tag color when it differs from the shelf color.
+	color?: PaletteKey;
+	// Game box art in static/games/ (not free, credited in credits.json).
+	cover?: { src: string; owner: string };
 	href?: string;
 	external?: boolean;
 	cta?: L10n;
@@ -45,8 +41,8 @@ export type DeskItem = {
 export const SHELVES: { id: ShelfId; label: L10n; color: PaletteKey }[] = [
 	{ id: 'work', label: { en: '作品 Projects', ja: '作品' }, color: 'ebicha' },
 	{ id: 'reading', label: { en: '本 Humanities', ja: '本' }, color: 'kon' },
+	// Languages I speak (moss) and am learning (light moss) share one row.
 	{ id: 'lang', label: { en: '言葉 Languages', ja: '言葉' }, color: 'moss' },
-	{ id: 'learn', label: { en: '学ぶ Learning', ja: '学ぶ' }, color: 'mossLight' },
 	{ id: 'tools', label: { en: '道具 Tools', ja: '道具' }, color: 'ink' },
 	// Games Hiro loves, split by where they were made (和 Japan, 洋 the West).
 	{ id: 'gamesJp', label: { en: '遊 Games · 和', ja: '遊び · 和' }, color: 'ebicha' },
@@ -60,13 +56,15 @@ const GITHUB: L10n = { en: 'View on GitHub', ja: 'GitHub で見る' };
 const wiki = (title: string) => `https://en.wikipedia.org/wiki/${title}`;
 const WIKI: L10n = { en: 'Read on Wikipedia', ja: 'Wikipedia で読む' };
 
-// A game tag: facts only (title, studio, year). Hiro's own take can go in `take` later.
+// A game tag: facts (title, studio, year), the box art, and Hiro's take when he gave one.
 const game = (
 	id: string,
 	cat: 'gamesJp' | 'gamesWest',
 	label: string,
 	page: string,
-	desc: L10n
+	owner: string,
+	desc: L10n,
+	take?: L10n
 ): DeskItem => ({
 	id,
 	kind: 'tag',
@@ -75,7 +73,9 @@ const game = (
 	href: wiki(page),
 	external: true,
 	cta: WIKI,
-	desc
+	cover: { src: `/games/${id}.jpg`, owner },
+	desc,
+	take
 });
 
 export const DESK_ITEMS: DeskItem[] = [
@@ -227,8 +227,24 @@ export const DESK_ITEMS: DeskItem[] = [
 	{ id: 'japanese', kind: 'tag', cat: 'lang', label: '日本語', sub: 'Japanese', desc: SPEAK },
 	{ id: 'english', kind: 'tag', cat: 'lang', label: 'English', desc: SPEAK },
 	{ id: 'mandarin', kind: 'tag', cat: 'lang', label: '中文', sub: 'Mandarin', desc: SPEAK },
-	{ id: 'spanish', kind: 'tag', cat: 'learn', label: 'Español', sub: 'Spanish', desc: LEARN },
-	{ id: 'dutch', kind: 'tag', cat: 'learn', label: 'Nederlands', sub: 'Dutch', desc: LEARN },
+	{
+		id: 'spanish',
+		kind: 'tag',
+		cat: 'lang',
+		label: 'Español',
+		sub: 'Spanish',
+		desc: LEARN,
+		color: 'mossLight'
+	},
+	{
+		id: 'dutch',
+		kind: 'tag',
+		cat: 'lang',
+		label: 'Nederlands',
+		sub: 'Dutch',
+		desc: LEARN,
+		color: 'mossLight'
+	},
 
 	{
 		id: 'llms',
@@ -305,38 +321,79 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	},
 
-	game('okami', 'gamesJp', 'Ōkami', '%C5%8Ckami', {
+	game('okami', 'gamesJp', 'Ōkami', '%C5%8Ckami', 'Capcom', {
 		en: 'Ōkami · Clover Studio, 2006. The ink village at the top of this page is inspired by it.',
 		ja: '大神 · クローバースタジオ、2006年。このページ上部の墨の村は、このゲームに着想を得ています。'
 	}),
-	game('silent-hill-2', 'gamesJp', 'Silent Hill 2', 'Silent_Hill_2', {
+	game('silent-hill-2', 'gamesJp', 'Silent Hill 2', 'Silent_Hill_2', 'Konami', {
 		en: 'Silent Hill 2 · Konami, 2001.',
 		ja: 'サイレントヒル2 · コナミ、2001年。'
 	}),
-	game('mario-galaxy', 'gamesJp', 'Mario Galaxy', 'Super_Mario_Galaxy', {
+	game('mario-galaxy', 'gamesJp', 'Mario Galaxy', 'Super_Mario_Galaxy', 'Nintendo', {
 		en: 'Super Mario Galaxy · Nintendo, 2007.',
 		ja: 'スーパーマリオギャラクシー · 任天堂、2007年。'
 	}),
-	game('resident-evil-2', 'gamesJp', 'Resident Evil 2', 'Resident_Evil_2', {
+	game('resident-evil-2', 'gamesJp', 'Resident Evil 2', 'Resident_Evil_2', 'Capcom', {
 		en: 'Resident Evil 2 · Capcom, 1998 (remade in 2019).',
 		ja: 'バイオハザード2 · カプコン、1998年（2019年にリメイク）。'
 	}),
-	game('shogun-2', 'gamesWest', 'Shogun 2', 'Total_War:_Shogun_2', {
-		en: 'Total War: Shogun 2 · Creative Assembly, 2011.',
-		ja: 'Total War: SHOGUN 2 · Creative Assembly、2011年。'
-	}),
-	game('clair-obscur', 'gamesWest', 'Clair Obscur', 'Clair_Obscur:_Expedition_33', {
-		en: 'Clair Obscur: Expedition 33 · Sandfall Interactive, 2025.',
-		ja: 'Clair Obscur: Expedition 33 · Sandfall Interactive、2025年。'
-	}),
-	game('outer-wilds', 'gamesWest', 'Outer Wilds', 'Outer_Wilds', {
-		en: 'Outer Wilds · Mobius Digital, 2019.',
-		ja: 'Outer Wilds · Mobius Digital、2019年。'
-	}),
-	game('civ-v', 'gamesWest', 'Civilization V', 'Civilization_V', {
-		en: "Sid Meier's Civilization V · Firaxis Games, 2010.",
-		ja: 'シヴィライゼーション V · Firaxis Games、2010年。'
-	}),
+	game(
+		'shogun-2',
+		'gamesWest',
+		'Shogun 2',
+		'Total_War:_Shogun_2',
+		'Sega',
+		{
+			en: 'Total War: Shogun 2 · Creative Assembly, 2011.',
+			ja: 'Total War: SHOGUN 2 · Creative Assembly、2011年。'
+		},
+		{
+			en: 'The best RTS game, with a lot of flexibility.',
+			ja: '最高の RTS。自由度がとても高い。'
+		}
+	),
+	game(
+		'clair-obscur',
+		'gamesWest',
+		'Clair Obscur',
+		'Clair_Obscur:_Expedition_33',
+		'Kepler Interactive',
+		{
+			en: 'Clair Obscur: Expedition 33 · Sandfall Interactive, 2025.',
+			ja: 'Clair Obscur: Expedition 33 · Sandfall Interactive、2025年。'
+		},
+		{
+			en: 'A game that showed that art and music in a game are intertwined.',
+			ja: 'ゲームのアートと音楽は一体なのだと教えてくれた作品。'
+		}
+	),
+	game(
+		'outer-wilds',
+		'gamesWest',
+		'Outer Wilds',
+		'Outer_Wilds',
+		'Annapurna Interactive',
+		{
+			en: 'Outer Wilds · Mobius Digital, 2019.',
+			ja: 'Outer Wilds · Mobius Digital、2019年。'
+		},
+		{ en: 'Show, never tell.', ja: '語らず、見せる。' }
+	),
+	game(
+		'civ-v',
+		'gamesWest',
+		'Civilization V',
+		'Civilization_V',
+		'2K',
+		{
+			en: "Sid Meier's Civilization V · Firaxis Games, 2010.",
+			ja: 'シヴィライゼーション V · Firaxis Games、2010年。'
+		},
+		{
+			en: 'I love spreading my religion of Costco.',
+			ja: '自分の宗教「コストコ教」を広めるのが大好き。'
+		}
+	),
 	{
 		id: 'tokyo-ny',
 		kind: 'tag',
