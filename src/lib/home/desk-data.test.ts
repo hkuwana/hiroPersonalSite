@@ -44,24 +44,30 @@ describe('desk items', () => {
 		expect(on('gamesJp')).toEqual(['Ōkami', 'Silent Hill 2', 'Mario Galaxy', 'Resident Evil 2']);
 		expect(on('gamesWest')).toEqual(['Shogun 2', 'Clair Obscur', 'Outer Wilds', 'Civilization V']);
 	});
-	test('all languages share one row, with learning ones in light moss', () => {
-		const langs = DESK_ITEMS.filter((i) => i.cat === 'lang');
-		expect(langs.map((i) => i.label)).toEqual([
+	test('all languages share one row', () => {
+		expect(DESK_ITEMS.filter((i) => i.cat === 'lang').map((i) => i.label)).toEqual([
 			'日本語',
 			'English',
 			'中文',
 			'Español',
 			'Nederlands'
 		]);
-		expect(langs.filter((i) => i.color === 'mossLight').map((i) => i.sub)).toEqual([
-			'Spanish',
-			'Dutch'
-		]);
 	});
-	test("Hiro's takes are on the games he wrote about", () => {
-		const taken = DESK_ITEMS.filter((i) => i.cover && i.take).map((i) => i.id);
-		expect(taken).toEqual(['shogun-2', 'clair-obscur', 'outer-wilds', 'civ-v']);
-		for (const i of DESK_ITEMS) if (i.take) expect(both(i.take)).toBe(true);
+	test("every game has Hiro's take", () => {
+		const games = DESK_ITEMS.filter((i) => i.cat === 'gamesJp' || i.cat === 'gamesWest');
+		expect(games).toHaveLength(8);
+		for (const g of games) expect(both(g.take), g.id).toBe(true);
+	});
+	test('each part of the desk has its own color, and both game rows share one', () => {
+		const part = (id: string) => (id.startsWith('games') ? 'games' : id);
+		const colorOf = new Map<string, string>();
+		for (const s of SHELVES) {
+			const seen = colorOf.get(part(s.id));
+			if (seen) expect(s.color, s.id).toBe(seen);
+			else colorOf.set(part(s.id), s.color);
+		}
+		const colors = [...colorOf.values()];
+		expect(new Set(colors).size).toBe(colors.length);
 	});
 	test('every referenced asset exists in static/', () => {
 		for (const i of DESK_ITEMS) {

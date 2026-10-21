@@ -13,7 +13,8 @@ export type PaletteKey =
 	| 'ebicha'
 	| 'kon'
 	| 'gold'
-	| 'wood';
+	| 'wood'
+	| 'murasaki';
 export type ShelfId = 'work' | 'reading' | 'lang' | 'tools' | 'gamesJp' | 'gamesWest' | 'places';
 
 export type DeskItem = {
@@ -23,8 +24,6 @@ export type DeskItem = {
 	label: string;
 	sub?: string;
 	logo?: string;
-	// Tag color when it differs from the shelf color.
-	color?: PaletteKey;
 	// Game box art in static/games/ (not free, credited in credits.json).
 	cover?: { src: string; owner: string };
 	href?: string;
@@ -41,12 +40,12 @@ export type DeskItem = {
 export const SHELVES: { id: ShelfId; label: L10n; color: PaletteKey }[] = [
 	{ id: 'work', label: { en: '作品 Projects', ja: '作品' }, color: 'ebicha' },
 	{ id: 'reading', label: { en: '本 Humanities', ja: '本' }, color: 'kon' },
-	// Languages I speak (moss) and am learning (light moss) share one row.
 	{ id: 'lang', label: { en: '言葉 Languages', ja: '言葉' }, color: 'moss' },
 	{ id: 'tools', label: { en: '道具 Tools', ja: '道具' }, color: 'ink' },
 	// Games Hiro loves, split by where they were made (和 Japan, 洋 the West).
-	{ id: 'gamesJp', label: { en: '遊 Games · 和', ja: '遊び · 和' }, color: 'ebicha' },
-	{ id: 'gamesWest', label: { en: '遊 Games · 洋', ja: '遊び · 洋' }, color: 'kon' },
+	// Both rows share one color, so the games read as one group.
+	{ id: 'gamesJp', label: { en: '遊 Games · 和', ja: '遊び · 和' }, color: 'murasaki' },
+	{ id: 'gamesWest', label: { en: '遊 Games · 洋', ja: '遊び · 洋' }, color: 'murasaki' },
 	{ id: 'places', label: { en: '場所 Places', ja: '場所' }, color: 'gold' }
 ];
 
@@ -233,8 +232,7 @@ export const DESK_ITEMS: DeskItem[] = [
 		cat: 'lang',
 		label: 'Español',
 		sub: 'Spanish',
-		desc: LEARN,
-		color: 'mossLight'
+		desc: LEARN
 	},
 	{
 		id: 'dutch',
@@ -242,8 +240,7 @@ export const DESK_ITEMS: DeskItem[] = [
 		cat: 'lang',
 		label: 'Nederlands',
 		sub: 'Dutch',
-		desc: LEARN,
-		color: 'mossLight'
+		desc: LEARN
 	},
 
 	{
@@ -321,22 +318,66 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	},
 
-	game('okami', 'gamesJp', 'Ōkami', '%C5%8Ckami', 'Capcom', {
-		en: 'Ōkami · Clover Studio, 2006. The ink village at the top of this page is inspired by it.',
-		ja: '大神 · クローバースタジオ、2006年。このページ上部の墨の村は、このゲームに着想を得ています。'
-	}),
-	game('silent-hill-2', 'gamesJp', 'Silent Hill 2', 'Silent_Hill_2', 'Konami', {
-		en: 'Silent Hill 2 · Konami, 2001.',
-		ja: 'サイレントヒル2 · コナミ、2001年。'
-	}),
-	game('mario-galaxy', 'gamesJp', 'Mario Galaxy', 'Super_Mario_Galaxy', 'Nintendo', {
-		en: 'Super Mario Galaxy · Nintendo, 2007.',
-		ja: 'スーパーマリオギャラクシー · 任天堂、2007年。'
-	}),
-	game('resident-evil-2', 'gamesJp', 'Resident Evil 2', 'Resident_Evil_2', 'Capcom', {
-		en: 'Resident Evil 2 · Capcom, 1998 (remade in 2019).',
-		ja: 'バイオハザード2 · カプコン、1998年（2019年にリメイク）。'
-	}),
+	game(
+		'okami',
+		'gamesJp',
+		'Ōkami',
+		'%C5%8Ckami',
+		'Capcom',
+		{
+			en: 'Ōkami · Clover Studio, 2006. The ink village at the top of this page is inspired by it.',
+			ja: '大神 · クローバースタジオ、2006年。このページ上部の墨の村は、このゲームに着想を得ています。'
+		},
+		{
+			en: 'It taught me that you can mix visual art and graphics with games.',
+			ja: 'ビジュアルアートとゲームは混ぜ合わせられるのだと教えてくれた作品。'
+		}
+	),
+	game(
+		'silent-hill-2',
+		'gamesJp',
+		'Silent Hill 2',
+		'Silent_Hill_2',
+		'Konami',
+		{
+			en: 'Silent Hill 2 · Konami, 2001.',
+			ja: 'サイレントヒル2 · コナミ、2001年。'
+		},
+		{
+			en: 'The creation of the atmosphere.',
+			ja: '空気感のつくり方。'
+		}
+	),
+	game(
+		'mario-galaxy',
+		'gamesJp',
+		'Mario Galaxy',
+		'Super_Mario_Galaxy',
+		'Nintendo',
+		{
+			en: 'Super Mario Galaxy · Nintendo, 2007.',
+			ja: 'スーパーマリオギャラクシー · 任天堂、2007年。'
+		},
+		{
+			en: 'The expansive world, and how you can really manipulate things as a player with how you think about organizing things.',
+			ja: '広がりのある世界。そして、物の整理の仕方を考えることで、プレイヤーとして本当に多くのことを操れるところ。'
+		}
+	),
+	game(
+		'resident-evil-2',
+		'gamesJp',
+		'Resident Evil 2',
+		'Resident_Evil_2',
+		'Capcom',
+		{
+			en: 'Resident Evil 2 · Capcom, 1998 (remade in 2019).',
+			ja: 'バイオハザード2 · カプコン、1998年（2019年にリメイク）。'
+		},
+		{
+			en: 'It created an atmosphere, and the remake especially was a great blend of the survival horror genre.',
+			ja: '空気感をつくり出した作品。特にリメイク版は、サバイバルホラーというジャンルの見事な融合でした。'
+		}
+	),
 	game(
 		'shogun-2',
 		'gamesWest',

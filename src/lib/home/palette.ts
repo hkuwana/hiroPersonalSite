@@ -12,7 +12,8 @@ const VARS: Record<PaletteKey, string> = {
 	ebicha: '--ebicha',
 	kon: '--kon',
 	gold: '--gold',
-	wood: '--wood'
+	wood: '--wood',
+	murasaki: '--murasaki'
 };
 
 // Read live tokens, so canvases follow the light/dark theme.

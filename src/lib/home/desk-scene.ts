@@ -35,7 +35,7 @@ function drawSeal(ctx: CanvasRenderingContext2D, p: Palette) {
 
 function drawTag(ctx: CanvasRenderingContext2D, p: Palette, d: DrawnItem, logo?: HTMLImageElement) {
 	const { w, h, item } = d;
-	const color = item.color ?? SHELVES.find((s) => s.id === item.cat)!.color;
+	const color = SHELVES.find((s) => s.id === item.cat)!.color;
 	const fill = p[color];
 	ctx.fillStyle = fill;
 	ctx.strokeStyle = p.ink;
