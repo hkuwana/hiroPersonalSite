@@ -39,10 +39,12 @@ describe('desk items', () => {
 		]);
 		for (const a of authors) expect(both(a.take) && both(a.author?.descriptor)).toBe(true);
 	});
-	test("Hiro's games sit on two shelves, Japan and the West", () => {
-		const on = (cat: string) => DESK_ITEMS.filter((i) => i.cat === cat).map((i) => i.label);
-		expect(on('gamesJp')).toEqual(['Ōkami', 'Silent Hill 2', 'Mario Galaxy', 'Resident Evil 2']);
-		expect(on('gamesWest')).toEqual(['Shogun 2', 'Clair Obscur', 'Outer Wilds', 'Civilization V']);
+	test("Hiro's top 3 games share one row", () => {
+		expect(DESK_ITEMS.filter((i) => i.cat === 'games').map((i) => i.label)).toEqual([
+			'Ōkami',
+			'Shogun 2',
+			'Resident Evil 2'
+		]);
 	});
 	test('all languages share one row', () => {
 		expect(DESK_ITEMS.filter((i) => i.cat === 'lang').map((i) => i.label)).toEqual([
@@ -54,19 +56,11 @@ describe('desk items', () => {
 		]);
 	});
 	test("every game has Hiro's take", () => {
-		const games = DESK_ITEMS.filter((i) => i.cat === 'gamesJp' || i.cat === 'gamesWest');
-		expect(games).toHaveLength(8);
+		const games = DESK_ITEMS.filter((i) => i.cat === 'games');
 		for (const g of games) expect(both(g.take), g.id).toBe(true);
 	});
-	test('each part of the desk has its own color, and both game rows share one', () => {
-		const part = (id: string) => (id.startsWith('games') ? 'games' : id);
-		const colorOf = new Map<string, string>();
-		for (const s of SHELVES) {
-			const seen = colorOf.get(part(s.id));
-			if (seen) expect(s.color, s.id).toBe(seen);
-			else colorOf.set(part(s.id), s.color);
-		}
-		const colors = [...colorOf.values()];
+	test('each part of the desk has its own color', () => {
+		const colors = SHELVES.map((s) => s.color);
 		expect(new Set(colors).size).toBe(colors.length);
 	});
 	test('every referenced asset exists in static/', () => {
@@ -89,7 +83,7 @@ test('only free-license portraits are referenced', () => {
 });
 
 test('every game has box art with a source and an owner credit', () => {
-	const games = DESK_ITEMS.filter((i) => i.cat === 'gamesJp' || i.cat === 'gamesWest');
+	const games = DESK_ITEMS.filter((i) => i.cat === 'games');
 	for (const g of games) {
 		const c = (coverCredits as Record<string, { source: string; owner: string }>)[g.id];
 		expect(g.cover?.src, g.id).toBe(`/games/${g.id}.jpg`);

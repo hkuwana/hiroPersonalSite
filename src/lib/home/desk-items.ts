@@ -15,7 +15,7 @@ export type PaletteKey =
 	| 'gold'
 	| 'wood'
 	| 'murasaki';
-export type ShelfId = 'work' | 'reading' | 'lang' | 'tools' | 'gamesJp' | 'gamesWest' | 'places';
+export type ShelfId = 'work' | 'reading' | 'lang' | 'tools' | 'games' | 'places';
 
 export type DeskItem = {
 	id: string;
@@ -42,10 +42,8 @@ export const SHELVES: { id: ShelfId; label: L10n; color: PaletteKey }[] = [
 	{ id: 'reading', label: { en: '本 Humanities', ja: '本' }, color: 'kon' },
 	{ id: 'lang', label: { en: '言葉 Languages', ja: '言葉' }, color: 'moss' },
 	{ id: 'tools', label: { en: '道具 Tools', ja: '道具' }, color: 'ink' },
-	// Games Hiro loves, split by where they were made (和 Japan, 洋 the West).
-	// Both rows share one color, so the games read as one group.
-	{ id: 'gamesJp', label: { en: '遊 Games · 和', ja: '遊び · 和' }, color: 'murasaki' },
-	{ id: 'gamesWest', label: { en: '遊 Games · 洋', ja: '遊び · 洋' }, color: 'murasaki' },
+	// Hiro's top 3 games.
+	{ id: 'games', label: { en: '遊 Games', ja: '遊び' }, color: 'murasaki' },
 	{ id: 'places', label: { en: '場所 Places', ja: '場所' }, color: 'gold' }
 ];
 
@@ -55,19 +53,18 @@ const GITHUB: L10n = { en: 'View on GitHub', ja: 'GitHub で見る' };
 const wiki = (title: string) => `https://en.wikipedia.org/wiki/${title}`;
 const WIKI: L10n = { en: 'Read on Wikipedia', ja: 'Wikipedia で読む' };
 
-// A game tag: facts (title, studio, year), the box art, and Hiro's take when he gave one.
+// A game tag: facts (title, studio, year), the box art, and Hiro's take.
 const game = (
 	id: string,
-	cat: 'gamesJp' | 'gamesWest',
 	label: string,
 	page: string,
 	owner: string,
 	desc: L10n,
-	take?: L10n
+	take: L10n
 ): DeskItem => ({
 	id,
 	kind: 'tag',
-	cat,
+	cat: 'games',
 	label,
 	href: wiki(page),
 	external: true,
@@ -320,7 +317,6 @@ export const DESK_ITEMS: DeskItem[] = [
 
 	game(
 		'okami',
-		'gamesJp',
 		'Ōkami',
 		'%C5%8Ckami',
 		'Capcom',
@@ -334,53 +330,7 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	),
 	game(
-		'silent-hill-2',
-		'gamesJp',
-		'Silent Hill 2',
-		'Silent_Hill_2',
-		'Konami',
-		{
-			en: 'Silent Hill 2 · Konami, 2001.',
-			ja: 'サイレントヒル2 · コナミ、2001年。'
-		},
-		{
-			en: 'The creation of the atmosphere.',
-			ja: '空気感のつくり方。'
-		}
-	),
-	game(
-		'mario-galaxy',
-		'gamesJp',
-		'Mario Galaxy',
-		'Super_Mario_Galaxy',
-		'Nintendo',
-		{
-			en: 'Super Mario Galaxy · Nintendo, 2007.',
-			ja: 'スーパーマリオギャラクシー · 任天堂、2007年。'
-		},
-		{
-			en: 'The expansive world, and how you can really manipulate things as a player with how you think about organizing things.',
-			ja: '広がりのある世界。そして、物の整理の仕方を考えることで、プレイヤーとして本当に多くのことを操れるところ。'
-		}
-	),
-	game(
-		'resident-evil-2',
-		'gamesJp',
-		'Resident Evil 2',
-		'Resident_Evil_2',
-		'Capcom',
-		{
-			en: 'Resident Evil 2 · Capcom, 1998 (remade in 2019).',
-			ja: 'バイオハザード2 · カプコン、1998年（2019年にリメイク）。'
-		},
-		{
-			en: 'It created an atmosphere, and the remake especially was a great blend of the survival horror genre.',
-			ja: '空気感をつくり出した作品。特にリメイク版は、サバイバルホラーというジャンルの見事な融合でした。'
-		}
-	),
-	game(
 		'shogun-2',
-		'gamesWest',
 		'Shogun 2',
 		'Total_War:_Shogun_2',
 		'Sega',
@@ -394,45 +344,17 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	),
 	game(
-		'clair-obscur',
-		'gamesWest',
-		'Clair Obscur',
-		'Clair_Obscur:_Expedition_33',
-		'Kepler Interactive',
+		'resident-evil-2',
+		'Resident Evil 2',
+		'Resident_Evil_2',
+		'Capcom',
 		{
-			en: 'Clair Obscur: Expedition 33 · Sandfall Interactive, 2025.',
-			ja: 'Clair Obscur: Expedition 33 · Sandfall Interactive、2025年。'
+			en: 'Resident Evil 2 · Capcom, 1998 (remade in 2019).',
+			ja: 'バイオハザード2 · カプコン、1998年（2019年にリメイク）。'
 		},
 		{
-			en: 'A game that showed that art and music in a game are intertwined.',
-			ja: 'ゲームのアートと音楽は一体なのだと教えてくれた作品。'
-		}
-	),
-	game(
-		'outer-wilds',
-		'gamesWest',
-		'Outer Wilds',
-		'Outer_Wilds',
-		'Annapurna Interactive',
-		{
-			en: 'Outer Wilds · Mobius Digital, 2019.',
-			ja: 'Outer Wilds · Mobius Digital、2019年。'
-		},
-		{ en: 'Show, never tell.', ja: '語らず、見せる。' }
-	),
-	game(
-		'civ-v',
-		'gamesWest',
-		'Civilization V',
-		'Civilization_V',
-		'2K',
-		{
-			en: "Sid Meier's Civilization V · Firaxis Games, 2010.",
-			ja: 'シヴィライゼーション V · Firaxis Games、2010年。'
-		},
-		{
-			en: 'I love spreading my religion of Costco.',
-			ja: '自分の宗教「コストコ教」を広めるのが大好き。'
+			en: 'It created an atmosphere, and the remake especially was a great blend of the survival horror genre.',
+			ja: '空気感をつくり出した作品。特にリメイク版は、サバイバルホラーというジャンルの見事な融合でした。'
 		}
 	),
 	{

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
 	import { FAQS, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+	import { DESK_ITEMS } from '$lib/home/desk-items';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/stores';
@@ -11,17 +12,14 @@
 
 	const visibleFaqs = FAQS.filter((faq) => faq.visible);
 
-	// Games Hiro loves (his list, in his order). Ōkami inspired the ink village on the home page.
-	const GAMES: { title: string; titleJa: string; studio: string; inspires?: boolean }[] = [
-		{ title: 'Ōkami', titleJa: '大神', studio: 'Clover Studio', inspires: true },
-		{ title: 'Silent Hill 2', titleJa: 'サイレントヒル2', studio: 'Konami' },
-		{ title: 'Super Mario Galaxy', titleJa: 'スーパーマリオギャラクシー', studio: 'Nintendo' },
-		{ title: 'Total War: Shogun 2', titleJa: 'Total War: SHOGUN 2', studio: 'Creative Assembly' },
-		{ title: 'Clair Obscur: Expedition 33', titleJa: 'Clair Obscur: Expedition 33', studio: 'Sandfall Interactive' },
-		{ title: 'Outer Wilds', titleJa: 'Outer Wilds', studio: 'Mobius Digital' },
-		{ title: 'Resident Evil 2', titleJa: 'バイオハザード2', studio: 'Capcom' },
-		{ title: 'Civilization V', titleJa: 'シヴィライゼーション V', studio: 'Firaxis Games' }
+	// Hiro's top 3 games, in his order. His reasons live with the desk tags (desk-items.ts).
+	// Ōkami inspired the ink village on the home page.
+	const GAMES: { id: string; title: string; titleJa: string; studio: string; inspires?: boolean }[] = [
+		{ id: 'okami', title: 'Ōkami', titleJa: '大神', studio: 'Clover Studio', inspires: true },
+		{ id: 'shogun-2', title: 'Total War: Shogun 2', titleJa: 'Total War: SHOGUN 2', studio: 'Creative Assembly' },
+		{ id: 'resident-evil-2', title: 'Resident Evil 2', titleJa: 'バイオハザード2', studio: 'Capcom' }
 	];
+	const takeOf = (id: string) => DESK_ITEMS.find((i) => i.id === id)?.take;
 
 	const faqJsonLd = {
 		'@context': 'https://schema.org',
@@ -64,7 +62,7 @@
 					contactCta: 'お便りを書く →',
 					photoAlt: '山道を歩く桑名浩行',
 					photoCaption: 'fig. 0 · 山にいるほうの私',
-					games: '好きなゲーム',
+					games: '好きなゲーム トップ3',
 					inspires: 'トップページの墨の村は、このゲームに着想を得ています。',
 					seeVillage: '村を見る →'
 				}
@@ -79,7 +77,7 @@
 					contactCta: 'Write to me →',
 					photoAlt: 'Hiro Kuwana on a mountain trail',
 					photoCaption: 'fig. 0 · the one behind the seal',
-					games: 'Games I love',
+					games: 'Top 3 games',
 					inspires: 'The ink village on the front page is inspired by it.',
 					seeVillage: 'See the village →'
 				};
@@ -146,6 +144,9 @@
 					<li>
 						<span class="game-title">{lang === 'ja' ? game.titleJa : game.title}</span>
 						<span class="game-studio">{game.studio}</span>
+						{#if takeOf(game.id)}
+							<span class="game-take">{takeOf(game.id)?.[lang]}</span>
+						{/if}
 						{#if game.inspires}
 							<span class="game-note">
 								{copy.inspires}
@@ -353,6 +354,12 @@
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		color: var(--color-text-tertiary, #999);
+	}
+
+	.game-take {
+		margin-top: 0.2rem;
+		font-size: 0.95rem;
+		color: var(--color-text);
 	}
 
 	.game-note {
