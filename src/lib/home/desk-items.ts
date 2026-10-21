@@ -253,6 +253,19 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	},
 	{
+		id: 'claude-code',
+		kind: 'tag',
+		cat: 'tools',
+		label: 'Claude Code',
+		href: 'https://claude.com/product/claude-code',
+		external: true,
+		cta: { en: 'claude.com', ja: 'claude.com' },
+		desc: {
+			en: 'The AI that writes most of my code, while I decide what to build.',
+			ja: 'コードの大半を書く AI。何をつくるかは私が決めます。'
+		}
+	},
+	{
 		id: 'typescript',
 		kind: 'tag',
 		cat: 'tools',
@@ -266,16 +279,16 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	},
 	{
-		id: 'svelte',
+		id: 'astro',
 		kind: 'tag',
 		cat: 'tools',
-		label: 'Svelte',
-		href: 'https://svelte.dev/',
+		label: 'Astro',
+		href: 'https://astro.build/',
 		external: true,
-		cta: { en: 'svelte.dev', ja: 'svelte.dev' },
+		cta: { en: 'astro.build', ja: 'astro.build' },
 		desc: {
-			en: 'The framework I build interactive parts with.',
-			ja: '動く部分をつくるフレームワーク。'
+			en: 'The framework I build my sites with now.',
+			ja: 'いまサイトをつくるときのフレームワーク。'
 		}
 	},
 	{
@@ -289,19 +302,6 @@ export const DESK_ITEMS: DeskItem[] = [
 		desc: {
 			en: 'For scripts, data work, and automation pipelines.',
 			ja: 'スクリプト、データ処理、自動化のパイプラインに。'
-		}
-	},
-	{
-		id: 'claude',
-		kind: 'tag',
-		cat: 'tools',
-		label: 'Claude',
-		href: 'https://www.anthropic.com/claude',
-		external: true,
-		cta: { en: 'anthropic.com/claude', ja: 'anthropic.com/claude' },
-		desc: {
-			en: 'The model I write and build with most days.',
-			ja: 'ほぼ毎日、書くときもつくるときも使うモデル。'
 		}
 	},
 	{
