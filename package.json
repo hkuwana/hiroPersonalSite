@@ -15,7 +15,8 @@
 		"lint": "pnpm lint:code",
 		"test:unit": "vitest run",
 		"test": "pnpm check && pnpm lint && pnpm test:unit",
-		"test:release": "pnpm test && pnpm build"
+		"test:release": "pnpm test && pnpm build && pnpm check:hifi",
+		"check:hifi": "node scripts/check-hifi-budget.mjs"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.39.2",
@@ -28,6 +29,7 @@
 		"@tailwindcss/vite": "^4.1.18",
 		"@types/matter-js": "^0.20.2",
 		"@types/node": "^22.20.5",
+		"@types/three": "^0.169.0",
 		"eslint": "^9.39.2",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.14.0",
@@ -48,6 +50,7 @@
 	"type": "module",
 	"dependencies": {
 		"gsap": "^3.15.0",
-		"matter-js": "^0.20.0"
+		"matter-js": "^0.20.0",
+		"three": "^0.169.0"
 	}
 }
