@@ -5,6 +5,7 @@
 	// (`tall`), the stage holds still while you scroll: the camera rises and
 	// paper mist covers the village, then the rest of the page continues.
 	import { onMount, tick } from 'svelte';
+	import { replaceState } from '$app/navigation';
 	import { track } from '$lib/analytics';
 	import Windmill from '$lib/components/home/Windmill.svelte';
 	import { FACETS } from '$lib/home/facets';
@@ -316,7 +317,7 @@
 		}
 		const url = new URL(location.href);
 		url.searchParams.delete('room');
-		history.replaceState(history.state, '', url);
+		replaceState(url, {});
 		void boot();
 	}
 

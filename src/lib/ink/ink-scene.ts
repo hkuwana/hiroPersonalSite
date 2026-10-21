@@ -865,9 +865,16 @@ export function createInkScene(
 		renderer.setSize(w, h, false);
 		camera.aspect = w / h;
 		// Narrow screens: step back so the kite's path stays in frame.
-		camDist = 17 * Math.min(2.2, Math.max(1, 1.35 / camera.aspect));
-		// Portrait screens: center on the windmill, not the whole valley.
-		baseX = camera.aspect < 0.8 ? 0.9 : -0.4;
+		// Fit a frame that always holds the notice board (left) and the
+		// windmill (right); wide screens also show the far tree on the right.
+		const a = camera.aspect;
+		const left = -8.6;
+		const right = 3.9 + 3.7 * Math.min(1, Math.max(0, (a - 0.6) / 0.9));
+		const half = (right - left) / 2;
+		baseX = (left + right) / 2;
+		// Tall screens: aim higher, so the village sits below the buttons.
+		baseY = 3.6 + 2.6 * Math.min(1, Math.max(0, (1 - a) / 0.5));
+		camDist = Math.min(48, Math.max(17, half / (Math.tan((camera.fov * Math.PI) / 360) * a)));
 		camera.updateProjectionMatrix();
 	}
 
@@ -877,6 +884,7 @@ export function createInkScene(
 	let scrollT = 0;
 	let scrollEase = 0;
 	let baseX = -0.4;
+	let baseY = 3.6;
 	function frame(now: number) {
 		raf = requestAnimationFrame(frame);
 		const ms = now - last;
@@ -1118,7 +1126,7 @@ export function createInkScene(
 		const lift = smooth(scrollEase);
 		const follow = (bekoPos.x - START.x) * 0.15;
 		lookAt.x += (baseX + follow - lookAt.x) * Math.min(1, dt * 2);
-		lookAt.y = 3.6 + lift * 7;
+		lookAt.y = baseY + lift * 7;
 		camPos.set(
 			pointer.x * 1.2 + Math.sin(time * 0.15) * 0.4 + follow,
 			4.2 + pointer.y * 0.6 + lift * 5,
