@@ -71,7 +71,6 @@
 	.lang-option.active {
 		opacity: 1;
 		background: oklch(var(--b1));
-		box-shadow: 0 1px 3px oklch(var(--bc) / 0.1);
 	}
 
 	.lang-option.active:hover {

@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
 	import { page } from '$app/stores';
-	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
-	import HeroCanvas from '$lib/components/HeroCanvas.svelte';
+	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS, KAIWA_METRICS } from '$data/constants';
+	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
+	import EmailStamp from '$lib/components/home/EmailStamp.svelte';
+	import InkHero from '$lib/ink/InkHero.svelte';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { onMount } from 'svelte';
@@ -25,34 +27,49 @@
 		roleJa: string;
 		summary: string;
 		summaryJa: string;
+		stats?: string;
+		statsJa?: string;
+		// Voice slots (Hiro's words only — see COPY_WORKSHEET.md §3).
+		lesson?: string;
+		lessonJa?: string;
 		logo: string;
-		pos: { left: string; top: string; width: string; rotate: number };
 	};
+
+	// Latest owner-reported milestone snapshot; source and date live in KAIWA_METRICS.
+	const KAIWA_STATS: { value: string; label: string; labelJa: string }[] = [
+		{ value: KAIWA_METRICS.monthlyOrganicVisitors, label: 'organic visitors a month', labelJa: '自然検索の訪問者 / 月' },
+		{ value: KAIWA_METRICS.signups, label: 'learners signed up', labelJa: '登録した学習者' },
+		{ value: 'solo', label: 'built and run by one person', labelJa: 'ひとりで開発・運用' }
+	];
 
 	const COPY: Record<Locale, Record<string, string>> = {
 		en: {
 			'hero.season': '夏 · summer · 2026',
 			'hero.vert': '人 を 拡 張 す る 道 具',
-			'hero.title.l1': 'Building',
-			'hero.title.tools': 'tools',
-			'hero.title.l2': 'that augment',
-			'hero.title.l3': 'humanity',
+			'hero.title.l1': 'Building a',
+			'hero.title.tools': 'company',
+			'hero.title.l2': 'with AI, while',
+			'hero.title.l3': 'keeping judgment human',
+			'hero.name': 'Hiroyuki (Hiro) Kuwana',
+			'hero.nameAlt': '桑名浩行',
 			'hero.tagline':
-				"I'm Hiro Kuwana (桑名浩行). I make practical, opinionated AI utilities, quietly built and carefully made, for people who would rather think than scroll.",
-			'hero.now': 'Open · three seats · this season',
-			'hero.about1.a': 'I write and make things. I take on a few focused projects each season, usually with founders or teams building human-centric products with AI.',
-			'hero.about1.strong': 'AI-shaped that needs to feel less like a chatbot',
-			'hero.about1.b': 'and more like a tool with taste.',
+				"I'm Hiroyuki (Hiro) Kuwana. I build Kaiwa full-time and write down the product calls, systems, mistakes, and small wins along the way.",
+			'hero.now': 'Now · Kaiwa, full-time',
+			'hero.about1.a':
+				'Kaiwa is where I do the real work: product, code, growth, support, and the messy decisions in between. It is a language-learning platform where learners practice with AI and coaches shape the journey. I use AI wherever it helps, but',
+			'hero.about1.strong': "I don't hand it the judgment.",
+			'hero.about1.b': 'That line is at the heart of what I build.',
 			'hero.about2':
-				'I keep notes here on product, language learning, and the slower questions underneath the work.',
+				'If you are building with AI on a small team—or no team—I hope these notes save you a few wrong turns.',
 			'hero.meta.based.k': 'Based',
 			'hero.meta.based.v': 'Tokyo · New York',
 			'hero.meta.since.k': 'Since',
-			'hero.meta.since.v': '2019',
+			'hero.meta.since.v': '2018',
 			'hero.meta.stack.k': 'Stack',
-			'hero.meta.stack.v': 'LLMs · TypeScript · taste',
+			'hero.meta.stack.v': 'LLMs · TypeScript · Svelte · Python',
 			'hero.meta.reading.k': 'Reading',
 			'hero.meta.reading.v': 'Bulgakov · Mishima',
+			'hero.stats.source': `Kaiwa · updated ${KAIWA_METRICS.updatedLabel}`,
 			'hero.scroll': 'Scroll',
 			'work.num': '02',
 			'work.title': 'Projects',
@@ -65,74 +82,61 @@
 			'work.status.shipped': 'shipped',
 			'work.status.sunset': 'sunset',
 			'work.readMore': 'open →',
+			'record.title': 'The record',
+			'record.titleEm': 'founder cycles since 2018.',
+			'record.colophon': 'colophon · how I work',
 			'writing.num': '03',
-			'writing.title': 'Two notebooks',
-			'writing.titleEm': 'one with the machines, one without.',
+			'writing.title': 'Notes from the build,',
+			'writing.titleEm': 'and the questions underneath it.',
 			'writing.guides': './ai-guides',
 			'writing.guidesJP': '道 具',
-			'writing.philo': 'The Long Way',
-			'writing.philoJP': '手 書 き',
+			'writing.philo': 'essays',
+			'writing.philoJP': '作 文',
 			'writing.minRead': '~ 6 min',
 			'writing.dateAi': '04 · 2026',
 			'contact.num': '04',
 			'contact.title': 'Stay in touch',
-			'contact.titleEm': 'write me, or follow along.',
-			'contact.tab.write': 'Write me · お便り',
-			'contact.tab.follow': 'Follow new posts · 購読',
-			'contact.aside.lead': 'Open for one or two collaborations through autumn. Short engagements, deep work, real outcomes.',
-			'contact.aside.hi': 'Or just say hello. I read every message by hand and usually reply within a few days.',
-			'contact.write.lead': "Tell me what you're working on. No template, no automation, just you and me.",
-			'contact.field.name': 'お名前 · Name',
-			'contact.field.email': '電子メール · Email',
-			'contact.field.msg': 'ご用件 · Message',
-			'contact.field.namePh': 'Your name',
-			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': "Tell me what you're working on, or just say hi.",
-			'contact.note.write': 'Opens your mail client as a fallback. Nothing is sent to a third party from this page.',
-			'contact.btn.send': 'Send · 送る →',
-			'contact.btn.sending': 'Sending...',
-			'contact.thanks.title': 'Received',
-			'contact.thanks.titleEm': 'ありがとう.',
-			'contact.thanks.note': 'Your mail client should also open with a copy you can send directly.',
-			'contact.thanks.again': 'Send another',
-			'sub.lead':
-				'I publish a few things a month: slow essays, product notes, and practical AI workflows. One short note when something new goes up.',
-			'sub.field.email': '電子メール · Email',
-			'sub.field.emailPh': 'you@somewhere.com',
-			'sub.choose': 'I want to follow:',
-			'sub.opt.both': 'Both',
-			'sub.opt.philo': 'The Long Way',
-			'sub.opt.guides': './ai-guides',
-			'sub.cadence': 'Roughly twice a month. Plain text. Unsubscribe with one click.',
-			'sub.btn.go': 'Subscribe · 購読 →',
-			'sub.btn.going': 'Subscribing...',
-			'sub.thanks.title': 'Subscribed',
-			'sub.thanks.titleEm': 'よろしく.',
-			'sub.thanks.note': "I'll send a short note when the next piece goes up. That's the entire system.",
-			'sub.thanks.again': 'Use a different email'
+			'contact.titleEm': 'write me.',
+			'contact.stamp.title': 'Write to me · お便り',
+			'contact.aside.lead':
+				"I'm always interested in how other people are building with AI—especially the places where it creates more work instead of less. I'm not taking on outside projects, but thoughtful notes are welcome.",
+			'contact.aside.hi':
+				'Tell me what you are working on, what surprised you, or where you are stuck. I read every message myself and usually reply within a few days.',
+			'contact.tools.title': 'Side tools · 道具',
+			'contact.tools.cal.label': 'Tea for 25 minutes',
+			'contact.tools.cal.desc': 'Pick a time directly. No pitch deck required.',
+			'contact.tools.vcf.label': 'vCard · save my contact',
+			'contact.tools.vcf.desc': 'A simple contact card without a public email address.',
+			'contact.tools.ics.label': 'Tea on the calendar',
+			'contact.tools.ics.desc': 'A 25-minute placeholder with the booking link tucked inside.',
 		},
 		ja: {
 			'hero.season': '夏 · summer · 2026',
 			'hero.vert': '人 を 拡 張 す る 道 具',
-			'hero.title.l1': '人を',
-			'hero.title.tools': '拡張する',
+			'hero.title.l1': 'AI と',
+			'hero.title.tools': '会社をつくる',
 			'hero.title.l2': '',
-			'hero.title.l3': '道具をつくる',
+			'hero.title.l3': '判断は、人のままで',
+			'hero.name': '桑名浩行',
+			'hero.nameAlt': 'Hiroyuki (Hiro) Kuwana',
 			'hero.tagline':
-				'桑名浩行 (Hiro Kuwana) です。実用的で、ちょっと意地のある AI の道具を、静かに、ていねいに作っています。スクロールするより、考えたい人のために。',
-			'hero.now': '受付中 · 三件 · 今季',
-			'hero.about1.a': '書いたり、つくったりしています。季節ごとに数件、AI を使った人中心のプロダクトをつくるファウンダーやチームと組みます。目指しているのは、',
-			'hero.about1.strong': 'チャットボットっぽくなく、',
-			'hero.about1.b': '使っていてしっくりくる道具です。',
-			'hero.about2': 'ここでは、プロダクトや言語学習、そして仕事の奥にあるゆっくりした問いについて書いています。',
+				'桑名浩行 (Hiroyuki Kuwana) です。いまは Kaiwa をフルタイムでつくりながら、プロダクトの判断や仕組み、失敗、小さな前進を書き留めています。',
+			'hero.now': 'いま · Kaiwa をフルタイムで',
+			'hero.about1.a':
+				'Kaiwa は、プロダクト、開発、成長、サポート、その間にある面倒な判断まで、すべてを実地で試す場所です。学習者が AI と会話し、コーチが一人ひとりの学びを設計する語学学習のプラットフォームです。AI は役立つところで使います。でも、',
+			'hero.about1.strong': '判断までは渡しません。',
+			'hero.about1.b': 'その境目が、つくるものの中心にあります。',
+			'hero.about2':
+				'AI を使って、小さなチームで、あるいはひとりで何かをつくっているなら、ここにあるメモが少しでも遠回りを減らせたらうれしいです。',
 			'hero.meta.based.k': '拠点',
 			'hero.meta.based.v': '東京 · ニューヨーク',
 			'hero.meta.since.k': '開始',
-			'hero.meta.since.v': '2019年',
+			'hero.meta.since.v': '2018年',
 			'hero.meta.stack.k': '手段',
-			'hero.meta.stack.v': 'LLM · TypeScript · センス',
+			'hero.meta.stack.v': 'LLM · TypeScript · Svelte · Python',
 			'hero.meta.reading.k': '読書',
 			'hero.meta.reading.v': 'ブルガーコフ · 三島',
+			'hero.stats.source': `Kaiwa · ${KAIWA_METRICS.updatedLabelJa} 更新`,
 			'hero.scroll': 'スクロール',
 			'work.num': '02',
 			'work.title': 'プロジェクト',
@@ -145,50 +149,32 @@
 			'work.status.shipped': '公開済み',
 			'work.status.sunset': '終了',
 			'work.readMore': '開く →',
+			'record.title': '記録',
+			'record.titleEm': '2018年から続く、ものづくりのサイクル。',
+			'record.colophon': '奥付 · 仕事の流儀',
 			'writing.num': '03',
-			'writing.title': '二冊のノート',
-			'writing.titleEm': '一冊は機械と、もう一冊は手書きで。',
+			'writing.title': 'つくりながら書いたこと',
+			'writing.titleEm': 'その奥で考えていること。',
 			'writing.guides': './ai-guides',
 			'writing.guidesJP': '道 具',
 			'writing.philo': '回り道',
-			'writing.philoJP': '手 書 き',
+			'writing.philoJP': '作 文',
 			'writing.minRead': '約 6 分',
 			'writing.dateAi': '2026 · 04',
 			'contact.num': '04',
 			'contact.title': 'これからも',
-			'contact.titleEm': 'お便りでも、購読でも。',
-			'contact.tab.write': 'お便りを書く · Write',
-			'contact.tab.follow': '更新を購読 · Follow',
-			'contact.aside.lead': '秋までに一、二件、ご一緒できます。短い期間で、深く、ちゃんと成果を。',
-			'contact.aside.hi': 'ひとことの挨拶でも歓迎です。届いたメッセージは全部自分で読んで、たいてい数日以内に返事します。',
-			'contact.write.lead': 'いま何をやっているか、教えてください。テンプレートも自動返信もなし、あなたと私だけです。',
-			'contact.field.name': '名前 · Name',
-			'contact.field.email': 'メール · Email',
-			'contact.field.msg': '用件 · Message',
-			'contact.field.namePh': '名前',
-			'contact.field.emailPh': 'you@somewhere.com',
-			'contact.field.msgPh': 'いま何を作っているか、ひとことでも。',
-			'contact.note.write': 'お使いのメールアプリが代わりに開きます。このページから第三者には何も送りません。',
-			'contact.btn.send': '送る · Send →',
-			'contact.btn.sending': '送信中...',
-			'contact.thanks.title': '届きました',
-			'contact.thanks.titleEm': 'ありがとう。',
-			'contact.thanks.note': 'メールアプリにも下書きが開くので、そのまま送れます。',
-			'contact.thanks.again': 'もう一通',
-			'sub.lead': '月に数本書いています。じっくり書いた随筆、プロダクトのメモ、AI の実践ワークフロー。新しいものが出たときに、短いメールを一通だけ送ります。',
-			'sub.field.email': 'メール · Email',
-			'sub.field.emailPh': 'you@somewhere.com',
-			'sub.choose': '読みたいもの:',
-			'sub.opt.both': '両方',
-			'sub.opt.philo': '回り道',
-			'sub.opt.guides': './ai-guides',
-			'sub.cadence': '月に二回ほど。プレーンテキスト。解除はワンクリック。',
-			'sub.btn.go': '購読する · Subscribe →',
-			'sub.btn.going': '登録中...',
-			'sub.thanks.title': '登録しました',
-			'sub.thanks.titleEm': 'よろしく。',
-			'sub.thanks.note': '次の文章が出たら、短いメールを一通送ります。仕組みはそれだけです。',
-			'sub.thanks.again': '別のメールで登録'
+			'contact.titleEm': 'お便りをどうぞ。',
+			'contact.stamp.title': 'お便りを書く · Write',
+			'contact.aside.lead':
+				'ほかの人が AI をどう使ってものをつくっているのか、いつも気になります。とくに、仕事が減るはずの AI で、かえって仕事が増えてしまうところ。外部の仕事は受けていませんが、考えのあるお便りは歓迎です。',
+			'contact.aside.hi': 'いま何をつくっているか、何を試したか、どこで行き詰まったか。届いたメッセージはすべて自分で読み、たいてい数日以内に返事します。',
+			'contact.tools.title': '道具 · side tools',
+			'contact.tools.cal.label': '25分、お茶でも',
+			'contact.tools.cal.desc': '都合のいい時間を直接選べます。資料はいりません。',
+			'contact.tools.vcf.label': 'vCard · 連絡先を保存',
+			'contact.tools.vcf.desc': 'メールアドレスを公開しない、シンプルな連絡先カード。',
+			'contact.tools.ics.label': '予定にお茶を入れる',
+			'contact.tools.ics.desc': '予約リンクを入れた、25分のお茶の予定。',
 		}
 	};
 
@@ -199,6 +185,7 @@
 		{ value: 'sunset', key: 'work.filter.sunset' }
 	];
 
+	// Order matters: in hand, then shipped, then sunset. Newest first in each group.
 	const PIECES: Piece[] = [
 		{
 			id: 'kaiwa',
@@ -214,25 +201,9 @@
 			roleJa: 'ファウンダー + プロダクト',
 			summary: 'A platform where language learners speak daily with AI, and coaches can architect and individualize learner journeys',
 			summaryJa: '学習者が AI と毎日話し、コーチは学習の道筋を設計して一人ひとりに合わせられるプラットフォーム。',
+			stats: `${KAIWA_METRICS.monthlyOrganicVisitorsShort} organic visitors / mo · ${KAIWA_METRICS.signups} signups`,
+			statsJa: `自然検索 ${KAIWA_METRICS.monthlyOrganicVisitorsShort} / 月 · 登録者 ${KAIWA_METRICS.signups}`,
 			logo: asset('/kaiwa_logo.png'),
-			pos: { left: '0%', top: '0%', width: '38%', rotate: -2 }
-		},
-		{
-			id: 'exonians',
-			status: 'shipped',
-			year: '2026',
-			href: 'https://exoniansjapan.com/',
-			external: true,
-			title: 'Exonians in Japan',
-			titleJa: 'Exonians in Japan',
-			subtitle: 'a fast community platform',
-			subtitleJa: '素早く立ち上げた同窓会サイト',
-			role: 'Design + Build',
-			roleJa: 'デザイン + 開発',
-			summary: 'A small, practical alumni site I built on a subway ride home. Focused on photos and community building',
-			summaryJa: '帰りの電車の中で作った、小さくて実用的な同窓会サイト。写真と、人のつながりに集中。',
-			logo: asset('/icon-512x512.png'),
-			pos: { left: '52%', top: '4%', width: '38%', rotate: 1.5 }
 		},
 		{
 			id: 'reddit-scout',
@@ -249,7 +220,22 @@
 			summary: 'A local workflow that connects Reddit, Drive, and Gemini to find language learners with real intent.',
 			summaryJa: 'Reddit、Drive、Gemini をつないで、本気で学びたい人を見つけるローカルのワークフロー。',
 			logo: asset('/kaiwa_logo.png'),
-			pos: { left: '8%', top: '38%', width: '36%', rotate: -1 }
+		},
+		{
+			id: 'exonians',
+			status: 'shipped',
+			year: '2026',
+			href: 'https://exoniansjapan.com/',
+			external: true,
+			title: 'Exonians in Japan',
+			titleJa: 'Exonians in Japan',
+			subtitle: 'a fast community platform',
+			subtitleJa: '素早く立ち上げた同窓会サイト',
+			role: 'Design + Build',
+			roleJa: 'デザイン + 開発',
+			summary: 'A small, practical alumni site I built on a subway ride home. Focused on photos and community building',
+			summaryJa: '帰りの電車の中で作った、小さくて実用的な同窓会サイト。写真と、人のつながりに集中。',
+			logo: asset('/logos/exonians-e.svg'),
 		},
 		{
 			id: 'flybyrd',
@@ -265,7 +251,6 @@
 			summary: 'Organizing scattered feedback for product managers. A practical, private dashboard for the signals that matter.',
 			summaryJa: 'PM のためにバラバラのフィードバックを整理する、実用的で非公開のダッシュボード。大事なシグナルだけを残す。',
 			logo: asset('/flybyrd_logo.png'),
-			pos: { left: '54%', top: '46%', width: '40%', rotate: 1 }
 		},
 		{
 			id: 'pebblr',
@@ -281,9 +266,87 @@
 			summary: 'A nonprofit donor experiment that taught me where human trust matters more than platform mechanics.',
 			summaryJa: 'NPO の寄付者向けの実験。プラットフォームの仕組みより、人と人の信頼の方がずっと大事だと教えてくれた。',
 			logo: asset('/icon-512x512.png'),
-			pos: { left: '22%', top: '78%', width: '42%', rotate: -1.5 }
 		}
 	];
+
+	// The record — founder cycles. Ship lines are factual and functional.
+	// Lesson lines are voice slots: Hiro's own words, both languages, from
+	// COPY_WORKSHEET.md §2. The whole section stays hidden until every
+	// lesson slot is filled. No flag to flip; fill the slots and it appears.
+	type Cycle = {
+		id: string;
+		years: string;
+		yearsJa: string;
+		name: string;
+		ship: string;
+		shipJa: string;
+		lesson: string;
+		lessonJa: string;
+	};
+
+	const RECORD_CYCLES: Cycle[] = [
+		{
+			id: 'pebblr',
+			years: '2021 – 2023',
+			yearsJa: '2021 – 2023',
+			name: 'Pebblr',
+			ship: 'Connected nonprofits with donors and volunteers. Product and operations.',
+			shipJa: 'NPO と寄付者・ボランティアをつないだ。プロダクトと運営。',
+			lesson: '', // voice slot
+			lessonJa: '' // voice slot
+		},
+		{
+			id: 'flybyrd',
+			years: '2024 – 2025',
+			yearsJa: '2024 – 2025',
+			name: 'Flybyrd',
+			ship: 'Organized scattered feedback into signal for product managers. Founder.',
+			shipJa: '散らばったフィードバックを、PM のためのシグナルに整理した。ファウンダー。',
+			lesson: '', // voice slot
+			lessonJa: '' // voice slot
+		},
+		{
+			id: 'kaiwa',
+			years: '2025 – now',
+			yearsJa: '2025 – 現在',
+			name: 'Kaiwa',
+			ship: `A real-time AI conversation platform for language learners. ${KAIWA_METRICS.monthlyOrganicVisitorsShort} organic visitors a month, ${KAIWA_METRICS.signups} signups. Built and run by one person.`,
+			shipJa: `学習者が AI と毎日話すリアルタイム会話プラットフォーム。自然検索 ${KAIWA_METRICS.monthlyOrganicVisitorsShort}/月、登録者 ${KAIWA_METRICS.signups}。ひとりで開発・運用。`,
+			lesson: '', // voice slot
+			lessonJa: '' // voice slot
+		}
+	];
+
+	const CYCLE_NUMERALS = ['一', '二', '三', '四', '五'];
+
+	const COLOPHON: { k: string; kJa: string; v: string; vJa: string }[] = [
+		{
+			k: 'stack',
+			kJa: '技術',
+			v: 'LLMs · TypeScript · Svelte · Python',
+			vJa: 'LLM · TypeScript · Svelte · Python'
+		},
+		{
+			k: 'solo',
+			kJa: 'ひとり',
+			v: 'Product, code, growth, support. One person.',
+			vJa: 'プロダクト、開発、成長、サポート。すべて一人。'
+		},
+		{
+			k: 'speed',
+			kJa: '速さ',
+			v: 'Exonians in Japan: an alumni site shipped in 1.5 hours, on the train home.',
+			vJa: 'Exonians in Japan：帰りの電車の中、1.5 時間で公開した同窓会サイト。'
+		},
+		{
+			k: 'automation',
+			kJa: '自動化',
+			v: 'Reddit Scout: a pipeline that finds language learners with real intent.',
+			vJa: 'Reddit Scout：本気の学習者を見つける自動化パイプライン。'
+		}
+	];
+
+	const recordReady = RECORD_CYCLES.every((cycle) => cycle.lesson.trim() !== '' && cycle.lessonJa.trim() !== '');
 
 	const GUIDES = {
 		en: [
@@ -334,60 +397,39 @@
 		]
 	};
 
-	const PHILO = {
-		en: [
-			{
-				date: 'February 2026',
-				title: 'Your Funnel Is a Lie',
-				desc: 'Why Markov chains are a better mental model for SaaS growth than the traditional sales funnel.',
-				href: '/essays/your-funnel-is-a-lie'
-			},
-			{
-				date: 'December 2025',
-				title: 'On Building for Decades',
-				desc: 'Why simplicity wins in the long run when building personal infrastructure.',
-				href: '/essays/on-building-for-decades'
-			},
-			{
-				date: 'Now',
-				title: 'What I mean when I say augment',
-				desc: 'A working definition with edges. The word does a lot of heavy lifting in my work.',
-				href: '/essays'
-			}
-		],
-		ja: [
-			{
-				date: '2026年2月',
-				title: 'ファネルという嘘',
-				desc: 'SaaS の成長を、直線ではなく遷移として見るためのメモ。',
-				href: '/essays/your-funnel-is-a-lie'
-			},
-			{
-				date: '2025年12月',
-				title: '十年単位でつくる',
-				desc: '個人のインフラを長く残すなら、なぜ単純さが勝つのか。',
-				href: '/essays/on-building-for-decades'
-			},
-			{
-				date: '今',
-				title: '「拡張」と言うとき',
-				desc: '仕事の中でずいぶん働かせている言葉に、少し輪郭を与える。',
-				href: '/essays'
-			}
-		]
+	// Essays come from src/content/essays, newest first, so a new essay shows up here by itself.
+	// Files that start with _ are templates or drafts. Only the metadata export is imported.
+	type EssayMeta = { title: string; date: string; description: string };
+	const ESSAY_META = import.meta.glob<EssayMeta>(['/src/content/essays/*.md', '!/src/content/essays/_*.md'], {
+		eager: true,
+		import: 'metadata'
+	});
+	// Japanese titles for essays that have them. Essays without an entry show their English title.
+	const ESSAY_JA: Record<string, { title: string; desc: string }> = {
+		'your-funnel-is-a-lie': {
+			title: 'ファネルという嘘',
+			desc: 'SaaS の成長を、直線ではなく遷移として見るためのメモ。'
+		},
+		'on-building-for-decades': {
+			title: '十年単位でつくる',
+			desc: '個人のインフラを長く残すなら、なぜ単純さが勝つのか。'
+		}
 	};
+	const ESSAYS = Object.entries(ESSAY_META)
+		.map(([path, meta]) => ({ slug: path.split('/').pop()!.replace('.md', ''), ...meta }))
+		.filter((essay) => essay.title && essay.date)
+		.sort((a, b) => b.date.localeCompare(a.date))
+		.slice(0, 3);
+	const essayDate = (date: string, locale: Locale) =>
+		new Date(`${date}T00:00:00`).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
+			year: 'numeric',
+			month: 'long'
+		});
 
 	let lang = getLocale() as Locale;
 	let filter: Filter = 'all';
-	let contactMode: 'write' | 'follow' = 'write';
-	let contactName = '';
-	let contactEmail = '';
-	let contactMessage = '';
-	let contactStatus: 'idle' | 'sending' | 'sent' = 'idle';
-	let contactReply = '';
-	let subscribeEmail = '';
-	let subscribeChoice = 'both';
-	let subscribeStatus: 'idle' | 'sending' | 'sent' = 'idle';
+	// On phones, sunset projects stay folded under "All" until asked for (see .collapse-sunset).
+	let showSunset = false;
 	let visiblePieces = PIECES;
 	let t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	let statusLabel = (status: Status) => t(`work.status.${status}`);
@@ -397,9 +439,14 @@
 	$: t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	$: statusLabel = (status: Status) => t(`work.status.${status}`);
 
+	const getContactEmail = () => {
+		const [user, domain, topLevelDomain] = CONTACT.emailParts;
+		return `${user}@${domain}.${topLevelDomain}`;
+	};
+
 	const countFor = (status: Filter) => (status === 'all' ? PIECES.length : PIECES.filter((piece) => piece.status === status).length);
-	const scrapStyle = (piece: Piece, index: number) =>
-		`left:${piece.pos.left};top:${piece.pos.top};width:${piece.pos.width};transform:rotate(${piece.pos.rotate}deg);z-index:${8 - index}`;
+	// Stable numbers, so a card keeps its number when a filter hides others.
+	const pieceNumber = (piece: Piece) => String(PIECES.indexOf(piece) + 1).padStart(2, '0');
 
 	onMount(() => {
 		const elements = document.querySelectorAll<HTMLElement>('.reveal');
@@ -429,64 +476,13 @@
 		};
 	});
 
-	function sendContact(event: SubmitEvent) {
-		event.preventDefault();
-		if (!contactName || !contactEmail || !contactMessage) return;
-
-		contactStatus = 'sending';
-		contactReply =
-			lang === 'ja'
-				? `${contactName}さん、届きました。Hiro が手で読み、数日のうちに返事をします。まずは、この形で送ってくれてありがとう。`
-				: `${contactName}, I received this. Hiro reads every note by hand and usually replies within a few days. Thank you for sending the real shape of the work.`;
-
-		const subject = encodeURIComponent(`From your site - ${contactName}`);
-		const body = encodeURIComponent(`From: ${contactName} <${contactEmail}>\n\n${contactMessage}`);
-
-		if (typeof window !== 'undefined') {
-			window.open(`mailto:${CONTACT.email}?subject=${subject}&body=${body}`, '_blank');
-		}
-
-		window.setTimeout(() => {
-			contactStatus = 'sent';
-		}, 350);
-	}
-
-	function resetContact() {
-		contactName = '';
-		contactEmail = '';
-		contactMessage = '';
-		contactReply = '';
-		contactStatus = 'idle';
-	}
-
-	function subscribe(event: SubmitEvent) {
-		event.preventDefault();
-		if (!subscribeEmail) return;
-
-		subscribeStatus = 'sending';
-		if (typeof window !== 'undefined') {
-			localStorage.setItem(
-				'hiro_sub',
-				JSON.stringify({ email: subscribeEmail, choice: subscribeChoice, at: Date.now() })
-			);
-		}
-
-		window.setTimeout(() => {
-			subscribeStatus = 'sent';
-		}, 450);
-	}
-
-	function resetSubscribe() {
-		subscribeEmail = '';
-		subscribeStatus = 'idle';
-	}
 </script>
 
 <svelte:head>
-	<title>Hiro Kuwana · building tools that augment humanity</title>
+	<title>{SITE.title}</title>
 	<meta
 		name="description"
-		content="Hiro Kuwana builds practical, opinionated AI tools and writes about product, language learning, and building for the long run."
+		content={SITE.description}
 	/>
 	<meta name="keywords" content={SITE.keywords.join(', ')} />
 	<meta name="author" content={SITE.author} />
@@ -494,16 +490,16 @@
 	<meta name="googlebot" content="index, follow" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={SITE.url} />
-	<meta property="og:title" content="Hiro Kuwana · building tools that augment humanity" />
-	<meta property="og:description" content="A small studio of one for practical AI utilities, product notes, and slow essays." />
+	<meta property="og:title" content={SITE.title} />
+	<meta property="og:description" content={SITE.description} />
 	<meta property="og:image" content={SITE.image} />
 	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
 	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta property="profile:first_name" content="Hiro" />
 	<meta property="profile:last_name" content="Kuwana" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="Hiro Kuwana · building tools that augment humanity" />
-	<meta name="twitter:description" content="Practical AI utilities, product notes, and slow essays by Hiro Kuwana." />
+	<meta name="twitter:title" content={SITE.title} />
+	<meta name="twitter:description" content={SITE.description} />
 	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href={SITE.url} />
 	<link rel="alternate" hreflang="en" href={SITE.url} />
@@ -512,12 +508,11 @@
 	{@html `<script type="application/ld+json">${JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'Person',
-		name: 'Hiro Kuwana',
-		alternateName: ['桑名浩行', 'Hiroyuki Kuwana'],
+		name: 'Hiroyuki (Hiro) Kuwana',
+		alternateName: ['Hiro Kuwana', 'Hiroyuki Kuwana', '桑名浩行'],
 		url: SITE.url,
 		image: SITE.image,
-		email: CONTACT.email,
-		jobTitle: 'Founder & CEO',
+		jobTitle: 'Founder & Product Designer',
 		worksFor: { '@type': 'Organization', name: 'Kaiwa', url: PERSONAL.companyWebsite },
 		alumniOf: { '@type': 'CollegeOrUniversity', name: 'Brown University' },
 		nationality: ['Japanese', 'American'],
@@ -539,8 +534,11 @@
 	})}</` + `script>`}
 </svelte:head>
 
-<section class="hero" data-screen-label="01 Landing">
-	<HeroCanvas />
+<!-- The front: the ink village (hi-fi), or the 2D windmill (lo-fi). Scrolling
+     lifts the camera and lets the paper mist in, then the hero below continues. -->
+<InkHero {lang} essays={ESSAYS} tall nextHref="#intro" />
+
+<section class="hero" id="intro" data-screen-label="01 Landing">
 
 	<div class="season-mark mb-2">
 		<span class="stamp">浩</span>
@@ -549,6 +547,15 @@
 	<div class="vert-mark">{t('hero.vert')}</div>
 
 	<div class="hero-content">
+		<p class="hero-name">
+			<span class="sr-only">{t('hero.name')}</span>
+			{#key lang}
+				<span class="hero-name-main" aria-hidden="true">
+					{#each [...t('hero.name')] as ch, i}<span class="ch" style={`animation-delay: ${i * 25}ms`}>{ch}</span>{/each}
+				</span>
+			{/key}
+			<span class="hero-name-alt">{t('hero.nameAlt')}</span>
+		</p>
 		{#if lang === 'ja'}
 			<h1 class="h1-ja">
 				{t('hero.title.l1')}<span class="ital">{t('hero.title.tools')}</span><br />
@@ -572,6 +579,15 @@
 			{t('hero.about1.b')}
 		</p>
 		<p>{t('hero.about2')}</p>
+		<dl class="now-stats" aria-describedby="kaiwa-stats-source">
+			{#each KAIWA_STATS as stat}
+				<div class="now-stat">
+					<dt>{stat.value}</dt>
+					<dd>{lang === 'ja' ? stat.labelJa : stat.label}</dd>
+				</div>
+			{/each}
+		</dl>
+		<p class="stats-source" id="kaiwa-stats-source">{t('hero.stats.source')}</p>
 		<dl class="hero-meta">
 			<dt>{t('hero.meta.based.k')}</dt>
 			<dd>{t('hero.meta.based.v')}</dd>
@@ -584,11 +600,18 @@
 		</dl>
 	</aside>
 
-	<div class="scroll-cue">
+	<a class="scroll-cue" href="#work" aria-label={lang === 'ja' ? 'プロジェクトへスクロール' : 'Scroll to projects'}>
 		<span>{t('hero.scroll')}</span>
-		<span class="line"></span>
-	</div>
+		<span class="line" aria-hidden="true"></span>
+	</a>
 </section>
+
+<div class="asanoha-break" aria-hidden="true"></div>
+<section class="section desk-sec" id="desk" data-screen-label="01b Desk">
+	<CraftDesk {lang} />
+</section>
+<div class="asanoha-break" aria-hidden="true"></div>
+
 
 <div class="reveal">
 	<section class="section" id="work" data-screen-label="02 Projects">
@@ -613,26 +636,32 @@
 			{/each}
 		</div>
 
-		<div class="scrap layout-scrapbook">
-			{#each visiblePieces as piece, i}
+		<ol class="scrap" class:collapse-sunset={filter === 'all' && !showSunset}>
+			{#each visiblePieces as piece (piece.id)}
+				<li class:is-sunset={piece.status === 'sunset'}>
 				<a
 					href={piece.href}
 					class={`scrap-piece status-${piece.status}`}
-					style={scrapStyle(piece, i)}
 					target={piece.external ? '_blank' : undefined}
 					rel={piece.external ? 'noopener' : undefined}
 				>
-					<div class="frame">
+					<div class="frame frame-deco">
 						<div class="thumb">
 							<span class={`status-pill status-${piece.status}`}>
 								<span class="dot"></span>
 								{statusLabel(piece.status)}
 							</span>
 							<img src={piece.logo} alt="{piece.title} logo" class="project-logo" loading="lazy" />
-							<span class="thumb-label">fig. {i + 1} · {piece.title.toLowerCase()}</span>
+							<span class="thumb-label">No. {pieceNumber(piece)} · {piece.year}</span>
 						</div>
 						<h3>{lang === 'ja' ? piece.titleJa : piece.title} <em>{lang === 'ja' ? piece.subtitleJa : piece.subtitle}</em></h3>
 						<p class="summary">{lang === 'ja' ? piece.summaryJa : piece.summary}</p>
+						{#if piece.stats}
+							<p class="piece-stats">{lang === 'ja' ? piece.statsJa : piece.stats}</p>
+						{/if}
+						{#if piece.lesson && piece.lessonJa}
+							<p class="piece-lesson">{lang === 'ja' ? piece.lessonJa : piece.lesson}</p>
+						{/if}
 						<div class="meta">
 							<span>{lang === 'ja' ? piece.roleJa : piece.role}</span>
 							<span>{piece.year}</span>
@@ -640,16 +669,66 @@
 						<span class="read-more">{t('work.readMore')}</span>
 					</div>
 				</a>
+				</li>
 			{/each}
-		</div>
+		</ol>
+		{#if filter === 'all' && !showSunset}
+			<button type="button" class="sunset-toggle" onclick={() => (showSunset = true)}>
+				{lang === 'ja'
+					? `終了したプロジェクトを表示（${countFor('sunset')}）`
+					: `Show ${countFor('sunset')} sunset projects`}
+			</button>
+		{/if}
 	</section>
 </div>
 
+{#if recordReady}
+	<div class="reveal">
+		<section class="section" id="record" data-screen-label="03 Record">
+			<div class="sec-head">
+				<span class="num-vert">03</span>
+				<h2>{t('record.title')} <em>{t('record.titleEm')}</em></h2>
+			</div>
+
+			<div class="record">
+				<ol class="cycles">
+					{#each RECORD_CYCLES as cycle, i}
+						<li class="cycle">
+							<span class="cycle-no" aria-hidden="true">{CYCLE_NUMERALS[i]}</span>
+							<div class="cycle-body">
+								<div class="cycle-head">
+									<h3>{cycle.name}</h3>
+									<span class="cycle-years">{lang === 'ja' ? cycle.yearsJa : cycle.years}</span>
+								</div>
+								<p class="cycle-ship">{lang === 'ja' ? cycle.shipJa : cycle.ship}</p>
+								<p class="cycle-lesson">{lang === 'ja' ? cycle.lessonJa : cycle.lesson}</p>
+							</div>
+						</li>
+					{/each}
+				</ol>
+
+				<aside class="colophon">
+					<span class="colophon-title">{t('record.colophon')}</span>
+					<dl>
+						{#each COLOPHON as item}
+							<div class="colophon-item">
+								<dt>{lang === 'ja' ? item.kJa : item.k}</dt>
+								<dd>{lang === 'ja' ? item.vJa : item.v}</dd>
+							</div>
+						{/each}
+					</dl>
+				</aside>
+			</div>
+		</section>
+	</div>
+{/if}
+
+<div class="asanoha-break" aria-hidden="true"></div>
 <div class="reveal">
 	<section data-screen-label="03 Writing" id="writing" data-philo="journal">
 		<div class="section writing-head">
 			<div class="sec-head">
-				<span class="num-vert">{t('writing.num')}</span>
+				<span class="num-vert">{recordReady ? '04' : t('writing.num')}</span>
 				<h2>{t('writing.title')} <em>{t('writing.titleEm')}</em></h2>
 			</div>
 		</div>
@@ -682,133 +761,64 @@
 					<span class="col-jp">{t('writing.philoJP')}</span>
 				</div>
 				<div class="post-list">
-					{#each PHILO[lang] as post}
-						<a class="post" href={localizeHref(post.href, { locale: lang })}>
-							<div class="post-meta">{post.date}</div>
-							<h4>{post.title}</h4>
-							<p>{post.desc}</p>
+					{#each ESSAYS as essay (essay.slug)}
+						{@const ja = lang === 'ja' ? ESSAY_JA[essay.slug] : undefined}
+						<a class="post" href={localizeHref(`/essays/${essay.slug}`, { locale: lang })}>
+							<div class="post-meta">{essayDate(essay.date, lang)}</div>
+							<h4>{ja?.title ?? essay.title}</h4>
+							<p>{ja?.desc ?? essay.description}</p>
 						</a>
 					{/each}
+				</div>
+				<div class="more-links">
+					<a href={localizeHref('/essays', { locale: lang })}>{lang === 'ja' ? 'すべてのエッセイ →' : 'All essays →'}</a>
+					<a class="guides-link" href={localizeHref('/ai-guides', { locale: lang })}>./ai-guides →</a>
 				</div>
 			</div>
 		</div>
 	</section>
 </div>
 
+<div class="asanoha-break" aria-hidden="true"></div>
 <div class="reveal">
 	<section class="section contact-sec" id="contact" data-screen-label="04 Contact">
 		<div class="sec-head">
-			<span class="num-vert">{t('contact.num')}</span>
+			<span class="num-vert">{recordReady ? '05' : t('contact.num')}</span>
 			<h2>{t('contact.title')} <em>{t('contact.titleEm')}</em></h2>
 		</div>
 
 		<div class="contact-grid">
 			<aside class="contact-aside">
 				<p>{t('contact.aside.lead')}</p>
-				<p>{t('contact.aside.hi')}</p>
-				<a class="contact-email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+				<p class="contact-hi">{t('contact.aside.hi')}</p>
 				<div class="contact-links">
 					<a href={SOCIAL_LINKS.github} target="_blank" rel="noopener">GitHub</a>
 					<a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener">LinkedIn</a>
-					<a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener">Twitter</a>
+					<a href={SOCIAL_LINKS.twitter} target="_blank" rel="noopener">X</a>
+				</div>
+
+				<div class="contact-tools">
+					<span class="tools-eyebrow">{t('contact.tools.title')}</span>
+					<ul class="tools-list">
+						<li>
+							<a href={CONTACT.cal} target="_blank" rel="noopener">{t('contact.tools.cal.label')} →</a>
+							<span>{t('contact.tools.cal.desc')}</span>
+						</li>
+						<li>
+							<a href={asset('/hiro-kuwana.vcf')} download>{t('contact.tools.vcf.label')}</a>
+							<span>{t('contact.tools.vcf.desc')}</span>
+						</li>
+						<li>
+							<a href={asset('/tea-with-hiro.ics')} download>{t('contact.tools.ics.label')}</a>
+							<span>{t('contact.tools.ics.desc')}</span>
+						</li>
+					</ul>
 				</div>
 			</aside>
 
-			<div class="contact-stack">
-				<div class="contact-tabs" role="tablist" aria-label="Contact options">
-					<button
-						type="button"
-						role="tab"
-						aria-selected={contactMode === 'write'}
-						class={`contact-tab ${contactMode === 'write' ? 'is-active' : ''}`}
-						onclick={() => (contactMode = 'write')}
-					>
-						<span class="tab-num">01</span>
-						<span class="tab-label">{t('contact.tab.write')}</span>
-					</button>
-					<button
-						type="button"
-						role="tab"
-						aria-selected={contactMode === 'follow'}
-						class={`contact-tab ${contactMode === 'follow' ? 'is-active' : ''}`}
-						onclick={() => (contactMode = 'follow')}
-					>
-						<span class="tab-num">02</span>
-						<span class="tab-label">{t('contact.tab.follow')}</span>
-					</button>
-				</div>
-
-				{#if contactMode === 'write'}
-					{#if contactStatus === 'sent'}
-						<div class="contact-thanks">
-							<div class="thanks-stamp">浩</div>
-							<h3>{t('contact.thanks.title')} <em>{t('contact.thanks.titleEm')}</em></h3>
-							<p class="ack">{contactReply}</p>
-							<p class="ack-note">{t('contact.thanks.note')}</p>
-							<button type="button" class="contact-btn ghost" onclick={resetContact}>
-								{t('contact.thanks.again')}
-							</button>
-						</div>
-					{:else}
-						<form class="contact-form" onsubmit={sendContact}>
-							<p class="contact-lead">{t('contact.write.lead')}</p>
-							<label class="field">
-								<span class="field-label">{t('contact.field.name')}</span>
-								<input type="text" required bind:value={contactName} placeholder={t('contact.field.namePh')} />
-							</label>
-							<label class="field">
-								<span class="field-label">{t('contact.field.email')}</span>
-								<input type="email" required bind:value={contactEmail} placeholder={t('contact.field.emailPh')} />
-							</label>
-							<label class="field">
-								<span class="field-label">{t('contact.field.msg')}</span>
-								<textarea required rows="6" bind:value={contactMessage} placeholder={t('contact.field.msgPh')}></textarea>
-							</label>
-							<div class="contact-row">
-								<span class="contact-note">{t('contact.note.write')}</span>
-								<button type="submit" class="contact-btn" disabled={contactStatus === 'sending'}>
-									{contactStatus === 'sending' ? t('contact.btn.sending') : t('contact.btn.send')}
-								</button>
-							</div>
-						</form>
-					{/if}
-				{:else if subscribeStatus === 'sent'}
-					<div class="contact-thanks subscribe-thanks">
-						<div class="thanks-stamp">購</div>
-						<h3>{t('sub.thanks.title')} <em>{t('sub.thanks.titleEm')}</em></h3>
-						<p class="ack">{t('sub.thanks.note')}</p>
-						<button type="button" class="contact-btn ghost" onclick={resetSubscribe}>
-							{t('sub.thanks.again')}
-						</button>
-					</div>
-				{:else}
-					<form class="contact-form sub-form" onsubmit={subscribe}>
-						<p class="contact-lead">{t('sub.lead')}</p>
-						<label class="field">
-							<span class="field-label">{t('sub.field.email')}</span>
-							<input type="email" required bind:value={subscribeEmail} placeholder={t('sub.field.emailPh')} />
-						</label>
-
-						<fieldset class="sub-choice">
-							<legend class="field-label">{t('sub.choose')}</legend>
-							<div class="sub-choice-row">
-								{#each ['both', 'philo', 'guides'] as choice}
-									<label class={`sub-chip ${subscribeChoice === choice ? 'is-on' : ''}`}>
-										<input type="radio" name="sub-choice" value={choice} bind:group={subscribeChoice} />
-										<span>{t(`sub.opt.${choice}`)}</span>
-									</label>
-								{/each}
-							</div>
-						</fieldset>
-
-						<div class="contact-row">
-							<span class="contact-note">{t('sub.cadence')}</span>
-							<button type="submit" class="contact-btn" disabled={subscribeStatus === 'sending'}>
-								{subscribeStatus === 'sending' ? t('sub.btn.going') : t('sub.btn.go')}
-							</button>
-						</div>
-					</form>
-				{/if}
+			<div class="contact-stack frame-deco">
+				<p class="contact-stack-title">{t('contact.stamp.title')}</p>
+				<EmailStamp {lang} getEmail={getContactEmail} />
 			</div>
 		</div>
 	</section>

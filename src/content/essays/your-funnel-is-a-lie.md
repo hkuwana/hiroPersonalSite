@@ -4,34 +4,6 @@ date: "2026-02-09"
 description: "Why Markov chains are a better mental model for SaaS growth than the traditional sales funnel."
 ---
 
-<script>
-	import Mermaid from '$lib/components/Mermaid.svelte';
-
-	const markovDiagram = `stateDiagram-v2
-    direction LR
-    GA: General Audience
-    V: Visitor
-    F: Free User
-    P: Paid User
-
-    GA --> GA: 0.98
-    GA --> V: 0.02
-
-    V --> GA: 0.04
-    V --> V: 0.85
-    V --> F: 0.10
-    V --> P: 0.01
-
-    F --> GA: 0.20
-    F --> V: 0.05
-    F --> F: 0.70
-    F --> P: 0.05
-
-    P --> F: 0.15
-    P --> P: 0.85`;
-</script>
-
-
 <!--
 STATUS: DRAFT — Fill in the [bracketed sections] with your own words, then delete the brackets.
 When done, remove this comment block and all brackets.
@@ -63,9 +35,6 @@ For example, say we have 4 states: Visitor, Free User, Paid User, and General Au
 *Each row represents the current state, each column represents the next state. Numbers show the probability of transitioning from row state to column state.*
 
 </div>
-
-<Mermaid chart={markovDiagram} />
-
 
 The thing that makes this useful is that every part of the customer lifecycle is a **state** — general audience, site visitor, free user, paid user, churned — and people move between them in *every* direction. Not just down.
 

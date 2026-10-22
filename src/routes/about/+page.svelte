@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { CONTACT, FAQS, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+	import { asset } from '$app/paths';
+	import { FAQS, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+	import { DESK_ITEMS } from '$lib/home/desk-items';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/stores';
@@ -9,6 +11,15 @@
 	$: lang = ($optimisticLocale ?? (($page.data.locale as Locale | undefined) ?? getLocale())) as Locale;
 
 	const visibleFaqs = FAQS.filter((faq) => faq.visible);
+
+	// Hiro's top 3 games, in his order. His reasons live with the desk tags (desk-items.ts).
+	// Ōkami inspired the ink village on the home page.
+	const GAMES: { id: string; title: string; titleJa: string; studio: string; inspires?: boolean }[] = [
+		{ id: 'okami', title: 'Ōkami', titleJa: '大神', studio: 'Clover Studio', inspires: true },
+		{ id: 'shogun-2', title: 'Total War: Shogun 2', titleJa: 'Total War: SHOGUN 2', studio: 'Creative Assembly' },
+		{ id: 'resident-evil-2', title: 'Resident Evil 2', titleJa: 'バイオハザード2', studio: 'Capcom' }
+	];
+	const takeOf = (id: string) => DESK_ITEMS.find((i) => i.id === id)?.take;
 
 	const faqJsonLd = {
 		'@context': 'https://schema.org',
@@ -31,7 +42,6 @@
 			'@type': 'Person',
 			name: PERSONAL.displayName,
 			alternateName: [PERSONAL.japaneseKanji, PERSONAL.fullName],
-			email: CONTACT.email,
 			jobTitle: PERSONAL.jobTitle,
 			worksFor: { '@type': 'Organization', name: PERSONAL.company, url: PERSONAL.companyWebsite },
 			alumniOf: { '@type': 'CollegeOrUniversity', name: PERSONAL.university },
@@ -44,20 +54,32 @@
 			? {
 					eyebrow: '自己紹介 · about',
 					title: '少しだけ、自分のこと',
-					lede: '桑名浩行 (Hiro Kuwana) です。日本生まれ、アメリカ育ち。実用的で、ちょっと意地のある AI の道具を、静かに、ていねいに作っています。スクロールするより、考えたい人のために。',
-					sub: 'よく聞かれる問い、ゆっくり考えていること、そして雑談。',
+					lede:
+						'桑名浩行 (Hiro Kuwana) です。日本生まれ、アメリカ育ち。いまは Kaiwa をほぼひとりで、フルタイムでつくっています。ここには、実際の仕事から学んだことを書き留めています。プロダクト、語学学習、そして AI に必要以上の判断を預けずに使う方法について。',
+					sub: '実用的な答えもあれば、まだ考え終えていない問いもあります。',
 					backHome: 'ホームに戻る',
 					contactPrompt: '話してみたい、書いてみたい、そんな方は',
-					contactCta: 'お便りを書く →'
+					contactCta: 'お便りを書く →',
+					photoAlt: '山道を歩く桑名浩行',
+					photoCaption: 'fig. 0 · 山にいるほうの私',
+					games: '好きなゲーム トップ3',
+					inspires: 'トップページの墨の村は、このゲームに着想を得ています。',
+					seeVillage: '村を見る →'
 				}
 			: {
 					eyebrow: 'about · 自己紹介',
 					title: 'A little about me',
-					lede: "I'm Hiro Kuwana (桑名浩行). Born in Japan, raised in the United States. I make practical, opinionated AI utilities, quietly built and carefully made, for people who would rather think than scroll.",
-					sub: "Questions I get asked, things I've been turning over slowly, and a few small ones too.",
+					lede:
+						"I'm Hiro Kuwana (桑名浩行). Born in Japan, raised in the United States. I build Kaiwa full-time, mostly on my own. This is where I write down what the work is teaching me—about product, language learning, and using AI without giving it more authority than it deserves.",
+					sub: "Some answers are practical. Some are questions I haven't finished thinking through.",
 					backHome: 'Back to home',
 					contactPrompt: 'Rather just talk?',
-					contactCta: 'Write me →'
+					contactCta: 'Write to me →',
+					photoAlt: 'Hiro Kuwana on a mountain trail',
+					photoCaption: 'fig. 0 · the one behind the seal',
+					games: 'Top 3 games',
+					inspires: 'The ink village on the front page is inspired by it.',
+					seeVillage: 'See the village →'
 				};
 </script>
 
@@ -65,17 +87,17 @@
 	<title>About · Hiro Kuwana</title>
 	<meta
 		name="description"
-		content="About Hiro Kuwana — practical AI utilities, slow essays, language learning, and the questions underneath the work."
+		content="About Hiro Kuwana, a solo founder building Kaiwa and writing field notes on product, AI workflows, language learning, and human judgment."
 	/>
 	<meta name="robots" content="index, follow, max-image-preview:large" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={`${SITE.url}/about`} />
 	<meta property="og:title" content="About · Hiro Kuwana" />
-	<meta property="og:description" content="Questions Hiro Kuwana gets asked, and the slower ones underneath the work." />
+	<meta property="og:description" content="A solo founder building Kaiwa and writing down what the work is teaching him." />
 	<meta property="og:image" content={SITE.image} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="About · Hiro Kuwana" />
-	<meta name="twitter:description" content="Questions Hiro Kuwana gets asked, and the slower ones underneath the work." />
+	<meta name="twitter:description" content="A solo founder building Kaiwa and writing down what the work is teaching him." />
 	<link rel="canonical" href={`${SITE.url}/about`} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/about`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/about`} />
@@ -84,17 +106,23 @@
 	{@html `<` + `script type="application/ld+json">${JSON.stringify(aboutJsonLd)}</` + `script>`}
 </svelte:head>
 
-<article class="about-page">
+<article class="about-page frame-deco">
 	<header class="about-head">
-		<span class="eyebrow">{copy.eyebrow}</span>
-		<h1>{copy.title}<span class="seal">浩</span></h1>
-		<p class="lede">{copy.lede}</p>
-		<p class="sub">{copy.sub}</p>
+		<div class="about-intro">
+			<span class="eyebrow">{copy.eyebrow}</span>
+			<h1>{copy.title}<span class="seal">浩</span></h1>
+			<p class="lede">{copy.lede}</p>
+			<p class="sub">{copy.sub}</p>
+		</div>
+		<figure class="about-photo">
+			<img src={asset('/hiro-avatar.jpg')} alt={copy.photoAlt} width="640" height="640" loading="lazy" />
+			<figcaption>{copy.photoCaption}</figcaption>
+		</figure>
 	</header>
 
 	<section class="faq-list" aria-label="Frequently asked questions">
 		{#each visibleFaqs as faq, i}
-			<details class="faq-item" open={i < 2}>
+			<details class="faq-item">
 				<summary>
 					<span class="q-num">{String(i + 1).padStart(2, '0')}</span>
 					<span class="q-text">{faq.question}</span>
@@ -105,6 +133,30 @@
 				</div>
 			</details>
 		{/each}
+		<details class="faq-item games">
+			<summary>
+				<span class="q-num" aria-hidden="true">遊</span>
+				<span class="q-text">{copy.games}</span>
+				<span class="q-marker" aria-hidden="true">+</span>
+			</summary>
+			<ol class="answer game-list">
+				{#each GAMES as game}
+					<li>
+						<span class="game-title">{lang === 'ja' ? game.titleJa : game.title}</span>
+						<span class="game-studio">{game.studio}</span>
+						{#if takeOf(game.id)}
+							<span class="game-take">{takeOf(game.id)?.[lang]}</span>
+						{/if}
+						{#if game.inspires}
+							<span class="game-note">
+								{copy.inspires}
+								<a href={localizeHref('/', { locale: lang })}>{copy.seeVillage}</a>
+							</span>
+						{/if}
+					</li>
+				{/each}
+			</ol>
+		</details>
 	</section>
 
 	<footer class="about-foot">
@@ -120,13 +172,40 @@
 	.about-page {
 		max-width: 760px;
 		margin: 0 auto;
-		padding: 5rem 1.75rem 6rem;
+		padding: calc(var(--nav-h) + 2.5rem) 1.75rem 6rem;
 		font-family: var(--font-serif, 'Newsreader', Georgia, serif);
 		color: var(--color-text);
 	}
 
 	.about-head {
 		margin-bottom: 3.5rem;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 2.5rem;
+		align-items: start;
+	}
+
+	.about-photo {
+		margin: 0.5rem 0 0;
+		width: 200px;
+		transform: rotate(1.5deg);
+	}
+
+	.about-photo img {
+		display: block;
+		width: 100%;
+		height: auto;
+		background: #fff;
+		padding: 8px 8px 10px;
+	}
+
+	.about-photo figcaption {
+		margin-top: 0.6rem;
+		font-family: var(--font-mono, 'JetBrains Mono', monospace);
+		font-size: 0.65rem;
+		letter-spacing: 0.08em;
+		color: var(--color-text-tertiary, #888);
+		text-align: center;
 	}
 
 	.eyebrow {
@@ -245,6 +324,61 @@
 		margin: 0;
 	}
 
+	.games .q-num {
+		font-family: 'Shippori Mincho', serif;
+		font-size: 0.95rem;
+		letter-spacing: 0;
+		padding-top: 0;
+	}
+
+	.game-list {
+		list-style: none;
+		margin: 0;
+		display: grid;
+		gap: 0.85rem;
+	}
+
+	.game-list li {
+		display: grid;
+		gap: 0.1rem;
+	}
+
+	.game-title {
+		color: var(--color-text);
+		font-weight: 500;
+	}
+
+	.game-studio {
+		font-family: var(--font-mono, 'JetBrains Mono', monospace);
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-text-tertiary, #999);
+	}
+
+	.game-take {
+		margin-top: 0.2rem;
+		font-size: 0.95rem;
+		color: var(--color-text);
+	}
+
+	.game-note {
+		margin-top: 0.25rem;
+		font-size: 0.95rem;
+		font-style: italic;
+	}
+
+	.game-note a {
+		font-style: normal;
+		color: var(--color-accent, #b85042);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.game-note a:hover {
+		text-decoration: underline;
+	}
+
 	.about-foot {
 		margin-top: 4rem;
 		padding-top: 2rem;
@@ -289,7 +423,28 @@
 
 	@media (max-width: 640px) {
 		.about-page {
-			padding: 3.5rem 1.25rem 4rem;
+			padding: calc(var(--nav-h) + 1.5rem) 1.25rem 4rem;
+		}
+
+		/* The page-wide frame sits on the screen edge on phones. */
+		.about-page.frame-deco {
+			margin: 0;
+			border: 0;
+			outline: 0;
+		}
+
+		.about-page.frame-deco::before,
+		.about-page.frame-deco::after {
+			display: none;
+		}
+
+		.about-head {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+
+		.about-photo {
+			width: 180px;
 		}
 
 		.faq-item summary {

@@ -167,7 +167,6 @@
 		background: var(--paper-2);
 		border: 1px solid var(--rule);
 		border-radius: var(--radius-lg);
-		box-shadow: var(--shadow-md);
 	}
 
 	.guide-content :global(code) {
@@ -184,8 +183,19 @@
 
 	@media (max-width: 760px) {
 		.guide-page {
-			padding-top: 10.25rem;
+			padding-top: calc(var(--nav-h) + 2rem);
 			padding-bottom: 5rem;
+		}
+
+		/* Wrap long prompt lines, so a phone does not cut them off. */
+		.guide-content :global(pre) {
+			padding: 1rem;
+			white-space: pre-wrap;
+			overflow-wrap: anywhere;
+		}
+
+		.guide-content :global(pre code) {
+			white-space: inherit;
 		}
 
 		.guide-hero {

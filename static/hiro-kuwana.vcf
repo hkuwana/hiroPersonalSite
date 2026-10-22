@@ -1,0 +1,14 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Kuwana;Hiroyuki;;;
+FN:Hiro Kuwana
+ORG:Kaiwa
+TITLE:Founder & CEO
+URL;TYPE=WORK:https://www.trykaiwa.com/
+URL;TYPE=HOME:https://hirokuwana.com
+URL;TYPE=OTHER:https://cal.com/hiro-kuwana/25-min?user=hiro-kuwana
+X-SOCIALPROFILE;TYPE=github:https://github.com/hkuwana
+X-SOCIALPROFILE;TYPE=linkedin:https://www.linkedin.com/in/hiroyuki-kuwana/
+X-SOCIALPROFILE;TYPE=twitter:https://x.com/KuwanaHiroyuki
+NOTE:Building Kaiwa full-time. Contact details live at https://hirokuwana.com/#contact.
+END:VCARD

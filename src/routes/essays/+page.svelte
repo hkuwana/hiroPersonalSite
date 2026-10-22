@@ -16,9 +16,9 @@
 
 <svelte:head>
 	<title>Essays - Hiro Kuwana</title>
-	<meta name="description" content="Essays on technology, startups, education, and building things that last." />
+	<meta name="description" content="Field notes from building Kaiwa, practical AI workflows, and essays on product, language, and human judgment." />
 	<meta property="og:title" content="Essays - Hiro Kuwana" />
-	<meta property="og:description" content="Essays on technology, startups, education, and building things that last." />
+	<meta property="og:description" content="Field notes from building Kaiwa, practical AI workflows, and essays on product, language, and human judgment." />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://hirokuwana.com/essays" />
 	<link rel="canonical" href="https://hirokuwana.com/essays" />
@@ -27,7 +27,7 @@
 <article class="essays-page" class:visible>
 	<header class="page-header">
 		<h1 class="page-title text-primary">Essays</h1>
-		<p class="page-subtitle text-secondary">Thoughts on technology, startups, and building things that matter</p>
+		<p class="page-subtitle text-secondary">Field notes from building Kaiwa, and the questions underneath the work.</p>
 	</header>
 
 	<div class="essays-list">
@@ -68,7 +68,7 @@
 	.essays-page {
 		max-width: 720px;
 		margin: 0 auto;
-		padding: 4rem 2rem 6rem;
+		padding: calc(var(--nav-h) + 2.5rem) 2rem 6rem;
 		opacity: 0;
 		transform: translateY(20px);
 		transition: all 0.6s var(--ease-out-expo);
@@ -123,7 +123,6 @@
 		background: var(--color-bg-subtle);
 		border-color: rgba(0, 0, 0, 0.12);
 		transform: translateX(4px);
-		box-shadow: var(--shadow-md);
 	}
 
 	.essay-date {
@@ -192,7 +191,7 @@
 	/* Responsive */
 	@media (max-width: 640px) {
 		.essays-page {
-			padding: 3rem 1.5rem 4rem;
+			padding: calc(var(--nav-h) + 1.5rem) 1.5rem 4rem;
 		}
 
 		.page-title {

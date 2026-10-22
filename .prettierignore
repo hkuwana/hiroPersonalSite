@@ -4,3 +4,11 @@ pnpm-lock.yaml
 yarn.lock
 bun.lock
 bun.lockb
+
+# Generated output and caches
+.cache
+.svelte-kit
+build
+dist
+project.inlang/cache
+src/lib/paraglide

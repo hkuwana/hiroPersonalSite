@@ -87,7 +87,7 @@
 	.essay-page {
 		max-width: 680px;
 		margin: 0 auto;
-		padding: 3rem 2rem 6rem;
+		padding: calc(var(--nav-h) + 2.5rem) 2rem 6rem;
 		opacity: 0;
 		transform: translateY(20px);
 		transition: all 0.6s var(--ease-out-expo);
@@ -183,10 +183,10 @@
 
 	.essay-content :global(blockquote) {
 		margin: 2rem 0;
-		padding: 1.5rem 1.5rem 1.5rem 2rem;
+		padding: 1.5rem;
 		background: var(--color-bg-muted);
-		border-left: 3px solid var(--color-accent);
-		border-radius: 0 var(--radius-md) var(--radius-md) 0;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-lg);
 		color: var(--color-text);
 		font-style: italic;
 	}
@@ -259,7 +259,7 @@
 	.footer-divider {
 		width: 60px;
 		height: 3px;
-		background: linear-gradient(90deg, var(--color-accent), #8b5cf6);
+		background: var(--color-accent);
 		border-radius: 2px;
 		margin-bottom: 2rem;
 	}
@@ -290,7 +290,7 @@
 	/* Responsive */
 	@media (max-width: 640px) {
 		.essay-page {
-			padding: 2rem 1.5rem 4rem;
+			padding: calc(var(--nav-h) + 1.5rem) 1.5rem 4rem;
 		}
 
 		.essay-content {
