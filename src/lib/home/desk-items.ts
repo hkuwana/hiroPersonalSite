@@ -13,8 +13,9 @@ export type PaletteKey =
 	| 'ebicha'
 	| 'kon'
 	| 'gold'
-	| 'wood';
-export type ShelfId = 'work' | 'reading' | 'lang' | 'learn' | 'tools' | 'places';
+	| 'wood'
+	| 'murasaki';
+export type ShelfId = 'work' | 'reading' | 'lang' | 'tools' | 'games' | 'places';
 
 export type DeskItem = {
 	id: string;
@@ -23,6 +24,8 @@ export type DeskItem = {
 	label: string;
 	sub?: string;
 	logo?: string;
+	// Game box art in static/games/ (not free, credited in credits.json).
+	cover?: { src: string; owner: string };
 	href?: string;
 	external?: boolean;
 	cta?: L10n;
@@ -38,8 +41,9 @@ export const SHELVES: { id: ShelfId; label: L10n; color: PaletteKey }[] = [
 	{ id: 'work', label: { en: '作品 Projects', ja: '作品' }, color: 'ebicha' },
 	{ id: 'reading', label: { en: '本 Humanities', ja: '本' }, color: 'kon' },
 	{ id: 'lang', label: { en: '言葉 Languages', ja: '言葉' }, color: 'moss' },
-	{ id: 'learn', label: { en: '学ぶ Learning', ja: '学ぶ' }, color: 'mossLight' },
 	{ id: 'tools', label: { en: '道具 Tools', ja: '道具' }, color: 'ink' },
+	// Hiro's top 3 games.
+	{ id: 'games', label: { en: '遊 Games', ja: '遊び' }, color: 'murasaki' },
 	{ id: 'places', label: { en: '場所 Places', ja: '場所' }, color: 'gold' }
 ];
 
@@ -47,6 +51,28 @@ const SPEAK: L10n = { en: 'A language I speak.', ja: '話せる言語。' };
 const LEARN: L10n = { en: 'A language I am learning.', ja: 'いま学んでいる言語。' };
 const GITHUB: L10n = { en: 'View on GitHub', ja: 'GitHub で見る' };
 const wiki = (title: string) => `https://en.wikipedia.org/wiki/${title}`;
+const WIKI: L10n = { en: 'Read on Wikipedia', ja: 'Wikipedia で読む' };
+
+// A game tag: facts (title, studio, year), the box art, and Hiro's take.
+const game = (
+	id: string,
+	label: string,
+	page: string,
+	owner: string,
+	desc: L10n,
+	take: L10n
+): DeskItem => ({
+	id,
+	kind: 'tag',
+	cat: 'games',
+	label,
+	href: wiki(page),
+	external: true,
+	cta: WIKI,
+	cover: { src: `/games/${id}.jpg`, owner },
+	desc,
+	take
+});
 
 export const DESK_ITEMS: DeskItem[] = [
 	{
@@ -197,8 +223,22 @@ export const DESK_ITEMS: DeskItem[] = [
 	{ id: 'japanese', kind: 'tag', cat: 'lang', label: '日本語', sub: 'Japanese', desc: SPEAK },
 	{ id: 'english', kind: 'tag', cat: 'lang', label: 'English', desc: SPEAK },
 	{ id: 'mandarin', kind: 'tag', cat: 'lang', label: '中文', sub: 'Mandarin', desc: SPEAK },
-	{ id: 'spanish', kind: 'tag', cat: 'learn', label: 'Español', sub: 'Spanish', desc: LEARN },
-	{ id: 'dutch', kind: 'tag', cat: 'learn', label: 'Nederlands', sub: 'Dutch', desc: LEARN },
+	{
+		id: 'spanish',
+		kind: 'tag',
+		cat: 'lang',
+		label: 'Español',
+		sub: 'Spanish',
+		desc: LEARN
+	},
+	{
+		id: 'dutch',
+		kind: 'tag',
+		cat: 'lang',
+		label: 'Nederlands',
+		sub: 'Dutch',
+		desc: LEARN
+	},
 
 	{
 		id: 'llms',
@@ -210,6 +250,19 @@ export const DESK_ITEMS: DeskItem[] = [
 		desc: {
 			en: 'My daily material. Prompts, workflows, and notes.',
 			ja: '毎日の素材。プロンプト、ワークフロー、メモ。'
+		}
+	},
+	{
+		id: 'claude-code',
+		kind: 'tag',
+		cat: 'tools',
+		label: 'Claude Code',
+		href: 'https://claude.com/product/claude-code',
+		external: true,
+		cta: { en: 'claude.com', ja: 'claude.com' },
+		desc: {
+			en: 'The AI that writes most of my code, while I decide what to build.',
+			ja: 'コードの大半を書く AI。何をつくるかは私が決めます。'
 		}
 	},
 	{
@@ -226,16 +279,16 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	},
 	{
-		id: 'svelte',
+		id: 'astro',
 		kind: 'tag',
 		cat: 'tools',
-		label: 'Svelte',
-		href: 'https://svelte.dev/',
+		label: 'Astro',
+		href: 'https://astro.build/',
 		external: true,
-		cta: { en: 'svelte.dev', ja: 'svelte.dev' },
+		cta: { en: 'astro.build', ja: 'astro.build' },
 		desc: {
-			en: 'The framework I build interactive parts with.',
-			ja: '動く部分をつくるフレームワーク。'
+			en: 'The framework I build my sites with now.',
+			ja: 'いまサイトをつくるときのフレームワーク。'
 		}
 	},
 	{
@@ -252,19 +305,6 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	},
 	{
-		id: 'claude',
-		kind: 'tag',
-		cat: 'tools',
-		label: 'Claude',
-		href: 'https://www.anthropic.com/claude',
-		external: true,
-		cta: { en: 'anthropic.com/claude', ja: 'anthropic.com/claude' },
-		desc: {
-			en: 'The model I write and build with most days.',
-			ja: 'ほぼ毎日、書くときもつくるときも使うモデル。'
-		}
-	},
-	{
 		id: 'vps',
 		kind: 'tag',
 		cat: 'tools',
@@ -275,6 +315,48 @@ export const DESK_ITEMS: DeskItem[] = [
 		}
 	},
 
+	game(
+		'okami',
+		'Ōkami',
+		'%C5%8Ckami',
+		'Capcom',
+		{
+			en: 'Ōkami · Clover Studio, 2006. The ink village at the top of this page is inspired by it.',
+			ja: '大神 · クローバースタジオ、2006年。このページ上部の墨の村は、このゲームに着想を得ています。'
+		},
+		{
+			en: 'It taught me that you can mix visual art and graphics with games.',
+			ja: 'ビジュアルアートとゲームは混ぜ合わせられるのだと教えてくれた作品。'
+		}
+	),
+	game(
+		'shogun-2',
+		'Shogun 2',
+		'Total_War:_Shogun_2',
+		'Sega',
+		{
+			en: 'Total War: Shogun 2 · Creative Assembly, 2011.',
+			ja: 'Total War: SHOGUN 2 · Creative Assembly、2011年。'
+		},
+		{
+			en: 'The best RTS game, with a lot of flexibility.',
+			ja: '最高の RTS。自由度がとても高い。'
+		}
+	),
+	game(
+		'resident-evil-2',
+		'Resident Evil 2',
+		'Resident_Evil_2',
+		'Capcom',
+		{
+			en: 'Resident Evil 2 · Capcom, 1998 (remade in 2019).',
+			ja: 'バイオハザード2 · カプコン、1998年（2019年にリメイク）。'
+		},
+		{
+			en: 'It created an atmosphere, and the remake especially was a great blend of the survival horror genre.',
+			ja: '空気感をつくり出した作品。特にリメイク版は、サバイバルホラーというジャンルの見事な融合でした。'
+		}
+	),
 	{
 		id: 'tokyo-ny',
 		kind: 'tag',

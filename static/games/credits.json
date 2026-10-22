@@ -1,0 +1,23 @@
+{
+	"okami": {
+		"file": "OkamiNTSCcoverFinal.jpg",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Capcom",
+		"source": "https://en.wikipedia.org/wiki/File:OkamiNTSCcoverFinal.jpg"
+	},
+	"shogun-2": {
+		"file": "Shogun 2 Total War box art.jpg",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Sega / Creative Assembly",
+		"source": "https://en.wikipedia.org/wiki/File:Shogun_2_Total_War_box_art.jpg"
+	},
+	"resident-evil-2": {
+		"file": "NTSC Resident Evil 2 Cover.png",
+		"license": "Non-free cover art (fair use on Wikipedia)",
+		"free": false,
+		"owner": "Capcom",
+		"source": "https://en.wikipedia.org/wiki/File:NTSC_Resident_Evil_2_Cover.png"
+	}
+}

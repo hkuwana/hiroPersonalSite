@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { DESK_ITEMS, SHELVES } from '$lib/home/desk-items';
 import { FACETS } from '$lib/home/facets';
 import credits from '../../../static/portraits/credits.json';
+import coverCredits from '../../../static/games/credits.json';
 
 const both = (l?: { en: string; ja: string }) => !!l && l.en.trim() !== '' && l.ja.trim() !== '';
 
@@ -38,15 +39,33 @@ describe('desk items', () => {
 		]);
 		for (const a of authors) expect(both(a.take) && both(a.author?.descriptor)).toBe(true);
 	});
-	test('learning languages are Spanish and Dutch', () => {
-		expect(DESK_ITEMS.filter((i) => i.cat === 'learn').map((i) => i.sub)).toEqual([
-			'Spanish',
-			'Dutch'
+	test("Hiro's top 3 games share one row", () => {
+		expect(DESK_ITEMS.filter((i) => i.cat === 'games').map((i) => i.label)).toEqual([
+			'Ōkami',
+			'Shogun 2',
+			'Resident Evil 2'
 		]);
+	});
+	test('all languages share one row', () => {
+		expect(DESK_ITEMS.filter((i) => i.cat === 'lang').map((i) => i.label)).toEqual([
+			'日本語',
+			'English',
+			'中文',
+			'Español',
+			'Nederlands'
+		]);
+	});
+	test("every game has Hiro's take", () => {
+		const games = DESK_ITEMS.filter((i) => i.cat === 'games');
+		for (const g of games) expect(both(g.take), g.id).toBe(true);
+	});
+	test('each part of the desk has its own color', () => {
+		const colors = SHELVES.map((s) => s.color);
+		expect(new Set(colors).size).toBe(colors.length);
 	});
 	test('every referenced asset exists in static/', () => {
 		for (const i of DESK_ITEMS) {
-			for (const path of [i.logo, i.avatar, i.author?.portrait]) {
+			for (const path of [i.logo, i.avatar, i.author?.portrait, i.cover?.src]) {
 				if (path) expect(existsSync(`static${path}`), path).toBe(true);
 			}
 		}
@@ -60,5 +79,15 @@ test('only free-license portraits are referenced', () => {
 	for (const i of DESK_ITEMS) {
 		if (!i.author?.portrait) continue;
 		expect((credits as Record<string, { free: boolean }>)[i.id]?.free, i.id).toBe(true);
+	}
+});
+
+test('every game has box art with a source and an owner credit', () => {
+	const games = DESK_ITEMS.filter((i) => i.cat === 'games');
+	for (const g of games) {
+		const c = (coverCredits as Record<string, { source: string; owner: string }>)[g.id];
+		expect(g.cover?.src, g.id).toBe(`/games/${g.id}.jpg`);
+		expect(c?.source, g.id).toMatch(/^https:\/\//);
+		expect(g.cover?.owner, g.id).toBeTruthy();
 	}
 });

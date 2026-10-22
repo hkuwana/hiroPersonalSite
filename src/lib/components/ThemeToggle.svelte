@@ -8,6 +8,12 @@
 	onMount(() => {
 		// The head script already applied the saved/system preference before paint.
 		isDark = document.documentElement.dataset.theme === 'dark';
+		// Other controls (the ink village brush) can change the theme too.
+		const mo = new MutationObserver(() => {
+			isDark = document.documentElement.dataset.theme === 'dark';
+		});
+		mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+		return () => mo.disconnect();
 	});
 
 	async function toggleTheme() {

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
 	import { FAQS, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+	import { DESK_ITEMS } from '$lib/home/desk-items';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/stores';
@@ -10,6 +11,15 @@
 	$: lang = ($optimisticLocale ?? (($page.data.locale as Locale | undefined) ?? getLocale())) as Locale;
 
 	const visibleFaqs = FAQS.filter((faq) => faq.visible);
+
+	// Hiro's top 3 games, in his order. His reasons live with the desk tags (desk-items.ts).
+	// Ōkami inspired the ink village on the home page.
+	const GAMES: { id: string; title: string; titleJa: string; studio: string; inspires?: boolean }[] = [
+		{ id: 'okami', title: 'Ōkami', titleJa: '大神', studio: 'Clover Studio', inspires: true },
+		{ id: 'shogun-2', title: 'Total War: Shogun 2', titleJa: 'Total War: SHOGUN 2', studio: 'Creative Assembly' },
+		{ id: 'resident-evil-2', title: 'Resident Evil 2', titleJa: 'バイオハザード2', studio: 'Capcom' }
+	];
+	const takeOf = (id: string) => DESK_ITEMS.find((i) => i.id === id)?.take;
 
 	const faqJsonLd = {
 		'@context': 'https://schema.org',
@@ -51,7 +61,10 @@
 					contactPrompt: '話してみたい、書いてみたい、そんな方は',
 					contactCta: 'お便りを書く →',
 					photoAlt: '山道を歩く桑名浩行',
-					photoCaption: 'fig. 0 · 山にいるほうの私'
+					photoCaption: 'fig. 0 · 山にいるほうの私',
+					games: '好きなゲーム トップ3',
+					inspires: 'トップページの墨の村は、このゲームに着想を得ています。',
+					seeVillage: '村を見る →'
 				}
 			: {
 					eyebrow: 'about · 自己紹介',
@@ -63,7 +76,10 @@
 					contactPrompt: 'Rather just talk?',
 					contactCta: 'Write to me →',
 					photoAlt: 'Hiro Kuwana on a mountain trail',
-					photoCaption: 'fig. 0 · the one behind the seal'
+					photoCaption: 'fig. 0 · the one behind the seal',
+					games: 'Top 3 games',
+					inspires: 'The ink village on the front page is inspired by it.',
+					seeVillage: 'See the village →'
 				};
 </script>
 
@@ -117,6 +133,30 @@
 				</div>
 			</details>
 		{/each}
+		<details class="faq-item games">
+			<summary>
+				<span class="q-num" aria-hidden="true">遊</span>
+				<span class="q-text">{copy.games}</span>
+				<span class="q-marker" aria-hidden="true">+</span>
+			</summary>
+			<ol class="answer game-list">
+				{#each GAMES as game}
+					<li>
+						<span class="game-title">{lang === 'ja' ? game.titleJa : game.title}</span>
+						<span class="game-studio">{game.studio}</span>
+						{#if takeOf(game.id)}
+							<span class="game-take">{takeOf(game.id)?.[lang]}</span>
+						{/if}
+						{#if game.inspires}
+							<span class="game-note">
+								{copy.inspires}
+								<a href={localizeHref('/', { locale: lang })}>{copy.seeVillage}</a>
+							</span>
+						{/if}
+					</li>
+				{/each}
+			</ol>
+		</details>
 	</section>
 
 	<footer class="about-foot">
@@ -282,6 +322,61 @@
 
 	.answer p {
 		margin: 0;
+	}
+
+	.games .q-num {
+		font-family: 'Shippori Mincho', serif;
+		font-size: 0.95rem;
+		letter-spacing: 0;
+		padding-top: 0;
+	}
+
+	.game-list {
+		list-style: none;
+		margin: 0;
+		display: grid;
+		gap: 0.85rem;
+	}
+
+	.game-list li {
+		display: grid;
+		gap: 0.1rem;
+	}
+
+	.game-title {
+		color: var(--color-text);
+		font-weight: 500;
+	}
+
+	.game-studio {
+		font-family: var(--font-mono, 'JetBrains Mono', monospace);
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-text-tertiary, #999);
+	}
+
+	.game-take {
+		margin-top: 0.2rem;
+		font-size: 0.95rem;
+		color: var(--color-text);
+	}
+
+	.game-note {
+		margin-top: 0.25rem;
+		font-size: 0.95rem;
+		font-style: italic;
+	}
+
+	.game-note a {
+		font-style: normal;
+		color: var(--color-accent, #b85042);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.game-note a:hover {
+		text-decoration: underline;
 	}
 
 	.about-foot {

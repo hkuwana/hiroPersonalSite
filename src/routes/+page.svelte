@@ -4,7 +4,7 @@
 	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS, KAIWA_METRICS } from '$data/constants';
 	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
 	import EmailStamp from '$lib/components/home/EmailStamp.svelte';
-	import Windmill from '$lib/components/home/Windmill.svelte';
+	import InkHero from '$lib/ink/InkHero.svelte';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { onMount } from 'svelte';
@@ -534,7 +534,11 @@
 	})}</` + `script>`}
 </svelte:head>
 
-<section class="hero" data-screen-label="01 Landing">
+<!-- The front: the ink village (hi-fi), or the 2D windmill (lo-fi). Scrolling
+     lifts the camera and lets the paper mist in, then the hero below continues. -->
+<InkHero {lang} essays={ESSAYS} tall nextHref="#intro" />
+
+<section class="hero" id="intro" data-screen-label="01 Landing">
 
 	<div class="season-mark mb-2">
 		<span class="stamp">浩</span>
@@ -595,8 +599,6 @@
 			<dd>{t('hero.meta.reading.v')}</dd>
 		</dl>
 	</aside>
-
-	<div class="hero-mill"><Windmill {lang} /></div>
 
 	<a class="scroll-cue" href="#work" aria-label={lang === 'ja' ? 'プロジェクトへスクロール' : 'Scroll to projects'}>
 		<span>{t('hero.scroll')}</span>

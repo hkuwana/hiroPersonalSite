@@ -392,6 +392,29 @@
 					</div>
 					<p class="desk-take">{selected.desc?.[lang]}</p>
 					<a class="ink-link" href={href(selected)}>{selected.cta?.[lang]} →</a>
+				{:else if selected.cover}
+					<span class="desk-kicker">{shelfLabel(selected)}</span>
+					<div class="desk-row">
+						<img
+							class="desk-cover"
+							src={selected.cover.src}
+							alt={selected.label}
+							width="84"
+							height="112"
+						/>
+						<div>
+							<h3>{selected.label}</h3>
+							<p class="desk-sub">{selected.desc?.[lang]}</p>
+						</div>
+					</div>
+					{#if selected.take}
+						<span class="desk-kicker">{t('take')}</span>
+						<p class="desk-take">{selected.take[lang]}</p>
+					{/if}
+					<a class="ink-link" href={selected.href} target="_blank" rel="noopener"
+						>{selected.cta?.[lang]} ↗</a
+					>
+					<p class="desk-credit">{t('cover')} {selected.cover.owner}</p>
 				{:else}
 					<span class="desk-kicker">{shelfLabel(selected)}</span>
 					<div class="desk-row">

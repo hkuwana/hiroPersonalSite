@@ -25,6 +25,7 @@ export const COPY_DESK: Record<Locale, Record<string, string>> = {
 		drop: 'Drop again ↻',
 		take: 'My take',
 		wiki: 'Read on Wikipedia ↗',
+		cover: 'Cover art ©',
 		list: 'Everything on the desk',
 		canvas: 'Paper tags on a wooden desk. Use the list of items to open each one.'
 	},
@@ -37,6 +38,7 @@ export const COPY_DESK: Record<Locale, Record<string, string>> = {
 		drop: 'もう一度落とす ↻',
 		take: '私の見方',
 		wiki: 'Wikipedia で読む ↗',
+		cover: 'カバー画像 ©',
 		list: '机の上のものすべて',
 		canvas: '木の机の上の紙のタグ。下のリストからそれぞれを開けます。'
 	}

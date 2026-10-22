@@ -13,6 +13,7 @@
 	--kon: #233a5e;
 	--gold: #a8894a;
 	--wood: #8a6a45;
+	--murasaki: #5d4a7e;
 	--shu: var(--ebicha);
 	--highlight: #d9dcbf;
 	--status-active: var(--moss-green);
@@ -71,6 +72,7 @@
 	--kon: #7f9cc9;
 	--gold: #c9a865;
 	--wood: #5c4630;
+	--murasaki: #a796c8;
 	--highlight: #3a3f2c;
 	--status-sunset: #a09479;
 	--p: 0.68 0.16 30;
@@ -2031,6 +2033,8 @@ html[data-theme-transition]::view-transition { pointer-events: none; }
 .desk-portrait { width: 84px; height: 84px; object-fit: cover; object-position: top; border-radius: 50%; border: 1px solid var(--gold); outline: 1px solid var(--gold); outline-offset: 3px; filter: grayscale(1) sepia(0.55) contrast(1.1); }
 .desk-portrait.self { filter: none; }
 .desk-portrait.monogram { display: grid; place-items: center; font-family: var(--f-display); font-size: 2rem; color: var(--paper); background: var(--kon); filter: none; }
+.desk-cover { width: 84px; height: 112px; flex: none; object-fit: cover; border: 1px solid var(--gold); outline: 1px solid var(--gold); outline-offset: 3px; }
+.desk-credit { margin: 0.75rem 0 0; font-size: 0.75rem; color: var(--ink-mute); }
 .desk-logo { width: 64px; height: 64px; object-fit: contain; padding: 8px; background: #fff; border-radius: 50%; border: 1px solid var(--gold); }
 @media (max-width: 1040px) { .desk-grid { grid-template-columns: 1fr; } }
 

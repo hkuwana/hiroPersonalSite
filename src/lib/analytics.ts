@@ -1,4 +1,11 @@
-type Event = 'outbound_link_clicked' | 'contact_email_copied' | 'contact_email_revealed';
+type Event =
+	| 'outbound_link_clicked'
+	| 'contact_email_copied'
+	| 'contact_email_revealed'
+	// Ink village: which fidelity a visitor got and why ("hi:capable"), and
+	// which part of the work they opened. For the hi-fi / lo-fi comparison.
+	| 'village_fidelity'
+	| 'village_place_opened';
 
 type Properties = { locale?: string; choice?: string; destination?: string };
 
