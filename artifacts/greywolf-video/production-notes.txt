@@ -1,0 +1,101 @@
+OTTERD × GREYWOLF — REVIEW DRAFT
+
+Latest: otterd-greywolf-boston-review.mp4 (80.8 seconds, Jerry B. / Eleven v4,
+1920 × 1080, 24 fps, H.264/AAC, burned-in English captions).
+Previous: otterd-greywolf-examples-review.mp4 (85 seconds, Martin narration).
+Original: otterd-greywolf-review.mp4 (79 seconds; original review version).
+Editable animation: render.py. Narration: narration.txt and narration.mp3.
+Current audio edit: narration-expanded.mp3 (three two-second reading pauses).
+Captions: captions.json (edit timings here), captions.srt (generated).
+Storyboard: storyboard.jpg. Poster: poster.png.
+
+Direction
+Progressively assembled diagrams, drawn paths, source-to-output motion and
+explicit arithmetic checking. Original Otterd presentation using the existing
+warm paper, indigo, rose, moss and ochre palette. This is a programmatic Pillow
+animation, not a Manim project. No 3Blue1Brown characters, branding, assets or
+voice are used. Narration uses ElevenLabs' Martin — Calm, Clear Narrator voice.
+
+Story
+0:00  Recurring filing, reconciliation and repeat-question work
+0:09  Otterd: sources → AI draft → code checks → human review → handover
+0:26  Greywolf office hours, November 10 and 12, 2026
+0:35  One task: frequency, duration and a usable result
+0:44  Open / Describe / Keep sharing lanes
+1:03  Email the copied brief; first version on public or dummy data
+1:10  Recording and note if the week gets busy
+1:16  November 6 deadline and invitation-link call to action
+
+Revision 2 — sharing examples and Boston voice request
+- All nine requested examples are displayed across Open / Describe / Keep.
+  Each lane is highlighted with its narration. Two-second reading pauses
+  after each lane bring the film from 79 to 85 seconds.
+- Open says public or sanitized examples; routine work can contain sensitive
+  information too. Describe names steps, file layout, a stand-in and the
+  team's connection to real files. Keep offers help building in the team's
+  own environment without asking them to share the edge.
+- The user selected Jerry B. — Conversational Boston Accent, ElevenLabs
+  voice ID UZvBfqEdvCFLqsBOo9Zr. The generation was rate-limited (HTTP 429).
+  Read-only inspection confirmed that the saved node's status is not_run.
+  No generation retry was made. The current video still uses Martin.
+- The revised Boston narration text is in narration-boston-draft.txt. Its
+  saved setup is https://elevenlabs.io/app/flows/dTIh0ovpB6IKEmU4WBtD .
+  This is a prepared narration, not a completed Boston audio track. A new
+  track will require fresh timing and caption alignment before video export.
+- Original source/captions/narration/notes are preserved in v1/.
+
+Revision 3 — single-take Boston voice and voice research
+- After the user requested one whole-script request, a fresh audit confirmed
+  the saved Boston node had no generations. Starting that saved node with
+  generations_count=1 succeeded: one take, 76.8 seconds. The completed asset
+  is narration-boston.mp3. It is now used in the Boston video, with all nine
+  sharing-lane examples and a short final hold (80.8 seconds total).
+- Rebuild that version with python3 render_boston.py. It uses
+  captions-boston.json and writes captions-boston.srt. It leaves the previous
+  video exports intact. Caption timing follows measured sentence pauses.
+- The script is in narration-boston-draft.txt. Although the filename retains
+  draft, its text is now the script spoken in the completed Boston track.
+- The high-level speech tool defaults to two takes. Both the Boston run and
+  the later Max request were explicitly set to one take. A subsequent
+  single-take Max request still returned HTTP 429, so the default of two takes
+  is not a confirmed explanation for the rate limiting. The error does not
+  identify whether the limiting layer was the connector or ElevenLabs.
+- Current official ElevenLabs guidance says to match voice and model to
+  the delivery and test the pairing; it does not provide a universal v4
+  voice ranking. From the live high-quality educational voice descriptions,
+  Max — eLearning, Documentary, Friendly is the main recommendation for a
+  neutral, articulate explainer; Quentin — Narrator and Educator is the
+  deeper alternative. These are editorial recommendations, not listening
+  test winners. Jerry B. is the completed Boston alternative selected earlier.
+- Max's saved v4 setup remains without a completed take at
+  https://elevenlabs.io/app/flows/zMoDSdNVmG6KwfQgWanA . The finished video
+  does not claim to use Max.
+- Official sources checked:
+  https://elevenlabs.io/docs/eleven-creative/playground/text-to-speech
+  https://elevenlabs.io/docs/help-center/technical/api-error-code-429
+
+Editorial choices
+- The numerical example is explicitly illustrative and uses dummy data.
+  Two values, 125 and 55, sum to 180. A draft total of 182 is flagged.
+  No client result, time-saving metric or real financial data is implied.
+- Replaced "check every output" with "test outputs with code, and flag
+  exceptions for review" to describe a check without promising infallibility.
+- Omitted "Nothing you type is stored." No brief form or its storage behavior
+  was available to verify that statement.
+- Dates, names, build-ahead commitment and async deliverables come from the
+  supplied draft. They are not independently verified calendar facts.
+- No live brief URL was supplied. The call to action says "Open the brief link
+  in your invitation" so the draft can be reviewed without inventing a URL.
+- Names are used only in this requested Greywolf review asset. The public site
+  was not edited. No email, upload, publishing or sharing action was performed.
+
+Before sending
+Confirm the supplied visit/deadline dates and delivery commitments, and include
+the actual brief link in the invitation. Replace the REVIEW DRAFT rail only
+after that content review.
+
+Rebuild
+From this folder: python3 render.py
+Requires Python with Pillow, ffmpeg on PATH and the macOS system fonts named
+in FONT_FILES. For other platforms, update those font paths. No site dependency
+or package changes are needed.

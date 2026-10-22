@@ -1,0 +1,50 @@
+OTTERD × GREYWOLF — REVIEW DRAFT
+
+Deliverable: 79-second 16:9 narrated animation with burned-in English captions.
+Master: otterd-greywolf-review.mp4 (1920 × 1080, 24 fps, H.264/AAC).
+Editable animation: render.py. Narration: narration.txt and narration.mp3.
+Captions: captions.json (edit timings here), captions.srt (generated).
+Storyboard: storyboard.jpg. Poster: poster.png.
+
+Direction
+Progressively assembled diagrams, drawn paths, source-to-output motion and
+explicit arithmetic checking. Original Otterd presentation using the existing
+warm paper, indigo, rose, moss and ochre palette. This is a programmatic Pillow
+animation, not a Manim project. No 3Blue1Brown characters, branding, assets or
+voice are used. Narration uses ElevenLabs' Martin — Calm, Clear Narrator voice.
+
+Story
+0:00  Recurring filing, reconciliation and repeat-question work
+0:09  Otterd: sources → AI draft → code checks → human review → handover
+0:26  Greywolf office hours, November 10 and 12, 2026
+0:35  One task: frequency, duration and a usable result
+0:44  Open / Describe / Keep sharing lanes
+0:57  Email the copied brief; first version on public or dummy data
+1:04  Recording and note if the week gets busy
+1:10  November 6 deadline and invitation-link call to action
+
+Editorial choices
+- The numerical example is explicitly illustrative and uses dummy data.
+  Two values, 125 and 55, sum to 180. A draft total of 182 is flagged.
+  No client result, time-saving metric or real financial data is implied.
+- Replaced "check every output" with "test outputs with code, and flag
+  exceptions for review" to describe a check without promising infallibility.
+- Omitted "Nothing you type is stored." No brief form or its storage behavior
+  was available to verify that statement.
+- Dates, names, build-ahead commitment and async deliverables come from the
+  supplied draft. They are not independently verified calendar facts.
+- No live brief URL was supplied. The call to action says "Open the brief link
+  in your invitation" so the draft can be reviewed without inventing a URL.
+- Names are used only in this requested Greywolf review asset. The public site
+  was not edited. No email, upload, publishing or sharing action was performed.
+
+Before sending
+Confirm the supplied visit/deadline dates and delivery commitments, and include
+the actual brief link in the invitation. Replace the REVIEW DRAFT rail only
+after that content review.
+
+Rebuild
+From this folder: python3 render.py
+Requires Python with Pillow, ffmpeg on PATH and the macOS system fonts named
+in FONT_FILES. For other platforms, update those font paths. No site dependency
+or package changes are needed.

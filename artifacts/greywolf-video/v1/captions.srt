@@ -1,0 +1,119 @@
+1
+00:00:00,000 --> 00:00:02,800
+Every fund has work that eats the week.
+
+2
+00:00:02,980 --> 00:00:04,700
+Pulling numbers from filings.
+
+3
+00:00:04,820 --> 00:00:06,350
+Reconciling files.
+
+4
+00:00:06,600 --> 00:00:09,050
+Answering the same question again.
+
+5
+00:00:09,330 --> 00:00:10,450
+We're Otterd.
+
+6
+00:00:10,560 --> 00:00:14,700
+We build AI workflows around the tools your team already uses.
+
+7
+00:00:14,960 --> 00:00:16,550
+Take a recurring task:
+
+8
+00:00:16,710 --> 00:00:18,120
+bring the sources together,
+
+9
+00:00:18,200 --> 00:00:19,400
+produce a draft,
+
+10
+00:00:19,460 --> 00:00:22,980
+test outputs with code, and flag exceptions for review.
+
+11
+00:00:23,200 --> 00:00:25,750
+Then we hand the workflow over to you.
+
+12
+00:00:26,000 --> 00:00:30,750
+On November 10th and 12th, Hiro and Eric are at Greywolf for office hours.
+
+13
+00:00:31,030 --> 00:00:34,700
+To make those days useful, tell us about one task first.
+
+14
+00:00:34,920 --> 00:00:38,700
+Pick a task, from research to compliance to the back office.
+
+15
+00:00:39,020 --> 00:00:40,200
+How often do you do it?
+
+16
+00:00:40,430 --> 00:00:41,750
+How long does it take?
+
+17
+00:00:41,880 --> 00:00:44,050
+What does a good result look like?
+
+18
+00:00:44,280 --> 00:00:45,800
+Choose a sharing lane.
+
+19
+00:00:45,970 --> 00:00:48,200
+Open: public or routine.
+
+20
+00:00:48,470 --> 00:00:51,300
+Describe: internal, but not your edge.
+
+21
+00:00:51,440 --> 00:00:52,800
+We'll use a stand-in.
+
+22
+00:00:53,000 --> 00:00:54,700
+Keep: your edge.
+
+23
+00:00:54,950 --> 00:00:57,000
+Don't send it. We don't need it.
+
+24
+00:00:57,270 --> 00:00:59,400
+Copy the brief and email it to us.
+
+25
+00:00:59,600 --> 00:01:04,100
+The week before we arrive, we'll build a first version on public or dummy data.
+
+26
+00:01:04,410 --> 00:01:06,850
+If that week gets busy, skip your slot.
+
+27
+00:01:06,960 --> 00:01:10,000
+We'll leave a three-minute recording and a one-page note.
+
+28
+00:01:10,250 --> 00:01:12,300
+Send your brief by November 6th.
+
+29
+00:01:12,560 --> 00:01:13,600
+Ten minutes now.
+
+30
+00:01:13,650 --> 00:01:16,160
+Something concrete to discuss when we arrive.
