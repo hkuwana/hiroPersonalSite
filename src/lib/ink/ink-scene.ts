@@ -83,6 +83,7 @@ type Role =
 	| 'snow'
 	| 'sakura'
 	| 'blossom'
+	| 'bekoInk'
 	| 'ridgeNear'
 	| 'ridgeFar';
 
@@ -108,6 +109,7 @@ function roles(p: Palette, night: boolean): Record<Role, string> {
 				hub: p.gold,
 				wood: p.wood,
 				line: p.ink,
+				bekoInk: c(p.paper, p.kon, 0.25),
 				sun: p.ink,
 				cloud: c(p.paper, p.kon, 0.32),
 				treeA: p.moss,
@@ -130,6 +132,7 @@ function roles(p: Palette, night: boolean): Record<Role, string> {
 				hub: p.gold,
 				wood: p.wood,
 				line: p.ink,
+				bekoInk: p.ink,
 				sun: '#d9a77f',
 				cloud: p.paper2,
 				treeA: p.moss,
@@ -160,6 +163,7 @@ export function createInkScene(
 	opts: {
 		night: boolean;
 		reduceMotion: boolean;
+		initialKite?: boolean;
 		onFrame?: (ms: number) => void;
 		onArrive?: (p: PlaceRef) => void;
 		// The GPU dropped the context: the page falls back to lo-fi.
@@ -665,7 +669,7 @@ export function createInkScene(
 	const beko = createBeko({
 		inked,
 		red: getToon('torii'),
-		ink: getFlat('line'),
+		ink: getFlat('bekoInk'),
 		gold: getToon('hub'),
 		white: getFlat('snow')
 	});
@@ -792,8 +796,8 @@ export function createInkScene(
 	let av = 0.5; // rad/s
 	let windDir: 1 | -1 = 1;
 	let gustT = 0; // 1 just after a brushed gust, eases to 0
-	let kiteOn = false;
-	let kiteT = 0; // 0 = windmill, 1 = kite
+	let kiteOn = !!opts.initialKite;
+	let kiteT = kiteOn ? 1 : 0; // 0 = windmill, 1 = kite
 	const pointer = new THREE.Vector2();
 	const camPos = new THREE.Vector3();
 	const tmpQ = new THREE.Quaternion();
@@ -889,7 +893,6 @@ export function createInkScene(
 		raf = requestAnimationFrame(frame);
 		const ms = now - last;
 		last = now;
-		opts.onFrame?.(ms);
 		const dt = Math.min(ms, 50) / 1000;
 		time += dt * motion;
 
@@ -1135,6 +1138,7 @@ export function createInkScene(
 		camera.position.lerp(camPos, Math.min(1, dt * 2.5));
 		camera.lookAt(lookAt);
 		renderer.render(scene, camera);
+		opts.onFrame?.(ms);
 	}
 	camera.position.set(0, 4.2, camDist);
 	raf = requestAnimationFrame(frame);

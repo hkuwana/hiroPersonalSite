@@ -1,0 +1,18 @@
+{
+  "voice_requested": "Chris - Charming, Down-to-Earth",
+  "voice_id": "iP95p4xoKVk53GoZ742B",
+  "voice_category": "premade / included",
+  "full_script_attempt_result": "quota_exceeded before audio generation",
+  "credits_remaining": 14,
+  "old_script_credits_required": 1266,
+  "new_script_generated": false,
+  "this_cut_audio": "Original synthesized transition sounds only; no spoken narration",
+  "new_credits_spent_for_revision": 0,
+  "quota_reconciliation": {
+    "previous_workspace_used": 7691,
+    "latest_workspace_used": 9986,
+    "difference": 2295,
+    "recent_seven_TTS_entries_sum": 2295,
+    "attribution": "History shows seven successful TTS entries; this audit has not associated their contents with a specific project. They are not the rejected included-voice attempt."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "tier": "free",
+  "status": "free",
+  "character_count": 9986,
+  "character_limit": 10000,
+  "remaining": 14,
+  "next_character_count_reset_unix": 1794622585,
+  "can_extend_character_limit": false,
+  "allowed_to_extend_character_limit": false
+}

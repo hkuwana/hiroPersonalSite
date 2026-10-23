@@ -53,8 +53,8 @@
 			'hero.name': 'Hiroyuki (Hiro) Kuwana',
 			'hero.nameAlt': '桑名浩行',
 			'hero.tagline':
-				"I'm Hiroyuki (Hiro) Kuwana. I build Kaiwa full-time and write down the product calls, systems, mistakes, and small wins along the way.",
-			'hero.now': 'Now · Kaiwa, full-time',
+				"I'm Hiroyuki (Hiro) Kuwana. I build Kaiwa and Otterd and write down the product calls, systems, mistakes, and small wins along the way.",
+			'hero.now': 'Now · Kaiwa + Otterd',
 			'hero.about1.a':
 				'Kaiwa is where I do the real work: product, code, growth, support, and the messy decisions in between. It is a language-learning platform where learners practice with AI and coaches shape the journey. I use AI wherever it helps, but',
 			'hero.about1.strong': "I don't hand it the judgment.",
@@ -99,7 +99,7 @@
 			'contact.titleEm': 'write me.',
 			'contact.stamp.title': 'Write to me · お便り',
 			'contact.aside.lead':
-				"I'm always interested in how other people are building with AI—especially the places where it creates more work instead of less. I'm not taking on outside projects, but thoughtful notes are welcome.",
+				"I'm always interested in how other people are building with AI—especially the places where it creates more work instead of less. I'm working on Kaiwa and Otterd, and thoughtful notes are welcome.",
 			'contact.aside.hi':
 				'Tell me what you are working on, what surprised you, or where you are stuck. I read every message myself and usually reply within a few days.',
 			'contact.tools.title': 'Side tools · 道具',
@@ -120,8 +120,8 @@
 			'hero.name': '桑名浩行',
 			'hero.nameAlt': 'Hiroyuki (Hiro) Kuwana',
 			'hero.tagline':
-				'桑名浩行 (Hiroyuki Kuwana) です。いまは Kaiwa をフルタイムでつくりながら、プロダクトの判断や仕組み、失敗、小さな前進を書き留めています。',
-			'hero.now': 'いま · Kaiwa をフルタイムで',
+				'桑名浩行 (Hiroyuki Kuwana) です。いまは Kaiwa と Otterd に取り組みながら、プロダクトの判断や仕組み、失敗、小さな前進を書き留めています。',
+			'hero.now': 'いま · Kaiwa + Otterd',
 			'hero.about1.a':
 				'Kaiwa は、プロダクト、開発、成長、サポート、その間にある面倒な判断まで、すべてを実地で試す場所です。学習者が AI と会話し、コーチが一人ひとりの学びを設計する語学学習のプラットフォームです。AI は役立つところで使います。でも、',
 			'hero.about1.strong': '判断までは渡しません。',
@@ -166,7 +166,7 @@
 			'contact.titleEm': 'お便りをどうぞ。',
 			'contact.stamp.title': 'お便りを書く · Write',
 			'contact.aside.lead':
-				'ほかの人が AI をどう使ってものをつくっているのか、いつも気になります。とくに、仕事が減るはずの AI で、かえって仕事が増えてしまうところ。外部の仕事は受けていませんが、考えのあるお便りは歓迎です。',
+				'ほかの人が AI をどう使ってものをつくっているのか、いつも気になります。とくに、仕事が減るはずの AI で、かえって仕事が増えてしまうところ。いまは Kaiwa と Otterd に取り組んでいます。考えのあるお便りは歓迎です。',
 			'contact.aside.hi': 'いま何をつくっているか、何を試したか、どこで行き詰まったか。届いたメッセージはすべて自分で読み、たいてい数日以内に返事します。',
 			'contact.tools.title': '道具 · side tools',
 			'contact.tools.cal.label': '25分、お茶でも',
@@ -187,6 +187,22 @@
 
 	// Order matters: in hand, then shipped, then sunset. Newest first in each group.
 	const PIECES: Piece[] = [
+		{
+			id: 'otterd',
+			status: 'active',
+			year: '2026 - now',
+			href: 'https://otterd.co/',
+			external: true,
+			title: 'Otterd',
+			titleJa: 'Otterd',
+			subtitle: 'AI workflows for fund teams',
+			subtitleJa: 'ファンドチームのための AI ワークフロー',
+			role: 'Co-founder + Build',
+			roleJa: '共同創業 + 開発',
+			summary: 'Custom AI workflows for private equity and hedge fund teams, built around the tools they already use.',
+			summaryJa: 'プライベートエクイティとヘッジファンドのチーム向けに、使い慣れたツールをつなぐ AI ワークフローを構築。',
+			logo: asset('/logos/otterd.svg'),
+		},
 		{
 			id: 'kaiwa',
 			status: 'active',

@@ -1,0 +1,48 @@
+GREYWOLF × OTTERD — A SMALL WORKING EXAMPLE
+
+Watch greywolf-working-proof.mp4 for the 20-second visual proof.
+Open index.html in a browser to inspect the example. It works offline.
+
+Try it
+1. Select "Try the numbers yourself".
+2. Click any value to highlight its location in the original source excerpt.
+3. Select "Try the wrong period". Services changes from the three-month
+   value of 27,423 to the nine-month value of 80,408. Both figures are from
+   Apple's public filing. The wrong selection is a deliberately seeded test.
+4. The period check fails and the component total differs by 52,985 million.
+5. Select "Use the quarter". The three quarterly figures reconcile again.
+6. Export the current selection to CSV, or open the checked Excel example.
+   In Excel, change C5 from 3 to 9 and back to reproduce the same test.
+
+What is real
+- Public Apple FY25 Q3 Form 10-Q, printed statement page 1 / PDF page 4.
+- Source values are extracted by code from the downloaded filing.
+- The browser example and film use the same source records and check logic.
+- The Excel workbook uses formulas and source hyperlinks; its Services-period
+  selector recalculates the result.
+
+What this does not claim
+- No Greywolf positions, research notes, reports or private files are used.
+- This is an illustrative example, not delivered Greywolf client work.
+- The wrong-period selection is staged, not an observed AI model mistake.
+- The parser was written with AI assistance for this particular filing.
+  This does not demonstrate general extraction accuracy across documents.
+- The movie is a scripted execution with animated transitions, not a claim
+  about extraction speed. Its worksheet illustration represents the same
+  source values and logic as the companion workbook; it is not an Excel
+  screen recording.
+- No forms, analytics, storage or background network requests are used.
+  Clicking the original source link opens the public filing externally.
+
+Audio
+The proof reuses short phrases from the approved Jerry B. Boston recording,
+with original, synthesized paper/keyboard sounds. A new Max/v4 single-take
+request was rate-limited, so no new narration is represented as completed.
+
+Source
+https://s2.q4cdn.com/470004039/files/doc_earnings/2025/q3/filing/10Q-Q3-2025-as-filed.pdf#page=4
+https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/aapl-20250628.htm
+
+Scope
+First proof sequence for the larger invitation film. The sharing-lane scenes,
+November visit sequence and task-submission ending are not in this short cut.

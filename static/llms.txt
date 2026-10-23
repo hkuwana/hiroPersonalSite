@@ -1,6 +1,6 @@
 # Hiro Kuwana — hirokuwana.com
 
-> Personal site of Hiro Kuwana, solo founder of Kaiwa (https://www.trykaiwa.com), a real-time AI conversation platform for language learners. The site holds essays, practical AI guides, and a small public tool API for calendar (.ics) files, contact (.vcf) files, and cleaning and redacting text before it reaches a model.
+> Personal site of Hiro Kuwana, solo founder of Kaiwa (https://www.trykaiwa.com), a real-time AI conversation platform for language learners, and co-founder of Otterd (https://otterd.co), which builds custom AI workflows for private equity and hedge fund teams. The site holds essays, practical AI guides, and a small public tool API for calendar (.ics) files, contact (.vcf) files, and cleaning and redacting text before it reaches a model.
 
 ## Tool API
 

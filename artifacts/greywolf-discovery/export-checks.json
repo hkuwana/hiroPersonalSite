@@ -1,0 +1,41 @@
+{
+  "video": "/Users/hiro/Documents/hiroPersonalSite/artifacts/greywolf-discovery/otterd-greywolf-discovery-review.mp4",
+  "technical_pass": true,
+  "checks": {
+    "usable_video": true,
+    "audio_present": true,
+    "srt_cue_count": 23,
+    "full_decode": true,
+    "audio_peak_dbfs": -30.3,
+    "contact_sheet_created": true
+  },
+  "failures": [],
+  "warnings": [],
+  "not_verified": [
+    "visual correctness",
+    "source accuracy",
+    "audio intelligibility",
+    "caption synchronization",
+    "audience comprehension"
+  ],
+  "duration_seconds": 80.0,
+  "video_streams": [
+    {
+      "codec_name": "h264",
+      "width": 1920,
+      "height": 1080,
+      "avg_frame_rate": "30/1",
+      "duration": "80.000000"
+    }
+  ],
+  "audio_streams": [
+    {
+      "codec_name": "aac",
+      "sample_rate": "44100",
+      "channels": 1,
+      "duration": "80.000000"
+    }
+  ],
+  "subtitle_stream_count": 0,
+  "contact_sheet": "/Users/hiro/Documents/hiroPersonalSite/artifacts/greywolf-discovery/export-contact-sheet.jpg"
+}

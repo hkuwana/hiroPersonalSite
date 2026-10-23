@@ -1,0 +1,65 @@
+{
+  "checked_at_utc": "2026-10-22 11:48:42 UTC",
+  "scope": "Read all eight connector-visible flows and inspect the same workspace in the user's existing signed-in Chrome session.",
+  "flows_checked": 8,
+  "nodes_checked": 32,
+  "node_status_counts": {
+    "not_run": 12,
+    "completed": 16,
+    "failed": 3,
+    "static_asset": 1
+  },
+  "active_or_queued_visible": [],
+  "configuration": {
+    "failed_node": "UYjayC37A2zf4w0ogmvE",
+    "model": "eleven_v4",
+    "voice_id": "UZvBfqEdvCFLqsBOo9Zr",
+    "same_parameters_as_successful_generation": "wrqt3sJ0GY8sAzznBGB6",
+    "no_charge_estimate": {
+      "credits": 1266,
+      "takes": 1,
+      "blocking_errors_reported": false
+    }
+  },
+  "website_account": {
+    "workspace": "Hiro's Workspace",
+    "plan": "Free",
+    "monthly_allowance": 10000,
+    "credits_remaining_before_direct_test": 2309,
+    "credits_remaining_after_direct_test": 2309
+  },
+  "direct_website_test": {
+    "action": "Clicked Run once on the same saved full-script node, under the existing authorization for one take.",
+    "result": "Failed to run node",
+    "generation_count_after": 0,
+    "extra_detail_available": false
+  },
+  "service_status": {
+    "US": "fully operational",
+    "EU": "fully operational",
+    "India": "fully operational",
+    "Singapore": "fully operational"
+  },
+  "conclusion": "No evidence of a running-job backlog or accidental voice/model mismatch in our saved request. Credits sufficient for one take. The direct website failure means the problem is not isolated to the Codex connector. Exact root cause is unconfirmed: workspace/account restrictions, a shared service limit, or an ElevenLabs Flows failure remain possible. A previously successful voice and a passing estimate do not prove that every backend constraint is satisfied.",
+  "unavailable": [
+    "Raw generation API response headers and Retry-After",
+    "Account-wide concurrent jobs outside connector-visible flows",
+    "Specific quota reset time",
+    "Detailed cause behind website Failed to run node"
+  ],
+  "latest_connector_error_request_id": "306943e1eb9a2df8d6a9c90dbf7e47f2",
+  "outbound_support_contacted": false,
+  "direct_cli_followup": {
+    "route": "Official ElevenLabs CLI, direct text-to-speech convert_with_timestamps, bypassing MCP and Flows",
+    "model": "eleven_v4",
+    "voice_id": "UZvBfqEdvCFLqsBOo9Zr",
+    "takes_requested": 1,
+    "automatic_retries": false,
+    "http_status": 402,
+    "code": "paid_plan_required",
+    "message": "Free users cannot use library voices via the API. Upgrade to Creator or add $5 of credits to use this voice.",
+    "request_id": "5f495ba1e7ae0532dbcc2ee6652e423e",
+    "audio_created": false,
+    "interpretation": "Confirmed entitlement restriction on the direct API route. This does not establish that the earlier generic MCP/Flows 429 errors have the same underlying cause."
+  }
+}

@@ -1,0 +1,12 @@
+import {ADMIN,BROKER,reconcile,POLICIES,QUESTIONS,draftAnswers} from './examples.mjs';
+import fs from 'node:fs/promises';
+const assert=(v,s)=>{if(!v)throw Error(s)};
+const r=reconcile(ADMIN,BROKER);assert(r.filter(x=>x.status==='matched').length===2,'2 matches');assert(r.find(x=>x.id==='INV-102').status==='duplicate','duplicate remains open');assert(r.find(x=>x.id==='INV-103').difference===2500,'USD25 difference');
+const a=structuredClone(ADMIN);a[0].currency='EUR';assert(reconcile(a,BROKER)[0].status==='context','cannot match different currency');
+assert(reconcile(ADMIN,BROKER.filter(x=>x.id!=='INV-104')).find(x=>x.id==='INV-104').status==='missing','missing row');
+const q=draftAnswers(QUESTIONS,POLICIES);assert(q.filter(x=>x.status==='draft').length===2,'two sourced draft answers');assert(q[2].answer===null&&q[2].source===null,'no fabricated unsupported answer');
+const p=structuredClone(POLICIES);p[0].approved=false;assert(draftAnswers(QUESTIONS,p)[0].answer===null,'exclude unapproved policy');
+await fs.writeFile(new URL('example-checks.json',import.meta.url),JSON.stringify({passed:true,checks:['duplicate reference remains unresolved','amount differs USD 25','two routine matches','currency mismatch','missing counterpart','two sourced answer drafts','unsupported answer stays blank','unapproved policy excluded'],reconciliation:r,questionnaire:q},null,2));
+for(const [name,rows] of [['administrator-report',ADMIN],['broker-report',BROKER]])await fs.writeFile(new URL(name+'.csv',import.meta.url),'reference,amount,currency,date\n'+rows.map(r=>[r.id,(r.amount/100).toFixed(2),r.currency,r.date].join(',')).join('\n')+'\n');
+await fs.writeFile(new URL('fictional-policies.txt',import.meta.url),'SYNTHETIC EXAMPLE — not Greywolf policy\n\n'+POLICIES.map(p=>p.id+' '+p.section+' '+p.title+'\n'+p.text).join('\n\n'));
+console.log('8 example checks passed.');

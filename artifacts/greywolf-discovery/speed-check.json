@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "checks": [
+    "2× changes native video rate",
+    "pitch preservation enabled",
+    "rate change retains position",
+    "chapter seek retains selected rate",
+    "1× restores normal playback"
+  ],
+  "actual_browser_playback": "Not observed in this check; DOM event handlers were exercised with a media-element stand-in."
+}

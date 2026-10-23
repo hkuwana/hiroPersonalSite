@@ -55,7 +55,7 @@
 					eyebrow: '自己紹介 · about',
 					title: '少しだけ、自分のこと',
 					lede:
-						'桑名浩行 (Hiro Kuwana) です。日本生まれ、アメリカ育ち。いまは Kaiwa をほぼひとりで、フルタイムでつくっています。ここには、実際の仕事から学んだことを書き留めています。プロダクト、語学学習、そして AI に必要以上の判断を預けずに使う方法について。',
+						'桑名浩行 (Hiro Kuwana) です。日本生まれ、アメリカ育ち。Kaiwa をほぼひとりでつくりながら、共同創業した Otterd にも取り組んでいます。ここには、実際の仕事から学んだことを書き留めています。プロダクト、語学学習、そして AI に必要以上の判断を預けずに使う方法について。',
 					sub: '実用的な答えもあれば、まだ考え終えていない問いもあります。',
 					backHome: 'ホームに戻る',
 					contactPrompt: '話してみたい、書いてみたい、そんな方は',
@@ -70,7 +70,7 @@
 					eyebrow: 'about · 自己紹介',
 					title: 'A little about me',
 					lede:
-						"I'm Hiro Kuwana (桑名浩行). Born in Japan, raised in the United States. I build Kaiwa full-time, mostly on my own. This is where I write down what the work is teaching me—about product, language learning, and using AI without giving it more authority than it deserves.",
+						"I'm Hiro Kuwana (桑名浩行). Born in Japan, raised in the United States. I build Kaiwa, mostly on my own, and co-founded Otterd. This is where I write down what the work is teaching me—about product, language learning, and using AI without giving it more authority than it deserves.",
 					sub: "Some answers are practical. Some are questions I haven't finished thinking through.",
 					backHome: 'Back to home',
 					contactPrompt: 'Rather just talk?',

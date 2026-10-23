@@ -1,0 +1,115 @@
+{
+  "company": "Apple Inc.",
+  "filing": "FY25 Q3 Form 10-Q",
+  "periodEnd": "2025-06-28",
+  "targetMonths": 3,
+  "unit": "USD millions",
+  "pdfPage": 4,
+  "printedPage": 1,
+  "sourceUrl": "https://s2.q4cdn.com/470004039/files/doc_earnings/2025/q3/filing/10Q-Q3-2025-as-filed.pdf#page=4",
+  "secUrl": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000073/aapl-20250628.htm",
+  "sha256": "0e581dbee4def6badde0a107e6562558c14b953bc224ce48693886679d52ea17",
+  "facts": [
+    {
+      "id": "products-3m",
+      "label": "Products",
+      "value": 66613,
+      "months": 3,
+      "periodEnd": "2025-06-28",
+      "unit": "USD millions",
+      "pdfPage": 4,
+      "printedPage": 1,
+      "bbox": [
+        298.007,
+        64.65799999999999,
+        325.529,
+        73.65799999999999
+      ]
+    },
+    {
+      "id": "products-9m",
+      "label": "Products",
+      "value": 233287,
+      "months": 9,
+      "periodEnd": "2025-06-28",
+      "unit": "USD millions",
+      "pdfPage": 4,
+      "printedPage": 1,
+      "bbox": [
+        420.512,
+        64.65799999999999,
+        453.038,
+        73.65799999999999
+      ]
+    },
+    {
+      "id": "services-3m",
+      "label": "Services",
+      "value": 27423,
+      "months": 3,
+      "periodEnd": "2025-06-28",
+      "unit": "USD millions",
+      "pdfPage": 4,
+      "printedPage": 1,
+      "bbox": [
+        298.007,
+        78.90799999999999,
+        325.529,
+        87.90799999999999
+      ]
+    },
+    {
+      "id": "services-9m",
+      "label": "Services",
+      "value": 80408,
+      "months": 9,
+      "periodEnd": "2025-06-28",
+      "unit": "USD millions",
+      "pdfPage": 4,
+      "printedPage": 1,
+      "bbox": [
+        425.507,
+        78.90799999999999,
+        453.029,
+        87.90799999999999
+      ]
+    },
+    {
+      "id": "total-net-sales-3m",
+      "label": "Total net sales",
+      "value": 94036,
+      "months": 3,
+      "periodEnd": "2025-06-28",
+      "unit": "USD millions",
+      "pdfPage": 4,
+      "printedPage": 1,
+      "bbox": [
+        298.007,
+        93.15799999999999,
+        325.529,
+        102.15799999999999
+      ]
+    },
+    {
+      "id": "total-net-sales-9m",
+      "label": "Total net sales",
+      "value": 313695,
+      "months": 9,
+      "periodEnd": "2025-06-28",
+      "unit": "USD millions",
+      "pdfPage": 4,
+      "printedPage": 1,
+      "bbox": [
+        420.503,
+        93.15799999999999,
+        453.029,
+        102.15799999999999
+      ]
+    }
+  ],
+  "cropSize": [
+    528,
+    107
+  ],
+  "scope": "Public-source example. The wrong-period selection is an intentionally seeded test. Not Greywolf client work."
+}

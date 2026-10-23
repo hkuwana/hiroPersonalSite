@@ -1,0 +1,66 @@
+[
+  {
+    "name": "hello",
+    "start": 0,
+    "end": 11,
+    "text": "Hey Greywolf. We're Otterd. We build AI workflows around the tools your team already uses. We check the outputs with code, and help your team take over. Here's what that could look like.",
+    "voice": "Samantha (temporary local review voice)",
+    "fitSpeed": 1.026
+  },
+  {
+    "name": "research",
+    "start": 11,
+    "end": 26,
+    "text": "Start with research. A public filing becomes a source-linked spreadsheet. But one number covers nine months. We wanted the quarter. The check catches it. Back to the source. Now it ties.",
+    "voice": "Samantha (temporary local review voice)",
+    "fitSpeed": 0.795
+  },
+  {
+    "name": "backoffice",
+    "start": 26,
+    "end": 38,
+    "text": "Or the back office. Two reports come in. Match the routine rows. Pull out a duplicate and a difference. Your team reviews the exceptions, with both originals right there.",
+    "voice": "Samantha (temporary local review voice)",
+    "fitSpeed": 0.89
+  },
+  {
+    "name": "questionnaire",
+    "start": 38,
+    "end": 48,
+    "text": "Or another questionnaire. Draft from approved policies, with a source for each answer. No supporting policy? Leave it open for someone who knows.",
+    "voice": "Samantha (temporary local review voice)",
+    "fitSpeed": 0.914
+  },
+  {
+    "name": "handover",
+    "start": 48,
+    "end": 55,
+    "text": "We work through the steps with you. Build it, test it, and help you run it yourselves.",
+    "voice": "Samantha (temporary local review voice)",
+    "fitSpeed": 0.748
+  },
+  {
+    "name": "lanes",
+    "start": 55,
+    "end": 70,
+    "text": "To try one, pick a lane. Public or routine? Share public or sanitized examples. Internal, but not your edge? Describe the steps; we'll use stand-ins. Your edge? Keep it. We don't need your positions or your investment judgment.",
+    "voice": "Samantha (temporary local review voice)",
+    "fitSpeed": 1.015
+  },
+  {
+    "name": "invitation",
+    "start": 70,
+    "end": 84,
+    "text": "Hiro and Eric are coming on November tenth and twelfth. Send a task brief by November sixth: how often, how long, and what good looks like. We'll build a first version on public or dummy data before we arrive.",
+    "voice": "Samantha (temporary local review voice)",
+    "fitSpeed": 0.926
+  },
+  {
+    "name": "end",
+    "start": 84,
+    "end": 88,
+    "text": "Bring a task. Let's make something useful.",
+    "voice": "Samantha (temporary local review voice)",
+    "fitSpeed": 0.75
+  }
+]

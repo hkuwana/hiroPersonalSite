@@ -1,0 +1,26 @@
+{
+  "route": "Official ElevenLabs CLI / direct convert_with_timestamps",
+  "model_id": "eleven_v4",
+  "voice": {
+    "voice_id": "iP95p4xoKVk53GoZ742B",
+    "name": "Chris - Charming, Down-to-Earth",
+    "category": "premade",
+    "description": "Natural and real, this down-to-earth voice is great across many use-cases.",
+    "labels": {
+      "accent": "american",
+      "age": "middle_aged",
+      "descriptive": "casual",
+      "gender": "male",
+      "language": "en",
+      "use_case": "conversational"
+    }
+  },
+  "script_sha256": "5368998391f0479bd2f1b88f6ba5e614e7dc05a7d9146ed3159c8dc6ab711711",
+  "script_characters": 1266,
+  "takes": 1,
+  "automatic_retries": false,
+  "exit_code": 1,
+  "completed_at": "2026-10-22T13:01:39.943Z",
+  "error_stdout": "{\n  \"error\": {\n    \"code\": 401,\n    \"details\": {\n      \"detail\": {\n        \"code\": \"quota_exceeded\",\n        \"docs_url\": \"https://elevenlabs.io/app/subscription/api?utm_source=api_error&utm_content=quota_exceeded\",\n        \"request_id\": \"d0c1eca04adceb7af194d8a472365ca1\",\n        \"status\": \"quota_exceeded\",\n        \"type\": \"invalid_request\"\n      }\n    },\n    \"help\": \"Credentials were supplied via: `xi-api-key` header (--api-key or env var ELEVENLABS_API_KEY).\",\n    \"message\": \"This request exceeds your quota of 10000. You have 14 credits remaining, while 1266 credits are required for this request. Upgrade your plan or add credits to continue using the API: https://elevenlabs.io/app/subscription/api?utm_source=api_error&utm_content=quota_exceeded\",\n    \"reason\": \"quota_exceeded\"\n  }\n}\n",
+  "error_stderr": ""
+}

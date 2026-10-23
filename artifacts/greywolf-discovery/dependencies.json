@@ -1,0 +1,10 @@
+{
+  "python": "3.11.5",
+  "Pillow": "12.3.0",
+  "numpy": "1.26.4",
+  "fontTools": "4.60.0",
+  "ffmpeg": "ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "renderer": "Deterministic Pillow animation using cached text sprites; FFmpeg for assembly and 2\u00d7 export",
+  "visual_render": "python3 render.py",
+  "page_build": "python3 build_page.py"
+}

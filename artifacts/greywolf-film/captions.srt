@@ -1,0 +1,143 @@
+1
+00:00:00,250 --> 00:00:01,106
+Hey Greywolf.
+
+2
+00:00:01,136 --> 00:00:01,993
+We're Otterd.
+
+3
+00:00:02,023 --> 00:00:05,242
+We build AI workflows around the tools your team already uses.
+
+4
+00:00:05,272 --> 00:00:08,787
+We check the outputs with code, and help your team take over.
+
+5
+00:00:08,817 --> 00:00:10,560
+Here's what that could look like.
+
+6
+00:00:11,250 --> 00:00:12,607
+Start with research.
+
+7
+00:00:12,637 --> 00:00:15,844
+A public filing becomes a source-linked spreadsheet.
+
+8
+00:00:15,874 --> 00:00:18,619
+But one number covers nine months.
+
+9
+00:00:18,649 --> 00:00:20,468
+We wanted the quarter.
+
+10
+00:00:20,498 --> 00:00:22,318
+The check catches it.
+
+11
+00:00:22,348 --> 00:00:24,168
+Back to the source.
+
+12
+00:00:24,198 --> 00:00:25,555
+Now it ties.
+
+13
+00:00:26,250 --> 00:00:27,784
+Or the back office.
+
+14
+00:00:27,814 --> 00:00:29,348
+Two reports come in.
+
+15
+00:00:29,378 --> 00:00:30,912
+Match the routine rows.
+
+16
+00:00:30,942 --> 00:00:33,649
+Pull out a duplicate and a difference.
+
+17
+00:00:33,679 --> 00:00:37,559
+Your team reviews the exceptions, with both originals right there.
+
+18
+00:00:38,250 --> 00:00:39,437
+Or another questionnaire.
+
+19
+00:00:39,467 --> 00:00:43,494
+Draft from approved policies, with a source for each answer.
+
+20
+00:00:43,524 --> 00:00:44,711
+No supporting policy?
+
+21
+00:00:44,741 --> 00:00:47,551
+Leave it open for someone who knows.
+
+22
+00:00:48,250 --> 00:00:50,828
+We work through the steps with you.
+
+23
+00:00:50,858 --> 00:00:54,553
+Build it, test it, and help you run it yourselves.
+
+24
+00:00:55,250 --> 00:00:57,372
+To try one, pick a lane.
+
+25
+00:00:57,402 --> 00:00:58,448
+Public or routine?
+
+26
+00:00:58,478 --> 00:01:00,241
+Share public or sanitized examples.
+
+27
+00:01:00,271 --> 00:01:02,034
+Internal, but not your edge?
+
+28
+00:01:02,064 --> 00:01:04,186
+Describe the steps; we'll use stand-ins.
+
+29
+00:01:04,216 --> 00:01:05,262
+Your edge?
+
+30
+00:01:05,292 --> 00:01:06,338
+Keep it.
+
+31
+00:01:06,368 --> 00:01:09,566
+We don't need your positions or your investment judgment.
+
+32
+00:01:10,250 --> 00:01:13,639
+Hiro and Eric are coming on November tenth and twelfth.
+
+33
+00:01:13,669 --> 00:01:19,109
+Send a task brief by November sixth: how often, how long, and what good looks like.
+
+34
+00:01:19,139 --> 00:01:23,553
+We'll build a first version on public or dummy data before we arrive.
+
+35
+00:01:24,250 --> 00:01:25,647
+Bring a task.
+
+36
+00:01:25,677 --> 00:01:27,549
+Let's make something useful.

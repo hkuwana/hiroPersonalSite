@@ -12,6 +12,7 @@ export type FidelityReason =
 	| 'low-memory'
 	| 'slow-frames'
 	| 'context-lost' // the GPU dropped the scene after it started
+	| 'timeout' // the scene did not become ready within the loading window
 	| 'error'; // three.js did not load, or WebGL refused a context
 export type FidelityChoice = { fidelity: Fidelity; reason: FidelityReason };
 

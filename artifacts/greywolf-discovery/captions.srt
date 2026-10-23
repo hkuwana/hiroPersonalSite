@@ -1,0 +1,91 @@
+1
+00:00:00,250 --> 00:00:00,906
+Hey Greywolf.
+
+2
+00:00:00,946 --> 00:00:01,603
+We're Otterd.
+
+3
+00:00:01,643 --> 00:00:06,477
+We build and hand over AI workflows around the tools your team already uses.
+
+4
+00:00:06,517 --> 00:00:09,610
+We'd love to hear how you're using AI today.
+
+5
+00:00:10,250 --> 00:00:12,741
+Maybe you've got a setup that works.
+
+6
+00:00:12,781 --> 00:00:16,718
+Maybe you've tried something promising that still takes too much checking.
+
+7
+00:00:16,758 --> 00:00:19,610
+Or there's one step you can't get past.
+
+8
+00:00:20,250 --> 00:00:25,187
+Before we pick a project, let's use a thirty-minute conversation to compare notes.
+
+9
+00:00:25,227 --> 00:00:26,719
+What have you tried?
+
+10
+00:00:26,759 --> 00:00:28,250
+What do you trust?
+
+11
+00:00:28,290 --> 00:00:30,164
+Where does it break down?
+
+12
+00:00:30,204 --> 00:00:33,610
+And what would make the next version worth using?
+
+13
+00:00:34,250 --> 00:00:43,610
+Possibilities stretch from research and source-linked memos, to reconciling reports, answering recurring questionnaires, or connecting tools that don't quite talk to each other.
+
+14
+00:00:44,250 --> 00:00:45,659
+Those are starting points.
+
+15
+00:00:45,699 --> 00:00:49,280
+The useful opportunity might already be in something you've built.
+
+16
+00:00:49,320 --> 00:00:52,178
+Bring the steps, the tools, and the snag.
+
+17
+00:00:52,218 --> 00:00:57,610
+We'll work through what to keep, what to change, and how we'd know it works.
+
+18
+00:00:58,250 --> 00:01:00,299
+Public or sanitized examples are welcome.
+
+19
+00:01:00,339 --> 00:01:04,477
+For internal processes, describe the steps and layout; we can use stand-ins.
+
+20
+00:01:04,517 --> 00:01:07,610
+Keep your positions and investment judgment with your team.
+
+21
+00:01:08,250 --> 00:01:15,691
+Then we'll agree one useful thing to test, who needs to be involved, and whether it makes sense to build together.
+
+22
+00:01:15,731 --> 00:01:18,541
+Bring a task, an experiment, or a question.
+
+23
+00:01:18,581 --> 00:01:19,610
+Let's compare notes.

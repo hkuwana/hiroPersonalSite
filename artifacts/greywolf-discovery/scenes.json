@@ -1,0 +1,51 @@
+[
+  {
+    "id": 0,
+    "name": "Hello",
+    "start": 0,
+    "end": 10,
+    "text": "Hey Greywolf. We're Otterd. We build and hand over AI workflows around the tools your team already uses. We'd love to hear how you're using AI today."
+  },
+  {
+    "id": 1,
+    "name": "Start where you are",
+    "start": 10,
+    "end": 20,
+    "text": "Maybe you've got a setup that works. Maybe you've tried something promising that still takes too much checking. Or there's one step you can't get past."
+  },
+  {
+    "id": 2,
+    "name": "Compare notes",
+    "start": 20,
+    "end": 34,
+    "text": "Before we pick a project, let's use a thirty-minute conversation to compare notes. What have you tried? What do you trust? Where does it break down? And what would make the next version worth using?"
+  },
+  {
+    "id": 3,
+    "name": "Possibilities",
+    "start": 34,
+    "end": 44,
+    "text": "Possibilities stretch from research and source-linked memos, to reconciling reports, answering recurring questionnaires, or connecting tools that don't quite talk to each other."
+  },
+  {
+    "id": 4,
+    "name": "Scope the snag",
+    "start": 44,
+    "end": 58,
+    "text": "Those are starting points. The useful opportunity might already be in something you've built. Bring the steps, the tools, and the snag. We'll work through what to keep, what to change, and how we'd know it works."
+  },
+  {
+    "id": 5,
+    "name": "Share safely",
+    "start": 58,
+    "end": 68,
+    "text": "Public or sanitized examples are welcome. For internal processes, describe the steps and layout; we can use stand-ins. Keep your positions and investment judgment with your team."
+  },
+  {
+    "id": 6,
+    "name": "One useful test",
+    "start": 68,
+    "end": 80,
+    "text": "Then we'll agree one useful thing to test, who needs to be involved, and whether it makes sense to build together. Bring a task, an experiment, or a question. Let's compare notes."
+  }
+]

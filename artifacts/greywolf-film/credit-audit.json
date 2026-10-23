@@ -1,0 +1,68 @@
+{
+  "checked_at": "2026-10-22",
+  "scope": "Existing Greywolf narration generation records, excluding unrelated TriVest/Scion flows",
+  "confirmed_narration_credits": 4821,
+  "charges": [
+    {
+      "description": "Original Martin narration",
+      "generation_id": "B1MDlRsCDpunDSulogVI",
+      "credits": 1119,
+      "status": "completed"
+    },
+    {
+      "description": "Selected Jerry B Boston narration",
+      "generation_id": "wrqt3sJ0GY8sAzznBGB6",
+      "credits": 1220,
+      "status": "completed"
+    },
+    {
+      "description": "Later Greywolf Martin take 1",
+      "generation_id": "yaGR0SwjHdN1NiflAsug",
+      "credits": 1241,
+      "status": "completed"
+    },
+    {
+      "description": "Later Greywolf Martin take 2",
+      "generation_id": "5yyuQkQyOkMKUI7BMW7F",
+      "credits": 1241,
+      "status": "completed"
+    }
+  ],
+  "unpriced_completed_items": [
+    {
+      "description": "Boston recording transcription",
+      "generation_id": "VsqlVbfrrpCNDHH1QnaO"
+    }
+  ],
+  "new_full_script_request": {
+    "estimated_credits": 1266,
+    "takes": 1,
+    "result": "HTTP 429 rate_limited",
+    "node_id": "UYjayC37A2zf4w0ogmvE",
+    "verified_state": "not_run",
+    "generation_started": false,
+    "explicit_user_retry": {
+      "result": "HTTP 429 rate_limited",
+      "request_id": "306943e1eb9a2df8d6a9c90dbf7e47f2",
+      "takes_requested": 1,
+      "verified_generation_count_after_retry": 0
+    }
+  },
+  "limitations": "Confirmed project narration subtotal, not an account balance or fully reconciled invoice. No usage/subscription endpoint is exposed by this connector; completed transcription contains no price field. Rate-limit errors alone do not prove a billing outcome.",
+  "local_animation_and_review_voice": "No ElevenLabs generation credits; local AI-assisted Canvas animation, macOS Samantha narration, original synthesized sounds.",
+  "account_balance_verified_in_signed_in_website": {
+    "monthly_allowance": 10000,
+    "remaining": 2309,
+    "used_across_all_workspace_activity": 7691,
+    "plan": "Free",
+    "note": "All workspace activity, not the Greywolf-only narration subtotal. Balance unchanged after one failed direct website attempt."
+  },
+  "direct_cli_attempt": {
+    "request_count": 1,
+    "automatic_retries": false,
+    "result": "HTTP 402 paid_plan_required",
+    "audio_created": false,
+    "charge_not_reported": true,
+    "note": "One earlier local CLI flag validation failure and one dry run did not send generation requests."
+  }
+}

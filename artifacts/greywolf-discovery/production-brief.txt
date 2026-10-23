@@ -1,0 +1,9 @@
+GREYWOLF × OTTERD — START WHERE YOU ARE
+Audience: Greywolf team preparing for a conversation with Hiro and Eric. Existing AI experience is unknown; avoid treating them as beginners or asserting that they are advanced.
+Outcome: arrive at a useful 30-minute discovery conversation with an existing workflow, experiment, or unresolved snag, then jointly scope a test and team involvement.
+Source: Marc Laborsky's email supplied directly by Hiro in this chat on October 22, 2026. Marc remembers the prior visit, welcomes the new project, offers an Oct 29–Nov 6 window, proposes a 30-minute discussion ahead of time, will review the question list and coordinate other team members. This is a proposal, not proof a meeting was booked.
+Calendar boundary: no definitive visit dates shown in this revision, to avoid treating Marc's availability window or next-Tuesday/Wednesday options as a confirmed meeting. The earlier supplied November office-hours dates remain in the previous version.
+Visual grammar: a continuous workflow map, a visible snag, questions overlaid on that same map, a short montage of possibilities, then a jointly scoped test. No Apple extraction demonstration or claim about what Greywolf currently does.
+Target: about 80 seconds at 1×, with 2× playback and a half-length export.
+Voice status: Chris, an included/premade ElevenLabs voice, is selected. Direct CLI generation was rejected with quota_exceeded: 14 credits remain and the old full script required 1,266. New paid narration is pending available generation credits. This revision is a captioned motion review with original quiet synthesized sound only; it does not claim to contain Chris or another completed narration.
+Checks: script and calendar assertions checked against Marc's supplied email; speed controls checked for timeline scaling; scene frames reviewed; exported media checked with ffprobe/ffmpeg and the explain-with-video inspection helper. Audience comprehension remains untested.

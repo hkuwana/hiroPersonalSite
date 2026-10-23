@@ -1,0 +1,68 @@
+GREYWOLF × OTTERD — LET'S COMPARE NOTES
+Conversation-first revision • October 22, 2026
+
+WATCH
+- otterd-greywolf-discovery-review.mp4: 80 seconds at normal speed
+- otterd-greywolf-discovery-review-2x.mp4: 40-second, 2× export
+- Open index.html for the player with explicit 1× and 2× buttons.
+- Spoken narration is pending. This cut has timed narration text and quiet
+  original transition sounds. It does not contain Chris or system narration.
+
+WHAT CHANGED
+- The film starts with the team's own use, attempts, trusted parts, and snags.
+- It does not assume beginner or advanced AI experience.
+- Possibilities are a brief montage, not a tutorial or prescribed project.
+- A 30-minute pre-visit conversation comes before selecting a build scope.
+- The end asks for a task, experiment, or question, then a useful test to agree
+  together: inputs, outputs, acceptance evidence, people and access.
+- Open / Describe / Keep and all nine example categories remain available.
+- Fixed office-hour and submission dates were removed from this revision.
+  Marc's email proposes availability and coordination; it does not book a time.
+
+SOURCES AND STATUS
+production-brief.txt and source-ledger.json record the source boundaries.
+Marc's email was supplied directly by Hiro in chat. The Gmail connector could
+not retrieve it; this does not claim independent mailbox verification.
+No Greywolf data, current tool stack, capability level or agreed project is
+invented. All workflow maps are illustrations of possible conversations.
+No email, public publishing, uploading or external sharing was performed.
+
+VOICE DEPENDENCY
+Chris - Charming, Down-to-Earth is an included ElevenLabs voice selected from
+live account results. One full-script CLI request, with retries disabled, was
+rejected with quota_exceeded before audio was created. A read-only subscription
+check confirmed 9,986 of 10,000 credits used and 14 remaining. The rejected
+older script required 1,266. This revision made no additional paid generation.
+voice-status.json records the evidence and limits of the credit attribution.
+The generation credential is outside this package in a git-ignored env file.
+No credentials or signed access links are included in this package.
+
+CAPTIONS
+captions.srt and captions-2x.srt are editorial reading cues for this visual
+review. They are not derived from a completed spoken track or forced alignment.
+The new voice should control final motion/caption timing when it is available.
+
+VERIFICATION
+Both MP4s are H.264/AAC, 1920×1080 at 30 fps, with full decode and caption timing
+checks. export-checks.json and export-2x-checks.json contain technical receipts.
+The exported contact sheet and decisive frames were visually inspected.
+Playback event handlers were checked for rate, position and chapter behavior;
+actual browser playback was not observed in that check. No audience review or
+independent listening check is represented as completed.
+
+REBUILD
+Python: see dependencies.json (Pillow, numpy, fontTools).
+ffmpeg/ffprobe must be on PATH. The supplied TTFs carry their license notices.
+1. python3 render.py
+2. ffmpeg -i visual-silent.mp4 -i review-sound.wav -map 0:v:0 -map 1:a:0
+   -c:v copy -c:a aac -b:a 160k -t 80 -movflags +faststart
+   otterd-greywolf-discovery-review.mp4
+3. ffmpeg -i otterd-greywolf-discovery-review.mp4 -vf "setpts=0.5*PTS"
+   -af atempo=2.0 -r 30 -c:v libx264 -crf 19 -pix_fmt yuv420p -c:a aac
+   -t 40 -movflags +faststart otterd-greywolf-discovery-review-2x.mp4
+4. python3 build_page.py
+
+The page builder's font embedding uses the sibling greywolf-proof source fonts
+in this workspace. The rendered index.html already embeds them and can be
+edited or used directly without those sources. The main video renderer uses
+the included TTFs and is self-contained with the listed Python dependencies.

@@ -1,0 +1,7 @@
+SYNTHETIC EXAMPLE — not Greywolf policy
+
+P-01 § 2.1 Access approval
+All access changes require documented owner approval.
+
+P-02 § 2.2 Access review
+Access permissions are reviewed every quarter.

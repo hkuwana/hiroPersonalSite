@@ -1,0 +1,68 @@
+GREYWOLF × OTTERD — LET'S MAKE SOMETHING USEFUL
+88-second full review cut • October 22, 2026
+
+Watch: otterd-greywolf-full-review.mp4
+Inspect and scrub: index.html (standalone, works offline)
+Captions: captions.srt • Narration: narration.txt
+Credit details: credit-audit.json
+
+THE STORY
+00:00 Otterd — AI workflows around the team's existing tools
+00:11 Research — public filing, seeded period mistake, source, correction
+00:26 Back office — two matches, a duplicate and a $25 difference
+00:38 Questionnaire — two approved-source drafts; one unsupported answer blank
+00:48 Build, test and hand over the workflow to the team
+00:55 Open / Describe / Keep — all nine example categories
+01:10 Brief by November 6; first version ahead of November 10 and 12
+01:24 Bring a task. Let's make something useful.
+
+AUDIO STATUS
+This review uses the installed macOS Samantha voice, not Jerry B.
+One new whole-script, one-take ElevenLabs Boston request was attempted. It
+returned HTTP 429. A subsequent read confirmed the node is not_run, with no
+generation started. A later retry explicitly requested by Hiro also returned
+HTTP 429; inspection still showed zero generations. Its 1,266-credit estimate is
+not a confirmed charge. Earlier Boston audio and films remain untouched.
+
+The temporary audio was fitted by paragraph to the planned picture timings.
+The captions follow the supplied narration, with estimated sentence timing.
+Replace the review voice and align final captions to the actual Boston take
+when generation is available. Original quiet foley/plucks were synthesized
+locally. No ElevenLabs video, music, image or sound-effect generations used.
+
+WHAT IS REAL
+Apple FY25 Q3 Form 10-Q, PDF page 4, public source:
+https://s2.q4cdn.com/470004039/files/doc_earnings/2025/q3/filing/10Q-Q3-2025-as-filed.pdf#page=4
+The public-filing companion includes source coordinates, a parser built for
+that filing, period/date/unit/source/arithmetic checks and an Excel workbook.
+The nine-month number is deliberately selected to test the checks.
+
+Back-office and questionnaire demonstrations use synthetic reports and
+fictional approved policy passages only. Film and inspectors use the same
+reconciliation and approved-source selection functions. Eight example checks
+verify duplicates, differences, missing/currency cases and source approval.
+The simple questionnaire demo matches explicit topics. No general-purpose
+AI extraction or question-answering accuracy is established here.
+
+WHAT NEEDS A PERSON
+Two unmatched report references remain open for review; no original amount
+is silently changed. Questionnaire answers are drafts and need approval.
+No Greywolf files, positions, P&L, investment analysis or policies were used.
+This is an illustration, not a deployed client workflow or a speed benchmark.
+The proposed scope and operating environment still need to be agreed.
+
+INVITATION DETAILS
+The supplied November 2026 visit dates, November 6 deadline and build-ahead
+commitment are used in this private review. Include the real task-brief link
+with the invitation. The video directs viewers to that accompanying link.
+No email, upload, public publishing, deployment or sharing was performed.
+No claim is made about the storage behavior of an external task-brief form.
+This local review page itself has no form, analytics or persistent storage.
+
+INSPECT
+Research: open research-example.html, try the wrong period, follow values to
+the original source, or change the period selector in the Excel workbook.
+Back office: remove the duplicate and match the difference in the test
+controls. Original synthetic CSV files and the film remain unchanged.
+Questionnaire: withdraw approval for the fictional access-review policy.
+The corresponding answer disappears because it has no approved source.

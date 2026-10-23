@@ -1,0 +1,1224 @@
+{
+  "model": "eleven_scribe_v1",
+  "word_count": 203,
+  "words": [
+    {
+      "text": "Every",
+      "type": "word",
+      "start": 0,
+      "end": 0.32
+    },
+    {
+      "text": "fund",
+      "type": "word",
+      "start": 0.4,
+      "end": 0.64
+    },
+    {
+      "text": "has",
+      "type": "word",
+      "start": 0.72,
+      "end": 0.88
+    },
+    {
+      "text": "work",
+      "type": "word",
+      "start": 0.96,
+      "end": 1.2
+    },
+    {
+      "text": "that",
+      "type": "word",
+      "start": 1.28,
+      "end": 1.36
+    },
+    {
+      "text": "eats",
+      "type": "word",
+      "start": 1.44,
+      "end": 1.68
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 1.76,
+      "end": 1.84
+    },
+    {
+      "text": "week.",
+      "type": "word",
+      "start": 1.92,
+      "end": 2.48
+    },
+    {
+      "text": "Pulling",
+      "type": "word",
+      "start": 2.72,
+      "end": 2.96
+    },
+    {
+      "text": "numbers",
+      "type": "word",
+      "start": 3.04,
+      "end": 3.28
+    },
+    {
+      "text": "from",
+      "type": "word",
+      "start": 3.36,
+      "end": 3.44
+    },
+    {
+      "text": "filings.",
+      "type": "word",
+      "start": 3.52,
+      "end": 4.28
+    },
+    {
+      "text": "Reconciling",
+      "type": "word",
+      "start": 4.4,
+      "end": 4.96
+    },
+    {
+      "text": "files.",
+      "type": "word",
+      "start": 5.04,
+      "end": 5.68
+    },
+    {
+      "text": "Answering",
+      "type": "word",
+      "start": 5.84,
+      "end": 6.24
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 6.28,
+      "end": 6.32
+    },
+    {
+      "text": "same",
+      "type": "word",
+      "start": 6.56,
+      "end": 6.8
+    },
+    {
+      "text": "question",
+      "type": "word",
+      "start": 6.96,
+      "end": 7.28
+    },
+    {
+      "text": "again.",
+      "type": "word",
+      "start": 7.52,
+      "end": 7.84
+    },
+    {
+      "text": "We're",
+      "type": "word",
+      "start": 8.48,
+      "end": 8.72
+    },
+    {
+      "text": "Otterd.",
+      "type": "word",
+      "start": 8.8,
+      "end": 9.32
+    },
+    {
+      "text": "We",
+      "type": "word",
+      "start": 9.52,
+      "end": 9.6
+    },
+    {
+      "text": "build",
+      "type": "word",
+      "start": 9.68,
+      "end": 9.92
+    },
+    {
+      "text": "AI",
+      "type": "word",
+      "start": 10,
+      "end": 10.24
+    },
+    {
+      "text": "workflows",
+      "type": "word",
+      "start": 10.32,
+      "end": 10.8
+    },
+    {
+      "text": "around",
+      "type": "word",
+      "start": 10.92,
+      "end": 11.04
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 11.08,
+      "end": 11.12
+    },
+    {
+      "text": "tools",
+      "type": "word",
+      "start": 11.2,
+      "end": 11.44
+    },
+    {
+      "text": "your",
+      "type": "word",
+      "start": 11.52,
+      "end": 11.68
+    },
+    {
+      "text": "team",
+      "type": "word",
+      "start": 11.8,
+      "end": 11.92
+    },
+    {
+      "text": "already",
+      "type": "word",
+      "start": 12,
+      "end": 12.4
+    },
+    {
+      "text": "uses.",
+      "type": "word",
+      "start": 12.48,
+      "end": 12.96
+    },
+    {
+      "text": "Gather",
+      "type": "word",
+      "start": 13.36,
+      "end": 13.6
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 13.64,
+      "end": 13.68
+    },
+    {
+      "text": "sources,",
+      "type": "word",
+      "start": 13.76,
+      "end": 14.48
+    },
+    {
+      "text": "draft",
+      "type": "word",
+      "start": 14.6,
+      "end": 14.72
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 14.8,
+      "end": 14.84
+    },
+    {
+      "text": "output,",
+      "type": "word",
+      "start": 14.88,
+      "end": 15.52
+    },
+    {
+      "text": "test",
+      "type": "word",
+      "start": 15.6,
+      "end": 15.76
+    },
+    {
+      "text": "it",
+      "type": "word",
+      "start": 15.84,
+      "end": 15.88
+    },
+    {
+      "text": "with",
+      "type": "word",
+      "start": 15.92,
+      "end": 16
+    },
+    {
+      "text": "code,",
+      "type": "word",
+      "start": 16.08,
+      "end": 16.48
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 16.52,
+      "end": 16.56
+    },
+    {
+      "text": "flag",
+      "type": "word",
+      "start": 16.64,
+      "end": 16.88
+    },
+    {
+      "text": "exceptions",
+      "type": "word",
+      "start": 16.96,
+      "end": 17.44
+    },
+    {
+      "text": "for",
+      "type": "word",
+      "start": 17.52,
+      "end": 17.6
+    },
+    {
+      "text": "your",
+      "type": "word",
+      "start": 17.64,
+      "end": 17.68
+    },
+    {
+      "text": "review.",
+      "type": "word",
+      "start": 17.76,
+      "end": 18.16
+    },
+    {
+      "text": "Then",
+      "type": "word",
+      "start": 18.56,
+      "end": 18.8
+    },
+    {
+      "text": "hand",
+      "type": "word",
+      "start": 19.04,
+      "end": 19.2
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 19.24,
+      "end": 19.28
+    },
+    {
+      "text": "workflow",
+      "type": "word",
+      "start": 19.48,
+      "end": 19.68
+    },
+    {
+      "text": "over",
+      "type": "word",
+      "start": 19.76,
+      "end": 19.84
+    },
+    {
+      "text": "to",
+      "type": "word",
+      "start": 19.92,
+      "end": 20
+    },
+    {
+      "text": "you.",
+      "type": "word",
+      "start": 20.08,
+      "end": 20.56
+    },
+    {
+      "text": "Hiro",
+      "type": "word",
+      "start": 20.88,
+      "end": 21.12
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 21.2,
+      "end": 21.28
+    },
+    {
+      "text": "Eric",
+      "type": "word",
+      "start": 21.36,
+      "end": 21.6
+    },
+    {
+      "text": "are",
+      "type": "word",
+      "start": 21.64,
+      "end": 21.68
+    },
+    {
+      "text": "at",
+      "type": "word",
+      "start": 21.76,
+      "end": 21.84
+    },
+    {
+      "text": "Greywolf",
+      "type": "word",
+      "start": 21.92,
+      "end": 22.4
+    },
+    {
+      "text": "on",
+      "type": "word",
+      "start": 22.44,
+      "end": 22.48
+    },
+    {
+      "text": "November",
+      "type": "word",
+      "start": 22.56,
+      "end": 22.88
+    },
+    {
+      "text": "tenth",
+      "type": "word",
+      "start": 23.04,
+      "end": 23.28
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 23.36,
+      "end": 23.44
+    },
+    {
+      "text": "twelfth.",
+      "type": "word",
+      "start": 23.52,
+      "end": 23.92
+    },
+    {
+      "text": "Tell",
+      "type": "word",
+      "start": 24.32,
+      "end": 24.4
+    },
+    {
+      "text": "us",
+      "type": "word",
+      "start": 24.48,
+      "end": 24.56
+    },
+    {
+      "text": "about",
+      "type": "word",
+      "start": 24.68,
+      "end": 24.8
+    },
+    {
+      "text": "one",
+      "type": "word",
+      "start": 24.96,
+      "end": 25.04
+    },
+    {
+      "text": "recurring",
+      "type": "word",
+      "start": 25.12,
+      "end": 25.52
+    },
+    {
+      "text": "task:",
+      "type": "word",
+      "start": 25.6,
+      "end": 26.32
+    },
+    {
+      "text": "how",
+      "type": "word",
+      "start": 26.4,
+      "end": 26.48
+    },
+    {
+      "text": "often,",
+      "type": "word",
+      "start": 26.56,
+      "end": 27.12
+    },
+    {
+      "text": "how",
+      "type": "word",
+      "start": 27.2,
+      "end": 27.28
+    },
+    {
+      "text": "long,",
+      "type": "word",
+      "start": 27.36,
+      "end": 27.84
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 27.88,
+      "end": 27.92
+    },
+    {
+      "text": "what",
+      "type": "word",
+      "start": 28,
+      "end": 28.08
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 28.12,
+      "end": 28.16
+    },
+    {
+      "text": "good",
+      "type": "word",
+      "start": 28.24,
+      "end": 28.32
+    },
+    {
+      "text": "result",
+      "type": "word",
+      "start": 28.4,
+      "end": 28.72
+    },
+    {
+      "text": "looks",
+      "type": "word",
+      "start": 28.84,
+      "end": 28.96
+    },
+    {
+      "text": "like.",
+      "type": "word",
+      "start": 29.08,
+      "end": 29.28
+    },
+    {
+      "text": "Choose",
+      "type": "word",
+      "start": 29.92,
+      "end": 30.16
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 30.2,
+      "end": 30.24
+    },
+    {
+      "text": "lane.",
+      "type": "word",
+      "start": 30.4,
+      "end": 30.64
+    },
+    {
+      "text": "Open:",
+      "type": "word",
+      "start": 31.04,
+      "end": 31.44
+    },
+    {
+      "text": "public",
+      "type": "word",
+      "start": 31.68,
+      "end": 32.08
+    },
+    {
+      "text": "or",
+      "type": "word",
+      "start": 32.16,
+      "end": 32.24
+    },
+    {
+      "text": "routine.",
+      "type": "word",
+      "start": 32.32,
+      "end": 33.04
+    },
+    {
+      "text": "Filings,",
+      "type": "word",
+      "start": 33.28,
+      "end": 33.92
+    },
+    {
+      "text": "company",
+      "type": "word",
+      "start": 34,
+      "end": 34.32
+    },
+    {
+      "text": "websites,",
+      "type": "word",
+      "start": 34.4,
+      "end": 35.04
+    },
+    {
+      "text": "blank",
+      "type": "word",
+      "start": 35.12,
+      "end": 35.36
+    },
+    {
+      "text": "templates.",
+      "type": "word",
+      "start": 35.6,
+      "end": 36.08
+    },
+    {
+      "text": "Share",
+      "type": "word",
+      "start": 36.32,
+      "end": 36.56
+    },
+    {
+      "text": "public",
+      "type": "word",
+      "start": 36.64,
+      "end": 36.96
+    },
+    {
+      "text": "or",
+      "type": "word",
+      "start": 37,
+      "end": 37.04
+    },
+    {
+      "text": "sanitized",
+      "type": "word",
+      "start": 37.2,
+      "end": 37.68
+    },
+    {
+      "text": "examples",
+      "type": "word",
+      "start": 37.76,
+      "end": 38.24
+    },
+    {
+      "text": "freely.",
+      "type": "word",
+      "start": 38.32,
+      "end": 39.04
+    },
+    {
+      "text": "Describe:",
+      "type": "word",
+      "start": 39.36,
+      "end": 40.12
+    },
+    {
+      "text": "internal,",
+      "type": "word",
+      "start": 40.32,
+      "end": 40.96
+    },
+    {
+      "text": "but",
+      "type": "word",
+      "start": 41.04,
+      "end": 41.12
+    },
+    {
+      "text": "not",
+      "type": "word",
+      "start": 41.2,
+      "end": 41.36
+    },
+    {
+      "text": "your",
+      "type": "word",
+      "start": 41.44,
+      "end": 41.52
+    },
+    {
+      "text": "edge.",
+      "type": "word",
+      "start": 41.6,
+      "end": 41.92
+    },
+    {
+      "text": "Admin",
+      "type": "word",
+      "start": 42.24,
+      "end": 42.56
+    },
+    {
+      "text": "reports,",
+      "type": "word",
+      "start": 42.84,
+      "end": 43.2
+    },
+    {
+      "text": "reconciliations,",
+      "type": "word",
+      "start": 43.28,
+      "end": 44.32
+    },
+    {
+      "text": "compliance",
+      "type": "word",
+      "start": 44.4,
+      "end": 44.8
+    },
+    {
+      "text": "checklists.",
+      "type": "word",
+      "start": 44.88,
+      "end": 45.64
+    },
+    {
+      "text": "Describe",
+      "type": "word",
+      "start": 45.84,
+      "end": 46.24
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 46.28,
+      "end": 46.32
+    },
+    {
+      "text": "steps",
+      "type": "word",
+      "start": 46.4,
+      "end": 46.72
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 46.76,
+      "end": 46.8
+    },
+    {
+      "text": "file",
+      "type": "word",
+      "start": 46.96,
+      "end": 47.2
+    },
+    {
+      "text": "layout.",
+      "type": "word",
+      "start": 47.28,
+      "end": 47.92
+    },
+    {
+      "text": "We'll",
+      "type": "word",
+      "start": 47.96,
+      "end": 48.16
+    },
+    {
+      "text": "build",
+      "type": "word",
+      "start": 48.24,
+      "end": 48.32
+    },
+    {
+      "text": "on",
+      "type": "word",
+      "start": 48.4,
+      "end": 48.48
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 48.52,
+      "end": 48.56
+    },
+    {
+      "text": "stand-in.",
+      "type": "word",
+      "start": 48.72,
+      "end": 49.36
+    },
+    {
+      "text": "Your",
+      "type": "word",
+      "start": 49.44,
+      "end": 49.52
+    },
+    {
+      "text": "team",
+      "type": "word",
+      "start": 49.6,
+      "end": 49.84
+    },
+    {
+      "text": "connects",
+      "type": "word",
+      "start": 49.96,
+      "end": 50.16
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 50.2,
+      "end": 50.24
+    },
+    {
+      "text": "real",
+      "type": "word",
+      "start": 50.32,
+      "end": 50.48
+    },
+    {
+      "text": "files.",
+      "type": "word",
+      "start": 50.56,
+      "end": 51.32
+    },
+    {
+      "text": "Keep:",
+      "type": "word",
+      "start": 51.68,
+      "end": 52.24
+    },
+    {
+      "text": "your",
+      "type": "word",
+      "start": 52.48,
+      "end": 52.64
+    },
+    {
+      "text": "edge.",
+      "type": "word",
+      "start": 52.72,
+      "end": 53.24
+    },
+    {
+      "text": "Positions,",
+      "type": "word",
+      "start": 53.44,
+      "end": 54.16
+    },
+    {
+      "text": "sizing,",
+      "type": "word",
+      "start": 54.24,
+      "end": 54.96
+    },
+    {
+      "text": "P",
+      "type": "word",
+      "start": 55.04,
+      "end": 55.12
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 55.16,
+      "end": 55.2
+    },
+    {
+      "text": "L.",
+      "type": "word",
+      "start": 55.28,
+      "end": 55.52
+    },
+    {
+      "text": "Your",
+      "type": "word",
+      "start": 55.92,
+      "end": 56.08
+    },
+    {
+      "text": "read",
+      "type": "word",
+      "start": 56.16,
+      "end": 56.4
+    },
+    {
+      "text": "on",
+      "type": "word",
+      "start": 56.48,
+      "end": 56.56
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 56.613,
+      "end": 56.667
+    },
+    {
+      "text": "covenant.",
+      "type": "word",
+      "start": 56.72,
+      "end": 57.2
+    },
+    {
+      "text": "Why",
+      "type": "word",
+      "start": 57.52,
+      "end": 57.68
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 57.72,
+      "end": 57.76
+    },
+    {
+      "text": "trade",
+      "type": "word",
+      "start": 57.84,
+      "end": 58.08
+    },
+    {
+      "text": "works.",
+      "type": "word",
+      "start": 58.16,
+      "end": 58.76
+    },
+    {
+      "text": "Don't",
+      "type": "word",
+      "start": 58.96,
+      "end": 59.12
+    },
+    {
+      "text": "share",
+      "type": "word",
+      "start": 59.2,
+      "end": 59.36
+    },
+    {
+      "text": "it.",
+      "type": "word",
+      "start": 59.44,
+      "end": 59.6
+    },
+    {
+      "text": "We",
+      "type": "word",
+      "start": 60.16,
+      "end": 60.24
+    },
+    {
+      "text": "can",
+      "type": "word",
+      "start": 60.32,
+      "end": 60.4
+    },
+    {
+      "text": "help",
+      "type": "word",
+      "start": 60.48,
+      "end": 60.56
+    },
+    {
+      "text": "your",
+      "type": "word",
+      "start": 60.64,
+      "end": 60.72
+    },
+    {
+      "text": "team",
+      "type": "word",
+      "start": 60.8,
+      "end": 60.96
+    },
+    {
+      "text": "build",
+      "type": "word",
+      "start": 61.04,
+      "end": 61.2
+    },
+    {
+      "text": "inside",
+      "type": "word",
+      "start": 61.28,
+      "end": 61.68
+    },
+    {
+      "text": "your",
+      "type": "word",
+      "start": 61.76,
+      "end": 61.84
+    },
+    {
+      "text": "own",
+      "type": "word",
+      "start": 61.92,
+      "end": 62.08
+    },
+    {
+      "text": "environment.",
+      "type": "word",
+      "start": 62.36,
+      "end": 62.72
+    },
+    {
+      "text": "Copy",
+      "type": "word",
+      "start": 63.2,
+      "end": 63.44
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 63.48,
+      "end": 63.52
+    },
+    {
+      "text": "brief",
+      "type": "word",
+      "start": 63.6,
+      "end": 63.84
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 63.92,
+      "end": 64
+    },
+    {
+      "text": "email",
+      "type": "word",
+      "start": 64.08,
+      "end": 64.32
+    },
+    {
+      "text": "it",
+      "type": "word",
+      "start": 64.4,
+      "end": 64.48
+    },
+    {
+      "text": "to",
+      "type": "word",
+      "start": 64.52,
+      "end": 64.56
+    },
+    {
+      "text": "us",
+      "type": "word",
+      "start": 64.64,
+      "end": 64.8
+    },
+    {
+      "text": "by",
+      "type": "word",
+      "start": 64.84,
+      "end": 64.88
+    },
+    {
+      "text": "November",
+      "type": "word",
+      "start": 64.96,
+      "end": 65.28
+    },
+    {
+      "text": "sixth.",
+      "type": "word",
+      "start": 65.44,
+      "end": 65.84
+    },
+    {
+      "text": "Before",
+      "type": "word",
+      "start": 66.16,
+      "end": 66.4
+    },
+    {
+      "text": "the",
+      "type": "word",
+      "start": 66.44,
+      "end": 66.48
+    },
+    {
+      "text": "visit,",
+      "type": "word",
+      "start": 66.56,
+      "end": 67.04
+    },
+    {
+      "text": "we'll",
+      "type": "word",
+      "start": 67.08,
+      "end": 67.2
+    },
+    {
+      "text": "build",
+      "type": "word",
+      "start": 67.28,
+      "end": 67.36
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 67.44,
+      "end": 67.52
+    },
+    {
+      "text": "first",
+      "type": "word",
+      "start": 67.6,
+      "end": 67.84
+    },
+    {
+      "text": "version",
+      "type": "word",
+      "start": 67.92,
+      "end": 68.16
+    },
+    {
+      "text": "on",
+      "type": "word",
+      "start": 68.24,
+      "end": 68.32
+    },
+    {
+      "text": "public",
+      "type": "word",
+      "start": 68.48,
+      "end": 68.8
+    },
+    {
+      "text": "or",
+      "type": "word",
+      "start": 68.88,
+      "end": 68.96
+    },
+    {
+      "text": "dummy",
+      "type": "word",
+      "start": 69.04,
+      "end": 69.28
+    },
+    {
+      "text": "data.",
+      "type": "word",
+      "start": 69.44,
+      "end": 69.88
+    },
+    {
+      "text": "Busy",
+      "type": "word",
+      "start": 70.16,
+      "end": 70.32
+    },
+    {
+      "text": "that",
+      "type": "word",
+      "start": 70.4,
+      "end": 70.48
+    },
+    {
+      "text": "week?",
+      "type": "word",
+      "start": 70.56,
+      "end": 70.96
+    },
+    {
+      "text": "We'll",
+      "type": "word",
+      "start": 71.12,
+      "end": 71.28
+    },
+    {
+      "text": "leave",
+      "type": "word",
+      "start": 71.36,
+      "end": 71.44
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 71.52,
+      "end": 71.6
+    },
+    {
+      "text": "three-minute",
+      "type": "word",
+      "start": 71.68,
+      "end": 72
+    },
+    {
+      "text": "recording",
+      "type": "word",
+      "start": 72.12,
+      "end": 72.48
+    },
+    {
+      "text": "and",
+      "type": "word",
+      "start": 72.56,
+      "end": 72.64
+    },
+    {
+      "text": "a",
+      "type": "word",
+      "start": 72.693,
+      "end": 72.747
+    },
+    {
+      "text": "one-page",
+      "type": "word",
+      "start": 72.8,
+      "end": 73.2
+    },
+    {
+      "text": "note.",
+      "type": "word",
+      "start": 73.28,
+      "end": 73.6
+    },
+    {
+      "text": "Ten",
+      "type": "word",
+      "start": 74,
+      "end": 74.08
+    },
+    {
+      "text": "minutes",
+      "type": "word",
+      "start": 74.16,
+      "end": 74.4
+    },
+    {
+      "text": "now.",
+      "type": "word",
+      "start": 74.48,
+      "end": 74.72
+    },
+    {
+      "text": "Something",
+      "type": "word",
+      "start": 75.04,
+      "end": 75.28
+    },
+    {
+      "text": "concrete",
+      "type": "word",
+      "start": 75.44,
+      "end": 75.92
+    },
+    {
+      "text": "when",
+      "type": "word",
+      "start": 76,
+      "end": 76.08
+    },
+    {
+      "text": "we",
+      "type": "word",
+      "start": 76.12,
+      "end": 76.16
+    },
+    {
+      "text": "arrive.",
+      "type": "word",
+      "start": 76.28,
+      "end": 76.88
+    }
+  ]
+}

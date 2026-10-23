@@ -1,0 +1,37 @@
+{
+  "S1": {
+    "title": "Marc Laborsky email, supplied by Hiro in chat",
+    "access": "User-provided text; not independently fetched from Gmail",
+    "observed": [
+      "Remembers prior office visit",
+      "Welcomes connecting on the new project",
+      "Offers Oct 29\u2013Nov 6 availability window",
+      "Proposes 30-minute discussion ahead of visit",
+      "Will review question list",
+      "Will coordinate other team members"
+    ],
+    "does_not_establish": [
+      "Meeting booked",
+      "Confirmed visit dates",
+      "Team AI proficiency",
+      "Agreed build scope"
+    ]
+  },
+  "S2": {
+    "title": "Hiro direction in this chat",
+    "requirements": [
+      "Focus on what is possible",
+      "Ask about existing AI use, attempts and struggles",
+      "Do not assume team is beginner or advanced",
+      "Provide 2\u00d7 playback"
+    ]
+  },
+  "S3": {
+    "title": "Existing Otterd service positioning supplied in this task",
+    "claims_used": [
+      "Build AI workflows around existing tools",
+      "Check and hand over workflows",
+      "Keep proprietary investment judgment with the team"
+    ]
+  }
+}

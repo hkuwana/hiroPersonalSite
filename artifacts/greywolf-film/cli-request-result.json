@@ -1,0 +1,12 @@
+{
+  "route": "Official ElevenLabs CLI direct text-to-speech convert_with_timestamps",
+  "model_id": "eleven_v4",
+  "voice_id": "UZvBfqEdvCFLqsBOo9Zr",
+  "takes": 1,
+  "retries": false,
+  "script_characters": 1266,
+  "exit_code": 1,
+  "completed_at": "2026-10-22T12:06:06.159Z",
+  "error_stdout": "{\n  \"error\": {\n    \"code\": 402,\n    \"details\": {\n      \"detail\": {\n        \"code\": \"paid_plan_required\",\n        \"docs_url\": \"https://elevenlabs.io/app/subscription/api?utm_source=api_error&utm_content=library_voice\",\n        \"request_id\": \"5f495ba1e7ae0532dbcc2ee6652e423e\",\n        \"status\": \"payment_required\",\n        \"type\": \"payment_required\"\n      }\n    },\n    \"message\": \"Free users cannot use library voices via the API. Upgrade to Creator or add $5 of credits to use this voice: https://elevenlabs.io/app/subscription/api?utm_source=api_error&utm_content=library_voice\",\n    \"reason\": \"paid_plan_required\"\n  }\n}\n",
+  "error_stderr": ""
+}

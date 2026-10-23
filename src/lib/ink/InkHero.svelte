@@ -1,10 +1,13 @@
 <script lang="ts">
 	// 墨の村 The ink village: the front of the site. Hi-fi is a three.js
 	// diorama, loaded only by a dynamic import; lo-fi is the live 2D 風車
-	// island. SSR, no-JS and low-power visitors get lo-fi. On the home page
+	// island. A static kite appears before JS; low-power visitors get lo-fi.
+	// On the home page
 	// (`tall`), the stage holds still while you scroll: the camera rises and
 	// paper mist covers the village, then the rest of the page continues.
 	import { onMount, tick } from 'svelte';
+	import { fly } from 'svelte/transition';
+	import { quartOut } from 'svelte/easing';
 	import { replaceState } from '$app/navigation';
 	import { track } from '$lib/analytics';
 	import Windmill from '$lib/components/home/Windmill.svelte';
@@ -23,6 +26,8 @@
 		type FidelityPref
 	} from './fidelity';
 	import type { InkScene, Pick, PlaceRef } from './ink-scene';
+	import KitePlaceholder from './KitePlaceholder.svelte';
+	import { createKiteIntro } from './kite-intro';
 	import PlaceScroll from './PlaceScroll.svelte';
 	import {
 		facetContent,
@@ -55,13 +60,16 @@
 			region: 'Ink village',
 			regionHint:
 				'Interactive scene. Arrow keys or WASD walk the akabeko; Enter opens the place beside it.',
-			walk: 'Click the ground to walk · click a place or a sail to open it',
 			keys: 'Select the scene, then arrows / WASD walk · Enter opens',
 			places: 'Places',
 			fidelity: 'Graphics',
 			auto: 'Auto',
 			hi: 'Hi-fi',
 			lo: 'Lo-fi',
+			loading: 'Bringing the village to life…',
+			loadingHint: 'You can keep reading while it loads.',
+			useLite: 'Use the lighter scene',
+			loadFailed: 'The 3D scene could not load. The lighter scene is ready to explore.',
 			kiteUp: 'Fly the kite',
 			kiteDown: 'Land the kite',
 			sky: 'Sun / moon',
@@ -90,13 +98,16 @@
 			region: '墨の村',
 			regionHint:
 				'操作できるシーンです。矢印キーか WASD で赤べこが歩き、Enter でそばの場所を開きます。',
-			walk: '地面をクリックで歩く · 場所や羽根をクリックで開く',
 			keys: 'シーンを選んで 矢印キー / WASD で歩く · Enter で開く',
 			places: '場所',
 			fidelity: '表示',
 			auto: '自動',
 			hi: '高画質',
 			lo: '軽量',
+			loading: '村を読み込んでいます…',
+			loadingHint: '読み込み中も、この先をお読みいただけます。',
+			useLite: '軽量表示に切り替える',
+			loadFailed: '3Dシーンを読み込めなかったため、軽量表示に切り替えました。',
 			kiteUp: '凧をあげる',
 			kiteDown: '凧をおろす',
 			sky: '日と月',
@@ -126,6 +137,8 @@
 	let pref = $state<FidelityPref>('auto');
 	let choice = $state<FidelityChoice | null>(null);
 	let live = $state(false); // hi-fi has drawn its first frame
+	let slowLoad = $state(false);
+	let reduceMotion = $state(false);
 	let kite = $state(false);
 	let brush = $state(false);
 	let gesture = $state('');
@@ -164,6 +177,16 @@
 
 	let scene: InkScene | null = null;
 	let teardown = () => {};
+	let bootId = 0;
+	let slowTimer = 0;
+	let loadTimer = 0;
+	let introEligible = true;
+	let intro = createKiteIntro(false);
+	function clearLoadTimers() {
+		clearTimeout(slowTimer);
+		clearTimeout(loadTimer);
+		slowLoad = false;
+	}
 
 	const isDark = () => document.documentElement.dataset.theme === 'dark';
 
@@ -196,15 +219,24 @@
 	}
 
 	function fallBack(reason: FidelityChoice['reason']) {
+		const id = ++bootId; // Invalidate any import that is still in flight.
+		clearLoadTimers();
+		intro.cancel();
 		choice = { fidelity: 'lo', reason };
-		queueMicrotask(teardown);
+		queueMicrotask(() => {
+			if (id === bootId) teardown();
+		});
 		track('village_fidelity', { choice: `lo:${reason}`, locale: lang });
 	}
 
 	async function boot() {
+		const id = ++bootId;
+		clearLoadTimers();
+		intro.cancel();
 		teardown();
 		live = false;
 		const signals = readSignals();
+		reduceMotion = signals.reduceMotion;
 		choice = chooseFidelity(pref, signals);
 		if (choice.fidelity === 'lo') {
 			track('village_fidelity', { choice: `lo:${choice.reason}`, locale: lang });
@@ -212,16 +244,24 @@
 		}
 
 		const t0 = performance.now();
+		slowTimer = window.setTimeout(() => {
+			if (id === bootId) slowLoad = true;
+		}, 1500);
+		loadTimer = window.setTimeout(() => {
+			if (id === bootId) fallBack('timeout');
+		}, 12_000);
 		let createInkScene: typeof import('./ink-scene').createInkScene;
 		try {
 			({ createInkScene } = await import('./ink-scene'));
 		} catch {
 			// The chunk did not load (offline, deploy in progress): stay lo-fi.
-			fallBack('error');
+			if (id === bootId) fallBack('error');
 			return;
 		}
 		await tick();
-		if (!glEl || choice?.fidelity !== 'hi') return;
+		if (id !== bootId || !glEl || choice?.fidelity !== 'hi') return;
+		intro = createKiteIntro(tall && introEligible && !signals.reduceMotion);
+		kite = intro.initialKite;
 
 		const frames: number[] = [];
 		let seen = 0;
@@ -232,6 +272,7 @@
 			s = createInkScene(glEl, readPalette(), {
 				night: isDark(),
 				reduceMotion: signals.reduceMotion,
+				initialKite: kite,
 				onLost: () => fallBack('context-lost'),
 				onArrive(p) {
 					status = '';
@@ -240,10 +281,15 @@
 				onFrame(ms) {
 					seen++;
 					if (seen === 1) {
+						clearLoadTimers();
 						stats.first = Math.round(performance.now() - t0);
 						live = true;
 						track('village_fidelity', { choice: `hi:${choice?.reason}`, locale: lang });
 						return;
+					}
+					if (intro.advance(ms, onScreen && !document.hidden && progress < 0.35)) {
+						kite = false;
+						s.setKite(false);
 					}
 					// Skip shader-compile frames, then judge the next PROBE_FRAMES.
 					if (pref === 'auto' && seen > 10 && frames.length < PROBE_FRAMES) {
@@ -309,6 +355,7 @@
 	}
 
 	function setPref(p: FidelityPref) {
+		cancelIntro();
 		pref = p;
 		try {
 			localStorage.setItem(PREF_KEY, p);
@@ -322,8 +369,13 @@
 	}
 
 	function toggleKite(on = !kite) {
+		cancelIntro();
 		kite = on;
 		scene?.setKite(on);
+	}
+	function cancelIntro() {
+		introEligible = false;
+		intro.cancel();
 	}
 
 	const toggleSky = () => setSky(!isDark());
@@ -343,7 +395,7 @@
 	// ── Scroll: hold the stage, raise the camera, let the mist in ────────
 	let scrollRaf = 0;
 	let onScreen = true;
-	const syncActive = () => scene?.setActive(onScreen && progress < 0.999);
+	const syncActive = () => scene?.setActive(onScreen && !document.hidden && progress < 0.999);
 	function measure() {
 		if (!holding || !villageEl) {
 			progress = 0;
@@ -422,6 +474,7 @@
 
 	let hoverRaf = 0;
 	function onStageMove(e: PointerEvent) {
+		cancelAnimationFrame(hoverRaf);
 		if (!scene) return;
 		const p = onStage(e);
 		const r = stageEl.getBoundingClientRect();
@@ -435,7 +488,6 @@
 			tag = null;
 			return;
 		}
-		cancelAnimationFrame(hoverRaf);
 		hoverRaf = requestAnimationFrame(() => {
 			const h = scene?.hover(p.x, p.y);
 			tag = h ? { text: placeLabel(h.place, h.index), x: h.x, y: h.y } : null;
@@ -590,8 +642,13 @@
 			/* Storage can be blocked. */
 		}
 		pref = parsePref(location.search, stored);
+		document.addEventListener('visibilitychange', syncActive);
 		void boot();
 		return () => {
+			bootId++;
+			clearLoadTimers();
+			intro.cancel();
+			document.removeEventListener('visibilitychange', syncActive);
 			cancelAnimationFrame(hoverRaf);
 			cancelAnimationFrame(scrollRaf);
 			clearTimeout(fadeTimer);
@@ -609,6 +666,7 @@
 		'low-memory': 'low memory',
 		'slow-frames': 'frames too slow',
 		'context-lost': 'GPU context lost',
+		timeout: 'loading timed out',
 		error: 'could not start'
 	};
 </script>
@@ -637,13 +695,16 @@
 		tabindex={live ? 0 : -1}
 		onpointermove={onStageMove}
 		onpointerdown={onStageDown}
+		onpointerdowncapture={cancelIntro}
 		onpointerup={onStageUp}
 		onpointerleave={() => {
+			cancelAnimationFrame(hoverRaf);
 			drag = null;
 			down = null;
 			tag = null;
 		}}
 		onkeydown={(e) => onStageKey(e, true)}
+		onkeydowncapture={cancelIntro}
 		onkeyup={(e) => onStageKey(e, false)}
 		onblur={releaseKeys}
 	>
@@ -661,9 +722,16 @@
 				onpointercancel={brushUp}
 			></canvas>
 		{/if}
-		{#if !live}
+		{#if choice?.fidelity === 'lo'}
 			<div class="lofi">
 				<Windmill {lang} />
+			</div>
+		{:else if !live}
+			<div
+				class="arrival"
+				out:fly={{ x: -80, y: -64, duration: reduceMotion ? 0 : 480, easing: quartOut }}
+			>
+				<KitePlaceholder ready={live} />
 			</div>
 		{/if}
 		{#if holding}
@@ -700,10 +768,18 @@
 					{/if}
 				{/if}
 			</div>
+			<div class="load-status mono" role="status">
+				{#if slowLoad}
+					<p>{c.loading}</p>
+					<p>{c.loadingHint}</p>
+					<button type="button" class="act" onclick={() => setPref('lo')}>{c.useLite}</button>
+				{:else if choice?.fidelity === 'lo' && ['error', 'timeout', 'context-lost'].includes(choice.reason)}
+					<p>{c.loadFailed}</p>
+				{/if}
+			</div>
 
 			{#if live}
 				<nav class="places mono" aria-label={c.places}>
-					<p class="walk">{c.walk}</p>
 					<ul>
 						{#each PLACES as place (place)}
 							<li>
@@ -817,9 +893,39 @@
 	.gl.on {
 		opacity: 1;
 	}
-	/* Ink cursors (mouse only): a ring over the scene, a ring with a red dot
-	   over anything that can be clicked, and a brush in brush mode. The light
-	   outline keeps them visible at night. */
+	.arrival {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		pointer-events: none;
+	}
+	.arrival :global(svg) {
+		width: min(18rem, 55vw);
+		height: auto;
+	}
+	.load-status {
+		position: absolute;
+		left: 50%;
+		bottom: 4rem;
+		transform: translateX(-50%);
+		width: min(30rem, calc(100% - 2rem));
+		text-align: center;
+		color: var(--ink);
+	}
+	.load-status p {
+		margin: 0.35rem 0;
+	}
+	.load-status .act {
+		margin-top: 0.5rem;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.gl {
+			transition: none;
+		}
+	}
+	/* A walking ring over the ground, a familiar hand over clickable places,
+	   and the ink brush while painting. */
 	@media (hover: hover) and (pointer: fine) {
 		.gl {
 			cursor:
@@ -828,10 +934,7 @@
 				crosshair;
 		}
 		.pointing .gl {
-			cursor:
-				url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Ccircle cx='14' cy='14' r='11' fill='none' stroke='%23fbf8ef' stroke-width='4'/%3E%3Ccircle cx='14' cy='14' r='11' fill='none' stroke='%231e1a16' stroke-width='1.8'/%3E%3Ccircle cx='14' cy='14' r='4.5' fill='%236e2f2a' stroke='%23fbf8ef' stroke-width='1.5'/%3E%3C/svg%3E")
-					14 14,
-				pointer;
+			cursor: pointer;
 		}
 		.brushing .brush {
 			cursor:
@@ -906,7 +1009,10 @@
 		border-color: var(--ink);
 	}
 	.places .keys {
-		opacity: 0.8;
+		display: none;
+	}
+	.stage:focus-visible .keys {
+		display: block;
 	}
 	.places .credit {
 		margin-top: 0.2rem;
@@ -1088,10 +1194,6 @@
 		.places {
 			top: 3.75rem;
 			max-width: calc(100% - 2rem);
-		}
-		.places .walk,
-		.places .keys {
-			display: none;
 		}
 		.cue {
 			display: none;

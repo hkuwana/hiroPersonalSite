@@ -31,9 +31,9 @@ export const SOCIAL_LINKS = {
 // Site Metadata
 export const SITE = {
 	name: 'Hiro Kuwana',
-	title: 'Hiroyuki (Hiro) Kuwana — Building Kaiwa with AI',
+	title: 'Hiroyuki (Hiro) Kuwana — Building Kaiwa and Otterd',
 	description:
-		'Hiro Kuwana is a solo founder building Kaiwa full-time. Field notes on product decisions, practical AI workflows, mistakes, and keeping human judgment in the loop.',
+		'Hiro Kuwana builds Kaiwa and co-founded Otterd. Field notes on product decisions, practical AI workflows, mistakes, and keeping human judgment in the loop.',
 	url: 'https://hirokuwana.com',
 	image: 'https://hirokuwana.com/hiro-social-preview.jpg',
 	author: 'Hiro Kuwana',
@@ -70,6 +70,16 @@ export const PERSONAL = {
 
 // Projects
 export const PROJECTS = [
+	{
+		name: 'Otterd',
+		tagline: 'AI workflows for fund teams',
+		description:
+			'Custom AI workflows for private equity and hedge fund teams, built around the tools they already use.',
+		link: 'https://otterd.co/',
+		logo: '/logos/otterd.svg',
+		status: 'current',
+		color: '#8f6d58'
+	},
 	{
 		name: 'Kaiwa',
 		tagline: 'Language Learning, Reimagined',
@@ -204,7 +214,7 @@ export const FAQS: Faq[] = [
 	{
 		question: 'What is Hiro Kuwana working on?',
 		answer:
-			'Hiro Kuwana is focused on product design for human-centric AI: tools that augment people rather than replace them. He is currently building Kaiwa, and previously built Flybyrd and Pebblr.',
+			'Hiro Kuwana is focused on product design for human-centric AI: tools that augment people rather than replace them. He is currently building Kaiwa and Otterd, and previously built Flybyrd and Pebblr.',
 		visible: false
 	},
 	{
@@ -226,14 +236,13 @@ export const FAQS: Faq[] = [
 	},
 	{
 		question: 'What has Hiro Kuwana built?',
-		answer:
-			`Hiro Kuwana built Kaiwa, a real-time AI conversation platform for language learners with ${KAIWA_METRICS.monthlyOrganicVisitors} monthly organic visitors and ${KAIWA_METRICS.signups} signups. Earlier cycles include Flybyrd (AI feedback analysis for product managers) and Pebblr (a platform connecting nonprofits with donors), plus smaller tools such as an alumni community site and an automation pipeline for user research.`,
+		answer: `Hiro Kuwana built Kaiwa, a real-time AI conversation platform for language learners with ${KAIWA_METRICS.monthlyOrganicVisitors} monthly organic visitors and ${KAIWA_METRICS.signups} signups. Earlier cycles include Flybyrd (AI feedback analysis for product managers) and Pebblr (a platform connecting nonprofits with donors), plus smaller tools such as an alumni community site and an automation pipeline for user research.`,
 		visible: false
 	},
 	{
 		question: 'Is Hiro Kuwana available for consulting or outside work?',
 		answer:
-			'No. Hiro Kuwana works on Kaiwa full-time and does not take outside projects. He reads every message and welcomes conversations about human-centric AI products through the contact section at https://hirokuwana.com/#contact.',
+			'Hiro Kuwana builds Kaiwa and co-founded Otterd, which provides custom AI workflows for private equity and hedge fund teams. For workflow implementation, visit https://otterd.co/. For a personal note, use https://hirokuwana.com/#contact.',
 		visible: false
 	}
 ];

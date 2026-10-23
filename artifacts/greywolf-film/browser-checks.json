@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "pageErrors": [],
+  "mobile": {
+    "width": 390,
+    "scroll": 390
+  },
+  "checks": [
+    "two initial matches",
+    "four matches after correcting both test issues",
+    "unapproved policy excluded",
+    "all fourteen key frames rendered"
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "passed": true,
+  "checks": [
+    "duplicate reference remains unresolved",
+    "amount differs USD 25",
+    "two routine matches",
+    "currency mismatch",
+    "missing counterpart",
+    "two sourced answer drafts",
+    "unsupported answer stays blank",
+    "unapproved policy excluded"
+  ],
+  "reconciliation": [
+    {
+      "id": "INV-101",
+      "left": [
+        {
+          "id": "INV-101",
+          "amount": 120000,
+          "currency": "USD",
+          "date": "2026-10-20"
+        }
+      ],
+      "right": [
+        {
+          "id": "INV-101",
+          "amount": 120000,
+          "currency": "USD",
+          "date": "2026-10-20"
+        }
+      ],
+      "difference": 0,
+      "status": "matched",
+      "label": "Matched"
+    },
+    {
+      "id": "INV-102",
+      "left": [
+        {
+          "id": "INV-102",
+          "amount": 48000,
+          "currency": "USD",
+          "date": "2026-10-20"
+        }
+      ],
+      "right": [
+        {
+          "id": "INV-102",
+          "amount": 48000,
+          "currency": "USD",
+          "date": "2026-10-20"
+        },
+        {
+          "id": "INV-102",
+          "amount": 48000,
+          "currency": "USD",
+          "date": "2026-10-20"
+        }
+      ],
+      "status": "duplicate",
+      "label": "Duplicate reference"
+    },
+    {
+      "id": "INV-103",
+      "left": [
+        {
+          "id": "INV-103",
+          "amount": 87500,
+          "currency": "USD",
+          "date": "2026-10-20"
+        }
+      ],
+      "right": [
+        {
+          "id": "INV-103",
+          "amount": 85000,
+          "currency": "USD",
+          "date": "2026-10-20"
+        }
+      ],
+      "difference": 2500,
+      "status": "difference",
+      "label": "Amount differs"
+    },
+    {
+      "id": "INV-104",
+      "left": [
+        {
+          "id": "INV-104",
+          "amount": 36000,
+          "currency": "USD",
+          "date": "2026-10-20"
+        }
+      ],
+      "right": [
+        {
+          "id": "INV-104",
+          "amount": 36000,
+          "currency": "USD",
+          "date": "2026-10-20"
+        }
+      ],
+      "difference": 0,
+      "status": "matched",
+      "label": "Matched"
+    }
+  ],
+  "questionnaire": [
+    {
+      "id": "Q1",
+      "text": "Who approves system access?",
+      "topic": "access_approval",
+      "status": "draft",
+      "answer": "All access changes require documented owner approval.",
+      "source": {
+        "id": "P-01",
+        "title": "Access approval",
+        "section": "§ 2.1",
+        "topic": "access_approval",
+        "approved": true,
+        "text": "All access changes require documented owner approval."
+      }
+    },
+    {
+      "id": "Q2",
+      "text": "How often are access rights reviewed?",
+      "topic": "access_review",
+      "status": "draft",
+      "answer": "Access permissions are reviewed every quarter.",
+      "source": {
+        "id": "P-02",
+        "title": "Access review",
+        "section": "§ 2.2",
+        "topic": "access_review",
+        "approved": true,
+        "text": "Access permissions are reviewed every quarter."
+      }
+    },
+    {
+      "id": "Q3",
+      "text": "How quickly are internal incidents escalated?",
+      "topic": "incident_escalation",
+      "status": "needs_review",
+      "answer": null,
+      "source": null
+    }
+  ]
+}

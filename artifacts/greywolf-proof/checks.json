@@ -1,0 +1,36 @@
+{
+  "sourceSha256": "0e581dbee4def6badde0a107e6562558c14b953bc224ce48693886679d52ea17",
+  "quarter": {
+    "ok": true,
+    "total": 94036,
+    "reportedTotal": 94036,
+    "difference": 0,
+    "issues": []
+  },
+  "seeded": {
+    "ok": false,
+    "total": 147021,
+    "reportedTotal": 94036,
+    "difference": 52985,
+    "issues": [
+      {
+        "kind": "period",
+        "label": "Services",
+        "message": "Services: 9 months selected; 3 months required"
+      },
+      {
+        "kind": "reconciliation",
+        "label": "Total",
+        "message": "Components differ from reported total by 52,985 million"
+      }
+    ]
+  },
+  "additionalChecks": [
+    "missing value",
+    "wrong date",
+    "wrong units",
+    "duplicate metric",
+    "wrong value",
+    "changed period with correct amount"
+  ]
+}
