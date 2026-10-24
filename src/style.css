@@ -1030,6 +1030,15 @@ main {
 	border-left: 1px solid var(--rule);
 }
 
+/* Essays only: one column, at a comfortable reading width. */
+.dual-blog.single {
+	grid-template-columns: 1fr;
+}
+.dual-blog.single > div {
+	width: min(100%, 60rem);
+	justify-self: center;
+}
+
 .blog-col-head {
 	display: flex;
 	align-items: baseline;

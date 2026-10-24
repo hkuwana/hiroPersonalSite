@@ -8,7 +8,13 @@ import type { PlaceId } from './places';
 
 export type Locale = 'en' | 'ja';
 export type FacetId = Facet['id'];
-export type Essay = { slug: string; title: string; date: string };
+export type Essay = {
+	slug: string;
+	title: string;
+	date: string;
+	description?: string;
+	ja?: { title: string; desc: string };
+};
 export type ScrollLink = { label: string; href: string; external?: boolean; meta?: string };
 export type PlaceContent = {
 	facet: FacetId;
