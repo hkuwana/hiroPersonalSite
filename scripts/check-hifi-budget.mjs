@@ -6,7 +6,7 @@ import { gzipSync } from 'node:zlib';
 
 const OUT = '.svelte-kit/output/client';
 const NODES = '.svelte-kit/generated/client-optimized/nodes';
-const SCENE = 'src/lib/ink/ink-scene.ts';
+const SCENES = ['src/lib/ink/ink-scene.ts', 'src/lib/ink/workshop-scene.ts'];
 const BUDGET_KB = 1536;
 
 const manifest = JSON.parse(await readFile(`${OUT}/.vite/manifest.json`, 'utf8'));
@@ -41,15 +41,21 @@ for (const key of Object.keys(manifest).filter((k) => manifest[k].isEntry)) {
 }
 if (!failed) console.log('✓ no route loads three.js statically');
 
-if (!manifest[SCENE]?.isDynamicEntry) {
-	console.error(`✗ ${SCENE} is not a dynamic import`);
-	failed = true;
-} else {
+const sceneClosure = new Set();
+for (const scene of SCENES) {
+	if (!manifest[scene]?.isDynamicEntry) {
+		console.error(`✗ ${scene} is not a dynamic import`);
+		failed = true;
+	} else staticClosure(scene, sceneClosure);
+}
+if (sceneClosure.size) {
 	let gz = 0;
-	for (const dep of staticClosure(SCENE)) gz += gzipSync(await read(manifest[dep].file)).length;
+	for (const dep of sceneClosure) gz += gzipSync(await read(manifest[dep].file)).length;
 	const kb = Math.round(gz / 1024);
 	const ok = kb <= BUDGET_KB;
-	console[ok ? 'log' : 'error'](`${ok ? '✓' : '✗'} hi-fi scene: ${kb} KB gzip (budget ${BUDGET_KB} KB)`);
+	console[ok ? 'log' : 'error'](
+		`${ok ? '✓' : '✗'} hi-fi scenes: ${kb} KB gzip (budget ${BUDGET_KB} KB)`
+	);
 	failed ||= !ok;
 }
 

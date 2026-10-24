@@ -1,16 +1,20 @@
 import { describe, expect, it } from 'vitest';
 import {
 	clampWalk,
+	clampActor,
 	DOMES,
 	domeHeight,
 	FLOOR_Y,
 	groundY,
 	MILL,
+	IZAKAYA,
+	BOARD,
 	nearestSpot,
 	OBSTACLES,
 	ridgeHeight,
 	route,
 	spotFor,
+	villageLayout,
 	START,
 	TREES,
 	WALK
@@ -52,7 +56,7 @@ describe('ground', () => {
 		}
 	});
 
-	it('climbs the middle hill toward the torii', () => {
+	it('climbs the middle hill toward the izakaya', () => {
 		expect(groundY(-6, -4.9)).toBeGreaterThan(groundY(-1, 2));
 	});
 });
@@ -66,6 +70,63 @@ describe('ridges', () => {
 });
 
 describe('walking', () => {
+	it('keeps feet and head clear when walking directly toward the house or board', () => {
+		for (const [place, obstacle, physicalRadius] of [
+			['izakaya', IZAKAYA, 1.0],
+			['board', BOARD, 0.9]
+		] as const) {
+			let p = clampWalk(spotFor(place)!);
+			const heading = Math.atan2(-(obstacle.z - p.z), obstacle.x - p.x);
+			for (let i = 0; i < 120; i++) {
+				p = clampActor(
+					{ x: p.x + Math.cos(heading) * 0.035, z: p.z - Math.sin(heading) * 0.035 },
+					heading
+				);
+				const nose = { x: p.x + Math.cos(heading) * 1.07, z: p.z - Math.sin(heading) * 1.07 };
+				expect(Math.hypot(nose.x - obstacle.x, nose.z - obstacle.z)).toBeGreaterThanOrEqual(
+					physicalRadius - 0.005
+				);
+			}
+		}
+	});
+	it('projects points out of overlapping house and board clearances without leaving them inside another object', () => {
+		for (let x = -9.5; x < -3; x += 0.3) {
+			for (let z = -1.5; z < 2.5; z += 0.3) {
+				const p = clampWalk({ x, z });
+				expect(inside(p), `blocked at ${x},${z}`).toBe(false);
+				expect(p.x).toBeGreaterThanOrEqual(WALK.minX);
+				expect(p.x).toBeLessThanOrEqual(WALK.maxX);
+				expect(p.z).toBeGreaterThanOrEqual(WALK.minZ);
+				expect(p.z).toBeLessThanOrEqual(WALK.maxZ);
+			}
+		}
+	});
+	it.each([0, 0.5, 1])(
+		'can follow each landmark route with the full cow clearance at portrait mix %s',
+		(portrait) => {
+			const layout = villageLayout(portrait);
+			for (const place of ['windmill', 'izakaya', 'board', 'tree'] as const) {
+				let p = { ...START };
+				const path = route(p, spotFor(place, 0, layout)!, layout);
+				for (let frame = 0; frame < 1800 && path.length; frame++) {
+					const dx = path[0].x - p.x,
+						dz = path[0].z - p.z,
+						d = Math.hypot(dx, dz);
+					if (d < 0.06) {
+						path.shift();
+						continue;
+					}
+					p = clampActor(
+						{ x: p.x + (dx / d) * Math.min(0.035, d), z: p.z + (dz / d) * Math.min(0.035, d) },
+						Math.atan2(-dz, dx),
+						layout
+					);
+				}
+				expect(path, `stuck going to ${place}`).toHaveLength(0);
+				expect(nearestSpot(p, 1.1, layout)).toEqual({ place, index: 0 });
+			}
+		}
+	);
 	it('keeps the akabeko inside the walk area and out of the windmill', () => {
 		const far = clampWalk({ x: 40, z: -40 });
 		expect(far.x).toBe(WALK.maxX);
@@ -85,13 +146,13 @@ describe('walking', () => {
 	});
 
 	it('goes straight when nothing is in the way', () => {
-		expect(route(START, { x: START.x + 1, z: START.z })).toHaveLength(1);
+		expect(route(START, { x: START.x - 1, z: START.z })).toHaveLength(1);
 	});
 
 	it('can reach every place from the start', () => {
 		for (const [place, index] of [
 			['windmill', 0],
-			['torii', 0],
+			['izakaya', 0],
 			['board', 0],
 			...TREES.map((_, i) => ['tree', i] as const)
 		] as const) {

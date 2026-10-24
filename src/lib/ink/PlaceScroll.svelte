@@ -1,6 +1,6 @@
 <script lang="ts">
 	// 巻物: a hand scroll that unrolls beside the scene when the akabeko
-	// reaches a place. Text comes from place-content.ts (site copy, reused as
+	// walks toward a place. Text comes from place-content.ts (site copy, reused as
 	// is). The four kanji tabs switch between the four sails.
 	import { FACETS } from '$lib/home/facets';
 	import type { FacetId, Locale, PlaceContent } from '$lib/ink/place-content';
@@ -9,12 +9,14 @@
 		content,
 		lang,
 		onclose,
-		onfacet
+		onfacet,
+		animate = false
 	}: {
 		content: PlaceContent;
 		lang: Locale;
 		onclose: () => void;
 		onfacet: (id: FacetId) => void;
+		animate?: boolean;
 	} = $props();
 
 	let el = $state<HTMLElement>();
@@ -27,6 +29,7 @@
 {#key content}
 	<div
 		class="scroll"
+		class:animate
 		role="dialog"
 		aria-modal="false"
 		aria-labelledby="scroll-title"
@@ -114,7 +117,9 @@
 	}
 	.scroll::before {
 		left: -0.35rem;
-		animation: rod 560ms var(--ease-out-quart) both;
+	}
+	.scroll.animate::before {
+		animation: rod 300ms var(--ease-out-quart) both;
 	}
 	.paper {
 		position: relative;
@@ -124,7 +129,9 @@
 		background: var(--paper);
 		border-top: 1px solid var(--ink);
 		border-bottom: 1px solid var(--ink);
-		animation: unroll 560ms var(--ease-out-quart) both;
+	}
+	.animate .paper {
+		animation: unroll 300ms var(--ease-out-quart) both;
 	}
 	@keyframes unroll {
 		from {

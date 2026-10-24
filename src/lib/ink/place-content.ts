@@ -22,17 +22,17 @@ export type PlaceContent = {
 
 export const PLACE_NAME: Record<Exclude<PlaceId, 'sail'>, Record<Locale, string>> = {
 	windmill: { en: '風車 Windmill', ja: '風車' },
-	torii: { en: '鳥居 Torii', ja: '鳥居' },
+	izakaya: { en: '居酒屋 Izakaya', ja: '居酒屋' },
 	board: { en: '高札 Notice board', ja: '高札' },
-	tree: { en: '木 Tree', ja: '木' },
+	tree: { en: '桜 Sakura', ja: '桜' },
 	hiro: { en: '赤べこ Akabeko', ja: '赤べこ' }
 };
 
 // Which part of the work each place opens. A sail opens its own facet.
-export const PLACE_FACET: Record<'windmill' | 'board' | 'torii' | 'tree', FacetId> = {
+export const PLACE_FACET: Record<'windmill' | 'board' | 'izakaya' | 'tree', FacetId> = {
 	windmill: 'builder',
 	board: 'writer',
-	torii: 'bridge',
+	izakaya: 'bridge',
 	tree: 'nature'
 };
 
