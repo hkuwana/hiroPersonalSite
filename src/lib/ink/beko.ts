@@ -29,10 +29,15 @@ export function createBeko(kit: BekoKit): Beko {
 	root.add(body);
 
 	// A round, toy-like barrel of a body.
-	const torso = inked(new THREE.CapsuleGeometry(0.28, 0.36, 6, 16), red, 0.021);
+	const torso = inked(new THREE.CapsuleGeometry(0.28, 0.48, 6, 16), red, 0.021);
 	torso.rotation.z = Math.PI / 2;
-	torso.scale.set(0.95, 1, 1.05);
+	torso.scale.set(0.92, 1, 1.12);
 	body.add(torso);
+	// A stronger shoulder and sweeping horns retain the red folk-toy identity.
+	const shoulder = inked(new THREE.SphereGeometry(0.29, 14, 10), red, 0.018);
+	shoulder.scale.set(0.8, 1.08, 1.05);
+	shoulder.position.set(0.2, 0.025, 0);
+	body.add(shoulder);
 
 	// Uneven painted spots: the same ink and ochre as the village, without
 	// perfectly machined circles on the handmade toy.
@@ -102,9 +107,29 @@ export function createBeko(kit: BekoKit): Beko {
 		glint.position.set(0.089, 0.065, 0.188 * s);
 		head.add(glint);
 		glints.push(glint);
-		const horn = inked(new THREE.ConeGeometry(0.035, 0.085, 8), white, 0.007);
-		horn.position.set(-0.025, 0.19, 0.093 * s);
-		horn.rotation.x = 0.45 * s;
+		const curve = new THREE.CatmullRomCurve3([
+			new THREE.Vector3(-0.04, 0.13, 0.11 * s),
+			new THREE.Vector3(-0.055, 0.19, 0.23 * s),
+			new THREE.Vector3(-0.015, 0.29, 0.29 * s),
+			new THREE.Vector3(0.035, 0.36, 0.26 * s)
+		]);
+		const hornGeo = new THREE.TubeGeometry(curve, 12, 0.036, 6, false);
+		const hornPos = hornGeo.getAttribute('position');
+		for (let ring = 0; ring <= 12; ring++) {
+			const center = curve.getPointAt(ring / 12);
+			const taper = 1 - (ring / 12) * 0.94;
+			for (let segment = 0; segment <= 6; segment++) {
+				const i = ring * 7 + segment;
+				hornPos.setXYZ(
+					i,
+					center.x + (hornPos.getX(i) - center.x) * taper,
+					center.y + (hornPos.getY(i) - center.y) * taper,
+					center.z + (hornPos.getZ(i) - center.z) * taper
+				);
+			}
+		}
+		hornGeo.computeVertexNormals();
+		const horn = inked(hornGeo, white, 0.008);
 		head.add(horn);
 		const ear = inked(new THREE.SphereGeometry(0.06, 10, 8), red, 0.008);
 		ear.scale.set(0.7, 0.4, 1.5);
@@ -166,16 +191,16 @@ export function createBeko(kit: BekoKit): Beko {
 	return {
 		root,
 		update(dt, pose) {
-			phase += dt * 9 * pose.stride;
-			const swing = Math.sin(phase) * 0.35 * pose.stride;
-			// A walk: diagonal pairs move together.
-			legs[0].rotation.z = swing;
-			legs[3].rotation.z = swing;
-			legs[1].rotation.z = -swing;
-			legs[2].rotation.z = -swing;
+			phase += dt * (8 + 8 * pose.stride) * pose.stride;
+			// A bounding run: forelegs reach, hindlegs follow a beat later.
+			legs[0].rotation.z = Math.sin(phase) * 0.65 * pose.stride;
+			legs[1].rotation.z = Math.sin(phase + 0.55) * 0.65 * pose.stride;
+			legs[2].rotation.z = Math.sin(phase + 2.5) * 0.6 * pose.stride;
+			legs[3].rotation.z = Math.sin(phase + 3.05) * 0.6 * pose.stride;
 
 			const hop = Math.sin(Math.PI * pose.hop);
-			body.position.y = 0.42 + Math.abs(Math.sin(phase)) * 0.025 * pose.stride + hop * 0.3;
+			body.position.y = 0.42 + Math.max(0, Math.sin(phase)) * 0.085 * pose.stride + hop * 0.3;
+			body.rotation.z = Math.sin(phase - 0.5) * 0.065 * pose.stride;
 			body.rotation.x = Math.sin(phase) * 0.04 * pose.stride; // a toy's sway
 
 			// The akabeko's nod: always a little, more as it walks, a lot after a click.

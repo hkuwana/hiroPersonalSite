@@ -5,6 +5,7 @@ type Event =
 	// Ink village: which fidelity a visitor got and why ("hi:capable"), and
 	// which part of the work they opened. For the hi-fi / lo-fi comparison.
 	| 'village_fidelity'
+	| 'village_project_selected'
 	| 'village_place_opened';
 
 type Properties = { locale?: string; choice?: string; destination?: string };

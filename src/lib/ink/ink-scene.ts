@@ -11,9 +11,12 @@ import { mergeGeometries, mergeVertices } from 'three/examples/jsm/utils/BufferG
 import { FACETS } from '$lib/home/facets';
 import type { Palette } from '$lib/home/palette';
 import { createBeko } from './beko';
+import { bullStep } from './bull-motion';
+import { createFuji, createPaintedTree, createIzakaya } from './landscape';
+import { createMillAssembly } from './mill-assembly';
 import {
 	BOARD,
-	clampWalk,
+	clampActor,
 	DOMES,
 	groundY,
 	MILL,
@@ -21,9 +24,10 @@ import {
 	ridgeHeight,
 	route,
 	spotFor,
+	villageLayout,
 	START,
 	swell,
-	TORII,
+	IZAKAYA,
 	TREES,
 	type Dome,
 	type PlaceId,
@@ -37,6 +41,8 @@ export type InkScene = {
 	setPalette(p: Palette, night: boolean): void;
 	setKite(on: boolean): void;
 	isKite(): boolean;
+	buildMill(): void;
+	isBuilt(): boolean;
 	spin(impulse: number): void;
 	gust(dir: 1 | -1): void;
 	// Bloom every tree whose screen position passes `test` (CSS px).
@@ -55,6 +61,8 @@ export type InkScene = {
 	seekSail(index: number): void;
 	bloomTree(index: number): void;
 	setPointer(nx: number, ny: number): void;
+	orbit(dx: number, dy: number): void;
+	resetView(): void;
 	// 0..1 through the home page's scroll transition: the camera rises.
 	setScroll(p: number): void;
 	// Stop drawing (off screen) and start again.
@@ -79,11 +87,23 @@ type Role =
 	| 'cloud'
 	| 'treeA'
 	| 'treeB'
-	| 'torii'
+	| 'izakaya'
 	| 'snow'
 	| 'sakura'
 	| 'blossom'
 	| 'bekoInk'
+	| 'fuji'
+	| 'fujiRose'
+	| 'fujiShade'
+	| 'fujiLight'
+	| 'treeInk'
+	| 'roofInk'
+	| 'window'
+	| 'windowLit'
+	| 'windowGlow'
+	| 'plasterWash'
+	| 'woodGrain'
+	| 'roofGrain'
 	| 'ridgeNear'
 	| 'ridgeFar';
 
@@ -112,9 +132,21 @@ function roles(p: Palette, night: boolean): Record<Role, string> {
 				bekoInk: c(p.paper, p.kon, 0.25),
 				sun: p.ink,
 				cloud: c(p.paper, p.kon, 0.32),
-				treeA: p.moss,
-				treeB: p.gold,
-				torii: p.ebicha,
+				treeA: '#c4adb9',
+				treeB: '#d2c0c5',
+				treeInk: '#9f8492',
+				fuji: '#64758e',
+				fujiRose: '#64758e',
+				fujiShade: '#526780',
+				fujiLight: '#9aa6b6',
+				izakaya: '#b45f50',
+				roofInk: '#4b4549',
+				plasterWash: '#74715e',
+				woodGrain: '#c1a585',
+				roofGrain: '#8a7661',
+				window: '#586173',
+				windowLit: '#e9b76c',
+				windowGlow: '#d8a65b',
 				snow: c(p.ink, p.kon, 0.2),
 				sakura: c(SAKURA, p.paper, 0.35),
 				blossom: c(BLOSSOM, p.paper, 0.3),
@@ -135,9 +167,21 @@ function roles(p: Palette, night: boolean): Record<Role, string> {
 				bekoInk: p.ink,
 				sun: '#d9a77f',
 				cloud: p.paper2,
-				treeA: p.moss,
-				treeB: p.gold,
-				torii: p.ebicha,
+				treeA: '#efd9d3',
+				treeB: '#f1e5dc',
+				treeInk: '#b99494',
+				fuji: '#99aab8',
+				fujiRose: '#99aab8',
+				fujiShade: '#8297a8',
+				fujiLight: '#bac6cf',
+				izakaya: '#b94f39',
+				roofInk: '#65523b',
+				plasterWash: '#d6c8ac',
+				woodGrain: '#695039',
+				roofGrain: '#a88b58',
+				window: '#77715c',
+				windowLit: '#e9bd70',
+				windowGlow: '#ecc57c',
 				snow: '#fbfaf4',
 				sakura: SAKURA,
 				blossom: BLOSSOM,
@@ -164,6 +208,8 @@ export function createInkScene(
 		night: boolean;
 		reduceMotion: boolean;
 		initialKite?: boolean;
+		initialMillBuilt?: boolean;
+		onBuild?: () => void;
 		onFrame?: (ms: number) => void;
 		onArrive?: (p: PlaceRef) => void;
 		// The GPU dropped the context: the page falls back to lo-fi.
@@ -183,6 +229,8 @@ export function createInkScene(
 	const camera = new THREE.PerspectiveCamera(32, 16 / 9, 0.1, 200);
 	const lookAt = new THREE.Vector3(-0.4, 3.6, 0);
 	let camDist = 17;
+	let framed = false;
+	let layout = villageLayout();
 
 	// Toon ramp: three flat steps, no gradients.
 	const ramp = new THREE.DataTexture(
@@ -202,6 +250,8 @@ export function createInkScene(
 	// One material per role, so a palette change is a few color writes.
 	const toon = new Map<Role, THREE.MeshToonMaterial>();
 	const flat = new Map<Role, THREE.MeshBasicMaterial>();
+	const windowDim = new THREE.Color();
+	const windowWarm = new THREE.Color();
 	const sailMats: THREE.MeshToonMaterial[] = [];
 	const outlineMat = new THREE.ShaderMaterial({
 		uniforms: { color: { value: new THREE.Color() }, thickness: { value: 1 } },
@@ -248,6 +298,7 @@ export function createInkScene(
 		mesh.add(new THREE.Mesh(hull, outlineMat));
 		return mesh;
 	}
+	const landscapeKit = { inked, paint: getFlat };
 
 	// ── Land ─────────────────────────────────────────────────────────────
 	const dome = (d: Dome, role: Role, w: number) => {
@@ -266,38 +317,9 @@ export function createInkScene(
 		return m;
 	};
 	const far1 = dome(DOMES.far, 'mid', 0.08);
-	// 富士: concave slopes, a flat top and a snow cap, far behind the mill.
-	const fujiProfile = (pts: number[][]) => pts.map(([x, y]) => new THREE.Vector2(x, y));
-	const far2 = inked(
-		new THREE.LatheGeometry(
-			fujiProfile([
-				[7.5, 0],
-				[5.4, 0.9],
-				[3.7, 2.1],
-				[2.3, 3.4],
-				[1.3, 4.5],
-				[0.95, 4.85],
-				[0, 4.9]
-			]),
-			40
-		),
-		getToon('far'),
-		0.1
-	);
-	far2.position.set(-6, -0.6, -24);
-	const snow = new THREE.Mesh(
-		new THREE.LatheGeometry(
-			fujiProfile([
-				[2.0, 3.65],
-				[1.36, 4.5],
-				[0.99, 4.88],
-				[0, 4.93]
-			]),
-			40
-		),
-		getToon('snow')
-	);
-	far2.add(snow);
+	// 富士: layered color plates, a broken snow line and tapered ink gullies.
+	const far2 = createFuji(landscapeKit);
+	far2.position.set(-6.8, -0.6, -24);
 	const mid = dome(DOMES.mid, 'mid', 0.06);
 	const near = dome(DOMES.near, 'near', 0.05);
 	const floor = new THREE.Mesh(new THREE.PlaneGeometry(90, 72), getToon('near'));
@@ -394,13 +416,15 @@ export function createInkScene(
 	// ── Windmill tower ───────────────────────────────────────────────────
 	const mill = new THREE.Group();
 	mill.position.set(TOWER_X, 0.25, 0);
+	const shell = new THREE.Group();
+	mill.add(shell);
 	const tower = inked(
 		new THREE.CylinderGeometry(0.66, 1.18, 3.6, 8, 1, false, Math.PI / 8),
 		getToon('tower'),
 		0.04
 	);
 	tower.position.y = 1.8;
-	mill.add(tower);
+	shell.add(tower);
 	for (let y = 0.45; y < 3.5; y += 0.5) {
 		const r = 1.18 + (0.66 - 1.18) * (y / 3.6) + 0.012;
 		const band = new THREE.Mesh(
@@ -408,7 +432,7 @@ export function createInkScene(
 			getFlat('line')
 		);
 		band.position.y = y;
-		mill.add(band);
+		shell.add(band);
 	}
 	const capProfile = [
 		[0.84, 0],
@@ -420,10 +444,10 @@ export function createInkScene(
 	].map(([x, y]) => new THREE.Vector2(x, y));
 	const cap = inked(new THREE.LatheGeometry(capProfile, 16), getToon('cap'), 0.04);
 	cap.position.y = 3.55;
-	mill.add(cap);
+	shell.add(cap);
 	const door = inked(new THREE.BoxGeometry(0.46, 0.72, 0.12), getToon('door'), 0.025);
 	door.position.set(0, 0.36, 1.06);
-	mill.add(door);
+	shell.add(door);
 	const arch = inked(
 		new THREE.CylinderGeometry(0.23, 0.23, 0.12, 16, 1, false, -Math.PI / 2, Math.PI),
 		getToon('door'),
@@ -431,11 +455,36 @@ export function createInkScene(
 	);
 	arch.rotation.x = -Math.PI / 2;
 	arch.position.set(0, 0.72, 1.06);
-	mill.add(arch);
+	shell.add(arch);
 	const axle = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1, 10), getToon('wood'));
 	axle.rotation.x = Math.PI / 2;
 	axle.position.set(0, HUB.y - 0.25, 0.55);
-	mill.add(axle);
+	shell.add(axle);
+	// These real structural timbers begin as a low stack, then rise into
+	// the eight corners of the mill. The plaster shell fills in behind them.
+	const timbers = Array.from({ length: 8 }, (_, i) => {
+		const a = Math.PI / 8 + (i * Math.PI) / 4;
+		const bottom = new THREE.Vector3(Math.sin(a) * 1.18, 0.08, Math.cos(a) * 1.18);
+		const top = new THREE.Vector3(Math.sin(a) * 0.66, 3.5, Math.cos(a) * 0.66);
+		const mesh = inked(
+			new THREE.BoxGeometry(0.085, bottom.distanceTo(top), 0.085),
+			getToon('wood'),
+			0.014
+		);
+		const target = bottom.clone().add(top).multiplyScalar(0.5);
+		const rotation = new THREE.Quaternion().setFromUnitVectors(
+			new THREE.Vector3(0, 1, 0),
+			top.clone().sub(bottom).normalize()
+		);
+		const x = ((i % 2) - 0.5) * 0.12 + 0.1;
+		const z = 0.75 + (i % 3) * 0.06;
+		const start = new THREE.Vector3(x, groundY(TOWER_X + x, z) - 0.25 + 0.07 + i * 0.105, z);
+		const rest = new THREE.Quaternion().setFromEuler(
+			new THREE.Euler(0, (i % 2 ? 1 : -1) * 0.06, Math.PI / 2 + ((i % 3) - 1) * 0.025)
+		);
+		mill.add(mesh);
+		return { mesh, target, rotation, start, rest };
+	});
 	scene.add(mill);
 
 	// Rotor: the gold hub and four stubs stay; the sails can fly away.
@@ -539,12 +588,12 @@ export function createInkScene(
 	const kiteString = new THREE.Line(stringGeo, stringMat);
 	scene.add(kiteString);
 
-	// ── A tree pair and a small torii on the near hill ───────────────────
+	// ── Wind-shaped pines, an ochre tree and the vermilion izakaya ──────────
 	type Tree = {
 		g: THREE.Group;
 		trunk: THREE.Mesh;
 		crown: THREE.Mesh;
-		mat: THREE.MeshToonMaterial;
+		mat: THREE.MeshBasicMaterial;
 		blossoms: THREE.InstancedMesh;
 		role: Role;
 		s: number;
@@ -557,7 +606,7 @@ export function createInkScene(
 	const trees: Tree[] = [];
 	const sakura = new THREE.Color();
 	// Five-petal blossoms that open over a crown in bloom.
-	const BLOSSOMS = 34;
+	const BLOSSOMS = 48;
 	const blossomGeo = mergeGeometries(
 		Array.from({ length: 5 }, (_, k) => {
 			const a = (k / 5) * TAU;
@@ -572,17 +621,9 @@ export function createInkScene(
 	const zAxisB = new THREE.Vector3(0, 0, 1);
 	function tree(x: number, z: number, s: number, role: Role) {
 		const g = new THREE.Group();
-		const trunk = inked(
-			new THREE.CylinderGeometry(0.08 * s, 0.13 * s, 1.1 * s, 8),
-			getToon('wood'),
-			0.025
-		);
-		trunk.position.y = 0.55 * s;
 		// Each crown has its own material, so one tree can bloom alone.
-		const mat = new THREE.MeshToonMaterial({ gradientMap: ramp });
-		const crown = inked(new THREE.IcosahedronGeometry(0.75 * s, 2), mat, 0.045);
-		crown.scale.set(1, 0.82, 1);
-		crown.position.y = 1.45 * s;
+		const mat = new THREE.MeshBasicMaterial({ vertexColors: true, toneMapped: false });
+		const { trunk, crown, lobes } = createPaintedTree(s, role === 'treeB', landscapeKit, mat);
 		const blossoms = new THREE.InstancedMesh(blossomGeo, blossomMat, BLOSSOMS);
 		const m4 = new THREE.Matrix4(),
 			q = new THREE.Quaternion(),
@@ -593,12 +634,17 @@ export function createInkScene(
 			// Spread over the upper and outer crown (none underneath).
 			do dir.randomDirection();
 			while (dir.y < -0.25);
-			at.copy(dir).multiplyScalar(0.75 * s * 1.03);
+			const lobe = lobes[k % lobes.length];
+			at.set(
+				(lobe.x + dir.x * lobe.rx) * s,
+				(lobe.y + dir.y * lobe.ry) * s,
+				(lobe.z + dir.z * lobe.rz) * s * 1.03
+			);
 			q.setFromUnitVectors(zAxisB, dir);
 			size.setScalar((0.8 + Math.random() * 0.5) * s);
 			blossoms.setMatrixAt(k, m4.compose(at, q, size));
 		}
-		blossoms.visible = false;
+		blossoms.visible = true;
 		crown.add(blossoms);
 		g.add(trunk, crown);
 		g.position.set(x, groundY(x, z) - 0.12, z);
@@ -619,20 +665,10 @@ export function createInkScene(
 		});
 	}
 	for (const t of TREES) tree(t.x, t.z, t.s, t.role);
-	const torii = new THREE.Group();
-	for (const x of [-0.42, 0.42]) {
-		const post = inked(new THREE.CylinderGeometry(0.05, 0.06, 1.05, 8), getToon('torii'), 0.02);
-		post.position.set(x, 0.52, 0);
-		torii.add(post);
-	}
-	const kasagi = inked(new THREE.BoxGeometry(1.25, 0.09, 0.12), getToon('torii'), 0.02);
-	kasagi.position.y = 1.1;
-	const nuki = inked(new THREE.BoxGeometry(1.0, 0.06, 0.08), getToon('torii'), 0.02);
-	nuki.position.y = 0.88;
-	torii.add(kasagi, nuki);
-	torii.position.set(TORII.x, groundY(TORII.x, TORII.z) - 0.08, TORII.z);
-	torii.rotation.y = TORII.rotY;
-	scene.add(torii);
+	const izakaya = createIzakaya(landscapeKit);
+	izakaya.position.set(IZAKAYA.x, groundY(IZAKAYA.x, IZAKAYA.z) - 0.08, IZAKAYA.z);
+	izakaya.rotation.y = IZAKAYA.rotY;
+	scene.add(izakaya);
 
 	// 高札: a village notice board, with three paper notes (the essays).
 	const board = new THREE.Group();
@@ -668,7 +704,7 @@ export function createInkScene(
 	// 赤べこ: the akabeko, with a soft shadow.
 	const beko = createBeko({
 		inked,
-		red: getToon('torii'),
+		red: getToon('izakaya'),
 		ink: getFlat('bekoInk'),
 		gold: getToon('hub'),
 		white: getFlat('snow')
@@ -761,6 +797,8 @@ export function createInkScene(
 		if (isNight !== night) flareT = 1;
 		night = isNight;
 		const r = roles(p, night);
+		windowDim.set(r.window);
+		windowWarm.set(r.windowLit);
 		scene.background = new THREE.Color(r.sky);
 		for (const [role, m] of toon) m.color.set(r[role]);
 		for (const [role, m] of flat) m.color.set(r[role]);
@@ -798,6 +836,7 @@ export function createInkScene(
 	let gustT = 0; // 1 just after a brushed gust, eases to 0
 	let kiteOn = !!opts.initialKite;
 	let kiteT = kiteOn ? 1 : 0; // 0 = windmill, 1 = kite
+	const assembly = createMillAssembly(opts.initialMillBuilt ?? true, opts.reduceMotion);
 	const pointer = new THREE.Vector2();
 	const camPos = new THREE.Vector3();
 	const tmpQ = new THREE.Quaternion();
@@ -815,7 +854,7 @@ export function createInkScene(
 	const motion = opts.reduceMotion ? 0.3 : 1;
 
 	// Akabeko state: a path of waypoints, or a key direction.
-	const BEKO_SPEED = 2.2;
+	let bullSpeed = 0;
 	const bekoPos: Pt = { ...START };
 	let heading = -0.5;
 	let path: Pt[] = [];
@@ -829,14 +868,16 @@ export function createInkScene(
 	let seekAngle: number | null = null;
 	let parkT = 0;
 	let hovered: THREE.Object3D | null = null;
+	let orbitYaw = 0;
+	let orbitPitch = 0;
 
 	const anchorXZ = (p: PlaceRef): Pt =>
 		p.place === 'windmill' || p.place === 'sail'
 			? MILL
-			: p.place === 'torii'
-				? TORII
+			: p.place === 'izakaya'
+				? layout.izakaya
 				: p.place === 'board'
-					? BOARD
+					? layout.board
 					: p.place === 'tree'
 						? TREES[p.index]
 						: bekoPos;
@@ -850,7 +891,7 @@ export function createInkScene(
 		const lift =
 			p.place === 'windmill'
 				? 5.2
-				: p.place === 'torii'
+				: p.place === 'izakaya'
 					? 1.5
 					: p.place === 'board'
 						? 2.1
@@ -868,18 +909,47 @@ export function createInkScene(
 	function resize(w: number, h: number) {
 		renderer.setSize(w, h, false);
 		camera.aspect = w / h;
-		// Narrow screens: step back so the kite's path stays in frame.
-		// Fit a frame that always holds the notice board (left) and the
-		// windmill (right); wide screens also show the far tree on the right.
+		// Portrait framing brings the village up toward the visitor, with
+		// room for the whole rotor and a larger, readable izakaya facade.
 		const a = camera.aspect;
-		const left = -8.6;
-		const right = 3.9 + 3.7 * Math.min(1, Math.max(0, (a - 0.6) / 0.9));
+		const portrait = Math.min(1, Math.max(0, (0.85 - a) / 0.3));
+		const left = -9.4 + 0.7 * portrait;
+		const right = 3.9 + 0.2 * portrait + 3.7 * Math.min(1, Math.max(0, (a - 0.6) / 0.9));
 		const half = (right - left) / 2;
 		baseX = (left + right) / 2;
-		// Tall screens: aim higher, so the village sits below the buttons.
-		baseY = 3.6 + 2.6 * Math.min(1, Math.max(0, (1 - a) / 0.5));
-		camDist = Math.min(48, Math.max(17, half / (Math.tan((camera.fov * Math.PI) / 360) * a)));
+		baseY = 3.6 - 1.9 * portrait;
+		camDist = Math.min(
+			48 - 3 * portrait,
+			Math.max(17, half / (Math.tan((camera.fov * Math.PI) / 360) * a))
+		);
+		layout = villageLayout(portrait);
+		izakaya.scale.setScalar(layout.houseScale);
+		izakaya.userData.base = layout.houseScale;
+		izakaya.position.set(
+			layout.izakaya.x,
+			groundY(layout.izakaya.x, layout.izakaya.z) - 0.08,
+			layout.izakaya.z
+		);
+		board.position.set(
+			layout.board.x,
+			groundY(layout.board.x, layout.board.z) - 0.06,
+			layout.board.z
+		);
+		const safe = clampActor(bekoPos, heading, layout);
+		bekoPos.x = safe.x;
+		bekoPos.z = safe.z;
+		if (path.length) {
+			const to = goal ? spotFor(goal.place, goal.index, layout) : path[path.length - 1];
+			if (to) path = route(bekoPos, to, layout);
+		}
+		faceTarget = null;
 		camera.updateProjectionMatrix();
+		if (!framed) {
+			camera.position.set(w >= 900 && !coarse ? 0 : baseX, 4.2, camDist);
+			lookAt.set(baseX, baseY, 0);
+			camera.lookAt(lookAt);
+			framed = true;
+		}
 	}
 
 	let raf = 0;
@@ -895,6 +965,22 @@ export function createInkScene(
 		last = now;
 		const dt = Math.min(ms, 50) / 1000;
 		time += dt * motion;
+		const build = assembly.advance(ms);
+		const lit = smooth((build - 0.65) / 0.35);
+		getFlat('window').color.lerpColors(windowDim, windowWarm, lit);
+		getFlat('windowGlow').opacity = lit * (night ? 0.18 : 0.08);
+		for (const [i, timber] of timbers.entries()) {
+			const t = smooth((build - i * 0.035) / 0.7);
+			timber.mesh.position.lerpVectors(timber.start, timber.target, t);
+			timber.mesh.position.y += Math.sin(Math.PI * t) * 0.65;
+			timber.mesh.quaternion.slerpQuaternions(timber.rest, timber.rotation, t);
+			timber.mesh.scale.y = 0.55 + 0.45 * t;
+		}
+		const fill = smooth((build - 0.3) / 0.6);
+		shell.visible = fill > 0;
+		shell.scale.y = Math.max(0.001, fill);
+		rotor.visible = build > 0.65;
+		rotor.scale.setScalar(Math.max(0.001, smooth((build - 0.65) / 0.35)));
 
 		// Rotor: drift back to a calm idle speed after a flick.
 		gustT = Math.max(0, gustT - dt / 3.5);
@@ -1030,12 +1116,11 @@ export function createInkScene(
 				bloomed.push(t);
 			}
 			t.mat.color.lerpColors(t.base, sakura, smooth(t.t));
-			// Blossoms open from inside the crown as the bloom finishes.
-			t.blossoms.visible = t.t > 0.15;
-			t.blossoms.scale.setScalar(smooth((t.t - 0.15) / 0.85));
+			// Sakura is already flowering; a brush gesture deepens the bloom.
+			t.blossoms.scale.setScalar(0.9 + 0.1 * smooth(t.t));
 			t.pop = Math.max(0, t.pop - dt / 1.2);
 			const swell = 1 + Math.sin(Math.PI * t.pop) * 0.16;
-			t.crown.scale.set(swell, 0.82 * swell, swell);
+			t.crown.scale.setScalar(swell);
 			t.g.rotation.z = -windDir * (Math.sin(time * 1.3 + t.phase) * 0.015 + gustT * 0.1) * motion;
 		}
 
@@ -1096,16 +1181,22 @@ export function createInkScene(
 			}
 		}
 		const moving = vx !== 0 || vz !== 0;
+		const travel = bullStep(bullSpeed, reach, dt, moving);
+		bullSpeed = travel.speed;
 		if (moving) {
-			const step = Math.min(BEKO_SPEED * dt, reach);
-			const next = clampWalk({ x: bekoPos.x + vx * step, z: bekoPos.z + vz * step });
+			const step = travel.distance;
+			const next = clampActor(
+				{ x: bekoPos.x + vx * step, z: bekoPos.z + vz * step },
+				heading,
+				layout
+			);
 			bekoPos.x = next.x;
 			bekoPos.z = next.z;
 			turnTo(Math.atan2(-vz, vx), dt);
 		} else if (faceTarget) {
 			turnTo(Math.atan2(-(faceTarget.z - bekoPos.z), faceTarget.x - bekoPos.x), dt);
 		}
-		stride += ((moving ? 1 : 0) - stride) * Math.min(1, dt * 8);
+		stride += ((moving ? Math.min(1, bullSpeed / 5.4) : 0) - stride) * Math.min(1, dt * 10);
 		nodT = Math.max(0, nodT - dt / 1.6);
 		hopT = Math.max(0, hopT - dt / 0.55);
 		const by = groundY(bekoPos.x, bekoPos.z);
@@ -1127,13 +1218,19 @@ export function createInkScene(
 		// Scrolling into the page lifts the camera up into the sky.
 		scrollEase += (scrollT - scrollEase) * Math.min(1, dt * 6);
 		const lift = smooth(scrollEase);
-		const follow = (bekoPos.x - START.x) * 0.15;
+		const explore = !coarse && canvas.clientWidth >= 900;
+		const yaw = explore ? orbitYaw : 0;
+		const pitch = explore ? orbitPitch : 0;
+		const follow = explore ? (bekoPos.x - START.x) * (yaw || pitch ? 0.24 : 0.15) : 0;
 		lookAt.x += (baseX + follow - lookAt.x) * Math.min(1, dt * 2);
 		lookAt.y = baseY + lift * 7;
 		camPos.set(
-			pointer.x * 1.2 + Math.sin(time * 0.15) * 0.4 + follow,
-			4.2 + pointer.y * 0.6 + lift * 5,
-			camDist * (1 + lift * 0.25)
+			Math.sin(yaw) * camDist +
+				(explore ? pointer.x * 1.2 : baseX) +
+				Math.sin(time * 0.15) * (explore ? 0.4 : 0.08) +
+				follow,
+			4.2 + pitch * camDist * 0.5 + (explore ? pointer.y * 0.6 : 0) + lift * 5,
+			Math.cos(yaw) * camDist * (1 + lift * 0.25)
 		);
 		camera.position.lerp(camPos, Math.min(1, dt * 2.5));
 		camera.lookAt(lookAt);
@@ -1163,11 +1260,11 @@ export function createInkScene(
 	sails.forEach((s, i) => tag(s, 'sail', i));
 	tag(kite, 'windmill');
 	trees.forEach((t, i) => tag(t.g, 'tree', i));
-	tag(torii, 'torii');
+	tag(izakaya, 'izakaya');
 	tag(board, 'board');
 	tag(beko.root, 'hiro');
 	// Things that grow on hover remember their resting size.
-	for (const o of [...sails, ...trees.map((t) => t.g), torii, board, beko.root]) {
+	for (const o of [...sails, ...trees.map((t) => t.g), izakaya, board, beko.root]) {
 		o.userData.base = o.scale.x;
 	}
 	function cast(x: number, y: number) {
@@ -1176,6 +1273,16 @@ export function createInkScene(
 	}
 	function rootOf(hits: THREE.Intersection[]): THREE.Object3D | null {
 		for (const h of hits) {
+			let ancestor: THREE.Object3D | null = h.object;
+			let visible = true;
+			while (ancestor) {
+				if (!ancestor.visible) {
+					visible = false;
+					break;
+				}
+				ancestor = ancestor.parent;
+			}
+			if (!visible) continue;
 			let o: THREE.Object3D | null = h.object;
 			while (o && o.userData.place === undefined) o = o.parent;
 			if (o) return o;
@@ -1193,7 +1300,14 @@ export function createInkScene(
 
 	return {
 		setPalette,
+		buildMill() {
+			if (!assembly.start()) return;
+			kiteOn = false;
+			opts.onBuild?.();
+		},
+		isBuilt: () => assembly.started,
 		setKite(on) {
+			if (!on && !assembly.started) return;
 			kiteOn = on;
 		},
 		isKite: () => kiteOn,
@@ -1241,14 +1355,14 @@ export function createInkScene(
 			};
 		},
 		walkTo(place, index = 0) {
-			const spot = spotFor(place, index);
+			const spot = spotFor(place, index, layout);
 			if (!spot) return;
-			path = route(bekoPos, spot);
+			path = route(bekoPos, spot, layout);
 			goal = { place, index };
 			faceTarget = null;
 		},
 		walkToPoint(p) {
-			path = route(bekoPos, p);
+			path = route(bekoPos, p, layout);
 			goal = null;
 			faceTarget = null;
 		},
@@ -1261,7 +1375,7 @@ export function createInkScene(
 				faceTarget = null;
 			}
 		},
-		near: () => nearestSpot(bekoPos),
+		near: () => nearestSpot(bekoPos, 1.1, layout),
 		hop() {
 			hopT = 1;
 			nodT = 1;
@@ -1294,6 +1408,16 @@ export function createInkScene(
 		},
 		setPointer(nx, ny) {
 			pointer.set(nx, ny);
+		},
+		orbit(dx, dy) {
+			if (coarse || canvas.clientWidth < 900) return;
+			orbitYaw = Math.max(-0.45, Math.min(0.45, orbitYaw + dx));
+			orbitPitch = Math.max(-0.12, Math.min(0.18, orbitPitch + dy));
+		},
+		resetView() {
+			orbitYaw = 0;
+			orbitPitch = 0;
+			pointer.set(0, 0);
 		},
 		resize,
 		info: () => ({ calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }),

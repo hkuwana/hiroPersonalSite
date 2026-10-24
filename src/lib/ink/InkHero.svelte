@@ -8,7 +8,7 @@
 	import { onMount, tick } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { quartOut } from 'svelte/easing';
-	import { replaceState } from '$app/navigation';
+	import { pushState, replaceState } from '$app/navigation';
 	import { track } from '$lib/analytics';
 	import Windmill from '$lib/components/home/Windmill.svelte';
 	import { FACETS } from '$lib/home/facets';
@@ -28,7 +28,10 @@
 	import type { InkScene, Pick, PlaceRef } from './ink-scene';
 	import KitePlaceholder from './KitePlaceholder.svelte';
 	import { createKiteIntro } from './kite-intro';
+	import { ARRIVAL_SEEN_KEY, MILL_BUILT_KEY } from './mill-assembly';
 	import PlaceScroll from './PlaceScroll.svelte';
+	import WorkshopRoom from './WorkshopRoom.svelte';
+	import { villageUrl, workshopProject, workshopUrl, WORKSHOP_PROJECTS } from './workshop';
 	import {
 		facetContent,
 		facetOf,
@@ -72,8 +75,10 @@
 			loadFailed: 'The 3D scene could not load. The lighter scene is ready to explore.',
 			kiteUp: 'Fly the kite',
 			kiteDown: 'Land the kite',
+			buildMill: 'Build the mill',
 			sky: 'Sun / moon',
-			brush: 'Brush',
+			brush: 'Draw',
+			resetView: 'Reset view',
 			hints: [
 				'○ around a tree · it blooms',
 				'○ in the sky · the sun',
@@ -110,8 +115,10 @@
 			loadFailed: '3Dシーンを読み込めなかったため、軽量表示に切り替えました。',
 			kiteUp: '凧をあげる',
 			kiteDown: '凧をおろす',
+			buildMill: '風車を組み立てる',
 			sky: '日と月',
-			brush: '筆',
+			brush: '描く',
+			resetView: '視点を戻す',
 			hints: ['木を○で囲む · 花が咲く', '空に○ · 日', '空に☾ · 月', '→ か ← · 風', '↑ か ↓ · 凧'],
 			bloom: '桜 花が咲いた',
 			sunrise: '日 日の出',
@@ -140,7 +147,10 @@
 	let slowLoad = $state(false);
 	let reduceMotion = $state(false);
 	let kite = $state(false);
+	let millBuilt = $state(false);
 	let brush = $state(false);
+	let explored = $state(false);
+	let orbiting = $state(false);
 	let gesture = $state('');
 	let stats = $state({ first: 0, fps: 0, calls: 0, tris: 0 });
 	let progress = $state(0); // 0..1 through the scroll transition
@@ -152,18 +162,141 @@
 	let nearBy = $state<PlaceRef | null>(null);
 	let tag = $state<{ text: string; x: number; y: number } | null>(null);
 	let status = $state('');
+	let scrollSeen = false;
+	let scrollAnimate = $state(false);
+	let workshop = $state(false);
+	let selectedProject = $state(0);
+	let curtain = $state<'cover' | 'reveal' | null>(null);
+	let enteringMill = false;
+	let arrivalTimer = 0;
+	let coverTimer = 0;
+	let revealTimer = 0;
+	let readyTimer = 0;
+	let workshopEntryUrl: string | null = null;
+	let transitionTarget: boolean | null = null;
+	let transitionId = 0;
+	let leavingWorkshop = false;
+
+	function cancelWorkshopTransition() {
+		transitionId++;
+		clearTimeout(arrivalTimer);
+		clearTimeout(coverTimer);
+		clearTimeout(revealTimer);
+		clearTimeout(readyTimer);
+		enteringMill = false;
+		transitionTarget = null;
+		curtain = null;
+	}
+	function focusVillage() {
+		void tick().then(() => {
+			if (workshop || curtain) return;
+			const entry = stageEl?.querySelector<HTMLButtonElement>('.workshop-entry');
+			(entry ?? stageEl)?.focus({ preventScroll: true });
+		});
+	}
+
+	function revealRoom() {
+		clearTimeout(readyTimer);
+		// A theme/fidelity reload of the old room must not uncover an exit
+		// before its cover has reached the other side.
+		if (curtain !== 'cover' || transitionTarget !== workshop) return;
+		const id = transitionId;
+		curtain = reduceMotion ? null : 'reveal';
+		clearTimeout(revealTimer);
+		revealTimer = window.setTimeout(() => {
+			if (id !== transitionId) return;
+			curtain = null;
+			transitionTarget = null;
+			if (!workshop) focusVillage();
+		}, 380);
+	}
+	function transitionWorkshop(inside: boolean, updateUrl = true) {
+		cancelWorkshopTransition();
+		const id = transitionId;
+		transitionTarget = inside;
+		opened = null;
+		brush = false;
+		tag = null;
+		releaseKeys();
+		curtain = reduceMotion ? null : 'cover';
+		const changeRoom = () => {
+			if (id !== transitionId) return;
+			workshop = inside;
+			leavingWorkshop = false;
+			if (inside) {
+				progress = 0;
+				scene?.setScroll(0);
+				if (updateUrl) {
+					const url = workshopUrl(location.href, WORKSHOP_PROJECTS[selectedProject].id);
+					workshopEntryUrl = url.href;
+					pushState(url, {});
+				}
+				// A failed import still leaves the readable project shelf available.
+				readyTimer = window.setTimeout(revealRoom, 1600);
+			} else {
+				if (updateUrl) replaceState(villageUrl(location.href), {});
+				revealRoom();
+				if (reduceMotion) focusVillage();
+			}
+			if (reduceMotion) transitionTarget = null;
+			syncActive();
+		};
+		if (reduceMotion) changeRoom();
+		else coverTimer = window.setTimeout(changeRoom, 340);
+	}
+	function leaveWorkshop() {
+		if (curtain || leavingWorkshop) return;
+		leavingWorkshop = true;
+		// Back restores the actual entry, including any pre-existing hash/locale.
+		if (workshopEntryUrl) {
+			workshopEntryUrl = null;
+			history.back();
+		} else transitionWorkshop(false);
+	}
+	function selectProject(index: number) {
+		selectedProject = index;
+		replaceState(workshopUrl(location.href, WORKSHOP_PROJECTS[index].id), {});
+	}
+	function restoreWorkshop() {
+		const url = new URL(location.href);
+		selectedProject = Math.max(0, workshopProject(url.searchParams.get('project')));
+		const inside = url.searchParams.get('place') === 'windmill';
+		// Popstate also cancels a cover that has not switched rooms yet. Without
+		// this, a quick Back could reopen the room after the URL returned home.
+		if (inside !== workshop) transitionWorkshop(inside, false);
+		else {
+			cancelWorkshopTransition();
+			leavingWorkshop = false;
+			if (!inside) focusVillage();
+		}
+	}
 
 	const content = $derived(opened ? facetContent(opened.facet, lang, essays, opened.from) : null);
-	const PLACES: PlaceId[] = ['windmill', 'torii', 'board', 'tree'];
+	const PLACES: PlaceId[] = ['windmill', 'izakaya', 'board', 'tree'];
 	const placeLabel = (place: PlaceId, index = 0) =>
-		place === 'sail' ? sailName(index, lang) : PLACE_NAME[place][lang];
+		place === 'sail'
+			? sailName(index, lang)
+			: place === 'windmill' && !millBuilt
+				? c.buildMill
+				: PLACE_NAME[place][lang];
 
 	function show(facet: FacetId, from: string) {
+		scrollAnimate = !scrollSeen && !reduceMotion;
+		scrollSeen = true;
+		try {
+			sessionStorage.setItem('village-scroll-seen-v1', '1');
+		} catch {
+			/* Optional. */
+		}
 		opened = { facet, from };
 		track('village_place_opened', { choice: facet, locale: lang });
 	}
 	// Open the scroll for a place (a sail opens its own facet).
 	function openAt(place: PlaceId, index = 0) {
+		if (place === 'windmill' || (place === 'sail' && index === 0)) {
+			transitionWorkshop(true);
+			return;
+		}
 		const facet = facetOf(place, index);
 		if (!facet) return;
 		if (place === 'tree') scene?.bloomTree(index);
@@ -171,6 +304,10 @@
 	}
 	// The kanji tabs in the scroll switch facets and turn that sail to the top.
 	function chooseFacet(id: FacetId) {
+		if (id === 'builder') {
+			transitionWorkshop(true);
+			return;
+		}
 		show(id, opened?.from ?? PLACE_NAME.windmill[lang]);
 		scene?.seekSail(FACETS.findIndex((f) => f.id === id));
 	}
@@ -237,6 +374,7 @@
 		live = false;
 		const signals = readSignals();
 		reduceMotion = signals.reduceMotion;
+		millBuilt = millBuilt || signals.reduceMotion || !tall;
 		choice = chooseFidelity(pref, signals);
 		if (choice.fidelity === 'lo') {
 			track('village_fidelity', { choice: `lo:${choice.reason}`, locale: lang });
@@ -261,7 +399,7 @@
 		await tick();
 		if (id !== bootId || !glEl || choice?.fidelity !== 'hi') return;
 		intro = createKiteIntro(tall && introEligible && !signals.reduceMotion);
-		kite = intro.initialKite;
+		kite = !millBuilt || intro.initialKite;
 
 		const frames: number[] = [];
 		let seen = 0;
@@ -273,21 +411,38 @@
 				night: isDark(),
 				reduceMotion: signals.reduceMotion,
 				initialKite: kite,
-				onLost: () => fallBack('context-lost'),
+				initialMillBuilt: millBuilt,
 				onArrive(p) {
-					status = '';
-					openAt(p.place, p.index);
+					if (enteringMill && p.place === 'windmill') transitionWorkshop(true);
 				},
+				onBuild() {
+					millBuilt = true;
+					kite = false;
+					try {
+						localStorage.setItem(MILL_BUILT_KEY, '1');
+					} catch {
+						/* Storage is optional. */
+					}
+				},
+				onLost: () => fallBack('context-lost'),
 				onFrame(ms) {
 					seen++;
 					if (seen === 1) {
 						clearLoadTimers();
 						stats.first = Math.round(performance.now() - t0);
 						live = true;
+						if (workshop) queueMicrotask(syncActive);
+						if (tall) {
+							try {
+								sessionStorage.setItem(ARRIVAL_SEEN_KEY, '1');
+							} catch {
+								/* Storage is optional. */
+							}
+						}
 						track('village_fidelity', { choice: `hi:${choice?.reason}`, locale: lang });
 						return;
 					}
-					if (intro.advance(ms, onScreen && !document.hidden && progress < 0.35)) {
+					if (intro.advance(ms, onScreen && !document.hidden && progress < 0.35) && s.isBuilt()) {
 						kite = false;
 						s.setKite(false);
 					}
@@ -370,6 +525,7 @@
 
 	function toggleKite(on = !kite) {
 		cancelIntro();
+		if (!on) scene?.buildMill();
 		kite = on;
 		scene?.setKite(on);
 	}
@@ -377,8 +533,6 @@
 		introEligible = false;
 		intro.cancel();
 	}
-
-	const toggleSky = () => setSky(!isDark());
 
 	async function setSky(dark: boolean) {
 		await changeTheme(dark, () => {
@@ -395,8 +549,10 @@
 	// ── Scroll: hold the stage, raise the camera, let the mist in ────────
 	let scrollRaf = 0;
 	let onScreen = true;
-	const syncActive = () => scene?.setActive(onScreen && !document.hidden && progress < 0.999);
+	const syncActive = () =>
+		scene?.setActive((!workshop || !live) && onScreen && !document.hidden && progress < 0.999);
 	function measure() {
+		if (workshop) return;
 		if (!holding || !villageEl) {
 			progress = 0;
 			scene?.setScroll(0);
@@ -422,31 +578,64 @@
 
 	// ── Click to walk or visit, drag the windmill to spin it ──────────────
 	let drag: { x: number; t: number } | null = null;
+	let cameraDrag: { x: number; y: number } | null = null;
 	let down: { x: number; y: number; hit: Pick | null } | null = null;
-	const onStage = (e: PointerEvent) => {
+	function clearPointer() {
+		cancelAnimationFrame(hoverRaf);
+		drag = null;
+		down = null;
+		cameraDrag = null;
+		orbiting = false;
+		tag = null;
+	}
+	const onStage = (e: { clientX: number; clientY: number }) => {
 		const r = stageEl.getBoundingClientRect();
 		return { x: e.clientX - r.left, y: e.clientY - r.top };
 	};
-	const fromUi = (e: PointerEvent) =>
+	const fromUi = (e: { target: EventTarget | null }) =>
 		!!(e.target as HTMLElement).closest('button, a, .hud, .actions, .scroll, .places, .cue');
 
 	function visit(place: PlaceId, index = 0) {
-		if (!scene) return;
+		if (workshop || curtain) return;
+		clearTimeout(arrivalTimer);
+		enteringMill = false;
+		if (place === 'windmill' || (place === 'sail' && index === 0)) {
+			opened = null;
+			brush = false;
+			if (!scene || reduceMotion) {
+				transitionWorkshop(true);
+				return;
+			}
+			scene.buildMill();
+			enteringMill = true;
+			scene.walkTo('windmill');
+			// Bound travel time even when approaching from the far edge of the map.
+			arrivalTimer = window.setTimeout(() => {
+				if (enteringMill) transitionWorkshop(true);
+			}, 1250);
+			return;
+		}
+		if (!scene) {
+			openAt(place, index);
+			return;
+		}
 		tag = null;
-		opened = null;
 		if (place === 'hiro') {
 			scene.hop();
 			status = '';
 			return;
 		}
-		// A sail turns to the top at once; the akabeko walks over to read it.
+		// Reading starts immediately. Arrival only animates the cow, so a
+		// closed scroll stays closed and an old walk cannot replace new content.
+		if (place === 'sail') scene.buildMill();
+		openAt(place, index);
 		if (place === 'sail') scene.seekSail(index);
-		status = `→ ${placeLabel(place, index)}`;
+		status = '';
 		scene.walkTo(place, index);
 	}
 
 	function onStageDown(e: PointerEvent) {
-		if (brush || !scene || fromUi(e)) return;
+		if (workshop || curtain || e.button !== 0 || brush || !scene || fromUi(e)) return;
 		const p = onStage(e);
 		// Remember what was pressed: the sails keep turning, so a pick at
 		// release time could find a different sail.
@@ -454,16 +643,29 @@
 		down = { x: e.clientX, y: e.clientY, hit };
 		const onMill = hit && 'place' in hit && (hit.place === 'windmill' || hit.place === 'sail');
 		drag = onMill && e.pointerType === 'mouse' ? { x: e.clientX, t: performance.now() } : null;
+		cameraDrag =
+			!onMill &&
+			e.pointerType === 'mouse' &&
+			stageEl.clientWidth >= 900 &&
+			matchMedia('(hover: hover) and (pointer: fine)').matches
+				? { x: e.clientX, y: e.clientY }
+				: null;
+		if (cameraDrag && e.isTrusted) stageEl.setPointerCapture(e.pointerId);
 	}
 	function onStageUp(e: PointerEvent) {
 		const start = down;
+		if (stageEl.hasPointerCapture(e.pointerId)) stageEl.releasePointerCapture(e.pointerId);
 		down = null;
 		drag = null;
+		cameraDrag = null;
+		orbiting = false;
 		if (!start || brush || !scene || fromUi(e)) return;
 		if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > 6) return; // a drag or a swipe
 		const hit = start.hit;
 		if (!hit) return;
 		if ('ground' in hit) {
+			clearTimeout(arrivalTimer);
+			enteringMill = false;
 			opened = null;
 			status = '';
 			scene.walkToPoint(hit.ground);
@@ -471,14 +673,33 @@
 			visit(hit.place, hit.index);
 		}
 	}
+	function onStageDoubleClick(e: MouseEvent) {
+		if (workshop || curtain || brush || !scene || fromUi(e)) return;
+		const p = onStage(e);
+		const hit = scene.pick(p.x, p.y);
+		if (hit && 'place' in hit && (hit.place === 'izakaya' || hit.place === 'board')) {
+			opened = null;
+		} else if (!hit || 'ground' in hit) {
+			scene.resetView();
+			explored = false;
+		}
+	}
 
 	let hoverRaf = 0;
 	function onStageMove(e: PointerEvent) {
 		cancelAnimationFrame(hoverRaf);
-		if (!scene) return;
+		if (workshop || curtain || !scene) return;
 		const p = onStage(e);
 		const r = stageEl.getBoundingClientRect();
 		scene.setPointer((p.x / r.width) * 2 - 1, -((p.y / r.height) * 2 - 1));
+		if (cameraDrag && down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6) {
+			scene.orbit(-(e.clientX - cameraDrag.x) * 0.0035, (e.clientY - cameraDrag.y) * 0.0025);
+			cameraDrag = { x: e.clientX, y: e.clientY };
+			explored = true;
+			orbiting = true;
+			tag = null;
+			return;
+		}
 		if (drag && !brush) {
 			const now = performance.now();
 			scene.spin(((e.clientX - drag.x) / Math.max(16, now - drag.t)) * 1.6);
@@ -521,16 +742,29 @@
 	}
 	// Only the focused stage steers, so the arrow keys still scroll the page.
 	function onStageKey(e: KeyboardEvent, isDown: boolean) {
-		if (!scene || brush || e.metaKey || e.ctrlKey || e.altKey || e.target !== stageEl) return;
+		if (
+			workshop ||
+			curtain ||
+			!scene ||
+			brush ||
+			e.metaKey ||
+			e.ctrlKey ||
+			e.altKey ||
+			e.target !== stageEl
+		)
+			return;
 		const key = e.key.toLowerCase();
 		if (key in KEY_DIR) {
 			e.preventDefault();
-			if (isDown) held[key] = true;
-			else delete held[key];
+			if (isDown) {
+				held[key] = true;
+				clearTimeout(arrivalTimer);
+				enteringMill = false;
+			} else delete held[key];
 			steer();
 		} else if (isDown && key === 'enter' && nearBy && !opened) {
 			e.preventDefault();
-			openAt(nearBy.place, nearBy.index);
+			visit(nearBy.place, nearBy.index);
 		}
 	}
 	function releaseKeys() {
@@ -538,7 +772,17 @@
 		steer();
 	}
 	function onWindowKey(e: KeyboardEvent) {
-		if (e.key === 'Escape' && opened) opened = null;
+		if (e.key !== 'Escape') return;
+		if (!workshop && (enteringMill || transitionTarget === true)) {
+			transitionWorkshop(false);
+			return;
+		}
+		if (workshop) leaveWorkshop();
+		else if (opened) opened = null;
+		else if (explored) {
+			scene?.resetView();
+			explored = false;
+		}
 	}
 
 	// ── Brush (筆): draw, then read the stroke ────────────────────────────
@@ -635,6 +879,10 @@
 	});
 
 	onMount(() => {
+		const initialUrl = new URL(location.href);
+		workshop = initialUrl.searchParams.get('place') === 'windmill';
+		selectedProject = Math.max(0, workshopProject(initialUrl.searchParams.get('project')));
+		window.addEventListener('popstate', restoreWorkshop);
 		let stored: string | null = null;
 		try {
 			stored = localStorage.getItem(PREF_KEY);
@@ -642,9 +890,18 @@
 			/* Storage can be blocked. */
 		}
 		pref = parsePref(location.search, stored);
+		try {
+			millBuilt = localStorage.getItem(MILL_BUILT_KEY) === '1';
+			introEligible = sessionStorage.getItem(ARRIVAL_SEEN_KEY) !== '1';
+			scrollSeen = sessionStorage.getItem('village-scroll-seen-v1') === '1';
+		} catch {
+			/* Storage is optional. */
+		}
 		document.addEventListener('visibilitychange', syncActive);
 		void boot();
 		return () => {
+			window.removeEventListener('popstate', restoreWorkshop);
+			cancelWorkshopTransition();
 			bootId++;
 			clearLoadTimers();
 			intro.cancel();
@@ -683,166 +940,271 @@
 >
 	<!-- The stage is a keyboard-operated widget (arrows walk, Enter opens), so it
 	     takes focus and key events; every action also has a button. -->
-	<!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<div
 		class="stage"
 		class:brushing={brush}
 		class:pointing={!!tag}
+		class:orbiting
 		bind:this={stageEl}
-		role="application"
+		role={workshop ? undefined : 'application'}
 		aria-label={c.region}
-		aria-describedby="village-hint"
-		tabindex={live ? 0 : -1}
+		aria-describedby={workshop ? undefined : 'village-hint'}
+		tabindex={!workshop && live ? 0 : -1}
 		onpointermove={onStageMove}
 		onpointerdown={onStageDown}
 		onpointerdowncapture={cancelIntro}
 		onpointerup={onStageUp}
-		onpointerleave={() => {
-			cancelAnimationFrame(hoverRaf);
-			drag = null;
-			down = null;
-			tag = null;
-		}}
+		ondblclick={onStageDoubleClick}
+		onpointerleave={clearPointer}
+		onpointercancel={clearPointer}
+		onlostpointercapture={clearPointer}
 		onkeydown={(e) => onStageKey(e, true)}
 		onkeydowncapture={cancelIntro}
 		onkeyup={(e) => onStageKey(e, false)}
 		onblur={releaseKeys}
 	>
 		<p id="village-hint" class="sr-only">{c.regionHint}</p>
-		{#if choice?.fidelity === 'hi'}
-			<canvas class="gl" class:on={live} bind:this={glEl} aria-hidden="true"></canvas>
-			<div class="washi" aria-hidden="true"></div>
-			<canvas
-				class="brush"
-				bind:this={brushEl}
-				aria-hidden="true"
-				onpointerdown={brushDown}
-				onpointermove={brushMove}
-				onpointerup={brushUp}
-				onpointercancel={brushUp}
-			></canvas>
-		{/if}
-		{#if choice?.fidelity === 'lo'}
-			<div class="lofi">
-				<Windmill {lang} />
-			</div>
-		{:else if !live}
-			<div
-				class="arrival"
-				out:fly={{ x: -80, y: -64, duration: reduceMotion ? 0 : 480, easing: quartOut }}
-			>
-				<KitePlaceholder ready={live} />
-			</div>
-		{/if}
-		{#if holding}
-			<!-- 霞 Kasumi: a flat paper mist bank with a scalloped ink edge, as in
-			     Japanese screen painting. It rises as you scroll into the page. -->
-			<svg class="mist" viewBox="0 0 1200 1000" preserveAspectRatio="none" aria-hidden="true">
-				<path
-					class="bank"
-					d="M0,95 Q70,43 140,95 Q210,43 280,95 Q365,15 450,95 Q550,15 650,95 Q705,15 760,95 Q815,43 870,95 Q970,43 1070,95 Q1135,43 1200,95 L1200,1000 L0,1000 Z"
-				/>
-				<path
-					class="edge"
-					d="M0,95 Q70,43 140,95 Q210,43 280,95 Q365,15 450,95 Q550,15 650,95 Q705,15 760,95 Q815,43 870,95 Q970,43 1070,95 Q1135,43 1200,95"
-				/>
-			</svg>
-		{/if}
-
-		<div class="ui">
-			<div class="hud mono" aria-live="polite">
-				{#if choice}
-					<div class="seg" role="group" aria-label={c.fidelity}>
-						{#each ['auto', 'hi', 'lo'] as const as p (p)}
-							<button type="button" aria-pressed={pref === p} onclick={() => setPref(p)}>
-								{c[p]}
-							</button>
-						{/each}
-					</div>
-				{/if}
-				{#if debug && choice}
-					<p>{choice.fidelity === 'hi' ? 'hi-fi' : 'lo-fi'} · {reasonLabel[choice.reason]}</p>
-					{#if live}
-						<p>first frame {stats.first} ms · {stats.fps} fps</p>
-						<p>{stats.calls} draws · {(stats.tris / 1000).toFixed(1)}k tris</p>
-					{/if}
-				{/if}
-			</div>
-			<div class="load-status mono" role="status">
-				{#if slowLoad}
-					<p>{c.loading}</p>
-					<p>{c.loadingHint}</p>
-					<button type="button" class="act" onclick={() => setPref('lo')}>{c.useLite}</button>
-				{:else if choice?.fidelity === 'lo' && ['error', 'timeout', 'context-lost'].includes(choice.reason)}
-					<p>{c.loadFailed}</p>
-				{/if}
-			</div>
-
-			{#if live}
-				<nav class="places mono" aria-label={c.places}>
-					<ul>
-						{#each PLACES as place (place)}
-							<li>
-								<button type="button" onclick={() => visit(place)}>{placeLabel(place)}</button>
-							</li>
-						{/each}
-					</ul>
-					<p class="keys">{c.keys}</p>
-					<p class="credit">{c.credit}</p>
-				</nav>
-				{#if tag}
-					<span class="tag mono" style:left="{tag.x}px" style:top="{tag.y}px" aria-hidden="true"
-						>{tag.text}</span
-					>
-				{/if}
-				<p class="status mono" class:said={!!status} aria-live="polite">
-					{#if status}{status}{:else if nearBy && !opened}
-						<button
-							type="button"
-							class="enter"
-							onclick={() => nearBy && visit(nearBy.place, nearBy.index)}
-							>Enter · {placeLabel(nearBy.place, nearBy.index)}</button
-						>
-					{/if}
-				</p>
-
-				<div class="actions">
-					<button type="button" class="act" aria-pressed={kite} onclick={() => toggleKite()}>
-						{#if lang === 'en'}<span class="jp" aria-hidden="true">凧</span>{/if}
-						{kite ? c.kiteDown : c.kiteUp}
-					</button>
-					<button type="button" class="act" onclick={toggleSky}>
-						{#if lang === 'en'}<span class="jp" aria-hidden="true">日月</span>{/if}
-						{c.sky}
-					</button>
-					<button type="button" class="act" aria-pressed={brush} onclick={() => (brush = !brush)}>
-						{#if lang === 'en'}<span class="jp" aria-hidden="true">筆</span>{/if}
-						{c.brush}
-					</button>
-					{#if brush}
-						<ul class="hint mono">
-							{#each c.hints as hint (hint)}<li>{hint}</li>{/each}
-							{#if gesture}<li><strong>{gesture}</strong></li>{/if}
-						</ul>
-					{/if}
+		<div class="outdoor" class:hidden={workshop} inert={workshop || !!curtain}>
+			{#if choice?.fidelity === 'hi'}
+				<canvas class="gl" class:on={live} bind:this={glEl} aria-hidden="true"></canvas>
+				<div class="washi" aria-hidden="true"></div>
+				<canvas
+					class="brush"
+					bind:this={brushEl}
+					aria-hidden="true"
+					onpointerdown={brushDown}
+					onpointermove={brushMove}
+					onpointerup={brushUp}
+					onpointercancel={brushUp}
+				></canvas>
+			{/if}
+			{#if choice?.fidelity === 'lo'}
+				<div class="lofi">
+					<Windmill {lang} />
+				</div>
+			{:else if !live}
+				<div
+					class="arrival"
+					out:fly={{ x: -80, y: -64, duration: reduceMotion ? 0 : 480, easing: quartOut }}
+				>
+					<KitePlaceholder ready={live} />
 				</div>
 			{/if}
+			{#if holding}
+				<!-- 霞 Kasumi: a flat paper mist bank with a scalloped ink edge, as in
+			     Japanese screen painting. It rises as you scroll into the page. -->
+				<svg class="mist" viewBox="0 0 1200 1000" preserveAspectRatio="none" aria-hidden="true">
+					<path
+						class="bank"
+						d="M0,95 Q70,43 140,95 Q210,43 280,95 Q365,15 450,95 Q550,15 650,95 Q705,15 760,95 Q815,43 870,95 Q970,43 1070,95 Q1135,43 1200,95 L1200,1000 L0,1000 Z"
+					/>
+					<path
+						class="edge"
+						d="M0,95 Q70,43 140,95 Q210,43 280,95 Q365,15 450,95 Q550,15 650,95 Q705,15 760,95 Q815,43 870,95 Q970,43 1070,95 Q1135,43 1200,95"
+					/>
+				</svg>
+			{/if}
 
-			{#if tall && nextHref}
-				<a class="cue mono" href={nextHref}>
-					<span>{c.scroll}</span>
-					<span class="line" aria-hidden="true"></span>
-				</a>
+			<div class="ui">
+				<div class="hud mono" aria-live="polite">
+					{#if choice && debug}
+						<div class="seg" role="group" aria-label={c.fidelity}>
+							{#each ['auto', 'hi', 'lo'] as const as p (p)}
+								<button type="button" aria-pressed={pref === p} onclick={() => setPref(p)}>
+									{c[p]}
+								</button>
+							{/each}
+						</div>
+					{/if}
+					{#if debug && choice}
+						<p>{choice.fidelity === 'hi' ? 'hi-fi' : 'lo-fi'} · {reasonLabel[choice.reason]}</p>
+						{#if live}
+							<p>first frame {stats.first} ms · {stats.fps} fps</p>
+							<p>{stats.calls} draws · {(stats.tris / 1000).toFixed(1)}k tris</p>
+						{/if}
+					{/if}
+				</div>
+				<div class="load-status mono" role="status">
+					{#if slowLoad}
+						<p>{c.loading}</p>
+						<p>{c.loadingHint}</p>
+						<button type="button" class="act" onclick={() => setPref('lo')}>{c.useLite}</button>
+					{:else if choice?.fidelity === 'lo' && ['error', 'timeout', 'context-lost'].includes(choice.reason)}
+						<p>{c.loadFailed}</p>
+					{/if}
+				</div>
+
+				{#if live || choice?.fidelity === 'lo'}
+					<nav class="places mono" aria-label={c.places}>
+						<button class="workshop-entry" type="button" onclick={() => visit('windmill')}>
+							{lang === 'ja' ? '風車の工房に入る' : 'Enter the workshop'}
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg>
+						</button>
+						<ul class="landmark-access sr-only">
+							{#each PLACES as place (place)}
+								<li>
+									<button type="button" onclick={() => visit(place)}>{placeLabel(place)}</button>
+								</li>
+							{/each}
+						</ul>
+						<p class="keys">{c.keys}</p>
+						<p class="credit">{c.credit}</p>
+					</nav>
+					{#if tag}
+						<span class="tag mono" style:left="{tag.x}px" style:top="{tag.y}px" aria-hidden="true"
+							>{tag.text}</span
+						>
+					{/if}
+					<p class="status mono" class:said={!!status} aria-live="polite">
+						{#if status}{status}{:else if nearBy && !opened}
+							<button
+								type="button"
+								class="enter"
+								onclick={() => nearBy && visit(nearBy.place, nearBy.index)}
+								>Enter · {placeLabel(nearBy.place, nearBy.index)}</button
+							>
+						{/if}
+					</p>
+
+					<div class="actions">
+						<button type="button" class="act" aria-pressed={brush} onclick={() => (brush = !brush)}>
+							{c.brush}
+						</button>
+						{#if brush}
+							<ul class="hint mono">
+								{#each c.hints as hint (hint)}<li>{hint}</li>{/each}
+								{#if gesture}<li><strong>{gesture}</strong></li>{/if}
+							</ul>
+						{/if}
+					</div>
+				{/if}
+
+				{#if tall && nextHref}
+					<a class="cue mono" href={nextHref}>
+						<span>{c.scroll}</span>
+						<span class="line" aria-hidden="true"></span>
+					</a>
+				{/if}
+			</div>
+
+			{#if content}
+				<PlaceScroll
+					{content}
+					{lang}
+					animate={scrollAnimate}
+					onclose={() => (opened = null)}
+					onfacet={chooseFacet}
+				/>
 			{/if}
 		</div>
-
-		{#if content}
-			<PlaceScroll {content} {lang} onclose={() => (opened = null)} onfacet={chooseFacet} />
+		{#if workshop && choice}
+			<WorkshopRoom
+				{lang}
+				selected={selectedProject}
+				{reduceMotion}
+				lightweight={choice?.fidelity === 'lo'}
+				onselect={selectProject}
+				onleave={leaveWorkshop}
+				onready={revealRoom}
+			/>
+		{/if}
+		{#if curtain}
+			<div class="area-scroll" class:reveal={curtain === 'reveal'} aria-hidden="true">
+				<div class="scroll-sheet"><span>作</span></div>
+			</div>
 		{/if}
 	</div>
 </section>
 
 <style>
+	.outdoor {
+		position: absolute;
+		inset: 0;
+	}
+	.outdoor.hidden {
+		visibility: hidden;
+		pointer-events: none;
+	}
+	.places .workshop-entry {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.8rem;
+		min-height: 44px;
+		padding: 0.55rem 0.8rem;
+		font-family: var(--f-body);
+		font-size: 0.95rem;
+		letter-spacing: 0;
+	}
+	.workshop-entry svg {
+		width: 1.1rem;
+		height: 1.1rem;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.5;
+	}
+	.area-scroll {
+		position: absolute;
+		inset: -2%;
+		z-index: 8;
+		pointer-events: auto;
+		animation: paper-cover 350ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	}
+	.area-scroll.reveal {
+		animation: paper-reveal 370ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	}
+	.scroll-sheet {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		background: var(--paper);
+		border-block: 1px solid var(--wood);
+	}
+	.scroll-sheet::before,
+	.scroll-sheet::after {
+		content: '';
+		position: absolute;
+		top: -1rem;
+		bottom: -1rem;
+		width: 1.8rem;
+		border: 1px solid var(--ink);
+		border-radius: 0.8rem;
+		background: var(--wood);
+	}
+	.scroll-sheet::before {
+		left: 0;
+	}
+	.scroll-sheet::after {
+		right: 0;
+	}
+	.scroll-sheet span {
+		font-family: var(--f-jp);
+		font-size: clamp(4rem, 12vw, 8rem);
+		color: var(--ebicha);
+	}
+	@keyframes paper-cover {
+		from {
+			transform: translateX(-110%);
+		}
+		to {
+			transform: translateX(0);
+		}
+	}
+	@keyframes paper-reveal {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(110%);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.area-scroll,
+		.area-scroll.reveal {
+			animation: none;
+		}
+	}
 	.village {
 		position: relative;
 		padding-top: var(--nav-h);
@@ -936,6 +1298,9 @@
 		.pointing .gl {
 			cursor: pointer;
 		}
+		.orbiting .gl {
+			cursor: grabbing;
+		}
 		.brushing .brush {
 			cursor:
 				url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M29 3 L14 18' stroke='%23fbf8ef' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M29 3 L14 18' stroke='%238a6a45' stroke-width='3.2' stroke-linecap='round'/%3E%3Cpath d='M15.5 16.5 L11.5 20.5' stroke='%231e1a16' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M12.5 18.5 C8 21 5 25 2 30 C7 28 11 25.5 14 21.5 Z' fill='%231e1a16' stroke='%23fbf8ef' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E")
@@ -992,6 +1357,14 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
+	}
+	.places .landmark-access:focus-within {
+		position: static;
+		width: auto;
+		height: auto;
+		clip: auto;
+		overflow: visible;
+		white-space: normal;
 	}
 	.places button,
 	.enter {
@@ -1054,12 +1427,12 @@
 	.washi {
 		pointer-events: none;
 		mix-blend-mode: multiply;
-		opacity: 0.32;
+		opacity: 0.14;
 		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9 0.35' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.4 0 0 0 0 0.3 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 	}
 	:global([data-theme='dark']) .washi {
 		mix-blend-mode: screen;
-		opacity: 0.14;
+		opacity: 0.07;
 	}
 	.lofi {
 		position: absolute;
@@ -1138,12 +1511,6 @@
 	.act[aria-pressed='true'] {
 		background: var(--ink);
 		color: var(--paper);
-	}
-	.act .jp {
-		font-family: var(--f-jp);
-		font-size: 0.95rem;
-		margin-right: 0.3rem;
-		text-transform: none;
 	}
 	.hint {
 		flex-basis: 100%;
