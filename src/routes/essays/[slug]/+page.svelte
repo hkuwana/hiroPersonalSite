@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
+	import { SITE } from '$data/constants';
+	import { blogPosting, breadcrumbs, jsonLd } from '$lib/seo';
 
 	export let data: PageData;
 
@@ -30,29 +32,24 @@
 	<meta property="article:author" content="Hiro Kuwana" />
 	<link rel="canonical" href="https://hirokuwana.com/essays/{data.slug}" />
 
-	<!-- Article structured data -->
-	{@html `<script type="application/ld+json">
-		{
-			"@context": "https://schema.org",
-			"@type": "Article",
-			"headline": "${data.title}",
-			"description": "${data.description}",
-			"datePublished": "${data.date}",
-			"author": {
-				"@type": "Person",
-				"name": "Hiro Kuwana",
-				"url": "https://hirokuwana.com"
-			},
-			"publisher": {
-				"@type": "Person",
-				"name": "Hiro Kuwana"
-			},
-			"mainEntityOfPage": {
-				"@type": "WebPage",
-				"@id": "https://hirokuwana.com/essays/${data.slug}"
-			}
-		}
-	</script>`}
+	<meta property="og:image" content={SITE.image} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:site_name" content={SITE.name} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={data.title} />
+	<meta name="twitter:description" content={data.description} />
+	<meta name="twitter:image" content={SITE.image} />
+
+	<!-- BlogPosting and breadcrumb structured data, built by $lib/seo -->
+	{@html jsonLd([
+		blogPosting(data),
+		breadcrumbs([
+			{ name: 'Home', path: '/' },
+			{ name: 'Essays', path: '/essays' },
+			{ name: data.title, path: `/essays/${data.slug}` }
+		])
+	])}
 </svelte:head>
 
 <article class="essay-page" class:visible>

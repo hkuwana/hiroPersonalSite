@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
+	import { SITE } from '$data/constants';
+	import { blog, breadcrumbs, jsonLd } from '$lib/seo';
 
 	export let data: PageData;
 
@@ -21,7 +23,19 @@
 	<meta property="og:description" content="Field notes from building Kaiwa, practical AI workflows, and essays on product, language, and human judgment." />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://hirokuwana.com/essays" />
+	<meta property="og:image" content={SITE.image} />
+	<meta property="og:site_name" content={SITE.name} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Essays - Hiro Kuwana" />
+	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href="https://hirokuwana.com/essays" />
+	{@html jsonLd([
+		blog(data.essays),
+		breadcrumbs([
+			{ name: 'Home', path: '/' },
+			{ name: 'Essays', path: '/essays' }
+		])
+	])}
 </svelte:head>
 
 <article class="essays-page" class:visible>

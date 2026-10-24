@@ -245,8 +245,6 @@ export const DESK_ITEMS: DeskItem[] = [
 		kind: 'tag',
 		cat: 'tools',
 		label: 'LLMs',
-		href: '/ai-guides',
-		cta: { en: 'Read ./ai-guides', ja: './ai-guides を読む' },
 		desc: {
 			en: 'My daily material. Prompts, workflows, and notes.',
 			ja: '毎日の素材。プロンプト、ワークフロー、メモ。'
