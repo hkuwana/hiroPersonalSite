@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { SITE } from '$data/constants';
 	import { localizeHref } from '$lib/paraglide/runtime';
+	import { breadcrumbs, jsonLd, PERSON_ID, WEBSITE_ID } from '$lib/seo';
 
 	const caseStudyUrl = `${SITE.url}/case-study`;
 </script>
@@ -18,7 +19,31 @@
 		property="og:description"
 		content="Reframing agent output as letters, not chat, so the work feels considered rather than reactive."
 	/>
+	<meta property="og:image" content={SITE.image} />
+	<meta property="og:site_name" content={SITE.name} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Thread - a quieter inbox for AI agents" />
+	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href={caseStudyUrl} />
+	{@html jsonLd([
+		{
+			'@type': 'Article',
+			'@id': `${caseStudyUrl}#article`,
+			headline: 'Thread - a quieter inbox for AI agents',
+			description:
+				"A quiet case-study page from Hiro Kuwana's redesign: reframing agent output as letters, not chat.",
+			url: caseStudyUrl,
+			image: SITE.image,
+			inLanguage: 'en',
+			author: { '@id': PERSON_ID },
+			publisher: { '@id': PERSON_ID },
+			isPartOf: { '@id': WEBSITE_ID }
+		},
+		breadcrumbs([
+			{ name: 'Home', path: '/' },
+			{ name: 'Case study', path: '/case-study' }
+		])
+	])}
 </svelte:head>
 
 <article class="case-page">

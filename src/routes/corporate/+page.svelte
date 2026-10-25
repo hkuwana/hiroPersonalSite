@@ -18,6 +18,8 @@
 
 <svelte:head>
 	<title>Hiroyuki Kuwana | Strategic Innovation Leader & AI Transformation Specialist</title>
+	<!-- A parody résumé: keep it out of search results for Hiro's name. -->
+	<meta name="robots" content="noindex, follow" />
 </svelte:head>
 
 <!-- Intentionally generic corporate styling. The blandness is the joke. -->

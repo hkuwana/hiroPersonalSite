@@ -17,8 +17,7 @@ const STATIC_ROUTES: { path: string; changefreq: string; priority: string }[] = 
 	{ path: '/tools', changefreq: 'monthly', priority: '0.7' },
 	{ path: '/tools/ics-formatter', changefreq: 'monthly', priority: '0.6' },
 	{ path: '/tools/vcf-splitter', changefreq: 'monthly', priority: '0.6' },
-	{ path: '/case-study', changefreq: 'monthly', priority: '0.6' },
-	{ path: '/corporate', changefreq: 'monthly', priority: '0.5' }
+	{ path: '/case-study', changefreq: 'monthly', priority: '0.6' }
 ];
 
 const buildAlternates = (path: string) => {
@@ -41,12 +40,23 @@ export const GET: RequestHandler = async () => {
 	});
 
 	const urls: string[] = [];
+	// Only real change dates: the home page and the essay list change when an
+	// essay is published. A date that moves on every build teaches crawlers
+	// to ignore lastmod, so the other pages leave it out.
+	const newest = essays
+		.map((e) => e.date)
+		.filter(Boolean)
+		.sort()
+		.at(-1);
+	const lastmodFor = (path: string) =>
+		newest && (path === '/' || path === '/essays')
+			? `\n        <lastmod>${new Date(newest).toISOString().split('T')[0]}</lastmod>`
+			: '';
 
 	for (const route of STATIC_ROUTES) {
 		const suffix = route.path === '/' ? '' : route.path;
 		urls.push(`    <url>
-        <loc>${SITE.url}${suffix}</loc>
-        <lastmod>${today}</lastmod>
+        <loc>${SITE.url}${suffix}</loc>${lastmodFor(route.path)}
         <changefreq>${route.changefreq}</changefreq>
         <priority>${route.priority}</priority>
 ${buildAlternates(route.path)}

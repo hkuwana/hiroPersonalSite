@@ -10,6 +10,7 @@ import * as THREE from 'three';
 import { mergeGeometries, mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { FACETS } from '$lib/home/facets';
 import type { Palette } from '$lib/home/palette';
+import { createRiver } from './river';
 import { createBeko } from './beko';
 import { bullStep } from './bull-motion';
 import { createFuji, createPaintedTree, createIzakaya } from './landscape';
@@ -43,6 +44,8 @@ export type InkScene = {
 	isKite(): boolean;
 	buildMill(): void;
 	isBuilt(): boolean;
+	// Built, and standing: the assembly has finished and the kite has landed.
+	isStanding(): boolean;
 	spin(impulse: number): void;
 	gust(dir: 1 | -1): void;
 	// Bloom every tree whose screen position passes `test` (CSS px).
@@ -52,6 +55,8 @@ export type InkScene = {
 	pick(x: number, y: number): Pick | null;
 	// The place under a canvas point, with a label anchor in CSS px.
 	hover(x: number, y: number): (PlaceRef & { x: number; y: number }) | null;
+	// Screen anchors (CSS px) of the main places, for the HTML place markers.
+	anchors(): (PlaceRef & { x: number; y: number; visible: boolean })[];
 	walkTo(place: PlaceId, index?: number): void;
 	walkToPoint(p: Pt): void;
 	setMove(dx: number, dz: number): void;
@@ -105,11 +110,13 @@ type Role =
 	| 'woodGrain'
 	| 'roofGrain'
 	| 'ridgeNear'
-	| 'ridgeFar';
+	| 'ridgeFar'
+	| 'water';
 
 // The site has no pink token: sakura is a scene-only accent, used only
 // after a brush stroke makes a tree bloom.
 const SAKURA = '#e9b3ba';
+// Water is the other scene-only accent: the pale celadon of Ōkami's rivers.
 const BLOSSOM = '#f8e3e6';
 
 // Scene roles from the live tokens. At night the site's dark tokens make a
@@ -151,7 +158,8 @@ function roles(p: Palette, night: boolean): Record<Role, string> {
 				sakura: c(SAKURA, p.paper, 0.35),
 				blossom: c(BLOSSOM, p.paper, 0.3),
 				ridgeNear: c(p.mossLight, p.paper, 0.4),
-				ridgeFar: c(p.paper, p.kon, 0.3)
+				ridgeFar: c(p.paper, p.kon, 0.3),
+				water: c(p.kon, p.paper, 0.35)
 			}
 		: {
 				sky: p.paper,
@@ -186,7 +194,8 @@ function roles(p: Palette, night: boolean): Record<Role, string> {
 				sakura: SAKURA,
 				blossom: BLOSSOM,
 				ridgeNear: c(p.mossLight, p.paper, 0.35),
-				ridgeFar: c(p.paper, p.kon, 0.12)
+				ridgeFar: c(p.paper, p.kon, 0.12),
+				water: '#a9c6cb'
 			};
 }
 
@@ -670,6 +679,17 @@ export function createInkScene(
 	izakaya.rotation.y = IZAKAYA.rotY;
 	scene.add(izakaya);
 
+	// 川 The river from the hills, with its drum bridge.
+	const river = createRiver({
+		inked,
+		water: getFlat('water'),
+		foam: getFlat('snow'),
+		ink: getFlat('line'),
+		red: getToon('izakaya'),
+		wood: getToon('wood')
+	});
+	scene.add(river.group);
+
 	// 高札: a village notice board, with three paper notes (the essays).
 	const board = new THREE.Group();
 	for (const x of [-0.58, 0.58]) {
@@ -851,6 +871,12 @@ export function createInkScene(
 	const mixP = new THREE.Vector3();
 	const dummy = new THREE.Object3D();
 	const probe = new THREE.Vector3();
+	const MARKED: PlaceRef[] = [
+		{ place: 'windmill', index: 0 },
+		{ place: 'board', index: 0 },
+		{ place: 'izakaya', index: 0 },
+		{ place: 'tree', index: 0 }
+	];
 	const motion = opts.reduceMotion ? 0.3 : 1;
 
 	// Akabeko state: a path of waypoints, or a key direction.
@@ -1306,6 +1332,7 @@ export function createInkScene(
 			opts.onBuild?.();
 		},
 		isBuilt: () => assembly.started,
+		isStanding: () => assembly.progress >= 1 && kiteT < 0.001,
 		setKite(on) {
 			if (!on && !assembly.started) return;
 			kiteOn = on;
@@ -1353,6 +1380,20 @@ export function createInkScene(
 				x: ((probe.x + 1) / 2) * canvas.clientWidth,
 				y: ((1 - probe.y) / 2) * canvas.clientHeight
 			};
+		},
+		anchors() {
+			const w = canvas.clientWidth,
+				h = canvas.clientHeight;
+			return MARKED.map((p) => {
+				// The windmill's seal sits beside its door, clear of the turning sails.
+				if (p.place === 'windmill')
+					probe.set(MILL.x + 1.35, groundY(MILL.x, MILL.z) + 2.1, MILL.z + 0.4);
+				else anchor(p, probe);
+				probe.project(camera);
+				const x = ((probe.x + 1) / 2) * w,
+					y = ((1 - probe.y) / 2) * h;
+				return { ...p, x, y, visible: probe.z < 1 && x > 0 && x < w && y > 0 && y < h };
+			});
 		},
 		walkTo(place, index = 0) {
 			const spot = spotFor(place, index, layout);

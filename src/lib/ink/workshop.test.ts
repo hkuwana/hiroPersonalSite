@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { PROJECTS } from '$data/constants';
-import { villageUrl, workshopProject, workshopUrl, WORKSHOP_PROJECTS } from './workshop';
+import {
+	roomOf,
+	roomUrl,
+	villageUrl,
+	workshopProject,
+	workshopUrl,
+	WORKSHOP_PROJECTS
+} from './workshop';
 import { bullStep } from './bull-motion';
 
 describe('workshop navigation', () => {
@@ -17,6 +24,17 @@ describe('workshop navigation', () => {
 		expect(destination.searchParams.get('project')).toBe('kaiwa');
 		expect(destination.searchParams.get('place')).toBe('windmill');
 		expect(villageUrl(destination.href).href).toBe(original);
+	});
+	it('opens the board and the izakaya as rooms, and ignores unknown places', () => {
+		const original = 'https://hirokuwana.com/ja/?room=1#work';
+		const board = roomUrl(original, 'board');
+		expect(roomOf(board.href)).toBe('board');
+		expect(board.searchParams.has('project')).toBe(false);
+		expect(villageUrl(board.href).href).toBe(original);
+		expect(roomOf(roomUrl(original, 'izakaya').href)).toBe('izakaya');
+		expect(roomOf(workshopUrl(original, 'kaiwa').href)).toBe('windmill');
+		expect(roomOf('https://hirokuwana.com/?place=tree')).toBeNull();
+		expect(roomOf(original)).toBeNull();
 	});
 });
 
@@ -41,5 +59,12 @@ describe('bull movement', () => {
 		let speed = 5.4;
 		for (let frame = 0; frame < 60; frame++) speed = bullStep(speed, Infinity, 1 / 60, false).speed;
 		expect(speed).toBeLessThan(0.001);
+	});
+});
+
+describe('workshop logos', () => {
+	it('never shows the site icon as a project logo', () => {
+		for (const p of WORKSHOP_PROJECTS) expect(p.logo).not.toBe('/icon-512x512.png');
+		expect(WORKSHOP_PROJECTS.find((p) => p.id === 'otterd')?.logo).toBe('/logos/otterd.svg');
 	});
 });

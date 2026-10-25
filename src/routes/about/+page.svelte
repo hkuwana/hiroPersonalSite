@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
 	import { FAQS, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
 	import { DESK_ITEMS } from '$lib/home/desk-items';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
@@ -167,6 +168,16 @@
 		<a class="back-link" href={localizeHref('/', { locale: lang })}>← {copy.backHome}</a>
 	</footer>
 </article>
+
+<!-- The desk: the things Hiro works with, reads and plays. It moved here from
+     the home page, which now keeps to the work. -->
+<section
+	class="section about-desk"
+	id="desk"
+	aria-label={lang === 'ja' ? '机の上の道具' : 'The things I work with'}
+>
+	<CraftDesk {lang} />
+</section>
 
 <style>
 	.about-page {

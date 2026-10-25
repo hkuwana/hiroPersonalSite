@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
 	import { page } from '$app/stores';
-	import { CONTACT, PERSONAL, SITE, SOCIAL_LINKS, KAIWA_METRICS } from '$data/constants';
-	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
+	import { CONTACT, PERSONAL, PROJECTS, SITE, SOCIAL_LINKS, KAIWA_METRICS } from '$data/constants';
+	import { homeGraph, jsonLd } from '$lib/seo';
 	import EmailStamp from '$lib/components/home/EmailStamp.svelte';
 	import InkHero from '$lib/ink/InkHero.svelte';
 	import { optimisticLocale } from '$lib/locale-state';
@@ -88,12 +88,8 @@
 			'writing.num': '03',
 			'writing.title': 'Notes from the build,',
 			'writing.titleEm': 'and the questions underneath it.',
-			'writing.guides': './ai-guides',
-			'writing.guidesJP': '道 具',
 			'writing.philo': 'essays',
 			'writing.philoJP': '作 文',
-			'writing.minRead': '~ 6 min',
-			'writing.dateAi': '04 · 2026',
 			'contact.num': '04',
 			'contact.title': 'Stay in touch',
 			'contact.titleEm': 'write me.',
@@ -155,12 +151,8 @@
 			'writing.num': '03',
 			'writing.title': 'つくりながら書いたこと',
 			'writing.titleEm': 'その奥で考えていること。',
-			'writing.guides': './ai-guides',
-			'writing.guidesJP': '道 具',
 			'writing.philo': '回り道',
 			'writing.philoJP': '作 文',
-			'writing.minRead': '約 6 分',
-			'writing.dateAi': '2026 · 04',
 			'contact.num': '04',
 			'contact.title': 'これからも',
 			'contact.titleEm': 'お便りをどうぞ。',
@@ -364,54 +356,6 @@
 
 	const recordReady = RECORD_CYCLES.every((cycle) => cycle.lesson.trim() !== '' && cycle.lessonJa.trim() !== '');
 
-	const GUIDES = {
-		en: [
-			{
-				tag: 'PROMPT',
-				title: 'A self-editing system prompt for technical writing',
-				desc: "Turns drafts into clean docs without flattening the author's voice. Iterates on itself in two passes.",
-				snippet: 'You are an editor with two jobs:\n1. Preserve voice.\n2. Cut anything you cannot defend.',
-				anchor: 'self-editing-system-prompt'
-			},
-			{
-				tag: 'WORKFLOW',
-				title: 'How I run a 4-model debate to find a position I trust',
-				desc: 'A small harness that lets disagreement keep going until the useful shape appears.',
-				snippet: '/debate "Should onboarding ask for the user goal up front?"',
-				anchor: 'four-model-debate'
-			},
-			{
-				tag: 'TOOLING',
-				title: 'Local-first prompt versioning with plain text + git',
-				desc: 'No fancy IDE. Just folders, frontmatter, and diffs that read like edits.',
-				snippet: '$ promptkit diff v0.3..v0.4 --semantic',
-				anchor: 'prompt-versioning'
-			}
-		],
-		ja: [
-			{
-				tag: 'プロンプト',
-				title: '技術文書のための、自分を編集するシステムプロンプト',
-				desc: '下書きを、書き手の声を平たくせずに整える。二度のパスで自分自身に手を入れていく。',
-				snippet: '役割は二つ:\n1. 声を残す。\n2. 守れない文を切る。',
-				anchor: 'self-editing-system-prompt'
-			},
-			{
-				tag: 'ワークフロー',
-				title: '四つのモデルで議論させて、信じられる立場を見つける方法',
-				desc: '反対意見の側だけ続けて話させる、小さな仕掛け。',
-				snippet: '/debate "オンボーディングで目的を先に聞くべきか"',
-				anchor: 'four-model-debate'
-			},
-			{
-				tag: 'ツール',
-				title: 'ローカル中心のプロンプト管理（テキスト + git だけ）',
-				desc: '凝った IDE はなし。フォルダと frontmatter と、編集として読める差分。',
-				snippet: '$ promptkit diff v0.3..v0.4 --semantic',
-				anchor: 'prompt-versioning'
-			}
-		]
-	};
 
 	// Essays come from src/content/essays, newest first, so a new essay shows up here by itself.
 	// Files that start with _ are templates or drafts. Only the metadata export is imported.
@@ -431,11 +375,13 @@
 			desc: '個人のインフラを長く残すなら、なぜ単純さが勝つのか。'
 		}
 	};
-	const ESSAYS = Object.entries(ESSAY_META)
+	const ALL_ESSAYS = Object.entries(ESSAY_META)
 		.map(([path, meta]) => ({ slug: path.split('/').pop()!.replace('.md', ''), ...meta }))
 		.filter((essay) => essay.title && essay.date)
-		.sort((a, b) => b.date.localeCompare(a.date))
-		.slice(0, 3);
+		.sort((a, b) => b.date.localeCompare(a.date));
+	const ESSAYS = ALL_ESSAYS.slice(0, 3);
+	// The village's notice board unrolls every essay, with Japanese titles where they exist.
+	const VILLAGE_ESSAYS = ALL_ESSAYS.map((essay) => ({ ...essay, ja: ESSAY_JA[essay.slug] }));
 	const essayDate = (date: string, locale: Locale) =>
 		new Date(`${date}T00:00:00`).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', {
 			year: 'numeric',
@@ -509,6 +455,10 @@
 	<meta property="og:title" content={SITE.title} />
 	<meta property="og:description" content={SITE.description} />
 	<meta property="og:image" content={SITE.image} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="Hiro Kuwana" />
+	<meta property="og:site_name" content={SITE.name} />
 	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
 	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta property="profile:first_name" content="Hiro" />
@@ -521,38 +471,13 @@
 	<link rel="alternate" hreflang="en" href={SITE.url} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja`} />
 	<link rel="alternate" hreflang="x-default" href={SITE.url} />
-	{@html `<script type="application/ld+json">${JSON.stringify({
-		'@context': 'https://schema.org',
-		'@type': 'Person',
-		name: 'Hiroyuki (Hiro) Kuwana',
-		alternateName: ['Hiro Kuwana', 'Hiroyuki Kuwana', '桑名浩行'],
-		url: SITE.url,
-		image: SITE.image,
-		jobTitle: 'Founder & Product Designer',
-		worksFor: { '@type': 'Organization', name: 'Kaiwa', url: PERSONAL.companyWebsite },
-		alumniOf: { '@type': 'CollegeOrUniversity', name: 'Brown University' },
-		nationality: ['Japanese', 'American'],
-		knowsAbout: ['Artificial Intelligence', 'Educational Technology', 'Language Learning', 'Product Design', 'Startups'],
-		sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github, SOCIAL_LINKS.twitter, SOCIAL_LINKS.quora]
-	})}</` + `script>`}
-	{@html `<script type="application/ld+json">${JSON.stringify({
-		'@context': 'https://schema.org',
-		'@type': 'WebSite',
-		name: 'Hiro Kuwana',
-		url: SITE.url,
-		inLanguage: ['en', 'ja'],
-		author: { '@type': 'Person', name: 'Hiro Kuwana' },
-		potentialAction: {
-			'@type': 'SearchAction',
-			target: `${SITE.url}/essays?q={query}`,
-			'query-input': 'required name=query'
-		}
-	})}</` + `script>`}
+	<!-- One schema.org graph: the person, the site, this profile page, and the projects. -->
+	{@html jsonLd(homeGraph(PROJECTS.map((p) => ({ name: p.name, description: p.description, url: 'link' in p ? p.link : 'github' in p ? p.github : null }))))}
 </svelte:head>
 
 <!-- The front: the ink village (hi-fi), or the 2D windmill (lo-fi). Scrolling
      lifts the camera and lets the paper mist in, then the hero below continues. -->
-<InkHero {lang} essays={ESSAYS} tall nextHref="#intro" />
+<InkHero {lang} essays={VILLAGE_ESSAYS} tall nextHref="#intro" />
 
 <section class="hero" id="intro" data-screen-label="01 Landing">
 
@@ -622,10 +547,8 @@
 	</a>
 </section>
 
-<div class="asanoha-break" aria-hidden="true"></div>
-<section class="section desk-sec" id="desk" data-screen-label="01b Desk">
-	<CraftDesk {lang} />
-</section>
+<!-- Below the village: who I am, then the work, the essays, and contact.
+     The desk of things I work with lives on the About page. -->
 <div class="asanoha-break" aria-hidden="true"></div>
 
 
@@ -698,6 +621,7 @@
 	</section>
 </div>
 
+<div class="asanoha-break" aria-hidden="true"></div>
 {#if recordReady}
 	<div class="reveal">
 		<section class="section" id="record" data-screen-label="03 Record">
@@ -749,28 +673,7 @@
 			</div>
 		</div>
 
-		<div class="dual-blog">
-			<div class="col-guides">
-				<div class="blog-col-head">
-					<h3>{t('writing.guides')}</h3>
-					<span class="col-jp">{t('writing.guidesJP')}</span>
-				</div>
-				<div class="post-list">
-					{#each GUIDES[lang] as guide}
-						<a class="post" href={localizeHref(`/ai-guides#${guide.anchor}`, { locale: lang })}>
-							<div class="post-meta">
-								<span class="tag">{guide.tag}</span>
-								<span>{t('writing.dateAi')}</span>
-								<span>{t('writing.minRead')}</span>
-							</div>
-							<h4>{guide.title}</h4>
-							<p>{guide.desc}</p>
-							<div class="prompt-snippet">{guide.snippet}</div>
-						</a>
-					{/each}
-				</div>
-			</div>
-
+		<div class="dual-blog single">
 			<div class="col-philo">
 				<div class="blog-col-head">
 					<h3>{t('writing.philo')}</h3>
@@ -788,7 +691,6 @@
 				</div>
 				<div class="more-links">
 					<a href={localizeHref('/essays', { locale: lang })}>{lang === 'ja' ? 'すべてのエッセイ →' : 'All essays →'}</a>
-					<a class="guides-link" href={localizeHref('/ai-guides', { locale: lang })}>./ai-guides →</a>
 				</div>
 			</div>
 		</div>

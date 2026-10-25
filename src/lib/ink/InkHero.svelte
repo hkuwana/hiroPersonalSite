@@ -8,7 +8,7 @@
 	import { onMount, tick } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { quartOut } from 'svelte/easing';
-	import { pushState, replaceState } from '$app/navigation';
+	import { afterNavigate, pushState, replaceState } from '$app/navigation';
 	import { track } from '$lib/analytics';
 	import Windmill from '$lib/components/home/Windmill.svelte';
 	import { FACETS } from '$lib/home/facets';
@@ -29,9 +29,22 @@
 	import KitePlaceholder from './KitePlaceholder.svelte';
 	import { createKiteIntro } from './kite-intro';
 	import { ARRIVAL_SEEN_KEY, MILL_BUILT_KEY } from './mill-assembly';
+	import EmakiRoom from './EmakiRoom.svelte';
+	import { boardEmaki } from './emaki-content';
+	import HouseRoom from './HouseRoom.svelte';
 	import PlaceScroll from './PlaceScroll.svelte';
+	import { createVillageSound, parseSoundPref, SOUND_KEY, type Sfx } from './village-sound';
 	import WorkshopRoom from './WorkshopRoom.svelte';
-	import { villageUrl, workshopProject, workshopUrl, WORKSHOP_PROJECTS } from './workshop';
+	import {
+		ROOMS,
+		roomOf,
+		roomUrl,
+		villageUrl,
+		workshopProject,
+		workshopUrl,
+		WORKSHOP_PROJECTS,
+		type Room
+	} from './workshop';
 	import {
 		facetContent,
 		facetOf,
@@ -77,8 +90,15 @@
 			kiteDown: 'Land the kite',
 			buildMill: 'Build the mill',
 			sky: 'Sun / moon',
-			brush: 'Draw',
+			brush: 'Brush',
+			brushOn: 'Brush mode · paint on the scene · Esc to stop',
+			yourTurn: 'Your turn: paint a circle around a tree',
+			tryBrush: 'Try the brush',
+			sound: 'Sound',
 			resetView: 'Reset view',
+			enter: 'Enter',
+			rooms: { windmill: 'Projects', board: 'Essays', izakaya: 'Whole site' },
+			marks: { windmill: 'Projects', board: 'Essays', izakaya: 'Whole site', tree: 'Paint' },
 			hints: [
 				'○ around a tree · it blooms',
 				'○ in the sky · the sun',
@@ -117,8 +137,15 @@
 			kiteDown: '凧をおろす',
 			buildMill: '風車を組み立てる',
 			sky: '日と月',
-			brush: '描く',
+			brush: '筆',
+			brushOn: '筆のモード · 景色に描く · Esc で終わる',
+			yourTurn: 'どうぞ：木のまわりに○を描いてください',
+			tryBrush: '筆を試す',
+			sound: '音',
 			resetView: '視点を戻す',
+			enter: '入る',
+			rooms: { windmill: 'プロジェクト', board: 'エッセイ', izakaya: 'サイト全体' },
+			marks: { windmill: 'プロジェクト', board: 'エッセイ', izakaya: 'サイト全体', tree: '描く' },
 			hints: ['木を○で囲む · 花が咲く', '空に○ · 日', '空に☾ · 月', '→ か ← · 風', '↑ か ↓ · 凧'],
 			bloom: '桜 花が咲いた',
 			sunrise: '日 日の出',
@@ -156,6 +183,62 @@
 	let progress = $state(0); // 0..1 through the scroll transition
 	const holding = $derived(tall && live);
 
+	// ── Sound (音): off until the visitor turns it on ────────────────────
+	const sound = createVillageSound();
+	let wantSound = $state(false);
+	const sfx = (name: Sfx) => sound.play(name);
+	// Browsers start audio only from a click or a key, so a returning
+	// visitor's "on" waits for their first touch of the village.
+	function wakeSound() {
+		if (!wantSound || sound.on) return;
+		sound.setNight(isDark());
+		sound.enable();
+	}
+	function toggleSound() {
+		wantSound = !wantSound;
+		try {
+			localStorage.setItem(SOUND_KEY, wantSound ? 'on' : 'off');
+		} catch {
+			/* Storage is optional. */
+		}
+		if (wantSound) wakeSound();
+		else sound.disable();
+	}
+
+	// ── Discovery: place markers, and a first stroke painted for you ─────
+	const VISITED_KEY = 'village-visited-v1';
+	const BRUSHED_KEY = 'village-brushed-v1';
+	const DEMO_KEY = 'village-brush-demo-v1';
+	const MARK_KANJI = { windmill: '作', board: '書', izakaya: '家', tree: '筆' } as const;
+	type Marked = keyof typeof MARK_KANJI;
+	let visited = $state<string[]>([]);
+	let marks = $state<{ place: PlaceId; index: number; x: number; y: number; visible: boolean }[]>(
+		[]
+	);
+	let brushed = $state(false); // the visitor has painted a stroke
+	let demoing = $state(false);
+	let nudge = $state(false); // "Try the brush" beside the brush button
+	let lastInput = 0;
+	let demoTimer = 0;
+	let nudgeTimer = 0;
+	let demoRaf = 0;
+	function markVisited(place: string) {
+		if (visited.includes(place)) return;
+		visited = [...visited, place];
+		try {
+			localStorage.setItem(VISITED_KEY, visited.join(','));
+		} catch {
+			/* Storage is optional. */
+		}
+	}
+	function remember(key: string) {
+		try {
+			localStorage.setItem(key, '1');
+		} catch {
+			/* Storage is optional. */
+		}
+	}
+
 	// ── Places and sails ──────────────────────────────────────────────────
 	// The open scroll: which facet, and the place it was opened from.
 	let opened = $state<{ facet: FacetId; from: string } | null>(null);
@@ -164,18 +247,24 @@
 	let status = $state('');
 	let scrollSeen = false;
 	let scrollAnimate = $state(false);
-	let workshop = $state(false);
+	// Inside a place: the windmill workshop, the house, or the board's emaki.
+	let room = $state<Room | null>(null);
+	const workshop = $derived(room !== null);
 	let selectedProject = $state(0);
 	let curtain = $state<'cover' | 'reveal' | null>(null);
-	let enteringMill = false;
+	let curtainKanji = $state('作');
+	let entering: Room | null = null; // walking to a door, then going in
+	let millWait = false; // at the door, waiting for the mill to finish building
 	let arrivalTimer = 0;
 	let coverTimer = 0;
 	let revealTimer = 0;
 	let readyTimer = 0;
-	let workshopEntryUrl: string | null = null;
-	let transitionTarget: boolean | null = null;
+	let roomEntryUrl: string | null = null;
+	let transitionTarget: Room | 'village' | null = null;
 	let transitionId = 0;
-	let leavingWorkshop = false;
+	let leavingRoom = false;
+	const ROOM_KANJI: Record<Room, string> = { windmill: '作', board: '書', izakaya: '家' };
+	const emaki = $derived(room === 'board' ? boardEmaki(essays, lang) : null);
 
 	function cancelWorkshopTransition() {
 		transitionId++;
@@ -183,7 +272,7 @@
 		clearTimeout(coverTimer);
 		clearTimeout(revealTimer);
 		clearTimeout(readyTimer);
-		enteringMill = false;
+		entering = null;
 		transitionTarget = null;
 		curtain = null;
 	}
@@ -199,7 +288,7 @@
 		clearTimeout(readyTimer);
 		// A theme/fidelity reload of the old room must not uncover an exit
 		// before its cover has reached the other side.
-		if (curtain !== 'cover' || transitionTarget !== workshop) return;
+		if (curtain !== 'cover' || transitionTarget !== (room ?? 'village')) return;
 		const id = transitionId;
 		curtain = reduceMotion ? null : 'reveal';
 		clearTimeout(revealTimer);
@@ -210,26 +299,31 @@
 			if (!workshop) focusVillage();
 		}, 380);
 	}
-	function transitionWorkshop(inside: boolean, updateUrl = true) {
+	function transitionRoom(target: Room | null, updateUrl = true) {
+		const from = room;
 		cancelWorkshopTransition();
 		const id = transitionId;
-		transitionTarget = inside;
+		transitionTarget = target ?? 'village';
+		curtainKanji = ROOM_KANJI[target ?? from ?? 'windmill'];
 		opened = null;
 		brush = false;
 		tag = null;
 		releaseKeys();
+		if (target) sfx('unroll');
 		curtain = reduceMotion ? null : 'cover';
 		const changeRoom = () => {
 			if (id !== transitionId) return;
-			workshop = inside;
-			leavingWorkshop = false;
-			if (inside) {
+			room = target;
+			leavingRoom = false;
+			if (target) {
 				progress = 0;
 				scene?.setScroll(0);
 				if (updateUrl) {
-					const url = workshopUrl(location.href, WORKSHOP_PROJECTS[selectedProject].id);
-					workshopEntryUrl = url.href;
-					pushState(url, {});
+					const url = roomUrl(location.href, target, WORKSHOP_PROJECTS[selectedProject].id);
+					// From one room to another, Back still returns to the village.
+					if (from && roomEntryUrl) replaceState(url, {});
+					else pushState(url, {});
+					roomEntryUrl = url.href;
 				}
 				// A failed import still leaves the readable project shelf available.
 				readyTimer = window.setTimeout(revealRoom, 1600);
@@ -245,13 +339,13 @@
 		else coverTimer = window.setTimeout(changeRoom, 340);
 	}
 	function leaveWorkshop() {
-		if (curtain || leavingWorkshop) return;
-		leavingWorkshop = true;
+		if (curtain || leavingRoom) return;
+		leavingRoom = true;
 		// Back restores the actual entry, including any pre-existing hash/locale.
-		if (workshopEntryUrl) {
-			workshopEntryUrl = null;
+		if (roomEntryUrl) {
+			roomEntryUrl = null;
 			history.back();
-		} else transitionWorkshop(false);
+		} else transitionRoom(null);
 	}
 	function selectProject(index: number) {
 		selectedProject = index;
@@ -260,16 +354,28 @@
 	function restoreWorkshop() {
 		const url = new URL(location.href);
 		selectedProject = Math.max(0, workshopProject(url.searchParams.get('project')));
-		const inside = url.searchParams.get('place') === 'windmill';
+		const target = roomOf(url.href);
 		// Popstate also cancels a cover that has not switched rooms yet. Without
 		// this, a quick Back could reopen the room after the URL returned home.
-		if (inside !== workshop) transitionWorkshop(inside, false);
+		if (target !== room) transitionRoom(target, false);
 		else {
 			cancelWorkshopTransition();
-			leavingWorkshop = false;
-			if (!inside) focusVillage();
+			leavingRoom = false;
+			if (!target) focusVillage();
 		}
 	}
+	// A link inside a room (for example "All projects" to /#work) is a real
+	// navigation: close the room at once, so the page below is readable.
+	afterNavigate((nav) => {
+		if (nav.type === 'enter' || nav.type === 'popstate') return;
+		const target = roomOf(location.href);
+		if (target === room) return;
+		cancelWorkshopTransition();
+		room = target;
+		roomEntryUrl = null;
+		leavingRoom = false;
+		syncActive();
+	});
 
 	const content = $derived(opened ? facetContent(opened.facet, lang, essays, opened.from) : null);
 	const PLACES: PlaceId[] = ['windmill', 'izakaya', 'board', 'tree'];
@@ -291,10 +397,28 @@
 		opened = { facet, from };
 		track('village_place_opened', { choice: facet, locale: lang });
 	}
+	// The room behind a place, if it has one. The 作 and 書 sails open the
+	// same rooms as the windmill and the notice board.
+	function roomFor(place: PlaceId, index = 0): Room | null {
+		if (place === 'windmill' || (place === 'sail' && index === 0)) return 'windmill';
+		if (place === 'board' || (place === 'sail' && index === 1)) return 'board';
+		if (place === 'izakaya') return 'izakaya';
+		return null;
+	}
+	function tryEnter(target: Room) {
+		if (target === 'windmill' && scene && !scene.isStanding()) millWait = true;
+		else enterRoom(target);
+	}
+	function enterRoom(target: Room) {
+		markVisited(target);
+		if (target !== 'windmill') track('village_place_opened', { choice: target, locale: lang });
+		transitionRoom(target);
+	}
 	// Open the scroll for a place (a sail opens its own facet).
 	function openAt(place: PlaceId, index = 0) {
-		if (place === 'windmill' || (place === 'sail' && index === 0)) {
-			transitionWorkshop(true);
+		const target = roomFor(place, index);
+		if (target) {
+			enterRoom(target);
 			return;
 		}
 		const facet = facetOf(place, index);
@@ -304,8 +428,8 @@
 	}
 	// The kanji tabs in the scroll switch facets and turn that sail to the top.
 	function chooseFacet(id: FacetId) {
-		if (id === 'builder') {
-			transitionWorkshop(true);
+		if (id === 'builder' || id === 'writer') {
+			enterRoom(id === 'builder' ? 'windmill' : 'board');
 			return;
 		}
 		show(id, opened?.from ?? PLACE_NAME.windmill[lang]);
@@ -413,7 +537,7 @@
 				initialKite: kite,
 				initialMillBuilt: millBuilt,
 				onArrive(p) {
-					if (enteringMill && p.place === 'windmill') transitionWorkshop(true);
+					if (entering && p.place === entering) tryEnter(entering);
 				},
 				onBuild() {
 					millBuilt = true;
@@ -431,6 +555,7 @@
 						clearLoadTimers();
 						stats.first = Math.round(performance.now() - t0);
 						live = true;
+						scheduleDemo();
 						if (workshop) queueMicrotask(syncActive);
 						if (tall) {
 							try {
@@ -451,6 +576,12 @@
 						frames.push(ms);
 						if (probeVerdict(frames) === 'drop') fallBack('slow-frames');
 					}
+					if (millWait && entering === 'windmill' && s.isStanding()) {
+						millWait = false;
+						enterRoom('windmill');
+					}
+					// Follow the camera with the place markers.
+					if (seen % 3 === 0 && !workshop && progress < 0.3) marks = s.anchors();
 					// Is the akabeko beside a place? (for the Enter prompt)
 					if (seen % 8 === 0) {
 						const n = s.near();
@@ -549,8 +680,11 @@
 	// ── Scroll: hold the stage, raise the camera, let the mist in ────────
 	let scrollRaf = 0;
 	let onScreen = true;
-	const syncActive = () =>
+	const syncActive = () => {
 		scene?.setActive((!workshop || !live) && onScreen && !document.hidden && progress < 0.999);
+		sound.setAwake(!document.hidden);
+		sound.setPresence(onScreen && !document.hidden ? 1 - Math.min(1, progress * 1.4) : 0);
+	};
 	function measure() {
 		if (workshop) return;
 		if (!holding || !villageEl) {
@@ -598,20 +732,29 @@
 	function visit(place: PlaceId, index = 0) {
 		if (workshop || curtain) return;
 		clearTimeout(arrivalTimer);
-		enteringMill = false;
-		if (place === 'windmill' || (place === 'sail' && index === 0)) {
+		entering = null;
+		sfx('kon');
+		const target = roomFor(place, index);
+		if (target) {
 			opened = null;
 			brush = false;
 			if (!scene || reduceMotion) {
-				transitionWorkshop(true);
+				enterRoom(target);
 				return;
 			}
-			scene.buildMill();
-			enteringMill = true;
-			scene.walkTo('windmill');
+			// A windmill under construction (or flying as a kite) is not a
+			// door yet: build it and land it, and go in once it stands.
+			if (target === 'windmill') {
+				if (kite) toggleKite(false);
+				else scene.buildMill();
+			}
+			if (place === 'sail') scene.seekSail(index);
+			entering = target;
+			millWait = false;
+			scene.walkTo(target);
 			// Bound travel time even when approaching from the far edge of the map.
 			arrivalTimer = window.setTimeout(() => {
-				if (enteringMill) transitionWorkshop(true);
+				if (entering === target) tryEnter(target);
 			}, 1250);
 			return;
 		}
@@ -621,6 +764,7 @@
 		}
 		tag = null;
 		if (place === 'hiro') {
+			markVisited('hiro');
 			scene.hop();
 			status = '';
 			return;
@@ -665,7 +809,7 @@
 		if (!hit) return;
 		if ('ground' in hit) {
 			clearTimeout(arrivalTimer);
-			enteringMill = false;
+			entering = null;
 			opened = null;
 			status = '';
 			scene.walkToPoint(hit.ground);
@@ -686,6 +830,7 @@
 	}
 
 	let hoverRaf = 0;
+	let lastGust = 0;
 	function onStageMove(e: PointerEvent) {
 		cancelAnimationFrame(hoverRaf);
 		if (workshop || curtain || !scene) return;
@@ -702,7 +847,13 @@
 		}
 		if (drag && !brush) {
 			const now = performance.now();
-			scene.spin(((e.clientX - drag.x) / Math.max(16, now - drag.t)) * 1.6);
+			const impulse = ((e.clientX - drag.x) / Math.max(16, now - drag.t)) * 1.6;
+			scene.spin(impulse);
+			// A hard flick of the sails gets a gust, at most once a second.
+			if (Math.abs(impulse) > 1.2 && now - lastGust > 1200) {
+				lastGust = now;
+				sfx('gust');
+			}
 			drag = { x: e.clientX, t: now };
 		}
 		if (brush || fromUi(e) || e.pointerType !== 'mouse') {
@@ -759,7 +910,7 @@
 			if (isDown) {
 				held[key] = true;
 				clearTimeout(arrivalTimer);
-				enteringMill = false;
+				entering = null;
 			} else delete held[key];
 			steer();
 		} else if (isDown && key === 'enter' && nearBy && !opened) {
@@ -773,8 +924,12 @@
 	}
 	function onWindowKey(e: KeyboardEvent) {
 		if (e.key !== 'Escape') return;
-		if (!workshop && (enteringMill || transitionTarget === true)) {
-			transitionWorkshop(false);
+		if (!workshop && (entering || (transitionTarget && transitionTarget !== 'village'))) {
+			transitionRoom(null);
+			return;
+		}
+		if (brush) {
+			brush = false;
 			return;
 		}
 		if (workshop) leaveWorkshop();
@@ -800,21 +955,18 @@
 		} catch {
 			/* Synthetic pointers cannot be captured. */
 		}
+		stopDemo();
 		clearTimeout(fadeTimer);
 		brushEl.classList.remove('fade');
 		brushEl.getContext('2d')!.clearRect(0, 0, brushEl.width, brushEl.height);
 		stroke = [local(e)];
+		sfx('brush');
 	}
-	function brushMove(e: PointerEvent) {
-		if (!brush || !brushEl || !stroke.length) return;
-		const p = local(e);
-		const q = stroke[stroke.length - 1];
+	// Sumi: a fast stroke is thin, a slow stroke is wet and wide.
+	function paint(q: Pt, p: Pt) {
 		const d = Math.hypot(p.x - q.x, p.y - q.y);
-		if (d < 2) return;
-		stroke.push(p);
-		const ctx = brushEl.getContext('2d')!;
+		const ctx = brushEl!.getContext('2d')!;
 		const dpr = window.devicePixelRatio || 1;
-		// Sumi: a fast stroke is thin, a slow stroke is wet and wide.
 		ctx.lineWidth = Math.max(2, 13 - d * 0.35) * dpr;
 		ctx.lineCap = 'round';
 		ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--ink');
@@ -823,6 +975,122 @@
 		ctx.moveTo(q.x * dpr, q.y * dpr);
 		ctx.lineTo(p.x * dpr, p.y * dpr);
 		ctx.stroke();
+	}
+	function brushMove(e: PointerEvent) {
+		if (!brush || !brushEl || !stroke.length) return;
+		const p = local(e);
+		const q = stroke[stroke.length - 1];
+		if (Math.hypot(p.x - q.x, p.y - q.y) < 2) return;
+		stroke.push(p);
+		paint(q, p);
+	}
+	function fadeInk() {
+		brushEl?.classList.add('fade');
+		fadeTimer = window.setTimeout(() => {
+			brushEl?.getContext('2d')!.clearRect(0, 0, brushEl.width, brushEl.height);
+			brushEl?.classList.remove('fade');
+		}, 700);
+	}
+
+	// A ghost brush paints a circle around the first sakura, and it blooms:
+	// the clearest way to say "you can paint here".
+	function demoBrush() {
+		if (!scene || !brushEl || demoing) return;
+		const tree = scene.anchors().find((m) => m.place === 'tree');
+		if (!tree?.visible) return;
+		remember(DEMO_KEY);
+		const h = stageEl.getBoundingClientRect().height;
+		const rad = Math.max(48, Math.min(92, h * 0.1));
+		const cx = tree.x;
+		const cy = tree.y + rad * 0.75;
+		const pts: Pt[] = [];
+		const n = 44;
+		// A little past a full turn, starting at the top, like a hand would.
+		for (let i = 0; i <= n + 5; i++) {
+			const a = -Math.PI / 2 + (i / n) * Math.PI * 2;
+			const wobble = 1 + 0.06 * Math.sin(i * 0.9);
+			pts.push({ x: cx + rad * 1.1 * wobble * Math.cos(a), y: cy + rad * wobble * Math.sin(a) });
+		}
+		const finish = () => {
+			demoing = false;
+			const n = scene?.bloomInside((x, y) => encloses(pts, { x, y })) ?? 0;
+			if (n) {
+				gesture = c.bloom;
+				sfx('bell');
+			}
+			fadeInk();
+		};
+		if (reduceMotion) {
+			finish();
+			return;
+		}
+		demoing = true;
+		clearTimeout(fadeTimer);
+		brushEl.classList.remove('fade');
+		brushEl.getContext('2d')!.clearRect(0, 0, brushEl.width, brushEl.height);
+		sfx('brush');
+		const t0 = performance.now();
+		let drawn = 1;
+		const step = (now: number) => {
+			if (!demoing) return;
+			const k = Math.min(pts.length, Math.floor(((now - t0) / 1150) * pts.length) + 1);
+			for (; drawn < k; drawn++) paint(pts[drawn - 1], pts[drawn]);
+			if (k < pts.length) demoRaf = requestAnimationFrame(step);
+			else finish();
+		};
+		demoRaf = requestAnimationFrame(step);
+	}
+	function stopDemo() {
+		cancelAnimationFrame(demoRaf);
+		demoing = false;
+	}
+	function startBrush() {
+		cancelIntro();
+		brush = true;
+		nudge = false;
+		opened = null;
+		markVisited('tree');
+		if (!brushed) demoBrush();
+	}
+	function toggleBrush() {
+		if (brush) brush = false;
+		else startBrush();
+	}
+	// On a first visit, after a few quiet seconds, paint the demo once and
+	// point at the brush. Any touch of the village postpones it.
+	function scheduleDemo() {
+		clearTimeout(demoTimer);
+		demoTimer = window.setTimeout(() => {
+			let seen = false;
+			try {
+				seen = localStorage.getItem(DEMO_KEY) === '1';
+			} catch {
+				/* Storage is optional. */
+			}
+			if (seen || brushed) return;
+			const quiet = performance.now() - lastInput > 4500;
+			if (
+				!live ||
+				workshop ||
+				brush ||
+				opened ||
+				curtain ||
+				progress > 0.05 ||
+				!onScreen ||
+				!quiet
+			) {
+				scheduleDemo();
+				return;
+			}
+			demoBrush();
+			nudge = true;
+			clearTimeout(nudgeTimer);
+			nudgeTimer = window.setTimeout(() => (nudge = false), 9000);
+		}, 6000);
+	}
+	function touched() {
+		lastInput = performance.now();
+		wakeSound();
 	}
 
 	// Call the sun or the moon. If it is already in the sky, it only swells.
@@ -839,24 +1107,32 @@
 		if (!brush || !stroke.length) return;
 		const pts = stroke;
 		stroke = [];
+		if (!brushed) {
+			brushed = true;
+			remember(BRUSHED_KEY);
+		}
 		const g = classifyStroke(pts);
 		switch (g) {
 			case 'circle': {
 				// A circle around a tree makes it bloom; anywhere else, it calls the sun.
 				const n = scene?.bloomInside((x, y) => encloses(pts, { x, y })) ?? 0;
 				gesture = n ? c.bloom : callSky(false);
+				sfx('bell');
 				break;
 			}
 			case 'crescent':
 				gesture = callSky(true);
+				sfx('bell');
 				break;
 			case 'wind-left':
 			case 'wind-right':
 				scene?.gust(g === 'wind-left' ? -1 : 1);
+				sfx('gust');
 				gesture = g === 'wind-left' ? c.windL : c.windR;
 				break;
 			case 'rise':
 				toggleKite(true);
+				sfx('gust');
 				gesture = c.kiteFly;
 				break;
 			case 'fall':
@@ -866,11 +1142,7 @@
 			default:
 				gesture = c.unread;
 		}
-		brushEl?.classList.add('fade');
-		fadeTimer = window.setTimeout(() => {
-			brushEl?.getContext('2d')!.clearRect(0, 0, brushEl.width, brushEl.height);
-			brushEl?.classList.remove('fade');
-		}, 700);
+		fadeInk();
 	}
 
 	$effect(() => {
@@ -880,7 +1152,7 @@
 
 	onMount(() => {
 		const initialUrl = new URL(location.href);
-		workshop = initialUrl.searchParams.get('place') === 'windmill';
+		room = roomOf(initialUrl.href);
 		selectedProject = Math.max(0, workshopProject(initialUrl.searchParams.get('project')));
 		window.addEventListener('popstate', restoreWorkshop);
 		let stored: string | null = null;
@@ -894,9 +1166,13 @@
 			millBuilt = localStorage.getItem(MILL_BUILT_KEY) === '1';
 			introEligible = sessionStorage.getItem(ARRIVAL_SEEN_KEY) !== '1';
 			scrollSeen = sessionStorage.getItem('village-scroll-seen-v1') === '1';
+			visited = (localStorage.getItem(VISITED_KEY) ?? '').split(',').filter(Boolean);
+			brushed = localStorage.getItem(BRUSHED_KEY) === '1';
+			wantSound = parseSoundPref(localStorage.getItem(SOUND_KEY));
 		} catch {
 			/* Storage is optional. */
 		}
+		const stopSkyTheme = onThemeChange(() => sound.setNight(isDark()));
 		document.addEventListener('visibilitychange', syncActive);
 		void boot();
 		return () => {
@@ -909,6 +1185,11 @@
 			cancelAnimationFrame(hoverRaf);
 			cancelAnimationFrame(scrollRaf);
 			clearTimeout(fadeTimer);
+			clearTimeout(demoTimer);
+			clearTimeout(nudgeTimer);
+			cancelAnimationFrame(demoRaf);
+			stopSkyTheme();
+			sound.dispose();
 			teardown();
 		};
 	});
@@ -953,14 +1234,20 @@
 		tabindex={!workshop && live ? 0 : -1}
 		onpointermove={onStageMove}
 		onpointerdown={onStageDown}
-		onpointerdowncapture={cancelIntro}
+		onpointerdowncapture={() => {
+			cancelIntro();
+			touched();
+		}}
 		onpointerup={onStageUp}
 		ondblclick={onStageDoubleClick}
 		onpointerleave={clearPointer}
 		onpointercancel={clearPointer}
 		onlostpointercapture={clearPointer}
 		onkeydown={(e) => onStageKey(e, true)}
-		onkeydowncapture={cancelIntro}
+		onkeydowncapture={() => {
+			cancelIntro();
+			touched();
+		}}
 		onkeyup={(e) => onStageKey(e, false)}
 		onblur={releaseKeys}
 	>
@@ -1037,10 +1324,20 @@
 
 				{#if live || choice?.fidelity === 'lo'}
 					<nav class="places mono" aria-label={c.places}>
-						<button class="workshop-entry" type="button" onclick={() => visit('windmill')}>
-							{lang === 'ja' ? '風車の工房に入る' : 'Enter the workshop'}
-							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg>
-						</button>
+						<div class="doors">
+							{#each ROOMS as r, i (r)}
+								<button
+									class="door"
+									class:workshop-entry={i === 0}
+									type="button"
+									onclick={() => visit(r)}
+									aria-label={`${c.enter} · ${c.rooms[r]}`}
+								>
+									<span class="door-kanji" aria-hidden="true">{ROOM_KANJI[r]}</span>
+									{c.rooms[r]}
+								</button>
+							{/each}
+						</div>
 						<ul class="landmark-access sr-only">
 							{#each PLACES as place (place)}
 								<li>
@@ -1051,6 +1348,35 @@
 						<p class="keys">{c.keys}</p>
 						<p class="credit">{c.credit}</p>
 					</nav>
+					{#if live && !brush && !demoing && progress < 0.3}
+						<!-- Floating seals over each place, so the scene says what it holds.
+						     The doors above are the keyboard and screen-reader route. -->
+						<div class="marks" aria-hidden="true">
+							{#each marks as m (m.place)}
+								{#if m.visible}
+									<button
+										type="button"
+										tabindex="-1"
+										onmousedown={(e) => e.preventDefault()}
+										class="mark"
+										class:seen={visited.includes(m.place)}
+										class:paint={m.place === 'tree'}
+										style:left="{m.x}px"
+										style:top="{m.y}px"
+										onclick={() => (m.place === 'tree' ? startBrush() : visit(m.place, m.index))}
+									>
+										<span class="seal">{MARK_KANJI[m.place as Marked]}</span>
+										<span class="name mono">{c.marks[m.place as Marked]}</span>
+									</button>
+								{/if}
+							{/each}
+						</div>
+					{/if}
+					{#if brush}
+						<p class="brush-banner mono" aria-live="polite">
+							{brushed ? c.brushOn : c.yourTurn}
+						</p>
+					{/if}
 					{#if tag}
 						<span class="tag mono" style:left="{tag.x}px" style:top="{tag.y}px" aria-hidden="true"
 							>{tag.text}</span
@@ -1068,13 +1394,43 @@
 					</p>
 
 					<div class="actions">
-						<button type="button" class="act" aria-pressed={brush} onclick={() => (brush = !brush)}>
-							{c.brush}
+						<button
+							type="button"
+							class="act brush-btn"
+							class:fresh={!brushed}
+							aria-pressed={brush}
+							onclick={toggleBrush}
+						>
+							<span class="act-seal" aria-hidden="true">筆</span>
+							{lang === 'ja' ? '筆' : c.brush}
 						</button>
+						<button
+							type="button"
+							class="act sound-btn"
+							aria-pressed={wantSound}
+							onclick={toggleSound}
+							title={lang === 'ja' ? '田舎の音' : 'Countryside sound'}
+						>
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M4 9h4l5-4v14l-5-4H4z" />
+								{#if wantSound}
+									<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" />
+								{:else}
+									<path d="m17 9 5 6m0-6-5 6" />
+								{/if}
+							</svg>
+							{c.sound}
+						</button>
+						{#if nudge && !brush}
+							<p class="nudge mono" aria-live="polite">← {c.tryBrush}</p>
+						{/if}
 						{#if brush}
 							<ul class="hint mono">
-								{#each c.hints as hint (hint)}<li>{hint}</li>{/each}
-								{#if gesture}<li><strong>{gesture}</strong></li>{/if}
+								{#each c.hints as hint (hint)}
+									{@const [how, what] = hint.split(' · ')}
+									<li><span class="how">{how}</span>{what}</li>
+								{/each}
+								{#if gesture}<li class="said"><strong>{gesture}</strong></li>{/if}
 							</ul>
 						{/if}
 					</div>
@@ -1098,7 +1454,37 @@
 				/>
 			{/if}
 		</div>
-		{#if workshop && choice}
+		{#if emaki}
+			{#key room}
+				<EmakiRoom
+					{emaki}
+					{lang}
+					{reduceMotion}
+					onleave={leaveWorkshop}
+					onroom={(r) => enterRoom(r)}
+					onbrush={() => {
+						leaveWorkshop();
+						window.setTimeout(startBrush, reduceMotion ? 0 : 900);
+					}}
+					onready={revealRoom}
+				/>
+			{/key}
+		{/if}
+		{#if room === 'izakaya' && choice}
+			<HouseRoom
+				{lang}
+				{reduceMotion}
+				lightweight={choice?.fidelity === 'lo'}
+				onleave={leaveWorkshop}
+				onready={revealRoom}
+				onroom={(r) => enterRoom(r)}
+				onbrush={() => {
+					leaveWorkshop();
+					window.setTimeout(startBrush, reduceMotion ? 0 : 900);
+				}}
+			/>
+		{/if}
+		{#if room === 'windmill' && choice}
 			<WorkshopRoom
 				{lang}
 				selected={selectedProject}
@@ -1111,7 +1497,7 @@
 		{/if}
 		{#if curtain}
 			<div class="area-scroll" class:reveal={curtain === 'reveal'} aria-hidden="true">
-				<div class="scroll-sheet"><span>作</span></div>
+				<div class="scroll-sheet"><span>{curtainKanji}</span></div>
 			</div>
 		{/if}
 	</div>
@@ -1126,22 +1512,143 @@
 		visibility: hidden;
 		pointer-events: none;
 	}
-	.places .workshop-entry {
+	/* The three doors: the rooms of the village, named in plain words. */
+	.doors {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.places .door {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.8rem;
+		gap: 0.55rem;
 		min-height: 44px;
-		padding: 0.55rem 0.8rem;
+		padding: 0.4rem 0.8rem 0.4rem 0.45rem;
 		font-family: var(--f-body);
 		font-size: 0.95rem;
 		letter-spacing: 0;
 	}
-	.workshop-entry svg {
-		width: 1.1rem;
-		height: 1.1rem;
-		fill: none;
-		stroke: currentColor;
-		stroke-width: 1.5;
+	.door-kanji {
+		display: inline-grid;
+		place-items: center;
+		width: 1.8rem;
+		height: 1.8rem;
+		font-family: var(--f-jp);
+		font-size: 1.05rem;
+		color: var(--paper);
+		background: var(--ebicha);
+		border-radius: 0.15rem;
+	}
+	.places .door:hover .door-kanji {
+		background: var(--ink);
+	}
+
+	/* ── Place markers: a seal floating over each place ──────────────── */
+	.ui > .marks {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+	}
+	.mark {
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0;
+		background: none;
+		border: 0;
+		cursor: pointer;
+		pointer-events: auto;
+		transform: translate(-50%, -100%);
+		-webkit-tap-highlight-color: transparent;
+	}
+	.mark .seal {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 2.6rem;
+		height: 2.6rem;
+		font-family: var(--f-jp);
+		font-size: 1.3rem;
+		color: var(--ebicha);
+		background: var(--paper);
+		border: 1.5px solid var(--ebicha);
+		border-radius: 50%;
+		transition:
+			transform 220ms var(--ease-out-quart),
+			background 220ms var(--ease-out-quart),
+			color 220ms var(--ease-out-quart);
+	}
+	/* An ink ring breathes out from places that are not visited yet. */
+	.mark:not(.seen) .seal::after {
+		content: '';
+		position: absolute;
+		inset: -2px;
+		border: 1.5px solid var(--ebicha);
+		border-radius: 50%;
+		animation: breathe 2.6s var(--ease-out-quart) infinite;
+	}
+	@keyframes breathe {
+		from {
+			transform: scale(1);
+			opacity: 0.7;
+		}
+		to {
+			transform: scale(1.75);
+			opacity: 0;
+		}
+	}
+	.mark .name {
+		padding: 0.15rem 0.45rem;
+		color: var(--ink);
+		background: var(--paper);
+		white-space: nowrap;
+	}
+	.mark.seen .seal {
+		width: 2.1rem;
+		height: 2.1rem;
+		font-size: 1.05rem;
+		border-color: var(--ink-mute);
+		color: var(--ink-soft);
+	}
+	.mark.seen .name {
+		opacity: 0;
+		transition: opacity 180ms;
+	}
+	.mark:hover .seal,
+	.mark:focus-visible .seal {
+		transform: scale(1.12);
+		color: var(--paper);
+		background: var(--ebicha);
+	}
+	.mark:hover .name {
+		opacity: 1;
+	}
+	.mark.paint .seal {
+		border-style: dashed;
+	}
+	.brush-banner {
+		position: absolute;
+		top: 1rem;
+		left: 50%;
+		transform: translateX(-50%);
+		margin: 0;
+		padding: 0.4rem 0.75rem;
+		color: var(--paper) !important;
+		background: var(--ink);
+		white-space: nowrap;
+		pointer-events: none !important;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.mark:not(.seen) .seal::after,
+		.brush-btn.fresh::after {
+			animation: none;
+			opacity: 0;
+		}
+		.mark .seal {
+			transition: none;
+		}
 	}
 	.area-scroll {
 		position: absolute;
@@ -1512,6 +2019,64 @@
 		background: var(--ink);
 		color: var(--paper);
 	}
+	.brush-btn,
+	.sound-btn {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-height: 44px;
+	}
+	.brush-btn {
+		padding-left: 0.4rem;
+		font-size: 0.85rem;
+	}
+	.act-seal {
+		display: inline-grid;
+		place-items: center;
+		width: 1.9rem;
+		height: 1.9rem;
+		font-family: var(--f-jp);
+		font-size: 1.15rem;
+		letter-spacing: 0;
+		color: var(--paper);
+		background: var(--ebicha);
+		border-radius: 0.15rem;
+	}
+	/* Until the first stroke, the brush button breathes like the markers. */
+	.brush-btn.fresh::after {
+		content: '';
+		position: absolute;
+		inset: -1px;
+		border: 1.5px solid var(--ebicha);
+		animation: breathe-box 2.6s var(--ease-out-quart) infinite;
+		pointer-events: none;
+	}
+	@keyframes breathe-box {
+		from {
+			transform: scale(1);
+			opacity: 0.8;
+		}
+		to {
+			transform: scale(1.18, 1.5);
+			opacity: 0;
+		}
+	}
+	.sound-btn svg {
+		width: 1.1rem;
+		height: 1.1rem;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.5;
+		stroke-linejoin: round;
+		stroke-linecap: round;
+	}
+	.nudge {
+		margin: 0;
+		padding: 0.35rem 0.6rem;
+		color: var(--paper) !important;
+		background: var(--ebicha);
+	}
 	.hint {
 		flex-basis: 100%;
 		display: flex;
@@ -1522,7 +2087,16 @@
 		padding: 0.35rem 0.6rem;
 		background: color-mix(in srgb, var(--paper) 80%, transparent);
 	}
-	.hint li:last-child:has(strong) {
+	.hint li {
+		display: flex;
+		gap: 0.45rem;
+		align-items: baseline;
+	}
+	.hint .how {
+		color: var(--ink);
+		font-weight: 500;
+	}
+	.hint .said {
 		flex-basis: 100%;
 	}
 	.hint strong {
