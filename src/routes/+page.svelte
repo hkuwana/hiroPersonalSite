@@ -67,10 +67,13 @@
 			'hero.tagline':
 				"I'm Hiroyuki (Hiro) Kuwana. I build Kaiwa and Otterd and write down the product calls, systems, mistakes, and small wins along the way.",
 			'hero.now': 'Now · Kaiwa + Otterd',
+			// about1 is split around the linked company name: pre + <a>link</a> + a.
+			'hero.about1.pre': '',
+			'hero.about1.link': 'Otterd',
 			'hero.about1.a':
-				'Kaiwa is where I do the real work: product, code, growth, support, and the messy decisions in between. It is a language-learning platform where learners practice with AI and coaches shape the journey. I use AI wherever it helps, but',
+				' is where I do the real work: product, code, and the messy decisions in between, building custom AI workflows for private equity and hedge fund teams. Kaiwa, the language-learning platform where learners practice with AI and coaches shape the journey, is still part of what I build. I use AI wherever it helps, but',
 			'hero.about1.strong': "I don't hand it the judgment.",
-			'hero.about1.b': 'That line is at the heart of what I build.',
+			'hero.about1.b': 'AI is there to assist; the final call stays with people. That line is at the heart of what I build.',
 			'hero.about2':
 				'If you are building with AI on a small team—or no team—I hope these notes save you a few wrong turns.',
 			'hero.meta.based.k': 'Based',
@@ -127,10 +130,12 @@
 			'hero.tagline':
 				'桑名浩行 (Hiroyuki Kuwana) です。いまは Kaiwa と Otterd に取り組みながら、プロダクトの判断や仕組み、失敗、小さな前進を書き留めています。',
 			'hero.now': 'いま · Kaiwa + Otterd',
+			'hero.about1.pre': '',
+			'hero.about1.link': 'Otterd',
 			'hero.about1.a':
-				'Kaiwa は、プロダクト、開発、成長、サポート、その間にある面倒な判断まで、すべてを実地で試す場所です。学習者が AI と会話し、コーチが一人ひとりの学びを設計する語学学習のプラットフォームです。AI は役立つところで使います。でも、',
+				' が、いま実際の仕事をしている場所です。プライベートエクイティやヘッジファンドのチームに向けてカスタム AI ワークフローをつくり、プロダクトも開発も、その間にある面倒な判断も引き受けています。学習者が AI と会話し、コーチが学びの道筋を設計する語学学習のプラットフォーム Kaiwa も、いまもつくり続けているものの一部です。AI は役立つところで使います。でも、',
 			'hero.about1.strong': '判断までは渡しません。',
-			'hero.about1.b': 'その境目が、つくるものの中心にあります。',
+			'hero.about1.b': 'AI は補助の道具で、最終的な判断は人が下します。その境目が、つくるものの中心にあります。',
 			'hero.about2':
 				'AI を使って、小さなチームで、あるいはひとりで何かをつくっているなら、ここにあるメモが少しでも遠回りを減らせたらうれしいです。',
 			'hero.meta.based.k': '拠点',
@@ -528,7 +533,7 @@
 	<aside class="hero-side">
 		<span class="now-pill">{t('hero.now')}</span>
 		<p>
-			{t('hero.about1.a')}
+			{t('hero.about1.pre')}<a class="prose-link" href="https://otterd.co/" target="_blank" rel="noopener">{t('hero.about1.link')}</a>{t('hero.about1.a')}
 			<strong>{t('hero.about1.strong')}</strong>
 			{t('hero.about1.b')}
 		</p>

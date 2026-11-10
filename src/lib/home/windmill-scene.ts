@@ -159,6 +159,23 @@ function drawLand(ctx: CanvasRenderingContext2D, p: Palette) {
 	ctx.arc(HUB.x, 430, 14, Math.PI, 0);
 	ctx.lineTo(HUB.x + 14, 470);
 	ctx.fill();
+	// The door stands open onto a lit room, as in the 3D village: warm paper
+	// by day, a lantern glow on a dark page. Steady, so no motion to reduce.
+	ctx.fillStyle = doorwayLight(p);
+	ctx.beginPath();
+	ctx.moveTo(HUB.x - 9, 470);
+	ctx.lineTo(HUB.x - 9, 433);
+	ctx.arc(HUB.x, 433, 9, Math.PI, 0);
+	ctx.lineTo(HUB.x + 9, 470);
+	ctx.fill();
+}
+
+// Same two tones as the 3D mill's `doorway` role; the page's paper token
+// says which theme is live.
+function doorwayLight(p: Palette) {
+	const rgb = p.paper.match(/\w\w/g)?.map((h) => parseInt(h, 16)) ?? [255, 255, 255];
+	const dark = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2] < 128;
+	return dark ? '#efc27a' : '#f8e7bf';
 }
 
 function drawBlade(ctx: CanvasRenderingContext2D, p: Palette, i: number, f: MillFrame) {

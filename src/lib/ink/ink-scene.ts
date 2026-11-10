@@ -106,6 +106,7 @@ type Role =
 	| 'window'
 	| 'windowLit'
 	| 'windowGlow'
+	| 'doorway'
 	| 'plasterWash'
 	| 'woodGrain'
 	| 'roofGrain'
@@ -154,6 +155,8 @@ function roles(p: Palette, night: boolean): Record<Role, string> {
 				window: '#586173',
 				windowLit: '#e9b76c',
 				windowGlow: '#d8a65b',
+				// The mill's open door at night: a lantern lit inside.
+				doorway: '#efc27a',
 				snow: c(p.ink, p.kon, 0.2),
 				sakura: c(SAKURA, p.paper, 0.35),
 				blossom: c(BLOSSOM, p.paper, 0.3),
@@ -190,6 +193,9 @@ function roles(p: Palette, night: boolean): Record<Role, string> {
 				window: '#77715c',
 				windowLit: '#e9bd70',
 				windowGlow: '#ecc57c',
+				// By day: sunlit paper walls seen through the open door, a
+				// shade lighter and warmer than the plaster around it.
+				doorway: '#f8e7bf',
 				snow: '#fbfaf4',
 				sakura: SAKURA,
 				blossom: BLOSSOM,
@@ -261,6 +267,9 @@ export function createInkScene(
 	const flat = new Map<Role, THREE.MeshBasicMaterial>();
 	const windowDim = new THREE.Color();
 	const windowWarm = new THREE.Color();
+	const doorDim = new THREE.Color();
+	const doorWarm = new THREE.Color();
+	const doorHot = new THREE.Color();
 	const sailMats: THREE.MeshToonMaterial[] = [];
 	const outlineMat = new THREE.ShaderMaterial({
 		uniforms: { color: { value: new THREE.Color() }, thickness: { value: 1 } },
@@ -465,6 +474,22 @@ export function createInkScene(
 	arch.rotation.x = -Math.PI / 2;
 	arch.position.set(0, 0.72, 1.06);
 	shell.add(arch);
+	// The door stands open: an arched opening onto the lit room inside, framed
+	// by the indigo door. Like the izakaya's doorway, it warms as the mill is
+	// finished, so the visitor can see the mill is a place to step into.
+	const opening = new THREE.Shape();
+	opening.moveTo(-0.16, 0.07);
+	opening.lineTo(0.16, 0.07);
+	opening.lineTo(0.16, 0.72);
+	opening.absarc(0, 0.72, 0.16, 0, Math.PI, false);
+	opening.lineTo(-0.16, 0.07);
+	const doorwayMat = getFlat('doorway');
+	doorwayMat.polygonOffset = true;
+	doorwayMat.polygonOffsetFactor = -1;
+	doorwayMat.polygonOffsetUnits = -1;
+	const doorway = new THREE.Mesh(new THREE.ShapeGeometry(opening, 12), doorwayMat);
+	doorway.position.z = 1.125;
+	shell.add(doorway);
 	const axle = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 1, 10), getToon('wood'));
 	axle.rotation.x = Math.PI / 2;
 	axle.position.set(0, HUB.y - 0.25, 0.55);
@@ -819,6 +844,10 @@ export function createInkScene(
 		const r = roles(p, night);
 		windowDim.set(r.window);
 		windowWarm.set(r.windowLit);
+		doorDim.set(r.door);
+		doorWarm.set(r.doorway);
+		// Pointing at the mill turns its lamp up a little: it can be entered.
+		doorHot.set(r.doorway).lerp(new THREE.Color(night ? '#ffd98f' : '#fffaf0'), 0.6);
 		scene.background = new THREE.Color(r.sky);
 		for (const [role, m] of toon) m.color.set(r[role]);
 		for (const [role, m] of flat) m.color.set(r[role]);
@@ -894,6 +923,7 @@ export function createInkScene(
 	let seekAngle: number | null = null;
 	let parkT = 0;
 	let hovered: THREE.Object3D | null = null;
+	let doorHoverT = 0; // eases to 1 while the pointer is on the mill
 	let orbitYaw = 0;
 	let orbitPitch = 0;
 
@@ -995,6 +1025,10 @@ export function createInkScene(
 		const lit = smooth((build - 0.65) / 0.35);
 		getFlat('window').color.lerpColors(windowDim, windowWarm, lit);
 		getFlat('windowGlow').opacity = lit * (night ? 0.18 : 0.08);
+		// A steady light, no flicker; hover is a short ease, not a pulse.
+		const onMill = hovered?.userData.place === 'windmill' ? 1 : 0;
+		doorHoverT += (onMill - doorHoverT) * Math.min(1, dt * (opts.reduceMotion ? 30 : 8));
+		doorwayMat.color.lerpColors(doorDim, doorWarm, lit).lerp(doorHot, lit * doorHoverT);
 		for (const [i, timber] of timbers.entries()) {
 			const t = smooth((build - i * 0.035) / 0.7);
 			timber.mesh.position.lerpVectors(timber.start, timber.target, t);
