@@ -1,19 +1,21 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { SITE } from '$data/constants';
 	import { blog, breadcrumbs, jsonLd } from '$lib/seo';
 
 	export let data: PageData;
 
-	let visible = false;
+	type Locale = 'en' | 'ja';
 
-	onMount(() => {
-		// Trigger animation after mount
-		requestAnimationFrame(() => {
-			visible = true;
+	$: lang = (($page.data.locale as Locale | undefined) ?? getLocale()) as Locale;
+	$: formatDate = (date: string) =>
+		new Date(`${date}T00:00:00`).toLocaleDateString(lang === 'ja' ? 'ja-JP' : 'en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
 		});
-	});
 </script>
 
 <svelte:head>
@@ -38,42 +40,32 @@
 	])}
 </svelte:head>
 
-<article class="essays-page" class:visible>
+<article class="essays-page">
 	<header class="page-header">
-		<h1 class="page-title text-primary">Essays</h1>
-		<p class="page-subtitle text-secondary">Field notes from building Kaiwa, and the questions underneath the work.</p>
+		<h1 class="page-title">Essays</h1>
+		<p class="page-subtitle">Field notes from building Kaiwa, and the questions underneath the work.</p>
 	</header>
 
-	<div class="essays-list">
-		{#each data.essays as essay, i}
-			<a
-				href="/essays/{essay.slug}"
-				class="essay-card"
-				style="--delay: {i * 0.05}s"
-			>
-				<time class="essay-date text-base-content/50">
-					{new Date(essay.date).toLocaleDateString('en-US', {
-						year: 'numeric',
-						month: 'long',
-						day: 'numeric'
-					})}
-				</time>
-				<h2 class="essay-title text-primary hover:text-accent">{essay.title}</h2>
-				<div class="essay-arrow">
-					<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-						<path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-				</div>
-			</a>
+	<ol class="essays-list">
+		{#each data.essays as essay (essay.slug)}
+			<li>
+				<a href={localizeHref(`/essays/${essay.slug}`, { locale: lang })} class="essay-row">
+					<time class="essay-date" datetime={essay.date}>{formatDate(essay.date)}</time>
+					<h2 class="essay-title">{essay.title}</h2>
+					{#if essay.description}
+						<p class="essay-description">{essay.description}</p>
+					{/if}
+				</a>
+			</li>
 		{/each}
-	</div>
+	</ol>
 
 	<footer class="page-footer">
-		<a href="/" class="back-link text-secondary hover:text-accent">
-			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+		<a href={localizeHref('/', { locale: lang })} class="back-link">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<span>Back to home</span>
+			<span>{lang === 'ja' ? 'ホームへ戻る' : 'Back to home'}</span>
 		</a>
 	</footer>
 </article>
@@ -83,14 +75,24 @@
 		max-width: 720px;
 		margin: 0 auto;
 		padding: calc(var(--nav-h) + 2.5rem) 2rem 6rem;
-		opacity: 0;
-		transform: translateY(20px);
-		transition: all 0.6s var(--ease-out-expo);
 	}
 
-	.essays-page.visible {
-		opacity: 1;
-		transform: translateY(0);
+	/* Content is visible without JS; the entrance only runs when motion is welcome. */
+	@media (prefers-reduced-motion: no-preference) {
+		.essays-page {
+			animation: page-in 0.6s var(--ease-out-expo) both;
+		}
+	}
+
+	@keyframes page-in {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
 	}
 
 	/* Header */
@@ -100,106 +102,125 @@
 	}
 
 	.page-title {
+		font-family: var(--f-display);
 		font-size: 2.5rem;
-		font-weight: 700;
-		color: var(--color-text);
+		font-weight: 400;
+		line-height: 1.15;
+		color: var(--ink);
 		margin: 0 0 0.75rem;
-		letter-spacing: -0.03em;
+		letter-spacing: 0;
 	}
 
 	.page-subtitle {
 		font-size: 1.0625rem;
-		color: var(--color-text-secondary);
+		color: var(--ink-soft);
 		margin: 0;
 	}
 
-	/* Essays List */
+	/* Essays list: rules and whitespace, no cards (matches home .col-philo .post). */
 	.essays-list {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--rule);
 	}
 
-	.essay-card {
-		display: flex;
-		align-items: center;
-		gap: 1.5rem;
-		padding: 1.25rem 1.5rem;
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-lg);
+	.essays-list li {
+		border-bottom: 1px solid var(--rule);
+	}
+
+	.essay-row {
+		position: relative;
+		display: block;
+		padding: 1.75rem 0 1.75rem 1.75rem;
 		text-decoration: none;
-		transition: all var(--duration-normal) var(--ease-out-expo);
-		transition-delay: var(--delay);
+		color: inherit;
 	}
 
-	.essay-card:hover {
-		background: var(--color-bg-subtle);
-		border-color: rgba(0, 0, 0, 0.12);
-		transform: translateX(4px);
+	.essay-row::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 2.625rem;
+		width: 0.75rem;
+		height: 1px;
+		background: var(--shu);
+		transition: width var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.essay-date {
+		display: block;
+		margin-bottom: 0.375rem;
+		font-family: var(--f-body);
+		font-style: italic;
 		font-size: 0.8125rem;
-		color: var(--color-text-tertiary);
-		min-width: 120px;
-		flex-shrink: 0;
+		color: var(--ink-mute);
 	}
 
 	.essay-title {
-		flex: 1;
-		font-size: 1.0625rem;
-		font-weight: 500;
-		color: var(--color-text);
-		margin: 0;
+		margin: 0 0 0.5rem;
+		font-family: var(--f-display);
+		font-weight: 400;
+		font-size: 1.5rem;
+		line-height: 1.2;
+		color: var(--ink);
 		transition: color var(--duration-normal) var(--ease-out-expo);
 	}
 
-	.essay-card:hover .essay-title {
-		color: var(--color-accent);
+	.essay-description {
+		margin: 0;
+		font-family: var(--f-body);
+		font-size: 1rem;
+		line-height: 1.55;
+		color: var(--ink-soft);
 	}
 
-	.essay-arrow {
-		color: var(--color-text-tertiary);
-		opacity: 0;
-		transform: translateX(-8px);
-		transition: all var(--duration-normal) var(--ease-out-expo);
+	.essay-row:hover .essay-title {
+		color: var(--shu);
 	}
 
-	.essay-card:hover .essay-arrow {
-		opacity: 1;
-		transform: translateX(0);
-		color: var(--color-accent);
+	.essay-row:hover::before {
+		width: 1.25rem;
 	}
 
 	/* Footer */
 	.page-footer {
 		margin-top: 4rem;
-		padding-top: 2rem;
-		border-top: 1px solid var(--color-border);
 	}
 
 	.back-link {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
-		font-size: 0.9375rem;
-		font-weight: 500;
-		color: var(--color-text-secondary);
+		min-height: 2.75rem;
+		font-family: var(--f-mono);
+		font-size: 0.75rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--ink-mute);
 		text-decoration: none;
-		transition: all var(--duration-normal) var(--ease-out-expo);
+		transition: color var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.back-link:hover {
-		color: var(--color-accent);
+		color: var(--shu);
+	}
+
+	.back-link svg {
+		transition: transform var(--duration-normal) var(--ease-out-expo);
 	}
 
 	.back-link:hover svg {
 		transform: translateX(-4px);
 	}
 
-	.back-link svg {
-		transition: transform var(--duration-normal) var(--ease-out-expo);
+	@media (prefers-reduced-motion: reduce) {
+		.essay-row::before,
+		.essay-title,
+		.back-link,
+		.back-link svg {
+			transition: none;
+		}
 	}
 
 	/* Responsive */
@@ -212,19 +233,16 @@
 			font-size: 2rem;
 		}
 
-		.essay-card {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 0.5rem;
-			padding: 1rem 1.25rem;
+		.essay-row {
+			padding: 1.5rem 0 1.5rem 1.5rem;
 		}
 
-		.essay-date {
-			min-width: auto;
+		.essay-row::before {
+			top: 2.375rem;
 		}
 
-		.essay-arrow {
-			display: none;
+		.essay-title {
+			font-size: 1.3125rem;
 		}
 	}
 </style>

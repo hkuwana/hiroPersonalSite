@@ -20,6 +20,8 @@
 	let lang = $derived(
 		($optimisticLocale ?? (($page.data.locale as Locale | undefined) ?? getLocale())) as Locale
 	);
+	const path = '/tools/safe-paste';
+	let self = $derived(lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`);
 
 	const MAP_KEY = 'safe-paste-map';
 
@@ -234,7 +236,7 @@ Hiro`;
 	/>
 	<meta name="robots" content="index, follow" />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content={`${SITE.url}/tools/safe-paste`} />
+	<meta property="og:url" content={self} />
 	<meta property="og:title" content="Safe paste · Hiro Kuwana" />
 	<meta
 		property="og:description"
@@ -242,7 +244,7 @@ Hiro`;
 	/>
 	<meta property="og:image" content={SITE.image} />
 	<meta name="twitter:card" content="summary" />
-	<link rel="canonical" href={`${SITE.url}/tools/safe-paste`} />
+	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/tools/safe-paste`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/tools/safe-paste`} />
 	<link rel="alternate" hreflang="x-default" href={`${SITE.url}/tools/safe-paste`} />

@@ -9,6 +9,8 @@
 	type Locale = 'en' | 'ja';
 
 	let lang = $derived(($optimisticLocale ?? (($page.data.locale as Locale | undefined) ?? getLocale())) as Locale);
+	const path = '/tools/ics-formatter';
+	let self = $derived(lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`);
 
 	type Issue = { kind: 'error' | 'warning' | 'fixed'; message: string };
 
@@ -135,12 +137,12 @@ END:VCALENDAR`;
 	<meta name="keywords" content="ics validator, ics formatter, ics fixer, ical validator, calendar file fixer, rfc 5545, vcalendar, vevent" />
 	<meta name="robots" content="index, follow" />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content={`${SITE.url}/tools/ics-formatter`} />
+	<meta property="og:url" content={self} />
 	<meta property="og:title" content="ICS formatter · Hiro Kuwana" />
 	<meta property="og:description" content="Paste a broken .ics file. Get a clean one. Fixes line endings, missing UID/DTSTAMP, and RFC 5545 details. Runs locally." />
 	<meta property="og:image" content={SITE.image} />
 	<meta name="twitter:card" content="summary" />
-	<link rel="canonical" href={`${SITE.url}/tools/ics-formatter`} />
+	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/tools/ics-formatter`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/tools/ics-formatter`} />
 	<link rel="alternate" hreflang="x-default" href={`${SITE.url}/tools/ics-formatter`} />

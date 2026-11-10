@@ -9,6 +9,8 @@
 	type Locale = 'en' | 'ja';
 
 	let lang = $derived(($optimisticLocale ?? (($page.data.locale as Locale | undefined) ?? getLocale())) as Locale);
+	const path = '/tools/vcf-splitter';
+	let self = $derived(lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`);
 
 	type Contact = {
 		raw: string;
@@ -345,7 +347,7 @@ END:VCARD`;
 	<meta name="keywords" content="vcf splitter, vcard splitter, split vcf file, split contacts, vcard tool, contact splitter, iphone contacts, android contacts" />
 	<meta name="robots" content="index, follow" />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content={`${SITE.url}/tools/vcf-splitter`} />
+	<meta property="og:url" content={self} />
 	<meta property="og:title" content="VCF splitter · Hiro Kuwana" />
 	<meta
 		property="og:description"
@@ -353,7 +355,7 @@ END:VCARD`;
 	/>
 	<meta property="og:image" content={SITE.image} />
 	<meta name="twitter:card" content="summary" />
-	<link rel="canonical" href={`${SITE.url}/tools/vcf-splitter`} />
+	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/tools/vcf-splitter`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/tools/vcf-splitter`} />
 	<link rel="alternate" hreflang="x-default" href={`${SITE.url}/tools/vcf-splitter`} />

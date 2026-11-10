@@ -9,15 +9,18 @@ interface EssayMetadata {
 	description: string;
 }
 
-const STATIC_ROUTES: { path: string; changefreq: string; priority: string }[] = [
-	{ path: '/', changefreq: 'monthly', priority: '1.0' },
-	{ path: '/essays', changefreq: 'weekly', priority: '0.9' },
-	{ path: '/about', changefreq: 'monthly', priority: '0.85' },
-	{ path: '/ai-guides', changefreq: 'weekly', priority: '0.8' },
-	{ path: '/tools', changefreq: 'monthly', priority: '0.7' },
-	{ path: '/tools/ics-formatter', changefreq: 'monthly', priority: '0.6' },
-	{ path: '/tools/vcf-splitter', changefreq: 'monthly', priority: '0.6' },
-	{ path: '/case-study', changefreq: 'monthly', priority: '0.6' }
+// `bilingual` marks routes that have a real /ja counterpart and declare
+// hreflang alternates on the page. Essays and AI guides are English-only,
+// so they never get alternates here.
+const STATIC_ROUTES: { path: string; changefreq: string; priority: string; bilingual: boolean }[] = [
+	{ path: '/', changefreq: 'monthly', priority: '1.0', bilingual: true },
+	{ path: '/essays', changefreq: 'weekly', priority: '0.9', bilingual: false },
+	{ path: '/about', changefreq: 'monthly', priority: '0.85', bilingual: true },
+	{ path: '/ai-guides', changefreq: 'weekly', priority: '0.8', bilingual: false },
+	{ path: '/tools', changefreq: 'monthly', priority: '0.7', bilingual: true },
+	{ path: '/tools/ics-formatter', changefreq: 'monthly', priority: '0.6', bilingual: true },
+	{ path: '/tools/vcf-splitter', changefreq: 'monthly', priority: '0.6', bilingual: true },
+	{ path: '/tools/safe-paste', changefreq: 'monthly', priority: '0.6', bilingual: true }
 ];
 
 const buildAlternates = (path: string) => {
@@ -58,8 +61,7 @@ export const GET: RequestHandler = async () => {
 		urls.push(`    <url>
         <loc>${SITE.url}${suffix}</loc>${lastmodFor(route.path)}
         <changefreq>${route.changefreq}</changefreq>
-        <priority>${route.priority}</priority>
-${buildAlternates(route.path)}
+        <priority>${route.priority}</priority>${route.bilingual ? `\n${buildAlternates(route.path)}` : ''}
     </url>`);
 	}
 
@@ -71,7 +73,6 @@ ${buildAlternates(route.path)}
         <lastmod>${lastmod}</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.7</priority>
-${buildAlternates(path)}
     </url>`);
 	}
 

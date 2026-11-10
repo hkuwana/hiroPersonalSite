@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import type { PageData } from './$types';
+	import NewsletterSignup from '$lib/components/NewsletterSignup.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -59,6 +60,8 @@
 	<div class="guide-content">
 		<Content />
 	</div>
+
+	<NewsletterSignup {lang} source="ai-guides" />
 </article>
 
 <style>

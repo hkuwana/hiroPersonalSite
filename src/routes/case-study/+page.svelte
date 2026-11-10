@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { SITE } from '$data/constants';
 	import { localizeHref } from '$lib/paraglide/runtime';
-	import { breadcrumbs, jsonLd, PERSON_ID, WEBSITE_ID } from '$lib/seo';
+	import { breadcrumbs, jsonLd } from '$lib/seo';
 
 	const caseStudyUrl = `${SITE.url}/case-study`;
 </script>
@@ -24,21 +24,10 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="Thread - a quieter inbox for AI agents" />
 	<meta name="twitter:image" content={SITE.image} />
+	<!-- A fictional design study: keep it out of search results. -->
+	<meta name="robots" content="noindex, follow" />
 	<link rel="canonical" href={caseStudyUrl} />
 	{@html jsonLd([
-		{
-			'@type': 'Article',
-			'@id': `${caseStudyUrl}#article`,
-			headline: 'Thread - a quieter inbox for AI agents',
-			description:
-				"A quiet case-study page from Hiro Kuwana's redesign: reframing agent output as letters, not chat.",
-			url: caseStudyUrl,
-			image: SITE.image,
-			inLanguage: 'en',
-			author: { '@id': PERSON_ID },
-			publisher: { '@id': PERSON_ID },
-			isPartOf: { '@id': WEBSITE_ID }
-		},
 		breadcrumbs([
 			{ name: 'Home', path: '/' },
 			{ name: 'Case study', path: '/case-study' }
@@ -212,11 +201,6 @@
 			</p>
 		</section>
 	</div>
-
-	<nav class="next-up" aria-label="Next case study">
-		<span class="l">Next case</span>
-		<a href={localizeHref('/#work')}>Lantern - a reading lamp that listens</a>
-	</nav>
 </article>
 
 <style>
@@ -562,40 +546,6 @@
 		color: var(--shu);
 	}
 
-	.next-up {
-		max-width: var(--max);
-		margin: 0 auto;
-		padding: 3.5rem var(--pad-inline);
-		border-top: 1px solid var(--rule);
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 1.25rem;
-		flex-wrap: wrap;
-	}
-
-	.next-up .l {
-		font-family: var(--f-mono);
-		font-size: 0.6875rem;
-		letter-spacing: 0.15em;
-		text-transform: uppercase;
-		color: var(--ink-mute);
-	}
-
-	.next-up a {
-		padding-bottom: 0.25rem;
-		border-bottom: 2px solid var(--shu);
-		font-family: var(--f-display);
-		font-size: clamp(1.75rem, 4vw, 3rem);
-		font-weight: 500;
-		line-height: 1.1;
-		color: var(--ink);
-	}
-
-	.next-up a:hover {
-		color: var(--shu);
-	}
-
 	@media (max-width: 760px) {
 		.case-hero {
 			padding-top: calc(var(--nav-h) + 2rem);
@@ -650,10 +600,6 @@
 	@media (max-width: 520px) {
 		.case-hero h1 {
 			font-size: 2.625rem;
-		}
-
-		.next-up {
-			align-items: flex-start;
 		}
 	}
 </style>

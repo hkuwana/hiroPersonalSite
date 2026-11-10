@@ -8,19 +8,22 @@
 
 	$: lang = ($optimisticLocale ?? (($page.data.locale as Locale | undefined) ?? getLocale())) as Locale;
 
+	const path = '/tools';
+	$: self = lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`;
+
 	$: copy =
 		lang === 'ja'
 			? {
 					eyebrow: '道具 · tools',
 					title: '小さな道具',
-					lede: 'ブラウザの中だけで動く、地味だけど実用的なユーティリティ。アップロードなし、ログイン不要、追跡なし。',
+					lede: 'ブラウザの中だけで動く、地味だけど実用的なユーティリティ。アップロードなし、ログイン不要。ファイルはブラウザの外に出ません。',
 					sub: '自分で必要になってつくったもの。よければお使いください。',
 					backHome: 'ホームに戻る'
 				}
 			: {
 					eyebrow: 'tools · 道具',
 					title: 'Small tools',
-					lede: 'Quiet, practical utilities that run entirely in your browser. No uploads, no accounts, no tracking.',
+					lede: 'Quiet, practical utilities that run entirely in your browser. No uploads, no accounts. Your files never leave the browser.',
 					sub: 'Things I needed myself, kept here in case you do too.',
 					backHome: 'Back to home'
 				};
@@ -74,18 +77,18 @@
 	<title>Tools · Hiro Kuwana</title>
 	<meta
 		name="description"
-		content="Small, practical browser utilities by Hiro Kuwana — an ICS formatter and a VCF contact splitter. Free, private, runs locally."
+		content="Small, practical browser utilities by Hiro Kuwana — an ICS formatter, a VCF contact splitter, and Safe paste for redacting text before it goes to AI. Free, private, runs locally."
 	/>
 	<meta name="robots" content="index, follow" />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content={`${SITE.url}/tools`} />
+	<meta property="og:url" content={self} />
 	<meta property="og:title" content="Tools · Hiro Kuwana" />
 	<meta property="og:description" content="Small, practical browser utilities. Free, private, runs locally." />
 	<meta property="og:image" content={SITE.image} />
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:title" content="Tools · Hiro Kuwana" />
 	<meta name="twitter:description" content="Small, practical browser utilities. Free, private, runs locally." />
-	<link rel="canonical" href={`${SITE.url}/tools`} />
+	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/tools`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/tools`} />
 	<link rel="alternate" hreflang="x-default" href={`${SITE.url}/tools`} />
