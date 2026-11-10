@@ -20,6 +20,12 @@
 			day: 'numeric'
 		}
 	);
+	$: formatShortDate = (date: string) =>
+		new Date(`${date}T00:00:00`).toLocaleDateString(lang === 'ja' ? 'ja-JP' : 'en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
 </script>
 
 <svelte:head>
@@ -30,6 +36,7 @@
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="https://hirokuwana.com/essays/{data.slug}" />
 	<meta property="article:published_time" content={data.date} />
+	<meta property="article:modified_time" content={data.updated || data.date} />
 	<meta property="article:author" content="Hiro Kuwana" />
 	<link rel="canonical" href="https://hirokuwana.com/essays/{data.slug}" />
 
@@ -63,7 +70,11 @@
 		</a>
 
 		<h1 class="essay-title">{data.title}</h1>
-		<time datetime={data.date} class="essay-date">{formattedDate}</time>
+		<p class="essay-meta">
+			<time datetime={data.date} class="essay-date">{formattedDate}</time>
+			<span class="meta-sep" aria-hidden="true">·</span>
+			<a rel="author" href={localizeHref('/about', { locale: lang })} class="essay-byline">Hiro Kuwana</a>
+		</p>
 	</header>
 
 	<div class="essay-content">
@@ -71,6 +82,24 @@
 	</div>
 
 	<NewsletterSignup {lang} source="essay" />
+
+	{#if data.moreEssays.length}
+		<nav class="more-essays" aria-labelledby="more-essays-heading">
+			<h2 id="more-essays-heading" class="more-heading">
+				{lang === 'ja' ? 'ほかのエッセイ' : 'More essays'}
+			</h2>
+			<ol class="more-list">
+				{#each data.moreEssays as essay (essay.slug)}
+					<li>
+						<a href={localizeHref(`/essays/${essay.slug}`, { locale: lang })} class="more-row">
+							<time class="more-date" datetime={essay.date}>{formatShortDate(essay.date)}</time>
+							<span class="more-title">{essay.title}</span>
+						</a>
+					</li>
+				{/each}
+			</ol>
+		</nav>
+	{/if}
 
 	<footer class="essay-footer">
 		<div class="footer-divider"></div>
@@ -147,10 +176,26 @@
 		letter-spacing: 0;
 	}
 
-	.essay-date {
-		display: block;
+	.essay-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem;
+		margin: 0;
 		font-size: 0.9375rem;
 		color: var(--color-text-tertiary);
+	}
+
+	.essay-byline {
+		color: var(--color-text-secondary);
+		text-decoration: underline;
+		text-decoration-color: var(--rule);
+		text-underline-offset: 3px;
+		transition: color var(--duration-normal) var(--ease-out-expo);
+	}
+
+	.essay-byline:hover {
+		color: var(--color-accent);
 	}
 
 	/* Content */
@@ -260,6 +305,86 @@
 		height: auto;
 		border-radius: var(--radius-md);
 		margin: 2rem 0;
+	}
+
+	/* More essays: rules and whitespace, matching the /essays index rows. */
+	.more-essays {
+		margin-top: 4rem;
+	}
+
+	.more-heading {
+		margin: 0 0 1rem;
+		font-family: var(--f-mono);
+		font-size: 0.75rem;
+		font-weight: 400;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ink-mute);
+	}
+
+	.more-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--rule);
+	}
+
+	.more-list li {
+		border-bottom: 1px solid var(--rule);
+	}
+
+	.more-row {
+		position: relative;
+		display: block;
+		padding: 1.25rem 0 1.25rem 1.75rem;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.more-row::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 2.125rem;
+		width: 0.75rem;
+		height: 1px;
+		background: var(--shu);
+		transition: width var(--duration-normal) var(--ease-out-expo);
+	}
+
+	.more-date {
+		display: block;
+		margin-bottom: 0.25rem;
+		font-family: var(--f-body);
+		font-style: italic;
+		font-size: 0.8125rem;
+		color: var(--ink-mute);
+	}
+
+	.more-title {
+		display: block;
+		font-family: var(--f-display);
+		font-weight: 400;
+		font-size: 1.25rem;
+		line-height: 1.25;
+		color: var(--ink);
+		transition: color var(--duration-normal) var(--ease-out-expo);
+	}
+
+	.more-row:hover .more-title {
+		color: var(--shu);
+	}
+
+	.more-row:hover::before {
+		width: 1.25rem;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.more-row::before,
+		.more-title,
+		.essay-byline {
+			transition: none;
+		}
 	}
 
 	/* Footer */

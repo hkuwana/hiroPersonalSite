@@ -1,4 +1,25 @@
-# Hiro Kuwana — hirokuwana.com
+import type { RequestHandler } from './$types';
+import { SITE } from '$data/constants';
+
+export const prerender = true;
+
+interface EssayMetadata {
+	title: string;
+	date: string;
+	description: string;
+}
+
+// Anchors are the <h2 id> values in src/content/ai-guides/index.md.
+const AI_GUIDES = [
+	{ id: 'self-editing-system-prompt', title: 'A self-editing system prompt for technical writing' },
+	{ id: 'four-model-debate', title: 'How I run a 4-model debate to find a position I trust' },
+	{ id: 'prompt-versioning', title: 'Local-first prompt versioning with plain text + git' },
+	{ id: 'three-line-context', title: 'Give AI the right context in three lines' },
+	{ id: 'show-me-where-youre-guessing', title: 'The "show me where you\'re guessing" prompt' },
+	{ id: 'weekly-ai-checkin', title: 'A 20-minute weekly AI check-in' }
+] as const;
+
+const HEAD = `# Hiro Kuwana — hirokuwana.com
 
 > Personal site of Hiro Kuwana, solo founder of Kaiwa (https://www.trykaiwa.com), a real-time AI conversation platform for language learners, and co-founder of Otterd (https://otterd.co), which builds custom AI workflows for private equity and hedge fund teams. The site holds essays, practical AI guides, and a small public tool API for calendar (.ics) files, contact (.vcf) files, and cleaning and redacting text before it reaches a model.
 
@@ -27,8 +48,57 @@ Examples:
 - [AI guides](https://hirokuwana.com/ai-guides): practical prompts and workflows
 - [About](https://hirokuwana.com/about): who Hiro is, frequently asked questions
 - [Tools](https://hirokuwana.com/tools): browser versions of the API tools
+`;
 
-## Contact
+const CONTACT = `## Contact
 
 - Email: hiro [at] trykaiwa [dot] com
 - Calendar: https://cal.com/hiro-kuwana/25-min?user=hiro-kuwana
+`;
+
+export const GET: RequestHandler = async () => {
+	const essayFiles = import.meta.glob(['/src/content/essays/*.md', '!/src/content/essays/_*.md'], {
+		eager: true
+	});
+
+	const essays = Object.entries(essayFiles)
+		.map(([path, module]) => {
+			const slug = path.split('/').pop()?.replace('.md', '') || '';
+			const { metadata } = module as { metadata: EssayMetadata };
+			return {
+				slug,
+				title: metadata?.title ?? slug,
+				date: metadata?.date ?? '',
+				description: metadata?.description ?? ''
+			};
+		})
+		.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+	const essayLines = essays.map(
+		(e) => `- [${e.title}](${SITE.url}/essays/${e.slug}): ${e.description} (${e.date})`
+	);
+	const guideLines = AI_GUIDES.map((g) => `- [${g.title}](${SITE.url}/ai-guides#${g.id})`);
+
+	const body = `${HEAD}
+## Essays
+
+${essayLines.join('\n')}
+
+## AI guides
+
+${guideLines.join('\n')}
+
+## Feeds
+
+- [RSS](${SITE.url}/rss.xml): essays feed
+- [llms-full.txt](${SITE.url}/llms-full.txt): full text of essays and AI guides
+
+${CONTACT}`;
+
+	return new Response(body, {
+		headers: {
+			'Content-Type': 'text/plain; charset=utf-8',
+			'Cache-Control': 'max-age=0, s-maxage=3600'
+		}
+	});
+};

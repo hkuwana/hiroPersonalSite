@@ -5,6 +5,7 @@
 	import '../style.css';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale } from '$lib/paraglide/runtime';
+	import { SITE } from '$data/constants';
 
 	onMount(() => {
 		document.addEventListener('click', trackOutboundClick);
@@ -50,6 +51,12 @@
 	<link
 		href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap"
 		rel="stylesheet"
+	/>
+	<link
+		rel="alternate"
+		type="application/rss+xml"
+		title="Hiro Kuwana — Essays"
+		href="{SITE.url}/rss.xml"
 	/>
 </svelte:head>
 

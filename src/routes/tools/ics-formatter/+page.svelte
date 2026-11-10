@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { SITE } from '$data/constants';
+	import { jsonLd } from '$lib/seo';
+	import { TOOL_META, toolPageGraph } from '$lib/seo-tools';
 	import { formatIcs } from '$lib/tools/ics';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
@@ -11,6 +13,9 @@
 	let lang = $derived(($optimisticLocale ?? (($page.data.locale as Locale | undefined) ?? getLocale())) as Locale);
 	const path = '/tools/ics-formatter';
 	let self = $derived(lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`);
+	const tool = TOOL_META.ics;
+	let pageTitle = $derived(lang === 'ja' ? 'ICS フォーマッタ · カレンダー (.ics) を整える · Hiro Kuwana' : 'ICS formatter · validate & fix calendar files · Hiro Kuwana');
+	let ogTitle = $derived(lang === 'ja' ? 'ICS フォーマッタ · Hiro Kuwana' : 'ICS formatter · Hiro Kuwana');
 
 	type Issue = { kind: 'error' | 'warning' | 'fixed'; message: string };
 
@@ -129,23 +134,26 @@ END:VCALENDAR`;
 </script>
 
 <svelte:head>
-	<title>ICS formatter · validate & fix calendar files · Hiro Kuwana</title>
-	<meta
-		name="description"
-		content="Free in-browser ICS validator and formatter. Fix line endings, line folding, missing UID, DTSTAMP, and other RFC 5545 issues in .ics calendar files. Runs locally, no upload."
-	/>
+	<title>{pageTitle}</title>
+	<!-- TODO(needs Hiro): ja description. The English one serves both locales for now. -->
+	<meta name="description" content={tool.description} />
 	<meta name="keywords" content="ics validator, ics formatter, ics fixer, ical validator, calendar file fixer, rfc 5545, vcalendar, vevent" />
 	<meta name="robots" content="index, follow" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={self} />
-	<meta property="og:title" content="ICS formatter · Hiro Kuwana" />
+	<meta property="og:title" content={ogTitle} />
 	<meta property="og:description" content="Paste a broken .ics file. Get a clean one. Fixes line endings, missing UID/DTSTAMP, and RFC 5545 details. Runs locally." />
 	<meta property="og:image" content={SITE.image} />
+	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
+	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content={ogTitle} />
 	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/tools/ics-formatter`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/tools/ics-formatter`} />
 	<link rel="alternate" hreflang="x-default" href={`${SITE.url}/tools/ics-formatter`} />
+	<!-- WebApplication and Home › Tools › tool breadcrumb, built by $lib/seo-tools -->
+	{@html jsonLd(toolPageGraph(tool, lang))}
 </svelte:head>
 
 <article class="tool-page">

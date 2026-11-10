@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { SITE } from '$data/constants';
+	import { jsonLd } from '$lib/seo';
+	import { TOOL_META, toolPageGraph } from '$lib/seo-tools';
 	import { splitVcf } from '$lib/tools/vcf';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
@@ -11,6 +13,9 @@
 	let lang = $derived(($optimisticLocale ?? (($page.data.locale as Locale | undefined) ?? getLocale())) as Locale);
 	const path = '/tools/vcf-splitter';
 	let self = $derived(lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`);
+	const tool = TOOL_META.vcf;
+	let pageTitle = $derived(lang === 'ja' ? 'VCF スプリッタ · 連絡先を一人ずつに分ける · Hiro Kuwana' : 'VCF splitter · one vCard per contact · Hiro Kuwana');
+	let ogTitle = $derived(lang === 'ja' ? 'VCF スプリッタ · Hiro Kuwana' : 'VCF splitter · Hiro Kuwana');
 
 	type Contact = {
 		raw: string;
@@ -339,26 +344,29 @@ END:VCARD`;
 </script>
 
 <svelte:head>
-	<title>VCF splitter · one vCard per contact · Hiro Kuwana</title>
-	<meta
-		name="description"
-		content="Free browser-based VCF splitter. Split a .vcf file with many contacts into individual vCard files. Fix missing structured name fields and download selected contacts as one .vcf or a zip folder. Runs locally."
-	/>
+	<title>{pageTitle}</title>
+	<!-- TODO(needs Hiro): ja description. The English one serves both locales for now. -->
+	<meta name="description" content={tool.description} />
 	<meta name="keywords" content="vcf splitter, vcard splitter, split vcf file, split contacts, vcard tool, contact splitter, iphone contacts, android contacts" />
 	<meta name="robots" content="index, follow" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={self} />
-	<meta property="og:title" content="VCF splitter · Hiro Kuwana" />
+	<meta property="og:title" content={ogTitle} />
 	<meta
 		property="og:description"
 		content="Split a multi-contact .vcf into individual vCards. Fix structured name fields, search, select, and download. Runs locally in your browser."
 	/>
 	<meta property="og:image" content={SITE.image} />
+	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
+	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content={ogTitle} />
 	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/tools/vcf-splitter`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/tools/vcf-splitter`} />
 	<link rel="alternate" hreflang="x-default" href={`${SITE.url}/tools/vcf-splitter`} />
+	<!-- WebApplication and Home › Tools › tool breadcrumb, built by $lib/seo-tools -->
+	{@html jsonLd(toolPageGraph(tool, lang))}
 </svelte:head>
 
 <article class="tool-page">

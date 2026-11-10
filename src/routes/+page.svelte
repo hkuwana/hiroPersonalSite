@@ -407,6 +407,11 @@
 	$: t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	$: statusLabel = (status: Status) => t(`work.status.${status}`);
 	$: canonicalUrl = lang === 'ja' ? `${SITE.url}/ja` : SITE.url;
+	// Japanese title: existing hero strings (name + headline), not new copy.
+	$: metaTitle =
+		lang === 'ja'
+			? `${COPY.ja['hero.name']} (Hiro Kuwana) · ${COPY.ja['hero.title.l1']}${COPY.ja['hero.title.tools']}`
+			: SITE.title;
 
 	const getContactEmail = () => {
 		const [user, domain, topLevelDomain] = CONTACT.emailParts;
@@ -448,7 +453,8 @@
 </script>
 
 <svelte:head>
-	<title>{SITE.title}</title>
+	<title>{metaTitle}</title>
+	<!-- TODO(needs Hiro): ja description. The English one serves both locales for now. -->
 	<meta
 		name="description"
 		content={SITE.description}
@@ -459,7 +465,7 @@
 	<meta name="googlebot" content="index, follow" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={canonicalUrl} />
-	<meta property="og:title" content={SITE.title} />
+	<meta property="og:title" content={metaTitle} />
 	<meta property="og:description" content={SITE.description} />
 	<meta property="og:image" content={SITE.image} />
 	<meta property="og:image:width" content="1200" />
@@ -471,7 +477,7 @@
 	<meta property="profile:first_name" content="Hiro" />
 	<meta property="profile:last_name" content="Kuwana" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content={SITE.title} />
+	<meta name="twitter:title" content={metaTitle} />
 	<meta name="twitter:description" content={SITE.description} />
 	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href={canonicalUrl} />

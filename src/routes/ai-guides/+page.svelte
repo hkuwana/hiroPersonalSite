@@ -3,6 +3,8 @@
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import type { PageData } from './$types';
 	import NewsletterSignup from '$lib/components/NewsletterSignup.svelte';
+	import { SITE } from '$data/constants';
+	import { article, breadcrumbs, jsonLd } from '$lib/seo';
 
 	let { data }: { data: PageData } = $props();
 
@@ -23,23 +25,52 @@
 				}
 	);
 	const formattedDate = $derived(
-		new Date(data.updated).toLocaleDateString(lang === 'ja' ? 'ja-JP' : 'en-US', {
+		new Date(`${data.updated}T00:00:00`).toLocaleDateString(lang === 'ja' ? 'ja-JP' : 'en-US', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
 		})
 	);
 	const Content = $derived(data.content);
+	// The frontmatter `title` is the visible h1; `seoTitle`, when set, is the
+	// search and share title.
+	const seoTitle = $derived(data.seoTitle || 'AI Guides - Hiro Kuwana');
 </script>
 
 <svelte:head>
-	<title>{data.title} - Hiro Kuwana</title>
+	<title>{seoTitle}</title>
 	<meta name="description" content={data.description} />
-	<meta property="og:title" content="{data.title} - Hiro Kuwana" />
+	<meta property="og:title" content={seoTitle} />
 	<meta property="og:description" content={data.description} />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="https://hirokuwana.com/ai-guides" />
+	<meta property="article:modified_time" content={data.updated} />
+	<meta property="article:author" content="Hiro Kuwana" />
 	<link rel="canonical" href="https://hirokuwana.com/ai-guides" />
+
+	<meta property="og:image" content={SITE.image} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:site_name" content={SITE.name} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={seoTitle} />
+	<meta name="twitter:description" content={data.description} />
+	<meta name="twitter:image" content={SITE.image} />
+
+	<!-- Article and breadcrumb structured data, built by $lib/seo -->
+	{@html jsonLd([
+		article({
+			headline: data.seoTitle || 'AI Guides',
+			description: data.description,
+			path: '/ai-guides',
+			updated: data.updated,
+			sections: data.sections
+		}),
+		breadcrumbs([
+			{ name: 'Home', path: '/' },
+			{ name: 'AI Guides', path: '/ai-guides' }
+		])
+	])}
 </svelte:head>
 
 <article class="guide-page">

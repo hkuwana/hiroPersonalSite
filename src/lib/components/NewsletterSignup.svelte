@@ -9,6 +9,7 @@
 	const COPY = {
 		en: {
 			label: 'Get new essays by email',
+			promise: 'Field notes, by email',
 			micro: 'Email',
 			placeholder: 'you@example.com',
 			submit: 'Subscribe',
@@ -20,6 +21,7 @@
 		},
 		ja: {
 			label: '新しいエッセイをメールで受け取る',
+			promise: '現場ノートをメールで',
 			micro: 'メール',
 			placeholder: 'you@example.com',
 			submit: '登録する',
@@ -72,6 +74,7 @@
 			<span class="micro" aria-hidden="true">{copy.micro}</span>
 			<span class="label-text">{copy.label}</span>
 		</label>
+		<p id="{inputId}-promise" class="signup-promise">{copy.promise}</p>
 		<div class="signup-row">
 			<input
 				id={inputId}
@@ -86,7 +89,7 @@
 				bind:value={email}
 				disabled={status === 'sending'}
 				aria-invalid={status === 'error' ? 'true' : undefined}
-				aria-describedby="{inputId}-status"
+				aria-describedby="{inputId}-promise {inputId}-status"
 			/>
 			<button class="signup-submit" type="submit" disabled={status === 'sending'}>
 				{status === 'sending' ? copy.sending : copy.submit}
@@ -115,7 +118,16 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.375rem;
-		margin-bottom: 0.875rem;
+		margin-bottom: 0.375rem;
+	}
+
+	/* ink-soft on paper is well above 4.5:1 in both themes. */
+	.signup-promise {
+		margin: 0 0 0.875rem;
+		font-family: var(--f-body);
+		font-size: 0.9375rem;
+		line-height: 1.5;
+		color: var(--ink-soft);
 	}
 
 	.micro {
