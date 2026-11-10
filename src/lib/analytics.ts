@@ -1,5 +1,6 @@
 type Event =
 	| 'outbound_link_clicked'
+	| 'newsletter_subscribed'
 	| 'contact_email_copied'
 	| 'contact_email_revealed'
 	// Ink village: which fidelity a visitor got and why ("hi:capable"), and

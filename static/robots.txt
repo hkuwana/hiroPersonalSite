@@ -12,8 +12,6 @@ Allow: /essays
 Allow: /essays/
 Allow: /ai-guides
 Allow: /ai-guides/
-Allow: /case-study
-Allow: /corporate
 
 User-agent: Googlebot-Image
 Allow: /

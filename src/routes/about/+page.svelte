@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
-	import { FAQS, PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+	import { FAQS, SITE, type Faq } from '$data/constants';
+	import { jsonLd, person, PERSON_ID } from '$lib/seo';
 	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
 	import { DESK_ITEMS } from '$lib/home/desk-items';
 	import { optimisticLocale } from '$lib/locale-state';
@@ -22,33 +23,42 @@
 	];
 	const takeOf = (id: string) => DESK_ITEMS.find((i) => i.id === id)?.take;
 
-	const faqJsonLd = {
-		'@context': 'https://schema.org',
-		'@type': 'FAQPage',
-		mainEntity: FAQS.map((faq) => ({
-			'@type': 'Question',
-			name: faq.question,
-			acceptedAnswer: {
-				'@type': 'Answer',
-				text: faq.answer
-			}
-		}))
+	// Japanese Q&As are optional. Until a FAQ has them, /ja shows the English
+	// text, marked lang="en" so screen readers and translators read it as English.
+	type LocalFaq = Faq & { questionJa?: string; answerJa?: string };
+	const faqText = (faq: LocalFaq, locale: Locale) => {
+		if (locale === 'ja' && faq.questionJa && faq.answerJa) {
+			return { question: faq.questionJa, answer: faq.answerJa, lang: undefined };
+		}
+		return { question: faq.question, answer: faq.answer, lang: locale === 'ja' ? 'en' : undefined };
 	};
 
-	const aboutJsonLd = {
-		'@context': 'https://schema.org',
-		'@type': 'AboutPage',
-		url: `${SITE.url}/about`,
-		mainEntity: {
-			'@type': 'Person',
-			name: PERSONAL.displayName,
-			alternateName: [PERSONAL.japaneseKanji, PERSONAL.fullName],
-			jobTitle: PERSONAL.jobTitle,
-			worksFor: { '@type': 'Organization', name: PERSONAL.company, url: PERSONAL.companyWebsite },
-			alumniOf: { '@type': 'CollegeOrUniversity', name: PERSONAL.university },
-			sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github, SOCIAL_LINKS.twitter, SOCIAL_LINKS.quora]
+	const path = '/about';
+	$: self = lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`;
+
+	$: structuredData = jsonLd([
+		person,
+		{
+			'@type': 'AboutPage',
+			'@id': `${self}#about`,
+			url: self,
+			inLanguage: lang,
+			mainEntity: { '@id': PERSON_ID }
+		},
+		{
+			'@type': 'FAQPage',
+			'@id': `${self}#faq`,
+			url: self,
+			mainEntity: visibleFaqs.map((faq) => {
+				const t = faqText(faq, lang);
+				return {
+					'@type': 'Question',
+					name: t.question,
+					acceptedAnswer: { '@type': 'Answer', text: t.answer }
+				};
+			})
 		}
-	};
+	]);
 
 	$: copy =
 		lang === 'ja'
@@ -92,19 +102,18 @@
 	/>
 	<meta name="robots" content="index, follow, max-image-preview:large" />
 	<meta property="og:type" content="profile" />
-	<meta property="og:url" content={`${SITE.url}/about`} />
+	<meta property="og:url" content={self} />
 	<meta property="og:title" content="About · Hiro Kuwana" />
 	<meta property="og:description" content="A solo founder building Kaiwa and writing down what the work is teaching him." />
 	<meta property="og:image" content={SITE.image} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="About · Hiro Kuwana" />
 	<meta name="twitter:description" content="A solo founder building Kaiwa and writing down what the work is teaching him." />
-	<link rel="canonical" href={`${SITE.url}/about`} />
+	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/about`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/about`} />
 	<link rel="alternate" hreflang="x-default" href={`${SITE.url}/about`} />
-	{@html `<` + `script type="application/ld+json">${JSON.stringify(faqJsonLd)}</` + `script>`}
-	{@html `<` + `script type="application/ld+json">${JSON.stringify(aboutJsonLd)}</` + `script>`}
+	{@html structuredData}
 </svelte:head>
 
 <article class="about-page frame-deco">
@@ -123,14 +132,15 @@
 
 	<section class="faq-list" aria-label="Frequently asked questions">
 		{#each visibleFaqs as faq, i}
-			<details class="faq-item">
+			{@const t = faqText(faq, lang)}
+			<details class="faq-item" lang={t.lang}>
 				<summary>
 					<span class="q-num">{String(i + 1).padStart(2, '0')}</span>
-					<span class="q-text">{faq.question}</span>
+					<span class="q-text">{t.question}</span>
 					<span class="q-marker" aria-hidden="true">+</span>
 				</summary>
 				<div class="answer">
-					<p>{faq.answer}</p>
+					<p>{t.answer}</p>
 				</div>
 			</details>
 		{/each}

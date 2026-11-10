@@ -31,7 +31,7 @@
 	const footerCopy = $derived(
 		lang === 'ja' ? '© 2026 Hiro · 東京 · ニューヨーク' : '© 2026 Hiro · Tokyo · New York'
 	);
-	const footerRight = $derived(lang === 'ja' ? 'v3.0' : 'v3.0');
+	const footerRight = 'v3.0';
 
 	$effect(() => {
 		if (typeof document !== 'undefined') {

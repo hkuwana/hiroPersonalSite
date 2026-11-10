@@ -46,7 +46,6 @@ export const SITE = {
 		'human-centric AI',
 		'educational technology',
 		'AI augmentation',
-		'venture capital AI',
 		'language learning app',
 		'tech innovation',
 		'artificial intelligence',
@@ -82,9 +81,9 @@ export const PROJECTS = [
 	},
 	{
 		name: 'Kaiwa',
-		tagline: 'Language Learning, Reimagined',
+		tagline: 'Augment language coaches',
 		description:
-			'Practice languages through bite-sized AI conversations. Real-time translations, social streaks, and 30-second daily sessions.',
+			'A platform where language learners speak daily with AI, and coaches can architect and individualize learner journeys.',
 		link: PERSONAL.companyWebsite,
 		logo: '/kaiwa_logo.png',
 		status: 'current',
@@ -92,9 +91,9 @@ export const PROJECTS = [
 	},
 	{
 		name: 'Exonians in Japan',
-		tagline: 'Built in 1.5 Hours',
+		tagline: 'A fast community platform',
 		description:
-			'A community platform connecting Exeter alumni in Japan. Rapid prototype showcasing speed and execution.',
+			'A small, practical alumni site for Exeter alumni in Japan, focused on photos and community building.',
 		link: 'https://exoniansjapan.com/',
 		github: 'https://github.com/hkuwana/exonians-in-japan',
 		logo: '/icon-512x512.png',
@@ -103,9 +102,9 @@ export const PROJECTS = [
 	},
 	{
 		name: 'Kaiwa Reddit Scout',
-		tagline: 'AI-Powered User Discovery',
+		tagline: 'Signal-finding for language learners',
 		description:
-			'Connects Google Drive, Reddit, and Gemini to find potential users interested in language learning.',
+			'A local workflow that connects Reddit, Drive, and Gemini to find language learners with real intent.',
 		github: 'https://github.com/hkuwana/Kaiwa-reddit-scout',
 		logo: '/kaiwa_logo.png',
 		status: 'active',
@@ -113,33 +112,22 @@ export const PROJECTS = [
 	},
 	{
 		name: 'Flybyrd',
-		tagline: 'AI for Venture Capital',
+		tagline: 'AI for product managers',
 		description:
-			'Helped VCs discover and analyze startups with AI-powered deal flow analysis. Sunset to focus on new opportunities.',
+			'Organizing scattered feedback for product managers. A practical, private dashboard for the signals that matter.',
 		logo: '/flybyrd_logo.png',
 		status: 'sunset',
 		color: '#6b7280'
 	},
 	{
 		name: 'Pebblr',
-		tagline: 'Connecting Nonprofits',
+		tagline: 'Connecting nonprofits and donors/volunteers',
 		description:
-			'Connected nonprofits with younger donors. Sunset after GPT technologies offered more scalable solutions.',
+			'A nonprofit donor experiment connecting nonprofits with donors and volunteers, and a lesson in where human trust matters more than platform mechanics.',
 		logo: '/icon-512x512.png',
 		status: 'sunset',
 		color: '#6b7280'
 	}
-] as const;
-
-// Expertise Areas
-export const EXPERTISE = [
-	'Artificial Intelligence',
-	'Educational Technology',
-	'Venture Capital',
-	'Language Learning',
-	'Startup Development',
-	'Product Design',
-	'AI Democratization'
 ] as const;
 
 // FAQs — visible ones render on /about; all entries (visible + hidden) ship in

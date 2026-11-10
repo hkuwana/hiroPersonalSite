@@ -4,11 +4,6 @@ date: "2026-02-09"
 description: "Why Markov chains are a better mental model for SaaS growth than the traditional sales funnel."
 ---
 
-<!--
-STATUS: DRAFT — Fill in the [bracketed sections] with your own words, then delete the brackets.
-When done, remove this comment block and all brackets.
--->
-
 Everyone with basic marketing knowledge knows [the funnel](https://en.wikipedia.org/wiki/Purchase_funnel). At the top is where the general audience gets brand awareness, then interest, then conversion, and finally loyalty. They have exposure to your site, some sign up, some become freemium users, some pay, and then it's pretty much done. That's the whole model.
 
 But there's a problem. The funnel assumes there's only one path: downwards. It's a nice mental model, but it's not true. Users can go from hating a product to trying it out, liking it, buying it, churning, and then coming back once the product has improved to buy it again. It's not a linear path. It's a loop.

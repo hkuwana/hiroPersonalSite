@@ -17,7 +17,8 @@
 		id: string;
 		status: Status;
 		year: string;
-		href: string;
+		// Optional: a sunset project with nothing public to open renders as a plain card.
+		href?: string;
 		external?: boolean;
 		title: string;
 		titleJa: string;
@@ -42,9 +43,20 @@
 		{ value: 'solo', label: 'built and run by one person', labelJa: 'ひとりで開発・運用' }
 	];
 
+	// The season mark follows the calendar (build/render month), so it never goes stale.
+	const SEASONS = [
+		{ jp: '冬', en: 'winter' },
+		{ jp: '春', en: 'spring' },
+		{ jp: '夏', en: 'summer' },
+		{ jp: '秋', en: 'autumn' }
+	];
+	const NOW = new Date();
+	const SEASON = SEASONS[Math.floor(((NOW.getMonth() + 1) % 12) / 3)];
+	const SEASON_LABEL = `${SEASON.jp} · ${SEASON.en} · ${NOW.getFullYear()}`;
+
 	const COPY: Record<Locale, Record<string, string>> = {
 		en: {
-			'hero.season': '夏 · summer · 2026',
+			'hero.season': SEASON_LABEL,
 			'hero.vert': '人 を 拡 張 す る 道 具',
 			'hero.title.l1': 'Building a',
 			'hero.title.tools': 'company',
@@ -98,16 +110,13 @@
 				"I'm always interested in how other people are building with AI—especially the places where it creates more work instead of less. I'm working on Kaiwa and Otterd, and thoughtful notes are welcome.",
 			'contact.aside.hi':
 				'Tell me what you are working on, what surprised you, or where you are stuck. I read every message myself and usually reply within a few days.',
-			'contact.tools.title': 'Side tools · 道具',
 			'contact.tools.cal.label': 'Tea for 25 minutes',
 			'contact.tools.cal.desc': 'Pick a time directly. No pitch deck required.',
-			'contact.tools.vcf.label': 'vCard · save my contact',
+			'contact.tools.vcf.label': 'vCard',
 			'contact.tools.vcf.desc': 'A simple contact card without a public email address.',
-			'contact.tools.ics.label': 'Tea on the calendar',
-			'contact.tools.ics.desc': 'A 25-minute placeholder with the booking link tucked inside.',
 		},
 		ja: {
-			'hero.season': '夏 · summer · 2026',
+			'hero.season': SEASON_LABEL,
 			'hero.vert': '人 を 拡 張 す る 道 具',
 			'hero.title.l1': 'AI と',
 			'hero.title.tools': '会社をつくる',
@@ -160,13 +169,10 @@
 			'contact.aside.lead':
 				'ほかの人が AI をどう使ってものをつくっているのか、いつも気になります。とくに、仕事が減るはずの AI で、かえって仕事が増えてしまうところ。いまは Kaiwa と Otterd に取り組んでいます。考えのあるお便りは歓迎です。',
 			'contact.aside.hi': 'いま何をつくっているか、何を試したか、どこで行き詰まったか。届いたメッセージはすべて自分で読み、たいてい数日以内に返事します。',
-			'contact.tools.title': '道具 · side tools',
 			'contact.tools.cal.label': '25分、お茶でも',
 			'contact.tools.cal.desc': '都合のいい時間を直接選べます。資料はいりません。',
-			'contact.tools.vcf.label': 'vCard · 連絡先を保存',
+			'contact.tools.vcf.label': 'vCard · 連絡先',
 			'contact.tools.vcf.desc': 'メールアドレスを公開しない、シンプルな連絡先カード。',
-			'contact.tools.ics.label': '予定にお茶を入れる',
-			'contact.tools.ics.desc': '予約リンクを入れた、25分のお茶の予定。',
 		}
 	};
 
@@ -249,7 +255,8 @@
 			id: 'flybyrd',
 			status: 'sunset',
 			year: '2024 - 2025',
-			href: '#contact',
+			href: 'https://github.com/hkuwana/flybyrd',
+			external: true,
 			title: 'Flybyrd',
 			titleJa: 'Flybyrd',
 			subtitle: 'AI for product managers',
@@ -264,7 +271,6 @@
 			id: 'pebblr',
 			status: 'sunset',
 			year: '2021 - 2023',
-			href: '#contact',
 			title: 'Pebblr',
 			titleJa: 'Pebblr',
 			subtitle: 'connecting nonprofits and donors/volunteers',
@@ -400,6 +406,7 @@
 	$: visiblePieces = filter === 'all' ? PIECES : PIECES.filter((piece) => piece.status === filter);
 	$: t = (key: string) => COPY[lang]?.[key] ?? COPY.en[key] ?? key;
 	$: statusLabel = (status: Status) => t(`work.status.${status}`);
+	$: canonicalUrl = lang === 'ja' ? `${SITE.url}/ja` : SITE.url;
 
 	const getContactEmail = () => {
 		const [user, domain, topLevelDomain] = CONTACT.emailParts;
@@ -451,7 +458,7 @@
 	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 	<meta name="googlebot" content="index, follow" />
 	<meta property="og:type" content="profile" />
-	<meta property="og:url" content={SITE.url} />
+	<meta property="og:url" content={canonicalUrl} />
 	<meta property="og:title" content={SITE.title} />
 	<meta property="og:description" content={SITE.description} />
 	<meta property="og:image" content={SITE.image} />
@@ -467,7 +474,7 @@
 	<meta name="twitter:title" content={SITE.title} />
 	<meta name="twitter:description" content={SITE.description} />
 	<meta name="twitter:image" content={SITE.image} />
-	<link rel="canonical" href={SITE.url} />
+	<link rel="canonical" href={canonicalUrl} />
 	<link rel="alternate" hreflang="en" href={SITE.url} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja`} />
 	<link rel="alternate" hreflang="x-default" href={SITE.url} />
@@ -559,12 +566,11 @@
 			<h2>{t('work.title')} <em>{t('work.titleEm')}</em></h2>
 		</div>
 
-		<div class="proj-filter" role="tablist" aria-label="Project status filter">
+		<div class="proj-filter" role="group" aria-label={lang === 'ja' ? '状態で絞り込む' : 'Filter projects by status'}>
 			{#each STATUS_OPTIONS as option}
 				<button
 					type="button"
-					role="tab"
-					aria-selected={filter === option.value}
+					aria-pressed={filter === option.value}
 					class={`proj-chip status-${option.value} ${filter === option.value ? 'is-on' : ''}`}
 					onclick={() => (filter = option.value)}
 				>
@@ -578,11 +584,13 @@
 		<ol class="scrap" class:collapse-sunset={filter === 'all' && !showSunset}>
 			{#each visiblePieces as piece (piece.id)}
 				<li class:is-sunset={piece.status === 'sunset'}>
-				<a
+				<svelte:element
+					this={piece.href ? 'a' : 'div'}
 					href={piece.href}
 					class={`scrap-piece status-${piece.status}`}
-					target={piece.external ? '_blank' : undefined}
-					rel={piece.external ? 'noopener' : undefined}
+					class:is-static={!piece.href}
+					target={piece.href && piece.external ? '_blank' : undefined}
+					rel={piece.href && piece.external ? 'noopener' : undefined}
 				>
 					<div class="frame frame-deco">
 						<div class="thumb">
@@ -590,7 +598,7 @@
 								<span class="dot"></span>
 								{statusLabel(piece.status)}
 							</span>
-							<img src={piece.logo} alt="{piece.title} logo" class="project-logo" loading="lazy" />
+							<img src={piece.logo} alt="{piece.title} logo" class="project-logo" width="148" height="148" loading="lazy" />
 							<span class="thumb-label">No. {pieceNumber(piece)} · {piece.year}</span>
 						</div>
 						<h3>{lang === 'ja' ? piece.titleJa : piece.title} <em>{lang === 'ja' ? piece.subtitleJa : piece.subtitle}</em></h3>
@@ -605,9 +613,11 @@
 							<span>{lang === 'ja' ? piece.roleJa : piece.role}</span>
 							<span>{piece.year}</span>
 						</div>
-						<span class="read-more">{t('work.readMore')}</span>
+						{#if piece.href}
+							<span class="read-more">{t('work.readMore')}</span>
+						{/if}
 					</div>
-				</a>
+				</svelte:element>
 				</li>
 			{/each}
 		</ol>
@@ -691,6 +701,7 @@
 				</div>
 				<div class="more-links">
 					<a href={localizeHref('/essays', { locale: lang })}>{lang === 'ja' ? 'すべてのエッセイ →' : 'All essays →'}</a>
+					<a class="guides-link" href={localizeHref('/ai-guides', { locale: lang })}>{lang === 'ja' ? 'AI ガイド →' : 'AI guides →'}</a>
 				</div>
 			</div>
 		</div>
@@ -716,21 +727,8 @@
 				</div>
 
 				<div class="contact-tools">
-					<span class="tools-eyebrow">{t('contact.tools.title')}</span>
-					<ul class="tools-list">
-						<li>
-							<a href={CONTACT.cal} target="_blank" rel="noopener">{t('contact.tools.cal.label')} →</a>
-							<span>{t('contact.tools.cal.desc')}</span>
-						</li>
-						<li>
-							<a href={asset('/hiro-kuwana.vcf')} download>{t('contact.tools.vcf.label')}</a>
-							<span>{t('contact.tools.vcf.desc')}</span>
-						</li>
-						<li>
-							<a href={asset('/tea-with-hiro.ics')} download>{t('contact.tools.ics.label')}</a>
-							<span>{t('contact.tools.ics.desc')}</span>
-						</li>
-					</ul>
+					<a href={CONTACT.cal} target="_blank" rel="noopener" title={t('contact.tools.cal.desc')}>{t('contact.tools.cal.label')} →</a>
+					<a href={asset('/hiro-kuwana.vcf')} download title={t('contact.tools.vcf.desc')}>{t('contact.tools.vcf.label')}</a>
 				</div>
 			</aside>
 

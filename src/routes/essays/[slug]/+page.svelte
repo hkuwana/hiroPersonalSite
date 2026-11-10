@@ -1,24 +1,25 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { SITE } from '$data/constants';
 	import { blogPosting, breadcrumbs, jsonLd } from '$lib/seo';
+	import NewsletterSignup from '$lib/components/NewsletterSignup.svelte';
 
 	export let data: PageData;
 
-	let visible = false;
+	type Locale = 'en' | 'ja';
 
-	onMount(() => {
-		requestAnimationFrame(() => {
-			visible = true;
-		});
-	});
-
-	const formattedDate = new Date(data.date).toLocaleDateString('en-US', {
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric'
-	});
+	$: lang = (($page.data.locale as Locale | undefined) ?? getLocale()) as Locale;
+	$: essaysHref = localizeHref('/essays', { locale: lang });
+	$: formattedDate = new Date(`${data.date}T00:00:00`).toLocaleDateString(
+		lang === 'ja' ? 'ja-JP' : 'en-US',
+		{
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		}
+	);
 </script>
 
 <svelte:head>
@@ -52,30 +53,32 @@
 	])}
 </svelte:head>
 
-<article class="essay-page" class:visible>
+<article class="essay-page">
 	<header class="essay-header">
-		<a href="/essays" class="back-link text-secondary hover:text-accent">
-			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+		<a href={essaysHref} class="back-link">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<span>Essays</span>
+			<span>{lang === 'ja' ? 'エッセイ' : 'Essays'}</span>
 		</a>
 
-		<h1 class="essay-title text-primary">{data.title}</h1>
-		<time datetime={data.date} class="essay-date text-base-content/50">{formattedDate}</time>
+		<h1 class="essay-title">{data.title}</h1>
+		<time datetime={data.date} class="essay-date">{formattedDate}</time>
 	</header>
 
 	<div class="essay-content">
 		<svelte:component this={data.content} />
 	</div>
 
+	<NewsletterSignup {lang} source="essay" />
+
 	<footer class="essay-footer">
 		<div class="footer-divider"></div>
-		<a href="/essays" class="footer-link text-secondary hover:text-accent">
-			<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+		<a href={essaysHref} class="footer-link">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
 				<path d="M12.5 8H3.5M3.5 8L7.5 4M3.5 8L7.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 			</svg>
-			<span>Back to all essays</span>
+			<span>{lang === 'ja' ? 'すべてのエッセイへ戻る' : 'Back to all essays'}</span>
 		</a>
 	</footer>
 </article>
@@ -85,14 +88,24 @@
 		max-width: 680px;
 		margin: 0 auto;
 		padding: calc(var(--nav-h) + 2.5rem) 2rem 6rem;
-		opacity: 0;
-		transform: translateY(20px);
-		transition: all 0.6s var(--ease-out-expo);
 	}
 
-	.essay-page.visible {
-		opacity: 1;
-		transform: translateY(0);
+	/* Content is visible without JS; the entrance only runs when motion is welcome. */
+	@media (prefers-reduced-motion: no-preference) {
+		.essay-page {
+			animation: page-in 0.6s var(--ease-out-expo) both;
+		}
+	}
+
+	@keyframes page-in {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
 	}
 
 	/* Header */
@@ -125,12 +138,13 @@
 	}
 
 	.essay-title {
+		font-family: var(--f-display);
 		font-size: clamp(1.75rem, 5vw, 2.5rem);
-		font-weight: 700;
+		font-weight: 400;
 		line-height: 1.2;
-		color: var(--color-text);
+		color: var(--ink);
 		margin: 0 0 1rem;
-		letter-spacing: -0.02em;
+		letter-spacing: 0;
 	}
 
 	.essay-date {
