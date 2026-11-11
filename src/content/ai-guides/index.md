@@ -1,5 +1,6 @@
 ---
 title: "./ai-guides"
+seoTitle: "AI workflows that I use"
 description: "Practical prompts and workflows for building with AI: what they are good for, where they break, and what still needs human judgment."
 updated: "2026-05-12"
 ---

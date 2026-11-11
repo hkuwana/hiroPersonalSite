@@ -6,6 +6,7 @@ export const prerender = true;
 interface EssayMetadata {
 	title: string;
 	date: string;
+	updated?: string;
 	description: string;
 }
 
@@ -39,7 +40,8 @@ export const GET: RequestHandler = async () => {
 	const essays = Object.entries(essayFiles).map(([path, module]) => {
 		const slug = path.split('/').pop()?.replace('.md', '') || '';
 		const { metadata } = module as { metadata: EssayMetadata };
-		return { slug, date: metadata?.date };
+		// A later `updated` frontmatter date, when present, is the real change date.
+		return { slug, date: metadata?.updated ?? metadata?.date };
 	});
 
 	const urls: string[] = [];
@@ -63,6 +65,16 @@ export const GET: RequestHandler = async () => {
         <changefreq>${route.changefreq}</changefreq>
         <priority>${route.priority}</priority>${route.bilingual ? `\n${buildAlternates(route.path)}` : ''}
     </url>`);
+		// Each language version is listed as its own <url>, carrying the same
+		// alternates block so the hreflang annotations are reciprocal.
+		if (route.bilingual) {
+			urls.push(`    <url>
+        <loc>${SITE.url}/ja${suffix}</loc>${lastmodFor(route.path)}
+        <changefreq>${route.changefreq}</changefreq>
+        <priority>${route.priority}</priority>
+${buildAlternates(route.path)}
+    </url>`);
+		}
 	}
 
 	for (const essay of essays) {

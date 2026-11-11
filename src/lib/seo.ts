@@ -1,10 +1,12 @@
 // Structured data (schema.org JSON-LD) for search engines and answer engines.
 // One Person and one WebSite node carry stable @ids, and every page points
 // back to them, so the site reads as one connected graph about one person.
-import { PERSONAL, SITE, SOCIAL_LINKS } from '$data/constants';
+import { PERSONAL, PROJECTS, SITE, SOCIAL_LINKS } from '$data/constants';
 
 export const PERSON_ID = `${SITE.url}/#person`;
 export const WEBSITE_ID = `${SITE.url}/#website`;
+export const KAIWA_ID = `${SITE.url}/#kaiwa`;
+export const OTTERD_ID = `${SITE.url}/#otterd`;
 
 type Node = Record<string, unknown>;
 
@@ -22,16 +24,19 @@ export const absolute = (path: string) => (path.startsWith('http') ? path : `${S
 export const person: Node = {
 	'@type': 'Person',
 	'@id': PERSON_ID,
-	name: 'Hiroyuki (Hiro) Kuwana',
-	alternateName: ['Hiro Kuwana', 'Hiroyuki Kuwana', '桑名浩行'],
+	name: 'Hiro Kuwana',
+	givenName: 'Hiroyuki',
+	familyName: 'Kuwana',
+	alternateName: [
+		'Hiroyuki (Hiro) Kuwana',
+		'Hiroyuki Kuwana',
+		'桑名浩行',
+		'桑名 浩行'
+	],
 	url: SITE.url,
 	image: SITE.image,
-	description: SITE.description,
 	jobTitle: 'Founder & Product Designer',
-	worksFor: [
-		{ '@type': 'Organization', name: 'Kaiwa', url: PERSONAL.companyWebsite },
-		{ '@type': 'Organization', name: 'Otterd', url: 'https://otterd.co/' }
-	],
+	worksFor: [{ '@id': KAIWA_ID }, { '@id': OTTERD_ID }],
 	alumniOf: { '@type': 'CollegeOrUniversity', name: 'Brown University' },
 	nationality: ['Japanese', 'American'],
 	knowsLanguage: ['en', 'ja'],
@@ -44,6 +49,28 @@ export const person: Node = {
 	],
 	sameAs: [SOCIAL_LINKS.linkedin, SOCIAL_LINKS.github, SOCIAL_LINKS.twitter, SOCIAL_LINKS.quora]
 };
+
+// The companies, as their own nodes, so the person, the home page and any
+// other page can point at one Kaiwa and one Otterd by @id.
+const projectDescription = (name: string) => PROJECTS.find((p) => p.name === name)?.description;
+
+function organization(id: string, name: string, url: string, logo: string): Node {
+	const description = projectDescription(name);
+	return {
+		'@type': 'Organization',
+		'@id': id,
+		name,
+		url,
+		logo: absolute(logo),
+		...(description ? { description } : {}),
+		founder: { '@id': PERSON_ID }
+	};
+}
+
+export const kaiwa: Node = organization(KAIWA_ID, 'Kaiwa', PERSONAL.companyWebsite, '/kaiwa_logo.png');
+export const otterd: Node = organization(OTTERD_ID, 'Otterd', 'https://otterd.co/', '/logos/otterd.svg');
+
+const ORGANIZATION_IDS: Record<string, string> = { Kaiwa: KAIWA_ID, Otterd: OTTERD_ID };
 
 export const website: Node = {
 	'@type': 'WebSite',
@@ -69,7 +96,15 @@ export function breadcrumbs(items: { name: string; path: string }[]): Node {
 	};
 }
 
-export type EssayMeta = { slug: string; title: string; date: string; description: string };
+export type EssayMeta = {
+	slug: string;
+	title: string;
+	date: string;
+	description: string;
+	// Frontmatter `updated`, when an essay is revised after publishing.
+	updated?: string;
+	wordCount?: number;
+};
 
 export function blogPosting(e: EssayMeta): Node {
 	const url = absolute(`/essays/${e.slug}`);
@@ -80,7 +115,8 @@ export function blogPosting(e: EssayMeta): Node {
 		description: e.description,
 		url,
 		datePublished: e.date,
-		dateModified: e.date,
+		dateModified: e.updated || e.date,
+		...(e.wordCount ? { wordCount: e.wordCount } : {}),
 		inLanguage: 'en',
 		image: SITE.image,
 		author: { '@id': PERSON_ID },
@@ -111,11 +147,84 @@ export function blog(essays: EssayMeta[]): Node {
 	};
 }
 
-// The home page: a profile of the person, and the projects as a list.
+// A long single page (such as /ai-guides) as an Article, with its sections
+// listed by anchor so each one can be linked to directly.
+export function article(a: {
+	headline: string;
+	description: string;
+	path: string;
+	updated: string;
+	datePublished?: string;
+	sections?: { id: string; name: string }[];
+}): Node {
+	const url = absolute(a.path);
+	return {
+		'@type': 'Article',
+		'@id': `${url}#article`,
+		headline: a.headline,
+		description: a.description,
+		url,
+		...(a.datePublished ? { datePublished: a.datePublished } : {}),
+		dateModified: a.updated,
+		inLanguage: 'en',
+		image: SITE.image,
+		author: { '@id': PERSON_ID },
+		publisher: { '@id': PERSON_ID },
+		isPartOf: { '@id': WEBSITE_ID },
+		mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+		...(a.sections?.length
+			? {
+					hasPart: a.sections.map((section) => ({
+						'@type': 'WebPageElement',
+						'@id': `${url}#${section.id}`,
+						name: section.name,
+						url: `${url}#${section.id}`
+					}))
+				}
+			: {})
+	};
+}
+
+// A free browser tool on this site.
+export function webApplication(app: { name: string; description: string; path: string }): Node {
+	const url = absolute(app.path);
+	return {
+		'@type': 'WebApplication',
+		'@id': `${url}#app`,
+		name: app.name,
+		description: app.description,
+		url,
+		applicationCategory: 'UtilitiesApplication',
+		operatingSystem: 'Any',
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+		author: { '@id': PERSON_ID },
+		isPartOf: { '@id': WEBSITE_ID }
+	};
+}
+
+// The tools index: each tool as a numbered list item pointing at its page.
+export function toolsItemList(items: { name: string; path: string }[]): Node {
+	return {
+		'@type': 'ItemList',
+		'@id': `${SITE.url}/tools#list`,
+		name: 'Tools',
+		itemListElement: items.map((item, i) => ({
+			'@type': 'ListItem',
+			position: i + 1,
+			name: item.name,
+			url: absolute(item.path)
+		}))
+	};
+}
+
+// The home page: a profile of the person, the companies, and the projects as
+// a list. Kaiwa and Otterd are referenced by @id rather than repeated.
 export function homeGraph(projects: { name: string; description: string; url?: string | null }[]) {
 	return [
 		person,
 		website,
+		kaiwa,
+		otterd,
 		{
 			'@type': 'ProfilePage',
 			'@id': `${SITE.url}/#profile`,
@@ -133,13 +242,15 @@ export function homeGraph(projects: { name: string; description: string; url?: s
 			itemListElement: projects.map((p, i) => ({
 				'@type': 'ListItem',
 				position: i + 1,
-				item: {
-					'@type': 'CreativeWork',
-					name: p.name,
-					description: p.description,
-					...(p.url ? { url: p.url } : {}),
-					creator: { '@id': PERSON_ID }
-				}
+				item: ORGANIZATION_IDS[p.name]
+					? { '@id': ORGANIZATION_IDS[p.name] }
+					: {
+							'@type': 'CreativeWork',
+							name: p.name,
+							description: p.description,
+							...(p.url ? { url: p.url } : {}),
+							creator: { '@id': PERSON_ID }
+						}
 			}))
 		}
 	];

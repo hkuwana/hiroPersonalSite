@@ -39,5 +39,7 @@ notebook, not a store. It must read as the home of one focused builder.
 ## Strategic principles
 
 - Evidence over adjectives: numbers, dates, shipped things.
-- Sunset projects are completed cycles with lessons, never failures to hide.
+- Failures are shown, not hidden. The home page Record section ("Unsexy
+  failures · what I learned") is deliberately honest about what did not work
+  in each cycle, and Hiro authors every sentence in it.
 - Slow web: few sections, generous whitespace, no engagement mechanics.

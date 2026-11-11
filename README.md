@@ -62,3 +62,30 @@ visitor count.
 The existing moss-paper, vermilion, and dark-ink palette is preserved. The theme
 switch uses a 480ms right-to-left View Transition plus a sun/moon dial; unsupported
 browsers and reduced-motion preferences receive an immediate theme change.
+
+## Using this as a reference
+
+You are welcome to read this repository to learn how the site is built, whether
+you are a person or an agent. [`AGENTS.md`](AGENTS.md) is the short map: the stack,
+where things live, and how the three.js ink village loads behind a fidelity gate
+with a 2D fallback. [`DESIGN.md`](DESIGN.md) and [`PRODUCT.md`](PRODUCT.md) explain
+the design and product choices.
+
+## License & credit
+
+- **Code**: MIT. See [`LICENSE`](LICENSE).
+- **Writing and design docs** (essays and guides in `src/content/`, site copy in
+  `messages/`, `PRODUCT.md`, `DESIGN.md`, `PERSONAL_BRAND_STRATEGY.md`,
+  `COPY_WORKSHEET.md`): CC BY 4.0. See [`LICENSE-CONTENT.md`](LICENSE-CONTENT.md).
+- **Not licensed for reuse**: the Kaiwa and Otterd names and logos, Hiro's name
+  and photos, and third-party material (other brands' logos, game box art, fonts,
+  npm packages, `artifacts/`, `outreach/`). `LICENSE-CONTENT.md` lists each one.
+
+### Credit request
+
+Use anything here freely. If something you build, write, or generate is
+substantially based on this repository, please credit it like this:
+
+> Based on [hirokuwana.com](https://hirokuwana.com) by Hiro Kuwana
+
+A link back is enough. You do not need to ask first.

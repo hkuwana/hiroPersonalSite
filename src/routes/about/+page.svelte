@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { asset } from '$app/paths';
 	import { FAQS, SITE, type Faq } from '$data/constants';
-	import { jsonLd, person, PERSON_ID } from '$lib/seo';
+	import { jsonLd, kaiwa, otterd, person, PERSON_ID } from '$lib/seo';
 	import CraftDesk from '$lib/components/home/CraftDesk.svelte';
 	import { DESK_ITEMS } from '$lib/home/desk-items';
 	import { optimisticLocale } from '$lib/locale-state';
@@ -36,8 +36,28 @@
 	const path = '/about';
 	$: self = lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`;
 
+	// Head text per locale. The Japanese description is a trimmed form of the
+	// approved Japanese lede below; the title reuses the page's eyebrow label.
+	$: meta =
+		lang === 'ja'
+			? {
+					title: '自己紹介 · Hiro Kuwana',
+					description:
+						'桑名浩行 (Hiro Kuwana) です。日本生まれ、アメリカ育ち。Kaiwa をほぼひとりでつくりながら、共同創業した Otterd にも取り組んでいます。ここには、実際の仕事から学んだことを書き留めています。',
+					ogDescription:
+						'Kaiwa をほぼひとりでつくりながら、共同創業した Otterd にも取り組んでいます。ここには、実際の仕事から学んだことを書き留めています。'
+				}
+			: {
+					title: 'About · Hiro Kuwana',
+					description:
+						'About Hiro Kuwana, a solo founder building Kaiwa and writing field notes on product, AI workflows, language learning, and human judgment.',
+					ogDescription: 'A solo founder building Kaiwa and writing down what the work is teaching him.'
+				};
+
 	$: structuredData = jsonLd([
 		person,
+		kaiwa,
+		otterd,
 		{
 			'@type': 'AboutPage',
 			'@id': `${self}#about`,
@@ -95,20 +115,19 @@
 </script>
 
 <svelte:head>
-	<title>About · Hiro Kuwana</title>
-	<meta
-		name="description"
-		content="About Hiro Kuwana, a solo founder building Kaiwa and writing field notes on product, AI workflows, language learning, and human judgment."
-	/>
+	<title>{meta.title}</title>
+	<meta name="description" content={meta.description} />
 	<meta name="robots" content="index, follow, max-image-preview:large" />
 	<meta property="og:type" content="profile" />
 	<meta property="og:url" content={self} />
-	<meta property="og:title" content="About · Hiro Kuwana" />
-	<meta property="og:description" content="A solo founder building Kaiwa and writing down what the work is teaching him." />
+	<meta property="og:title" content={meta.title} />
+	<meta property="og:description" content={meta.ogDescription} />
 	<meta property="og:image" content={SITE.image} />
+	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
+	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="About · Hiro Kuwana" />
-	<meta name="twitter:description" content="A solo founder building Kaiwa and writing down what the work is teaching him." />
+	<meta name="twitter:title" content={meta.title} />
+	<meta name="twitter:description" content={meta.ogDescription} />
 	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/about`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/about`} />

@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import { dev } from '$app/environment';
 	import { SITE } from '$data/constants';
+	import { jsonLd } from '$lib/seo';
+	import { TOOL_META, toolPageGraph } from '$lib/seo-tools';
 	import {
 		detect,
 		redact,
@@ -22,6 +24,9 @@
 	);
 	const path = '/tools/safe-paste';
 	let self = $derived(lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`);
+	const tool = TOOL_META.safePaste;
+	let pageTitle = $derived(lang === 'ja' ? 'セーフペースト · AI に貼る前に伏せ字にする · Hiro Kuwana' : 'Safe paste · redact before you paste into AI · Hiro Kuwana');
+	let ogTitle = $derived(lang === 'ja' ? 'セーフペースト · Hiro Kuwana' : 'Safe paste · Hiro Kuwana');
 
 	const MAP_KEY = 'safe-paste-map';
 
@@ -225,11 +230,9 @@ Hiro`;
 </script>
 
 <svelte:head>
-	<title>Safe paste · redact before you paste into AI · Hiro Kuwana</title>
-	<meta
-		name="description"
-		content="Free browser-based redactor. Remove emails, phone numbers, card numbers, API keys and your own names from text before you paste it into ChatGPT or Claude — then put the real values back into the reply. Runs locally, nothing is uploaded."
-	/>
+	<title>{pageTitle}</title>
+	<!-- TODO(needs Hiro): ja description. The English one serves both locales for now. -->
+	<meta name="description" content={tool.description} />
 	<meta
 		name="keywords"
 		content="pii redaction, redact before chatgpt, remove personal data from text, anonymize text, privacy scanner, redact api keys, local redaction tool"
@@ -237,17 +240,22 @@ Hiro`;
 	<meta name="robots" content="index, follow" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={self} />
-	<meta property="og:title" content="Safe paste · Hiro Kuwana" />
+	<meta property="og:title" content={ogTitle} />
 	<meta
 		property="og:description"
 		content="Redact personal data before you paste text into an AI, then restore the real values in the answer. Runs entirely in your browser."
 	/>
 	<meta property="og:image" content={SITE.image} />
+	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
+	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content={ogTitle} />
 	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/tools/safe-paste`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/tools/safe-paste`} />
 	<link rel="alternate" hreflang="x-default" href={`${SITE.url}/tools/safe-paste`} />
+	<!-- WebApplication and Home › Tools › tool breadcrumb, built by $lib/seo-tools -->
+	{@html jsonLd(toolPageGraph(tool, lang))}
 	{#if !dev}
 		<!-- The page makes no network request. This header makes the browser enforce it. -->
 		<meta http-equiv="content-security-policy" content="connect-src 'none'" />

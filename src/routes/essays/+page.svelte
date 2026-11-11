@@ -29,6 +29,7 @@
 	<meta property="og:site_name" content={SITE.name} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="Essays - Hiro Kuwana" />
+	<meta name="twitter:description" content="Field notes from building Kaiwa, practical AI workflows, and essays on product, language, and human judgment." />
 	<meta name="twitter:image" content={SITE.image} />
 	<link rel="canonical" href="https://hirokuwana.com/essays" />
 	{@html jsonLd([

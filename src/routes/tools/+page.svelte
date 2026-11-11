@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { SITE } from '$data/constants';
+	import { jsonLd } from '$lib/seo';
+	import { TOOLS_INDEX_DESCRIPTION, toolsIndexGraph } from '$lib/seo-tools';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
 	import { page } from '$app/stores';
@@ -10,6 +12,7 @@
 
 	const path = '/tools';
 	$: self = lang === 'ja' ? `${SITE.url}/ja${path}` : `${SITE.url}${path}`;
+	$: metaTitle = lang === 'ja' ? '小さな道具 · Hiro Kuwana' : 'Tools · Hiro Kuwana';
 
 	$: copy =
 		lang === 'ja'
@@ -74,24 +77,26 @@
 </script>
 
 <svelte:head>
-	<title>Tools · Hiro Kuwana</title>
-	<meta
-		name="description"
-		content="Small, practical browser utilities by Hiro Kuwana — an ICS formatter, a VCF contact splitter, and Safe paste for redacting text before it goes to AI. Free, private, runs locally."
-	/>
+	<title>{metaTitle}</title>
+	<!-- TODO(needs Hiro): ja description. The English one serves both locales for now. -->
+	<meta name="description" content={TOOLS_INDEX_DESCRIPTION} />
 	<meta name="robots" content="index, follow" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={self} />
-	<meta property="og:title" content="Tools · Hiro Kuwana" />
+	<meta property="og:title" content={metaTitle} />
 	<meta property="og:description" content="Small, practical browser utilities. Free, private, runs locally." />
 	<meta property="og:image" content={SITE.image} />
+	<meta property="og:locale" content={lang === 'ja' ? 'ja_JP' : 'en_US'} />
+	<meta property="og:locale:alternate" content={lang === 'ja' ? 'en_US' : 'ja_JP'} />
 	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:title" content="Tools · Hiro Kuwana" />
+	<meta name="twitter:title" content={metaTitle} />
 	<meta name="twitter:description" content="Small, practical browser utilities. Free, private, runs locally." />
 	<link rel="canonical" href={self} />
 	<link rel="alternate" hreflang="en" href={`${SITE.url}/tools`} />
 	<link rel="alternate" hreflang="ja" href={`${SITE.url}/ja/tools`} />
 	<link rel="alternate" hreflang="x-default" href={`${SITE.url}/tools`} />
+	<!-- ItemList of the tools and the Home › Tools breadcrumb, built by $lib/seo-tools -->
+	{@html jsonLd(toolsIndexGraph(lang))}
 </svelte:head>
 
 <article class="tools-page">
