@@ -7,7 +7,7 @@
 	import InkHero from '$lib/ink/InkHero.svelte';
 	import { optimisticLocale } from '$lib/locale-state';
 	import { getLocale, localizeHref } from '$lib/paraglide/runtime';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
 	type Locale = 'en' | 'ja';
 	type Status = 'active' | 'shipped' | 'sunset';
@@ -97,8 +97,9 @@
 			'work.status.shipped': 'shipped',
 			'work.status.sunset': 'sunset',
 			'work.readMore': 'open →',
-			'record.title': 'The record',
-			'record.titleEm': 'founder cycles since 2018.',
+			'record.title': 'Unsexy failures',
+			'record.titleEm': 'what I learned.',
+			'record.closing': "People didn't want a special onboarding; they wanted a place to just talk. Low friction wins.",
 			'record.colophon': 'colophon · how I work',
 			'writing.num': '03',
 			'writing.title': 'Notes from the build,',
@@ -159,8 +160,9 @@
 			'work.status.shipped': '公開済み',
 			'work.status.sunset': '終了',
 			'work.readMore': '開く →',
-			'record.title': '記録',
-			'record.titleEm': '2018年から続く、ものづくりのサイクル。',
+			'record.title': '地味な失敗',
+			'record.titleEm': 'そこから学んだこと。',
+			'record.closing': '特別なオンボーディングではなく、ただ話せる場所が求められていました。手間の少ないほうが勝ちます。',
 			'record.colophon': '奥付 · 仕事の流儀',
 			'writing.num': '03',
 			'writing.title': 'つくりながら書いたこと',
@@ -222,6 +224,8 @@
 			summaryJa: '学習者が AI と毎日話し、コーチは学習の道筋を設計して一人ひとりに合わせられるプラットフォーム。',
 			stats: `${KAIWA_METRICS.monthlyOrganicVisitorsShort} organic visitors / mo · ${KAIWA_METRICS.signups} signups`,
 			statsJa: `自然検索 ${KAIWA_METRICS.monthlyOrganicVisitorsShort} / 月 · 登録者 ${KAIWA_METRICS.signups}`,
+			lesson: 'I spent real time on onboarding. People just wanted a low-friction place to talk.',
+			lessonJa: 'オンボーディングに時間をかけた。求められていたのは、気軽に話せる場所だった。',
 			logo: asset('/kaiwa_logo.png'),
 		},
 		{
@@ -270,6 +274,8 @@
 			roleJa: 'ファウンダー',
 			summary: 'Organizing scattered feedback for product managers. A practical, private dashboard for the signals that matter.',
 			summaryJa: 'PM のためにバラバラのフィードバックを整理する、実用的で非公開のダッシュボード。大事なシグナルだけを残す。',
+			lesson: "When it got hard, I procrastinated by building, and held on too long to one customer's feedback.",
+			lessonJa: '苦しいとき、つくることで先延ばしにした。ひとりの顧客の声にこだわりすぎた。',
 			logo: asset('/flybyrd_logo.png'),
 		},
 		{
@@ -282,16 +288,18 @@
 			subtitleJa: 'NPO と寄付者・ボランティアをつなぐ',
 			role: 'Product + Ops',
 			roleJa: 'プロダクト + 運営',
-			summary: 'A nonprofit donor experiment that taught me where human trust matters more than platform mechanics.',
-			summaryJa: 'NPO の寄付者向けの実験。プラットフォームの仕組みより、人と人の信頼の方がずっと大事だと教えてくれた。',
+			summary: 'Connected young people with nonprofits. I ran it manually, and ChatGPT made the need disappear.',
+			summaryJa: '若い人と NPO をつないだ。手作業で回していたが、ChatGPT の登場でそのニーズはなくなった。',
+			lesson: 'I built it before ChatGPT. Once people could just ask for a local nonprofit, the need went away.',
+			lessonJa: 'ChatGPT の前につくった。聞けば見つかるようになって、ニーズは消えた。',
 			logo: asset('/icon-512x512.png'),
 		}
 	];
 
-	// The record — founder cycles. Ship lines are factual and functional.
-	// Lesson lines are voice slots: Hiro's own words, both languages, from
-	// COPY_WORKSHEET.md §2. The whole section stays hidden until every
-	// lesson slot is filled. No flag to flip; fill the slots and it appears.
+	// The record — "Unsexy failures · what I learned". Ship lines are factual and
+	// functional. Lesson lines are voice slots: Hiro's own words, both languages,
+	// from COPY_WORKSHEET.md §2. The section is deliberately honest about what
+	// failed. It stays hidden if any lesson slot is emptied.
 	type Cycle = {
 		id: string;
 		years: string;
@@ -311,8 +319,10 @@
 			name: 'Pebblr',
 			ship: 'Connected nonprofits with donors and volunteers. Product and operations.',
 			shipJa: 'NPO と寄付者・ボランティアをつないだ。プロダクトと運営。',
-			lesson: '', // voice slot
-			lessonJa: '' // voice slot
+			lesson:
+				'I built Pebblr before ChatGPT came out, and I was running it manually. When ChatGPT arrived, I realized a young person who wanted to connect with a nonprofit could just ask it to find ones near them. The need I was serving would disappear. So I decided to work with the new tool and figure out what I could do with it.',
+			lessonJa:
+				'Pebblr は ChatGPT が出る前につくり、手作業で回していました。ChatGPT が出たとき、NPO とつながりたい若い人は、近くの団体を ChatGPT に聞けば済むと気づきました。自分が応えていたニーズは、なくなっていく。それなら、この道具を使って何ができるかを考えようと決めました。'
 		},
 		{
 			id: 'flybyrd',
@@ -321,8 +331,10 @@
 			name: 'Flybyrd',
 			ship: 'Organized scattered feedback into signal for product managers. Founder.',
 			shipJa: '散らばったフィードバックを、PM のためのシグナルに整理した。ファウンダー。',
-			lesson: '', // voice slot
-			lessonJa: '' // voice slot
+			lesson:
+				"Flybyrd was a market failure and a personal one. Product managers do need a way to organize feedback, but the large labs were coming up with ways to do that better with LLMs. When things got difficult, I didn't pivot, or look for something complementary to the AI, fast enough. I procrastinated by building instead, and I was too stubborn about one customer and their feedback.",
+			lessonJa:
+				'Flybyrd は、市場の失敗でもあり、自分の失敗でもありました。PM にフィードバックを整理する手段は必要です。ただ、大手の AI ラボが、LLM でそれをもっとうまくやる方法を出してきていました。苦しくなったとき、方向を変えることも、AI を補う形を探すことも、十分な速さでできませんでした。考える代わりに、つくることで先延ばしにし、ひとりの顧客の声にこだわりすぎました。'
 		},
 		{
 			id: 'kaiwa',
@@ -331,8 +343,10 @@
 			name: 'Kaiwa',
 			ship: `A real-time AI conversation platform for language learners. ${KAIWA_METRICS.monthlyOrganicVisitorsShort} organic visitors a month, ${KAIWA_METRICS.signups} signups. Built and run by one person.`,
 			shipJa: `学習者が AI と毎日話すリアルタイム会話プラットフォーム。自然検索 ${KAIWA_METRICS.monthlyOrganicVisitorsShort}/月、登録者 ${KAIWA_METRICS.signups}。ひとりで開発・運用。`,
-			lesson: '', // voice slot
-			lessonJa: '' // voice slot
+			lesson:
+				"I spent real time on Kaiwa's onboarding, and it didn't matter. A lot of products were trying to make that part special. What people wanted was a low-friction place to talk about anything, with the rest happening behind the scenes, and I didn't get there fast enough. That is where Kaiwa is headed now: keep little information, save what I know about a learner as markdown, and load it only when they mention something from before.",
+			lessonJa:
+				'Kaiwa のオンボーディングに、かなりの時間をかけました。でも、そこは大事ではありませんでした。多くのサービスが、その部分を特別なものにしようとしていました。人が求めていたのは、何でも気軽に話せる、手間のない場所です。あとは裏側で動いていればいい。そこにたどり着くのが遅すぎました。いまの Kaiwa はその方向です。持つ情報は少なくし、学習者について分かっていることは Markdown に残して、前の話が出たときだけ読みにいきます。'
 		}
 	];
 
@@ -362,10 +376,31 @@
 			kJa: '自動化',
 			v: 'Reddit Scout: a pipeline that finds language learners with real intent.',
 			vJa: 'Reddit Scout：本気の学習者を見つける自動化パイプライン。'
+		},
+		// Hiro's words, framed as an ideal rather than a daily practice.
+		{
+			k: 'focus',
+			kJa: '集中',
+			v: 'The biggest thing in running a company with AI is working on the important things without losing focus. What matters most is how much I can focus on one project and carry it to completion. Ideally the agents keep improving it, so that it is easy for me to tell them what to do next; I go write some emails, then come back at a set time for a proper 5–10 minute look at the output, through an artifact or a quick video. Context switching is a very real thing.',
+			vJa: 'AI と会社を回すうえでいちばん大事なのは、集中を切らさずに大事な仕事を進めることです。ひとつのプロジェクトにどれだけ集中し、完成まで持っていけるか。理想は、エージェントが仕事を進め、次に何を頼めばいいかがすぐ分かる状態です。その間にメールなどの小さな仕事を片づけ、時間を決めて戻り、5〜10 分かけてアウトプットをきちんと確認します。アーティファクトや短い動画で。コンテキストスイッチの負担は、本当にあります。'
 		}
 	];
 
 	const recordReady = RECORD_CYCLES.every((cycle) => cycle.lesson.trim() !== '' && cycle.lessonJa.trim() !== '');
+
+	// A Record name links to its project card. Sunset cards can be folded away
+	// (phones) or filtered out, so open everything before scrolling to the card.
+	const goToPiece = async (event: MouseEvent, id: string) => {
+		event.preventDefault();
+		filter = 'all';
+		showSunset = true;
+		await tick();
+		const target = document.getElementById(`piece-${id}`);
+		if (!target) return;
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+		target.focus({ preventScroll: true });
+	};
 
 
 	// Essays come from src/content/essays, newest first, so a new essay shows up here by itself.
@@ -594,7 +629,7 @@
 
 		<ol class="scrap" class:collapse-sunset={filter === 'all' && !showSunset}>
 			{#each visiblePieces as piece (piece.id)}
-				<li class:is-sunset={piece.status === 'sunset'}>
+				<li id={`piece-${piece.id}`} tabindex="-1" class:is-sunset={piece.status === 'sunset'}>
 				<svelte:element
 					this={piece.href ? 'a' : 'div'}
 					href={piece.href}
@@ -658,7 +693,9 @@
 							<span class="cycle-no" aria-hidden="true">{CYCLE_NUMERALS[i]}</span>
 							<div class="cycle-body">
 								<div class="cycle-head">
-									<h3>{cycle.name}</h3>
+									<h3>
+										<a class="cycle-link" href={`#piece-${cycle.id}`} onclick={(event) => goToPiece(event, cycle.id)}>{cycle.name}</a>
+									</h3>
 									<span class="cycle-years">{lang === 'ja' ? cycle.yearsJa : cycle.years}</span>
 								</div>
 								<p class="cycle-ship">{lang === 'ja' ? cycle.shipJa : cycle.ship}</p>
@@ -667,6 +704,8 @@
 						</li>
 					{/each}
 				</ol>
+
+				<p class="record-closing">{t('record.closing')}</p>
 
 				<aside class="colophon">
 					<span class="colophon-title">{t('record.colophon')}</span>
@@ -686,7 +725,7 @@
 
 <div class="asanoha-break" aria-hidden="true"></div>
 <div class="reveal">
-	<section data-screen-label="03 Writing" id="writing" data-philo="journal">
+	<section data-screen-label={recordReady ? '04 Writing' : '03 Writing'} id="writing" data-philo="journal">
 		<div class="section writing-head">
 			<div class="sec-head">
 				<span class="num-vert">{recordReady ? '04' : t('writing.num')}</span>
@@ -721,7 +760,7 @@
 
 <div class="asanoha-break" aria-hidden="true"></div>
 <div class="reveal">
-	<section class="section contact-sec" id="contact" data-screen-label="04 Contact">
+	<section class="section contact-sec" id="contact" data-screen-label={recordReady ? '05 Contact' : '04 Contact'}>
 		<div class="sec-head">
 			<span class="num-vert">{recordReady ? '05' : t('contact.num')}</span>
 			<h2>{t('contact.title')} <em>{t('contact.titleEm')}</em></h2>

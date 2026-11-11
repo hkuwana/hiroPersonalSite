@@ -4,9 +4,10 @@ Every sentence a reader would attribute to you is a "voice slot." None of
 them were AI-drafted, and none ship until you fill them. This file lists each
 slot: its job, the facts it can carry, the length limit, and where to paste it.
 
-How the gate works: the new "record" section on the home page renders only
+How the gate works: the "record" section on the home page renders only
 when every lesson slot in `RECORD_CYCLES` has both English and Japanese text.
-Fill the slots, and the section appears. No flag to flip.
+All three slots are now filled, so the section is live at `#record`, between
+Projects and Writing.
 
 ---
 
@@ -27,67 +28,46 @@ Your JA line:
 
 >
 
-## §2 Record lessons (required for the section to appear)
+## §2 Record lessons (filled; the section is live)
 
+- **Heading:** "Unsexy failures" / *what I learned.* (JA: 地味な失敗 /
+  そこから学んだこと。), keys `record.title` / `record.titleEm`. A closing line
+  under the cycles lives in `record.closing`.
 - **File:** `src/routes/+page.svelte`, `RECORD_CYCLES`, fields `lesson` and
   `lessonJa`.
-- **Job:** one line per cycle on what the cycle taught you. Sunset projects
-  must read as completed cycles, not failures.
-- **Limit:** about 120 characters EN, about 60 characters JA. The line renders
-  in italics with a small 学 stamp.
+- **Job:** what went wrong in each cycle and what it taught you. The section is
+  deliberately honest about failures; it does not dress them up as completed
+  cycles. Hiro authors every sentence in it (lessons, closing line, and the
+  `focus` colophon row); Claude only cleans dictation and drafts JA for his
+  review.
+- **Length:** 3–4 sentences per cycle. The entry renders upright (not italic)
+  at a 52ch measure with a small 学 stamp. Shorter one-line versions of the
+  same entries feed the project cards (§3).
+- **Source of truth:** the strings in `+page.svelte`. Edit them there.
 
-**Pebblr (2021–2023).** Facts available: nonprofit donor platform, sunset when
-GPT-class tools changed the space. Your existing card line ("taught me where
-human trust matters more than platform mechanics") already does this job. You
-may reuse it verbatim here.
+Filled 2026-11 from Hiro's dictated answers (JA drafted for his review):
 
-EN:
+- **Pebblr (2021–2023):** built before ChatGPT and run manually; once a young
+  person could ask ChatGPT for nonprofits near them, the need went away.
+- **Flybyrd (2024–2025):** product managers, per Hiro's answer. A market
+  failure and a personal one: did not pivot fast enough, procrastinated by
+  building, held on too long to one customer's feedback.
+- **Kaiwa (2025–now):** time spent on onboarding that did not matter; people
+  wanted a low-friction place to talk.
+- **Focus** (colophon row `focus` / 集中): context switching, framed as an
+  ideal ("ideally the agents..."), not a claim about daily practice.
 
->
+Left out on purpose: the MCP implementation detail and the phrase "low
+maintenance mode" (Kaiwa). The old Pebblr card line about "human trust" was
+replaced because it contradicted Hiro's answer.
 
-JA:
+## §3 Project-card lessons (filled for Pebblr, Flybyrd, Kaiwa)
 
->
-
-**Flybyrd (2024–2025).** Facts available: feedback organization for product
-managers. Note: `constants.ts` describes Flybyrd as VC deal-flow analysis,
-while the home page says product managers. Tell me which is right and I will
-fix the wrong one.
-
-EN:
-
->
-
-JA:
-
->
-
-**Kaiwa (2025–now).** The cycle is open, so the line can be present tense:
-what this cycle is teaching you.
-
-EN:
-
->
-
-JA:
-
->
-
-## §3 Project-card lessons (optional)
-
-- **File:** `src/routes/+page.svelte`, `PIECES`, add `lesson` and `lessonJa`
-  to any project. The card shows the line only when both exist.
-- Pebblr and Exonians already carry their lesson or proof in the summary. The
-  Flybyrd card is the one that currently reads most like an abandonment.
+- **File:** `src/routes/+page.svelte`, `PIECES`, fields `lesson` and
+  `lessonJa`. The card shows the line only when both exist.
+- Pebblr, Flybyrd and Kaiwa carry the one-line versions of their Record
+  entries, in Hiro's words. Any other card can take one the same way.
 - **Limit:** about 100 characters EN, about 50 characters JA.
-
-Flybyrd card, EN:
-
->
-
-Flybyrd card, JA:
-
->
 
 ## §4 Veto pass: functional text I wrote as third-person metadata
 
@@ -107,7 +87,7 @@ engines. Strike or edit anything you do not want said.
 
 ## §5 Facts I need from you
 
-1. Flybyrd: product managers or VCs? (See §2.)
+1. ~~Flybyrd: product managers or VCs?~~ Answered: product managers.
 2. "Since 2018" appears in the hero. If a 2018 first build deserves a place
    in the record, tell me what it was and I will add the entry with a lesson
    slot for you.

@@ -123,7 +123,7 @@ export const PROJECTS = [
 		name: 'Pebblr',
 		tagline: 'Connecting nonprofits and donors/volunteers',
 		description:
-			'A nonprofit donor experiment connecting nonprofits with donors and volunteers, and a lesson in where human trust matters more than platform mechanics.',
+			'Connected young people with nonprofits. I ran it manually, and ChatGPT made the need disappear.',
 		logo: '/icon-512x512.png',
 		status: 'sunset',
 		color: '#6b7280'

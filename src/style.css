@@ -868,6 +868,8 @@ main {
 
 .scrap > li {
 	display: flex;
+	/* Record links land here; keep the card clear of the fixed nav. */
+	scroll-margin-top: 6rem;
 }
 
 .scrap-piece {
@@ -1742,6 +1744,21 @@ html[lang='ja'] .scrap-piece h3 em {
 	color: var(--ink);
 }
 
+/* The cycle name opens its project card (in-page link). */
+.cycle-link {
+	color: var(--ink);
+	text-decoration: underline;
+	text-decoration-color: var(--rule);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+	transition: text-decoration-color 0.25s;
+}
+
+.cycle-link:hover,
+.cycle-link:focus-visible {
+	text-decoration-color: var(--shu);
+}
+
 .cycle-years {
 	font-family: var(--f-mono);
 	font-size: 0.6875rem;
@@ -1758,15 +1775,25 @@ html[lang='ja'] .scrap-piece h3 em {
 	line-height: 1.6;
 }
 
-/* The lesson: Hiro's own line, set apart with a small 学 (learn) stamp. */
+/* The lesson: Hiro's own words (3–4 sentences), set upright for reading,
+   marked with a small 学 (learn) stamp. */
 .cycle-lesson {
 	position: relative;
 	margin: 1.1rem 0 0;
 	padding-left: 1.75rem;
 	max-width: 52ch;
-	font-style: italic;
 	color: var(--ink);
+	line-height: 1.65;
+}
+
+/* One closing line after the cycles: body serif, no box. */
+.record-closing {
+	margin: 3rem 0 0 4.75rem;
+	max-width: 52ch;
+	font-family: var(--f-body);
+	font-size: 1.125rem;
 	line-height: 1.6;
+	color: var(--ink);
 }
 
 .cycle-lesson::before {
@@ -1822,6 +1849,15 @@ html[lang='ja'] .scrap-piece h3 em {
 	color: var(--ink-soft);
 }
 
+/* An odd last item takes the full row instead of leaving a gap. */
+.colophon-item:last-child:nth-child(odd) {
+	grid-column: 1 / -1;
+}
+
+.colophon-item:last-child:nth-child(odd) dd {
+	max-width: 62ch;
+}
+
 /* Project-card lesson line (voice slot on each Piece). */
 .scrap-piece .piece-lesson {
 	margin: 0.5rem 0 0;
@@ -1864,6 +1900,10 @@ html[lang='ja'] .scrap-piece h3 em {
 
 	.cycle-no {
 		font-size: 1.125rem;
+	}
+
+	.record-closing {
+		margin-left: 3rem;
 	}
 
 	.colophon dl {
